@@ -30,11 +30,11 @@ Usage: ./$(basename $0) [OPTIONS]
 
 Options:
   --rocm-path        Path to a ROCm installation, defaults to variable 'ROCM_PATH' if set or '/opt/rocm'.
-  --libs             Libraries to build as comma separated list without whitespaces, defaults to variable 'ROCM_LLVM_LIBS' if set or '*'.
+  --libs             Libraries to build as comma separated list without whitespaces, defaults to variable 'ROCM_LLVM_PYTHON_LIBS' if set or '*'.
                      Add a prefix '^' to NOT build the comma-separated list of libraries that follows but all other libraries.
-  --no-build         Do not build package 'rocm-llvm'.
-  --no-docs          Do not build the docs of package 'rocm-llvm'.
-  --no-api-docs      Temporarily move the 'rocm-llvm/docs/python_api' subfolder so that sphinx does not see it.
+  --no-build         Do not build package 'rocm-llvm-python'.
+  --no-docs          Do not build the docs of package 'rocm-llvm-python'.
+  --no-api-docs      Temporarily move the 'rocm-llvm-python/docs/python_api' subfolder so that sphinx does not see it.
   --no-clean-docs    Do not generate docs from scratch, i.e. don't run sphinx with -E switch.
   --run-tests        Run the tests.
   -j,--num-jobs      Number of build jobs to use (currently only applied for building docs). Defaults to 1.
@@ -60,7 +60,7 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     --libs)
-      ROCM_LLVM_LIBS=$2
+      ROCM_LLVM_PYTHON_LIBS=$2
       shift; shift
       ;;
     -h|--help)
@@ -71,8 +71,8 @@ while [[ $# -gt 0 ]]; do
       ROCM_PATH=$2
       shift; shift
       ;;
-    --no-hip)
-      NO_HIP=1
+    --no-build)
+      NO_BUILD=1
       shift
       ;;
     --run-tests)
@@ -103,7 +103,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 declare -x ROCM_PATH=${ROCM_PATH:-/opt/rocm}
-declare -x ROCM_LLVM_LIBS=${ROCM_LLVM_LIBS:-*}
+declare -x ROCM_LLVM_PYTHON_LIBS=${ROCM_LLVM_PYTHON_LIBS:-*}
 
 # note: [ -z {var+x} ] evaluates to true if `var` is unset!
 
@@ -118,38 +118,25 @@ if [ -z ${NO_ENV+x} ]; then
 fi
 shopt -s expand_aliases
 
-if [ -z ${NO_HIP+x} ]; then
-  # build rocm-llvm
-  echo "building package rocm-llvm"
-  PKG="rocm-llvm"
+if [ -z ${NO_BUILD+x} ]; then
+  # build rocm-llvm-python
+  echo "building package rocm-llvm-python"
+  PKG="rocm-llvm-python"
   mkdir -p ${PKG}/dist/
   mkdir -p ${PKG}/dist/archive
   mv ${PKG}/dist/*.whl ${PKG}/dist/archive/    2> /dev/null
   mv ${PKG}/dist/*.tar.gz ${PKG}/dist/archive/ 2> /dev/null
-  PYTHON -m pip install -r ${PKG}/requirements.txt
-  PYTHON -m build ${PKG} -n
-fi
-  
-if [ -z ${NO_CUDA+x} ]; then
-  # build rocm-llvm-as-cuda
-  echo "building package rocm-llvm-as-cuda"
-  PKG="rocm-llvm-as-cuda"
-  mkdir -p ${PKG}/dist/
-  mkdir -p ${PKG}/dist/archive
-  mv ${PKG}/dist/*.whl ${PKG}/dist/archive/    2> /dev/null
-  mv ${PKG}/dist/*.tar.gz ${PKG}/dist/archive/ 2> /dev/null
-  PYTHON -m pip install --force-reinstall rocm-llvm/dist/hip*whl
   PYTHON -m pip install -r ${PKG}/requirements.txt
   PYTHON -m build ${PKG} -n
 fi
 
 if [ -z ${NO_DOCS+x} ]; then
-  echo "building docs for package rocm-llvm"
+  echo "building docs for package rocm-llvm-python"
   # build docs
-  PYTHON -m pip install --force-reinstall rocm-llvm/dist/hip*whl \
-                                                    rocm-llvm-as-cuda/dist/hip*whl
-  PYTHON -m pip install -r rocm-llvm/docs/requirements.txt
-  DOCS_DIR="rocm-llvm/docs"
+  PYTHON -m pip install --force-reinstall rocm-llvm-python/dist/hip*whl \
+                                                    rocm-llvm-python-as-cuda/dist/hip*whl
+  PYTHON -m pip install -r rocm-llvm-python/docs/requirements.txt
+  DOCS_DIR="rocm-llvm-python/docs"
   
   if [ ! -z ${NO_API_DOCS+x} ]; then
      mv "$DOCS_DIR/python_api" "./_python_api"
@@ -168,27 +155,7 @@ if [ -z ${NO_DOCS+x} ]; then
 fi
 
 if [ ! -z ${RUN_TESTS+x} ]; then
-  PYTHON -m pip install --force-reinstall rocm-llvm/dist/hip*whl \
-                                          rocm-llvm-as-cuda/dist/hip*whl
-  cd rocm-llvm/examples/0_*
-  PYTHON -m pip install -r requirements.txt
-  PYTHON hip_deviceattributes.py
-  PYTHON hip_deviceproperties.py
-  PYTHON hip_python_device_array.py
-  PYTHON hip_stream.py
-  PYTHON hipblas_with_numpy.py
-  PYTHON hipfft.py
-  #PYTHON hiprand_monte_carlo_pi.py
-  PYTHON hiprtc_launch_kernel_args.py
-  PYTHON hiprtc_launch_kernel_no_args.py
-  PYTHON rccl_comminitall_bcast.py
-  # 10x ok
-
-  cd ../1_*
-  PYTHON -m pip install -r requirements.txt
-  PYTHON cuda_stream.py
-  PYTHON=${PYTHON_PATH} make clean run
-  # 2x ok
+  PYTHON -m pip install --force-reinstall rocm-llvm-python/dist/hip*whl
 fi
 
 [ -z ${POST_CLEAN+x} ] || rm -rf venv

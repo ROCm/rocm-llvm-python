@@ -25,9 +25,9 @@
 __author__ = "Advanced Micro Devices, Inc. <rocm-llvm-python.maintainer@amd.com>"
 
 from ._version import *
-ROCM_LLVM_VERSION = 0
-ROCM_LLVM_VERSION_NAME = rocm_llvm_version_name = "0.0.0-"
-ROCM_LLVM_VERSION_TUPLE = rocm_llvm_version_tuple = (0,0,0,"")
+ROCM_LLVM_PYTHON_VERSION = 0
+ROCM_LLVM_PYTHON_VERSION_NAME = rocm_llvm_version_name = "0.0.0-"
+ROCM_LLVM_PYTHON_VERSION_TUPLE = rocm_llvm_version_tuple = (0,0,0,"")
 
 
 from . import _util
