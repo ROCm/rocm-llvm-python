@@ -28,16 +28,6 @@ def replace_version_placeholders(file_content: str) -> str:
         ROCM_LLVM_PYTHON_REV=git_rev(),
     )
 
-def map_hip_version_to_rocm_release(file_content: str, line_indicator: str) -> str:
-    result = ""
-    for line in file_content.splitlines(keepends=True):
-        if line.startswith(line_indicator):
-            for key in HIP_TO_ROCM:
-                if key in line:
-                    line = line.replace(key+".",HIP_TO_ROCM[key]+".")
-        result += line
-    return result
-
 # render read _version.py (requires git)
 def render_version_py(parent_dir: str):
     with open(os.path.join(parent_dir,"_version.py.in"),"r"
