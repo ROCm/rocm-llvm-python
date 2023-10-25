@@ -97,14 +97,14 @@ def LLVMParseCommandLineOptions(int argc, object argv, const char * Overview):
         argc (`~.int`):
             (undocumented)
 
-        argv (`~.rocm.llvm._util.Pointer`/`~.object`):
+        argv (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         Overview (`~.bytes`):
             (undocumented)
     """
     csupport.LLVMParseCommandLineOptions(argc,
-        <const char *const *>rocm.llvm._util.Pointer.from_pyobj(argv)._ptr,Overview)    # fully specified
+        <const char *const *>rocm.llvm._util.types.Pointer.from_pyobj(argv)._ptr,Overview)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -122,7 +122,7 @@ def LLVMSearchForAddressOfSymbol(const char * symbolName):
         symbolName (`~.bytes`):
             (undocumented)
     """
-    _LLVMSearchForAddressOfSymbol__retval = void *.from_value(csupport.LLVMSearchForAddressOfSymbol(symbolName))    # fully specified
+    _LLVMSearchForAddressOfSymbol__retval = rocm.llvm._util.types.Pointer.from_ptr(csupport.LLVMSearchForAddressOfSymbol(symbolName))    # fully specified
     return (_LLVMSearchForAddressOfSymbol__retval,)
 
 
@@ -141,11 +141,11 @@ def LLVMAddSymbol(const char * symbolName, object symbolValue):
         symbolName (`~.bytes`):
             (undocumented)
 
-        symbolValue (`~.rocm.llvm._util.Pointer`/`~.object`):
+        symbolValue (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     csupport.LLVMAddSymbol(symbolName,
-        <void *>rocm.llvm._util.Pointer.from_pyobj(symbolValue)._ptr)    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(symbolValue)._ptr)    # fully specified
 
 __all__ = [
     "LLVMLoadLibraryPermanently",

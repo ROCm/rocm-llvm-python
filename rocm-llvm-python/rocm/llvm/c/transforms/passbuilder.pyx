@@ -274,7 +274,7 @@ def LLVMRunPasses(object M, const char * Passes, object TM, object Options):
         Options (`~.LLVMOpaquePassBuilderOptions`/`~.object`):
             (undocumented)
     """
-    _LLVMRunPasses__retval = LLVMErrorRef.from_value(cpassbuilder.LLVMRunPasses(
+    _LLVMRunPasses__retval = LLVMOpaqueError.from_ptr(cpassbuilder.LLVMRunPasses(
         LLVMOpaqueModule.from_pyobj(M)._ptr,Passes,
         LLVMOpaqueTargetMachine.from_pyobj(TM)._ptr,
         LLVMOpaquePassBuilderOptions.from_pyobj(Options)._ptr))    # fully specified
@@ -291,7 +291,7 @@ def LLVMCreatePassBuilderOptions():
     responsible for it. The client should call LLVMDisposePassBuilderOptions
     to free the pass builder options.
     """
-    _LLVMCreatePassBuilderOptions__retval = LLVMPassBuilderOptionsRef.from_value(cpassbuilder.LLVMCreatePassBuilderOptions())    # fully specified
+    _LLVMCreatePassBuilderOptions__retval = LLVMOpaquePassBuilderOptions.from_ptr(cpassbuilder.LLVMCreatePassBuilderOptions())    # fully specified
     return (_LLVMCreatePassBuilderOptions__retval,)
 
 

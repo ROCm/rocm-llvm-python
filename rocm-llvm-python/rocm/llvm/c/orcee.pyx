@@ -470,7 +470,7 @@ def LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager(object ES):
         ES (`~.LLVMOrcOpaqueExecutionSession`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager__retval = LLVMOrcObjectLayerRef.from_value(corcee.LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager(
+    _LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager__retval = LLVMOrcOpaqueObjectLayer.from_ptr(corcee.LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager(
         LLVMOrcOpaqueExecutionSession.from_pyobj(ES)._ptr))    # fully specified
     return (_LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager__retval,)
 
@@ -506,7 +506,7 @@ def LLVMOrcCreateRTDyldObjectLinkingLayerWithMCJITMemoryManagerLikeCallbacks(obj
         ES (`~.LLVMOrcOpaqueExecutionSession`/`~.object`):
             (undocumented)
 
-        CreateContextCtx (`~.rocm.llvm._util.Pointer`/`~.object`):
+        CreateContextCtx (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         CreateContext (`~.LLVMMemoryManagerCreateContextCallback`/`~.object`):
@@ -527,9 +527,9 @@ def LLVMOrcCreateRTDyldObjectLinkingLayerWithMCJITMemoryManagerLikeCallbacks(obj
         Destroy (`~.LLVMMemoryManagerDestroyCallback`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcCreateRTDyldObjectLinkingLayerWithMCJITMemoryManagerLikeCallbacks__retval = LLVMOrcObjectLayerRef.from_value(corcee.LLVMOrcCreateRTDyldObjectLinkingLayerWithMCJITMemoryManagerLikeCallbacks(
+    _LLVMOrcCreateRTDyldObjectLinkingLayerWithMCJITMemoryManagerLikeCallbacks__retval = LLVMOrcOpaqueObjectLayer.from_ptr(corcee.LLVMOrcCreateRTDyldObjectLinkingLayerWithMCJITMemoryManagerLikeCallbacks(
         LLVMOrcOpaqueExecutionSession.from_pyobj(ES)._ptr,
-        <void *>rocm.llvm._util.Pointer.from_pyobj(CreateContextCtx)._ptr,
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(CreateContextCtx)._ptr,
         LLVMMemoryManagerCreateContextCallback.from_pyobj(CreateContext)._ptr,
         LLVMMemoryManagerNotifyTerminatingCallback.from_pyobj(NotifyTerminating)._ptr,
         LLVMMemoryManagerAllocateCodeSectionCallback.from_pyobj(AllocateCodeSection)._ptr,

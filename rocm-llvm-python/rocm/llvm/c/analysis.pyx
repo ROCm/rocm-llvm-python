@@ -91,7 +91,7 @@ def LLVMVerifyModule(object M, object Action, object OutMessage):
         Action (`~.LLVMVerifierFailureAction`):
             (undocumented)
 
-        OutMessage (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -103,7 +103,7 @@ def LLVMVerifyModule(object M, object Action, object OutMessage):
         raise TypeError("argument 'Action' must be of type '_LLVMVerifierFailureAction__Base'")
     cdef int _LLVMVerifyModule__retval = canalysis.LLVMVerifyModule(
         LLVMOpaqueModule.from_pyobj(M)._ptr,Action.value,
-        <char **>rocm.llvm._util.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
+        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
     return (_LLVMVerifyModule__retval,)
 
 

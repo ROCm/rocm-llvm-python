@@ -620,7 +620,7 @@ def LLVMOrcCreateLLJITBuilder():
     The client owns the resulting LLJITBuilder and should dispose of it using
     LLVMOrcDisposeLLJITBuilder once they are done with it.
     """
-    _LLVMOrcCreateLLJITBuilder__retval = LLVMOrcLLJITBuilderRef.from_value(clljit.LLVMOrcCreateLLJITBuilder())    # fully specified
+    _LLVMOrcCreateLLJITBuilder__retval = LLVMOrcOpaqueLLJITBuilder.from_ptr(clljit.LLVMOrcCreateLLJITBuilder())    # fully specified
     return (_LLVMOrcCreateLLJITBuilder__retval,)
 
 
@@ -677,13 +677,13 @@ def LLVMOrcLLJITBuilderSetObjectLinkingLayerCreator(object Builder, object F, ob
         F (`~.LLVMOrcLLJITBuilderObjectLinkingLayerCreatorFunction`/`~.object`):
             (undocumented)
 
-        Ctx (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Ctx (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     clljit.LLVMOrcLLJITBuilderSetObjectLinkingLayerCreator(
         LLVMOrcOpaqueLLJITBuilder.from_pyobj(Builder)._ptr,
         LLVMOrcLLJITBuilderObjectLinkingLayerCreatorFunction.from_pyobj(F)._ptr,
-        <void *>rocm.llvm._util.Pointer.from_pyobj(Ctx)._ptr)    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Ctx)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -704,14 +704,14 @@ def LLVMOrcCreateLLJIT(object Result, object Builder):
     and not-yet compiled modules.
 
     Args:
-        Result (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Result (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         Builder (`~.LLVMOrcOpaqueLLJITBuilder`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcCreateLLJIT__retval = LLVMErrorRef.from_value(clljit.LLVMOrcCreateLLJIT(
-        <clljit.LLVMOrcLLJITRef*>rocm.llvm._util.Pointer.from_pyobj(Result)._ptr,
+    _LLVMOrcCreateLLJIT__retval = LLVMOpaqueError.from_ptr(clljit.LLVMOrcCreateLLJIT(
+        <clljit.LLVMOrcLLJITRef*>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr,
         LLVMOrcOpaqueLLJITBuilder.from_pyobj(Builder)._ptr))    # fully specified
     return (_LLVMOrcCreateLLJIT__retval,)
 
@@ -726,7 +726,7 @@ def LLVMOrcDisposeLLJIT(object J):
         J (`~.LLVMOrcOpaqueLLJIT`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcDisposeLLJIT__retval = LLVMErrorRef.from_value(clljit.LLVMOrcDisposeLLJIT(
+    _LLVMOrcDisposeLLJIT__retval = LLVMOpaqueError.from_ptr(clljit.LLVMOrcDisposeLLJIT(
         LLVMOrcOpaqueLLJIT.from_pyobj(J)._ptr))    # fully specified
     return (_LLVMOrcDisposeLLJIT__retval,)
 
@@ -744,7 +744,7 @@ def LLVMOrcLLJITGetExecutionSession(object J):
         J (`~.LLVMOrcOpaqueLLJIT`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcLLJITGetExecutionSession__retval = LLVMOrcExecutionSessionRef.from_value(clljit.LLVMOrcLLJITGetExecutionSession(
+    _LLVMOrcLLJITGetExecutionSession__retval = LLVMOrcOpaqueExecutionSession.from_ptr(clljit.LLVMOrcLLJITGetExecutionSession(
         LLVMOrcOpaqueLLJIT.from_pyobj(J)._ptr))    # fully specified
     return (_LLVMOrcLLJITGetExecutionSession__retval,)
 
@@ -762,7 +762,7 @@ def LLVMOrcLLJITGetMainJITDylib(object J):
         J (`~.LLVMOrcOpaqueLLJIT`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcLLJITGetMainJITDylib__retval = LLVMOrcJITDylibRef.from_value(clljit.LLVMOrcLLJITGetMainJITDylib(
+    _LLVMOrcLLJITGetMainJITDylib__retval = LLVMOrcOpaqueJITDylib.from_ptr(clljit.LLVMOrcLLJITGetMainJITDylib(
         LLVMOrcOpaqueLLJIT.from_pyobj(J)._ptr))    # fully specified
     return (_LLVMOrcLLJITGetMainJITDylib__retval,)
 
@@ -825,7 +825,7 @@ def LLVMOrcLLJITMangleAndIntern(object J, const char * UnmangledName):
         UnmangledName (`~.bytes`):
             (undocumented)
     """
-    _LLVMOrcLLJITMangleAndIntern__retval = LLVMOrcSymbolStringPoolEntryRef.from_value(clljit.LLVMOrcLLJITMangleAndIntern(
+    _LLVMOrcLLJITMangleAndIntern__retval = LLVMOrcOpaqueSymbolStringPoolEntry.from_ptr(clljit.LLVMOrcLLJITMangleAndIntern(
         LLVMOrcOpaqueLLJIT.from_pyobj(J)._ptr,UnmangledName))    # fully specified
     return (_LLVMOrcLLJITMangleAndIntern__retval,)
 
@@ -852,7 +852,7 @@ def LLVMOrcLLJITAddObjectFile(object J, object JD, object ObjBuffer):
         ObjBuffer (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcLLJITAddObjectFile__retval = LLVMErrorRef.from_value(clljit.LLVMOrcLLJITAddObjectFile(
+    _LLVMOrcLLJITAddObjectFile__retval = LLVMOpaqueError.from_ptr(clljit.LLVMOrcLLJITAddObjectFile(
         LLVMOrcOpaqueLLJIT.from_pyobj(J)._ptr,
         LLVMOrcOpaqueJITDylib.from_pyobj(JD)._ptr,
         LLVMOpaqueMemoryBuffer.from_pyobj(ObjBuffer)._ptr))    # fully specified
@@ -881,7 +881,7 @@ def LLVMOrcLLJITAddObjectFileWithRT(object J, object RT, object ObjBuffer):
         ObjBuffer (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcLLJITAddObjectFileWithRT__retval = LLVMErrorRef.from_value(clljit.LLVMOrcLLJITAddObjectFileWithRT(
+    _LLVMOrcLLJITAddObjectFileWithRT__retval = LLVMOpaqueError.from_ptr(clljit.LLVMOrcLLJITAddObjectFileWithRT(
         LLVMOrcOpaqueLLJIT.from_pyobj(J)._ptr,
         LLVMOrcOpaqueResourceTracker.from_pyobj(RT)._ptr,
         LLVMOpaqueMemoryBuffer.from_pyobj(ObjBuffer)._ptr))    # fully specified
@@ -910,7 +910,7 @@ def LLVMOrcLLJITAddLLVMIRModule(object J, object JD, object TSM):
         TSM (`~.LLVMOrcOpaqueThreadSafeModule`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcLLJITAddLLVMIRModule__retval = LLVMErrorRef.from_value(clljit.LLVMOrcLLJITAddLLVMIRModule(
+    _LLVMOrcLLJITAddLLVMIRModule__retval = LLVMOpaqueError.from_ptr(clljit.LLVMOrcLLJITAddLLVMIRModule(
         LLVMOrcOpaqueLLJIT.from_pyobj(J)._ptr,
         LLVMOrcOpaqueJITDylib.from_pyobj(JD)._ptr,
         LLVMOrcOpaqueThreadSafeModule.from_pyobj(TSM)._ptr))    # fully specified
@@ -939,7 +939,7 @@ def LLVMOrcLLJITAddLLVMIRModuleWithRT(object J, object JD, object TSM):
         TSM (`~.LLVMOrcOpaqueThreadSafeModule`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcLLJITAddLLVMIRModuleWithRT__retval = LLVMErrorRef.from_value(clljit.LLVMOrcLLJITAddLLVMIRModuleWithRT(
+    _LLVMOrcLLJITAddLLVMIRModuleWithRT__retval = LLVMOpaqueError.from_ptr(clljit.LLVMOrcLLJITAddLLVMIRModuleWithRT(
         LLVMOrcOpaqueLLJIT.from_pyobj(J)._ptr,
         LLVMOrcOpaqueResourceTracker.from_pyobj(JD)._ptr,
         LLVMOrcOpaqueThreadSafeModule.from_pyobj(TSM)._ptr))    # fully specified
@@ -958,15 +958,15 @@ def LLVMOrcLLJITLookup(object J, object Result, const char * Name):
         J (`~.LLVMOrcOpaqueLLJIT`/`~.object`):
             (undocumented)
 
-        Result (`~.rocm.llvm._util.ListOfUnsignedLong`/`~.object`):
+        Result (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
             (undocumented)
 
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMOrcLLJITLookup__retval = LLVMErrorRef.from_value(clljit.LLVMOrcLLJITLookup(
+    _LLVMOrcLLJITLookup__retval = LLVMOpaqueError.from_ptr(clljit.LLVMOrcLLJITLookup(
         LLVMOrcOpaqueLLJIT.from_pyobj(J)._ptr,
-        <unsigned long *>rocm.llvm._util.ListOfUnsignedLong.from_pyobj(Result)._ptr,Name))    # fully specified
+        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(Result)._ptr,Name))    # fully specified
     return (_LLVMOrcLLJITLookup__retval,)
 
 
@@ -980,7 +980,7 @@ def LLVMOrcLLJITGetObjLinkingLayer(object J):
         J (`~.LLVMOrcOpaqueLLJIT`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcLLJITGetObjLinkingLayer__retval = LLVMOrcObjectLayerRef.from_value(clljit.LLVMOrcLLJITGetObjLinkingLayer(
+    _LLVMOrcLLJITGetObjLinkingLayer__retval = LLVMOrcOpaqueObjectLayer.from_ptr(clljit.LLVMOrcLLJITGetObjLinkingLayer(
         LLVMOrcOpaqueLLJIT.from_pyobj(J)._ptr))    # fully specified
     return (_LLVMOrcLLJITGetObjLinkingLayer__retval,)
 
@@ -995,7 +995,7 @@ def LLVMOrcLLJITGetObjTransformLayer(object J):
         J (`~.LLVMOrcOpaqueLLJIT`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcLLJITGetObjTransformLayer__retval = LLVMOrcObjectTransformLayerRef.from_value(clljit.LLVMOrcLLJITGetObjTransformLayer(
+    _LLVMOrcLLJITGetObjTransformLayer__retval = LLVMOrcOpaqueObjectTransformLayer.from_ptr(clljit.LLVMOrcLLJITGetObjTransformLayer(
         LLVMOrcOpaqueLLJIT.from_pyobj(J)._ptr))    # fully specified
     return (_LLVMOrcLLJITGetObjTransformLayer__retval,)
 
@@ -1010,7 +1010,7 @@ def LLVMOrcLLJITGetIRTransformLayer(object J):
         J (`~.LLVMOrcOpaqueLLJIT`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcLLJITGetIRTransformLayer__retval = LLVMOrcIRTransformLayerRef.from_value(clljit.LLVMOrcLLJITGetIRTransformLayer(
+    _LLVMOrcLLJITGetIRTransformLayer__retval = LLVMOrcOpaqueIRTransformLayer.from_ptr(clljit.LLVMOrcLLJITGetIRTransformLayer(
         LLVMOrcOpaqueLLJIT.from_pyobj(J)._ptr))    # fully specified
     return (_LLVMOrcLLJITGetIRTransformLayer__retval,)
 

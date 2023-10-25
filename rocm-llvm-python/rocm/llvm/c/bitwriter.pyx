@@ -142,7 +142,7 @@ def LLVMWriteBitcodeToMemoryBuffer(object M):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
     """
-    _LLVMWriteBitcodeToMemoryBuffer__retval = LLVMMemoryBufferRef.from_value(cbitwriter.LLVMWriteBitcodeToMemoryBuffer(
+    _LLVMWriteBitcodeToMemoryBuffer__retval = LLVMOpaqueMemoryBuffer.from_ptr(cbitwriter.LLVMWriteBitcodeToMemoryBuffer(
         LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
     return (_LLVMWriteBitcodeToMemoryBuffer__retval,)
 

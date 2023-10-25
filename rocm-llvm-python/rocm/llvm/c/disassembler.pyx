@@ -50,7 +50,7 @@ def LLVMCreateDisasm(const char * TripleName, object DisInfo, int TagType, objec
         TripleName (`~.bytes`):
             (undocumented)
 
-        DisInfo (`~.rocm.llvm._util.Pointer`/`~.object`):
+        DisInfo (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         TagType (`~.int`):
@@ -62,8 +62,8 @@ def LLVMCreateDisasm(const char * TripleName, object DisInfo, int TagType, objec
         SymbolLookUp (`~.LLVMSymbolLookupCallback`/`~.object`):
             (undocumented)
     """
-    _LLVMCreateDisasm__retval = void *.from_value(cdisassembler.LLVMCreateDisasm(TripleName,
-        <void *>rocm.llvm._util.Pointer.from_pyobj(DisInfo)._ptr,TagType,
+    _LLVMCreateDisasm__retval = rocm.llvm._util.types.Pointer.from_ptr(cdisassembler.LLVMCreateDisasm(TripleName,
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(DisInfo)._ptr,TagType,
         LLVMOpInfoCallback.from_pyobj(GetOpInfo)._ptr,
         LLVMSymbolLookupCallback.from_pyobj(SymbolLookUp)._ptr))    # fully specified
     return (_LLVMCreateDisasm__retval,)
@@ -87,7 +87,7 @@ def LLVMCreateDisasmCPU(const char * Triple, const char * CPU, object DisInfo, i
         CPU (`~.bytes`):
             (undocumented)
 
-        DisInfo (`~.rocm.llvm._util.Pointer`/`~.object`):
+        DisInfo (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         TagType (`~.int`):
@@ -99,8 +99,8 @@ def LLVMCreateDisasmCPU(const char * Triple, const char * CPU, object DisInfo, i
         SymbolLookUp (`~.LLVMSymbolLookupCallback`/`~.object`):
             (undocumented)
     """
-    _LLVMCreateDisasmCPU__retval = void *.from_value(cdisassembler.LLVMCreateDisasmCPU(Triple,CPU,
-        <void *>rocm.llvm._util.Pointer.from_pyobj(DisInfo)._ptr,TagType,
+    _LLVMCreateDisasmCPU__retval = rocm.llvm._util.types.Pointer.from_ptr(cdisassembler.LLVMCreateDisasmCPU(Triple,CPU,
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(DisInfo)._ptr,TagType,
         LLVMOpInfoCallback.from_pyobj(GetOpInfo)._ptr,
         LLVMSymbolLookupCallback.from_pyobj(SymbolLookUp)._ptr))    # fully specified
     return (_LLVMCreateDisasmCPU__retval,)
@@ -126,7 +126,7 @@ def LLVMCreateDisasmCPUFeatures(const char * Triple, const char * CPU, const cha
         Features (`~.bytes`):
             (undocumented)
 
-        DisInfo (`~.rocm.llvm._util.Pointer`/`~.object`):
+        DisInfo (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         TagType (`~.int`):
@@ -138,8 +138,8 @@ def LLVMCreateDisasmCPUFeatures(const char * Triple, const char * CPU, const cha
         SymbolLookUp (`~.LLVMSymbolLookupCallback`/`~.object`):
             (undocumented)
     """
-    _LLVMCreateDisasmCPUFeatures__retval = void *.from_value(cdisassembler.LLVMCreateDisasmCPUFeatures(Triple,CPU,Features,
-        <void *>rocm.llvm._util.Pointer.from_pyobj(DisInfo)._ptr,TagType,
+    _LLVMCreateDisasmCPUFeatures__retval = rocm.llvm._util.types.Pointer.from_ptr(cdisassembler.LLVMCreateDisasmCPUFeatures(Triple,CPU,Features,
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(DisInfo)._ptr,TagType,
         LLVMOpInfoCallback.from_pyobj(GetOpInfo)._ptr,
         LLVMSymbolLookupCallback.from_pyobj(SymbolLookUp)._ptr))    # fully specified
     return (_LLVMCreateDisasmCPUFeatures__retval,)
@@ -153,7 +153,7 @@ def LLVMSetDisasmOptions(object DC, unsigned long Options):
     otherwise.
 
     Args:
-        DC (`~.rocm.llvm._util.Pointer`/`~.object`):
+        DC (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         Options (`~.int`):
@@ -165,7 +165,7 @@ def LLVMSetDisasmOptions(object DC, unsigned long Options):
         * `~.int`
     """
     cdef int _LLVMSetDisasmOptions__retval = cdisassembler.LLVMSetDisasmOptions(
-        <void *>rocm.llvm._util.Pointer.from_pyobj(DC)._ptr,Options)    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(DC)._ptr,Options)    # fully specified
     return (_LLVMSetDisasmOptions__retval,)
 
 
@@ -176,11 +176,11 @@ def LLVMDisasmDispose(object DC):
     Dispose of a disassembler context.
 
     Args:
-        DC (`~.rocm.llvm._util.Pointer`/`~.object`):
+        DC (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     cdisassembler.LLVMDisasmDispose(
-        <void *>rocm.llvm._util.Pointer.from_pyobj(DC)._ptr)    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(DC)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -197,10 +197,10 @@ def LLVMDisasmInstruction(object DC, object Bytes, unsigned long BytesSize, unsi
     no valid instruction.
 
     Args:
-        DC (`~.rocm.llvm._util.Pointer`/`~.object`):
+        DC (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
-        Bytes (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Bytes (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         BytesSize (`~.int`):
@@ -221,8 +221,8 @@ def LLVMDisasmInstruction(object DC, object Bytes, unsigned long BytesSize, unsi
         * `~.int`
     """
     cdef unsigned long _LLVMDisasmInstruction__retval = cdisassembler.LLVMDisasmInstruction(
-        <void *>rocm.llvm._util.Pointer.from_pyobj(DC)._ptr,
-        <unsigned char *>rocm.llvm._util.Pointer.from_pyobj(Bytes)._ptr,BytesSize,PC,OutString,OutStringSize)    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(DC)._ptr,
+        <unsigned char *>rocm.llvm._util.types.Pointer.from_pyobj(Bytes)._ptr,BytesSize,PC,OutString,OutStringSize)    # fully specified
     return (_LLVMDisasmInstruction__retval,)
 
 __all__ = [

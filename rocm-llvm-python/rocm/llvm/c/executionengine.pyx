@@ -882,7 +882,7 @@ def LLVMCreateGenericValueOfInt(object Ty, unsigned long long N, int IsSigned):
         IsSigned (`~.int`):
             (undocumented)
     """
-    _LLVMCreateGenericValueOfInt__retval = LLVMGenericValueRef.from_value(cexecutionengine.LLVMCreateGenericValueOfInt(
+    _LLVMCreateGenericValueOfInt__retval = LLVMOpaqueGenericValue.from_ptr(cexecutionengine.LLVMCreateGenericValueOfInt(
         LLVMOpaqueType.from_pyobj(Ty)._ptr,N,IsSigned))    # fully specified
     return (_LLVMCreateGenericValueOfInt__retval,)
 
@@ -892,11 +892,11 @@ def LLVMCreateGenericValueOfPointer(object P):
     r"""(No short description, might be part of a group.)
 
     Args:
-        P (`~.rocm.llvm._util.Pointer`/`~.object`):
+        P (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
-    _LLVMCreateGenericValueOfPointer__retval = LLVMGenericValueRef.from_value(cexecutionengine.LLVMCreateGenericValueOfPointer(
-        <void *>rocm.llvm._util.Pointer.from_pyobj(P)._ptr))    # fully specified
+    _LLVMCreateGenericValueOfPointer__retval = LLVMOpaqueGenericValue.from_ptr(cexecutionengine.LLVMCreateGenericValueOfPointer(
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(P)._ptr))    # fully specified
     return (_LLVMCreateGenericValueOfPointer__retval,)
 
 
@@ -911,7 +911,7 @@ def LLVMCreateGenericValueOfFloat(object Ty, double N):
         N (`~.float`/`~.int`):
             (undocumented)
     """
-    _LLVMCreateGenericValueOfFloat__retval = LLVMGenericValueRef.from_value(cexecutionengine.LLVMCreateGenericValueOfFloat(
+    _LLVMCreateGenericValueOfFloat__retval = LLVMOpaqueGenericValue.from_ptr(cexecutionengine.LLVMCreateGenericValueOfFloat(
         LLVMOpaqueType.from_pyobj(Ty)._ptr,N))    # fully specified
     return (_LLVMCreateGenericValueOfFloat__retval,)
 
@@ -963,7 +963,7 @@ def LLVMGenericValueToPointer(object GenVal):
         GenVal (`~.LLVMOpaqueGenericValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGenericValueToPointer__retval = void *.from_value(cexecutionengine.LLVMGenericValueToPointer(
+    _LLVMGenericValueToPointer__retval = rocm.llvm._util.types.Pointer.from_ptr(cexecutionengine.LLVMGenericValueToPointer(
         LLVMOpaqueGenericValue.from_pyobj(GenVal)._ptr))    # fully specified
     return (_LLVMGenericValueToPointer__retval,)
 
@@ -1007,13 +1007,13 @@ def LLVMCreateExecutionEngineForModule(object OutEE, object M, object OutError):
     r"""(No short description, might be part of a group.)
 
     Args:
-        OutEE (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutEE (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        OutError (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutError (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -1022,9 +1022,9 @@ def LLVMCreateExecutionEngineForModule(object OutEE, object M, object OutError):
         * `~.int`
     """
     cdef int _LLVMCreateExecutionEngineForModule__retval = cexecutionengine.LLVMCreateExecutionEngineForModule(
-        <cexecutionengine.LLVMExecutionEngineRef*>rocm.llvm._util.Pointer.from_pyobj(OutEE)._ptr,
+        <cexecutionengine.LLVMExecutionEngineRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutEE)._ptr,
         LLVMOpaqueModule.from_pyobj(M)._ptr,
-        <char **>rocm.llvm._util.Pointer.from_pyobj(OutError)._ptr)    # fully specified
+        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutError)._ptr)    # fully specified
     return (_LLVMCreateExecutionEngineForModule__retval,)
 
 
@@ -1033,13 +1033,13 @@ def LLVMCreateInterpreterForModule(object OutInterp, object M, object OutError):
     r"""(No short description, might be part of a group.)
 
     Args:
-        OutInterp (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutInterp (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        OutError (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutError (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -1048,9 +1048,9 @@ def LLVMCreateInterpreterForModule(object OutInterp, object M, object OutError):
         * `~.int`
     """
     cdef int _LLVMCreateInterpreterForModule__retval = cexecutionengine.LLVMCreateInterpreterForModule(
-        <cexecutionengine.LLVMExecutionEngineRef*>rocm.llvm._util.Pointer.from_pyobj(OutInterp)._ptr,
+        <cexecutionengine.LLVMExecutionEngineRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutInterp)._ptr,
         LLVMOpaqueModule.from_pyobj(M)._ptr,
-        <char **>rocm.llvm._util.Pointer.from_pyobj(OutError)._ptr)    # fully specified
+        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutError)._ptr)    # fully specified
     return (_LLVMCreateInterpreterForModule__retval,)
 
 
@@ -1059,7 +1059,7 @@ def LLVMCreateJITCompilerForModule(object OutJIT, object M, unsigned int OptLeve
     r"""(No short description, might be part of a group.)
 
     Args:
-        OutJIT (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutJIT (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         M (`~.LLVMOpaqueModule`/`~.object`):
@@ -1068,7 +1068,7 @@ def LLVMCreateJITCompilerForModule(object OutJIT, object M, unsigned int OptLeve
         OptLevel (`~.int`):
             (undocumented)
 
-        OutError (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutError (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -1077,9 +1077,9 @@ def LLVMCreateJITCompilerForModule(object OutJIT, object M, unsigned int OptLeve
         * `~.int`
     """
     cdef int _LLVMCreateJITCompilerForModule__retval = cexecutionengine.LLVMCreateJITCompilerForModule(
-        <cexecutionengine.LLVMExecutionEngineRef*>rocm.llvm._util.Pointer.from_pyobj(OutJIT)._ptr,
+        <cexecutionengine.LLVMExecutionEngineRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutJIT)._ptr,
         LLVMOpaqueModule.from_pyobj(M)._ptr,OptLevel,
-        <char **>rocm.llvm._util.Pointer.from_pyobj(OutError)._ptr)    # fully specified
+        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutError)._ptr)    # fully specified
     return (_LLVMCreateJITCompilerForModule__retval,)
 
 
@@ -1119,7 +1119,7 @@ def LLVMCreateMCJITCompilerForModule(object OutJIT, object M, object Options, un
     LLVMCreateMCJITCompilerForModule(&jit, mod, 0, 0, &error);
 
     Args:
-        OutJIT (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutJIT (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         M (`~.LLVMOpaqueModule`/`~.object`):
@@ -1131,7 +1131,7 @@ def LLVMCreateMCJITCompilerForModule(object OutJIT, object M, object Options, un
         SizeOfOptions (`~.int`):
             (undocumented)
 
-        OutError (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutError (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -1140,10 +1140,10 @@ def LLVMCreateMCJITCompilerForModule(object OutJIT, object M, object Options, un
         * `~.int`
     """
     cdef int _LLVMCreateMCJITCompilerForModule__retval = cexecutionengine.LLVMCreateMCJITCompilerForModule(
-        <cexecutionengine.LLVMExecutionEngineRef*>rocm.llvm._util.Pointer.from_pyobj(OutJIT)._ptr,
+        <cexecutionengine.LLVMExecutionEngineRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutJIT)._ptr,
         LLVMOpaqueModule.from_pyobj(M)._ptr,
         LLVMMCJITCompilerOptions.from_pyobj(Options)._ptr,SizeOfOptions,
-        <char **>rocm.llvm._util.Pointer.from_pyobj(OutError)._ptr)    # fully specified
+        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutError)._ptr)    # fully specified
     return (_LLVMCreateMCJITCompilerForModule__retval,)
 
 
@@ -1197,10 +1197,10 @@ def LLVMRunFunctionAsMain(object EE, object F, unsigned int ArgC, object ArgV, o
         ArgC (`~.int`):
             (undocumented)
 
-        ArgV (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ArgV (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
-        EnvP (`~.rocm.llvm._util.Pointer`/`~.object`):
+        EnvP (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -1211,8 +1211,8 @@ def LLVMRunFunctionAsMain(object EE, object F, unsigned int ArgC, object ArgV, o
     cdef int _LLVMRunFunctionAsMain__retval = cexecutionengine.LLVMRunFunctionAsMain(
         LLVMOpaqueExecutionEngine.from_pyobj(EE)._ptr,
         LLVMOpaqueValue.from_pyobj(F)._ptr,ArgC,
-        <const char *const *>rocm.llvm._util.Pointer.from_pyobj(ArgV)._ptr,
-        <const char *const *>rocm.llvm._util.Pointer.from_pyobj(EnvP)._ptr)    # fully specified
+        <const char *const *>rocm.llvm._util.types.Pointer.from_pyobj(ArgV)._ptr,
+        <const char *const *>rocm.llvm._util.types.Pointer.from_pyobj(EnvP)._ptr)    # fully specified
     return (_LLVMRunFunctionAsMain__retval,)
 
 
@@ -1230,13 +1230,13 @@ def LLVMRunFunction(object EE, object F, unsigned int NumArgs, object Args):
         NumArgs (`~.int`):
             (undocumented)
 
-        Args (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Args (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
-    _LLVMRunFunction__retval = LLVMGenericValueRef.from_value(cexecutionengine.LLVMRunFunction(
+    _LLVMRunFunction__retval = LLVMOpaqueGenericValue.from_ptr(cexecutionengine.LLVMRunFunction(
         LLVMOpaqueExecutionEngine.from_pyobj(EE)._ptr,
         LLVMOpaqueValue.from_pyobj(F)._ptr,NumArgs,
-        <cexecutionengine.LLVMGenericValueRef*>rocm.llvm._util.Pointer.from_pyobj(Args)._ptr))    # fully specified
+        <cexecutionengine.LLVMGenericValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Args)._ptr))    # fully specified
     return (_LLVMRunFunction__retval,)
 
 
@@ -1283,10 +1283,10 @@ def LLVMRemoveModule(object EE, object M, object OutMod, object OutError):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        OutMod (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutMod (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
-        OutError (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutError (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -1297,8 +1297,8 @@ def LLVMRemoveModule(object EE, object M, object OutMod, object OutError):
     cdef int _LLVMRemoveModule__retval = cexecutionengine.LLVMRemoveModule(
         LLVMOpaqueExecutionEngine.from_pyobj(EE)._ptr,
         LLVMOpaqueModule.from_pyobj(M)._ptr,
-        <cexecutionengine.LLVMModuleRef*>rocm.llvm._util.Pointer.from_pyobj(OutMod)._ptr,
-        <char **>rocm.llvm._util.Pointer.from_pyobj(OutError)._ptr)    # fully specified
+        <cexecutionengine.LLVMModuleRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutMod)._ptr,
+        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutError)._ptr)    # fully specified
     return (_LLVMRemoveModule__retval,)
 
 
@@ -1313,7 +1313,7 @@ def LLVMFindFunction(object EE, const char * Name, object OutFn):
         Name (`~.bytes`):
             (undocumented)
 
-        OutFn (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutFn (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -1323,7 +1323,7 @@ def LLVMFindFunction(object EE, const char * Name, object OutFn):
     """
     cdef int _LLVMFindFunction__retval = cexecutionengine.LLVMFindFunction(
         LLVMOpaqueExecutionEngine.from_pyobj(EE)._ptr,Name,
-        <cexecutionengine.LLVMValueRef*>rocm.llvm._util.Pointer.from_pyobj(OutFn)._ptr)    # fully specified
+        <cexecutionengine.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutFn)._ptr)    # fully specified
     return (_LLVMFindFunction__retval,)
 
 
@@ -1338,7 +1338,7 @@ def LLVMRecompileAndRelinkFunction(object EE, object Fn):
         Fn (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMRecompileAndRelinkFunction__retval = void *.from_value(cexecutionengine.LLVMRecompileAndRelinkFunction(
+    _LLVMRecompileAndRelinkFunction__retval = rocm.llvm._util.types.Pointer.from_ptr(cexecutionengine.LLVMRecompileAndRelinkFunction(
         LLVMOpaqueExecutionEngine.from_pyobj(EE)._ptr,
         LLVMOpaqueValue.from_pyobj(Fn)._ptr))    # fully specified
     return (_LLVMRecompileAndRelinkFunction__retval,)
@@ -1352,7 +1352,7 @@ def LLVMGetExecutionEngineTargetData(object EE):
         EE (`~.LLVMOpaqueExecutionEngine`/`~.object`):
             (undocumented)
     """
-    _LLVMGetExecutionEngineTargetData__retval = LLVMTargetDataRef.from_value(cexecutionengine.LLVMGetExecutionEngineTargetData(
+    _LLVMGetExecutionEngineTargetData__retval = LLVMOpaqueTargetData.from_ptr(cexecutionengine.LLVMGetExecutionEngineTargetData(
         LLVMOpaqueExecutionEngine.from_pyobj(EE)._ptr))    # fully specified
     return (_LLVMGetExecutionEngineTargetData__retval,)
 
@@ -1365,7 +1365,7 @@ def LLVMGetExecutionEngineTargetMachine(object EE):
         EE (`~.LLVMOpaqueExecutionEngine`/`~.object`):
             (undocumented)
     """
-    _LLVMGetExecutionEngineTargetMachine__retval = LLVMTargetMachineRef.from_value(cexecutionengine.LLVMGetExecutionEngineTargetMachine(
+    _LLVMGetExecutionEngineTargetMachine__retval = LLVMOpaqueTargetMachine.from_ptr(cexecutionengine.LLVMGetExecutionEngineTargetMachine(
         LLVMOpaqueExecutionEngine.from_pyobj(EE)._ptr))    # fully specified
     return (_LLVMGetExecutionEngineTargetMachine__retval,)
 
@@ -1381,13 +1381,13 @@ def LLVMAddGlobalMapping(object EE, object Global, object Addr):
         Global (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Addr (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Addr (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     cexecutionengine.LLVMAddGlobalMapping(
         LLVMOpaqueExecutionEngine.from_pyobj(EE)._ptr,
         LLVMOpaqueValue.from_pyobj(Global)._ptr,
-        <void *>rocm.llvm._util.Pointer.from_pyobj(Addr)._ptr)    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Addr)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -1401,7 +1401,7 @@ def LLVMGetPointerToGlobal(object EE, object Global):
         Global (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetPointerToGlobal__retval = void *.from_value(cexecutionengine.LLVMGetPointerToGlobal(
+    _LLVMGetPointerToGlobal__retval = rocm.llvm._util.types.Pointer.from_ptr(cexecutionengine.LLVMGetPointerToGlobal(
         LLVMOpaqueExecutionEngine.from_pyobj(EE)._ptr,
         LLVMOpaqueValue.from_pyobj(Global)._ptr))    # fully specified
     return (_LLVMGetPointerToGlobal__retval,)
@@ -1460,7 +1460,7 @@ def LLVMExecutionEngineGetErrMsg(object EE, object OutError):
         EE (`~.LLVMOpaqueExecutionEngine`/`~.object`):
             (undocumented)
 
-        OutError (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutError (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -1470,7 +1470,7 @@ def LLVMExecutionEngineGetErrMsg(object EE, object OutError):
     """
     cdef int _LLVMExecutionEngineGetErrMsg__retval = cexecutionengine.LLVMExecutionEngineGetErrMsg(
         LLVMOpaqueExecutionEngine.from_pyobj(EE)._ptr,
-        <char **>rocm.llvm._util.Pointer.from_pyobj(OutError)._ptr)    # fully specified
+        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutError)._ptr)    # fully specified
     return (_LLVMExecutionEngineGetErrMsg__retval,)
 
 
@@ -1911,7 +1911,7 @@ def LLVMCreateSimpleMCJITMemoryManager(object Opaque, object AllocateCodeSection
     if any of the passed functions are NULL.
 
     Args:
-        Opaque (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Opaque (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             An opaque client object to pass back to the callbacks.
 
         AllocateCodeSection (`~.LLVMMemoryManagerAllocateCodeSectionCallback`/`~.object`):
@@ -1927,8 +1927,8 @@ def LLVMCreateSimpleMCJITMemoryManager(object Opaque, object AllocateCodeSection
         Destroy (`~.LLVMMemoryManagerDestroyCallback`/`~.object`):
             (undocumented)
     """
-    _LLVMCreateSimpleMCJITMemoryManager__retval = LLVMMCJITMemoryManagerRef.from_value(cexecutionengine.LLVMCreateSimpleMCJITMemoryManager(
-        <void *>rocm.llvm._util.Pointer.from_pyobj(Opaque)._ptr,
+    _LLVMCreateSimpleMCJITMemoryManager__retval = LLVMOpaqueMCJITMemoryManager.from_ptr(cexecutionengine.LLVMCreateSimpleMCJITMemoryManager(
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Opaque)._ptr,
         LLVMMemoryManagerAllocateCodeSectionCallback.from_pyobj(AllocateCodeSection)._ptr,
         LLVMMemoryManagerAllocateDataSectionCallback.from_pyobj(AllocateDataSection)._ptr,
         LLVMMemoryManagerFinalizeMemoryCallback.from_pyobj(FinalizeMemory)._ptr,
@@ -1952,7 +1952,7 @@ def LLVMDisposeMCJITMemoryManager(object MM):
 def LLVMCreateGDBRegistrationListener():
     r"""(No short description, might be part of a group.)
     """
-    _LLVMCreateGDBRegistrationListener__retval = LLVMJITEventListenerRef.from_value(cexecutionengine.LLVMCreateGDBRegistrationListener())    # fully specified
+    _LLVMCreateGDBRegistrationListener__retval = LLVMOpaqueJITEventListener.from_ptr(cexecutionengine.LLVMCreateGDBRegistrationListener())    # fully specified
     return (_LLVMCreateGDBRegistrationListener__retval,)
 
 
@@ -1960,7 +1960,7 @@ def LLVMCreateGDBRegistrationListener():
 def LLVMCreateIntelJITEventListener():
     r"""(No short description, might be part of a group.)
     """
-    _LLVMCreateIntelJITEventListener__retval = LLVMJITEventListenerRef.from_value(cexecutionengine.LLVMCreateIntelJITEventListener())    # fully specified
+    _LLVMCreateIntelJITEventListener__retval = LLVMOpaqueJITEventListener.from_ptr(cexecutionengine.LLVMCreateIntelJITEventListener())    # fully specified
     return (_LLVMCreateIntelJITEventListener__retval,)
 
 
@@ -1968,7 +1968,7 @@ def LLVMCreateIntelJITEventListener():
 def LLVMCreateOProfileJITEventListener():
     r"""(No short description, might be part of a group.)
     """
-    _LLVMCreateOProfileJITEventListener__retval = LLVMJITEventListenerRef.from_value(cexecutionengine.LLVMCreateOProfileJITEventListener())    # fully specified
+    _LLVMCreateOProfileJITEventListener__retval = LLVMOpaqueJITEventListener.from_ptr(cexecutionengine.LLVMCreateOProfileJITEventListener())    # fully specified
     return (_LLVMCreateOProfileJITEventListener__retval,)
 
 
@@ -1976,7 +1976,7 @@ def LLVMCreateOProfileJITEventListener():
 def LLVMCreatePerfJITEventListener():
     r"""(No short description, might be part of a group.)
     """
-    _LLVMCreatePerfJITEventListener__retval = LLVMJITEventListenerRef.from_value(cexecutionengine.LLVMCreatePerfJITEventListener())    # fully specified
+    _LLVMCreatePerfJITEventListener__retval = LLVMOpaqueJITEventListener.from_ptr(cexecutionengine.LLVMCreatePerfJITEventListener())    # fully specified
     return (_LLVMCreatePerfJITEventListener__retval,)
 
 __all__ = [

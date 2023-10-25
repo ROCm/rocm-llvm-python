@@ -554,7 +554,7 @@ def LLVMGetModuleDataLayout(object M):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
     """
-    _LLVMGetModuleDataLayout__retval = LLVMTargetDataRef.from_value(ctarget.LLVMGetModuleDataLayout(
+    _LLVMGetModuleDataLayout__retval = LLVMOpaqueTargetData.from_ptr(ctarget.LLVMGetModuleDataLayout(
         LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
     return (_LLVMGetModuleDataLayout__retval,)
 
@@ -591,7 +591,7 @@ def LLVMCreateTargetData(const char * StringRep):
         StringRep (`~.bytes`):
             (undocumented)
     """
-    _LLVMCreateTargetData__retval = LLVMTargetDataRef.from_value(ctarget.LLVMCreateTargetData(StringRep))    # fully specified
+    _LLVMCreateTargetData__retval = LLVMOpaqueTargetData.from_ptr(ctarget.LLVMCreateTargetData(StringRep))    # fully specified
     return (_LLVMCreateTargetData__retval,)
 
 
@@ -731,7 +731,7 @@ def LLVMIntPtrType(object TD):
         TD (`~.LLVMOpaqueTargetData`/`~.object`):
             (undocumented)
     """
-    _LLVMIntPtrType__retval = LLVMTypeRef.from_value(ctarget.LLVMIntPtrType(
+    _LLVMIntPtrType__retval = LLVMOpaqueType.from_ptr(ctarget.LLVMIntPtrType(
         LLVMOpaqueTargetData.from_pyobj(TD)._ptr))    # fully specified
     return (_LLVMIntPtrType__retval,)
 
@@ -751,7 +751,7 @@ def LLVMIntPtrTypeForAS(object TD, unsigned int AS):
         AS (`~.int`):
             (undocumented)
     """
-    _LLVMIntPtrTypeForAS__retval = LLVMTypeRef.from_value(ctarget.LLVMIntPtrTypeForAS(
+    _LLVMIntPtrTypeForAS__retval = LLVMOpaqueType.from_ptr(ctarget.LLVMIntPtrTypeForAS(
         LLVMOpaqueTargetData.from_pyobj(TD)._ptr,AS))    # fully specified
     return (_LLVMIntPtrTypeForAS__retval,)
 
@@ -770,7 +770,7 @@ def LLVMIntPtrTypeInContext(object C, object TD):
         TD (`~.LLVMOpaqueTargetData`/`~.object`):
             (undocumented)
     """
-    _LLVMIntPtrTypeInContext__retval = LLVMTypeRef.from_value(ctarget.LLVMIntPtrTypeInContext(
+    _LLVMIntPtrTypeInContext__retval = LLVMOpaqueType.from_ptr(ctarget.LLVMIntPtrTypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr,
         LLVMOpaqueTargetData.from_pyobj(TD)._ptr))    # fully specified
     return (_LLVMIntPtrTypeInContext__retval,)
@@ -794,7 +794,7 @@ def LLVMIntPtrTypeForASInContext(object C, object TD, unsigned int AS):
         AS (`~.int`):
             (undocumented)
     """
-    _LLVMIntPtrTypeForASInContext__retval = LLVMTypeRef.from_value(ctarget.LLVMIntPtrTypeForASInContext(
+    _LLVMIntPtrTypeForASInContext__retval = LLVMOpaqueType.from_ptr(ctarget.LLVMIntPtrTypeForASInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr,
         LLVMOpaqueTargetData.from_pyobj(TD)._ptr,AS))    # fully specified
     return (_LLVMIntPtrTypeForASInContext__retval,)

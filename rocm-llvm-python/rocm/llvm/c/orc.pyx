@@ -6429,13 +6429,13 @@ def LLVMOrcExecutionSessionSetErrorReporter(object ES, object ReportError, objec
         ReportError (`~.LLVMOrcErrorReporterFunction`/`~.object`):
             (undocumented)
 
-        Ctx (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Ctx (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     corc.LLVMOrcExecutionSessionSetErrorReporter(
         LLVMOrcOpaqueExecutionSession.from_pyobj(ES)._ptr,
         LLVMOrcErrorReporterFunction.from_pyobj(ReportError)._ptr,
-        <void *>rocm.llvm._util.Pointer.from_pyobj(Ctx)._ptr)    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Ctx)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -6451,7 +6451,7 @@ def LLVMOrcExecutionSessionGetSymbolStringPool(object ES):
         ES (`~.LLVMOrcOpaqueExecutionSession`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcExecutionSessionGetSymbolStringPool__retval = LLVMOrcSymbolStringPoolRef.from_value(corc.LLVMOrcExecutionSessionGetSymbolStringPool(
+    _LLVMOrcExecutionSessionGetSymbolStringPool__retval = LLVMOrcOpaqueSymbolStringPool.from_ptr(corc.LLVMOrcExecutionSessionGetSymbolStringPool(
         LLVMOrcOpaqueExecutionSession.from_pyobj(ES)._ptr))    # fully specified
     return (_LLVMOrcExecutionSessionGetSymbolStringPool__retval,)
 
@@ -6499,7 +6499,7 @@ def LLVMOrcExecutionSessionIntern(object ES, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMOrcExecutionSessionIntern__retval = LLVMOrcSymbolStringPoolEntryRef.from_value(corc.LLVMOrcExecutionSessionIntern(
+    _LLVMOrcExecutionSessionIntern__retval = LLVMOrcOpaqueSymbolStringPoolEntry.from_ptr(corc.LLVMOrcExecutionSessionIntern(
         LLVMOrcOpaqueExecutionSession.from_pyobj(ES)._ptr,Name))    # fully specified
     return (_LLVMOrcExecutionSessionIntern__retval,)
 
@@ -6664,7 +6664,7 @@ def LLVMOrcExecutionSessionLookup(object ES, object K, object SearchOrder, unsig
         HandleResult (`~.LLVMOrcExecutionSessionLookupHandleResultFunction`/`~.object`):
             (undocumented)
 
-        Ctx (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Ctx (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     if not isinstance(K,_LLVMOrcLookupKind__Base):
@@ -6674,7 +6674,7 @@ def LLVMOrcExecutionSessionLookup(object ES, object K, object SearchOrder, unsig
         LLVMOrcCJITDylibSearchOrderElement.from_pyobj(SearchOrder)._ptr,SearchOrderSize,
         LLVMOrcCLookupSetElement.from_pyobj(Symbols)._ptr,SymbolsSize,
         LLVMOrcExecutionSessionLookupHandleResultFunction.from_pyobj(HandleResult)._ptr,
-        <void *>rocm.llvm._util.Pointer.from_pyobj(Ctx)._ptr)    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Ctx)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -6771,7 +6771,7 @@ def LLVMOrcResourceTrackerRemove(object RT):
         RT (`~.LLVMOrcOpaqueResourceTracker`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcResourceTrackerRemove__retval = LLVMErrorRef.from_value(corc.LLVMOrcResourceTrackerRemove(
+    _LLVMOrcResourceTrackerRemove__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcResourceTrackerRemove(
         LLVMOrcOpaqueResourceTracker.from_pyobj(RT)._ptr))    # fully specified
     return (_LLVMOrcResourceTrackerRemove__retval,)
 
@@ -6846,7 +6846,7 @@ def LLVMOrcCreateCustomMaterializationUnit(const char * Name, object Ctx, object
         Name (`~.bytes`):
             (undocumented)
 
-        Ctx (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Ctx (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         Syms (`~.LLVMOrcCSymbolFlagsMapPair`/`~.object`):
@@ -6867,8 +6867,8 @@ def LLVMOrcCreateCustomMaterializationUnit(const char * Name, object Ctx, object
         Destroy (`~.LLVMOrcMaterializationUnitDestroyFunction`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcCreateCustomMaterializationUnit__retval = LLVMOrcMaterializationUnitRef.from_value(corc.LLVMOrcCreateCustomMaterializationUnit(Name,
-        <void *>rocm.llvm._util.Pointer.from_pyobj(Ctx)._ptr,
+    _LLVMOrcCreateCustomMaterializationUnit__retval = LLVMOrcOpaqueMaterializationUnit.from_ptr(corc.LLVMOrcCreateCustomMaterializationUnit(Name,
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Ctx)._ptr,
         LLVMOrcCSymbolFlagsMapPair.from_pyobj(Syms)._ptr,NumSyms,
         LLVMOrcOpaqueSymbolStringPoolEntry.from_pyobj(InitSym)._ptr,
         LLVMOrcMaterializationUnitMaterializeFunction.from_pyobj(Materialize)._ptr,
@@ -6908,7 +6908,7 @@ def LLVMOrcAbsoluteSymbols(object Syms, unsigned long NumPairs):
         NumPairs (`~.int`):
             (undocumented)
     """
-    _LLVMOrcAbsoluteSymbols__retval = LLVMOrcMaterializationUnitRef.from_value(corc.LLVMOrcAbsoluteSymbols(
+    _LLVMOrcAbsoluteSymbols__retval = LLVMOrcOpaqueMaterializationUnit.from_ptr(corc.LLVMOrcAbsoluteSymbols(
         LLVMOrcCSymbolMapPair.from_pyobj(Syms)._ptr,NumPairs))    # fully specified
     return (_LLVMOrcAbsoluteSymbols__retval,)
 
@@ -6953,7 +6953,7 @@ def LLVMOrcLazyReexports(object LCTM, object ISM, object SourceRef, object Calla
         NumPairs (`~.int`):
             (undocumented)
     """
-    _LLVMOrcLazyReexports__retval = LLVMOrcMaterializationUnitRef.from_value(corc.LLVMOrcLazyReexports(
+    _LLVMOrcLazyReexports__retval = LLVMOrcOpaqueMaterializationUnit.from_ptr(corc.LLVMOrcLazyReexports(
         LLVMOrcOpaqueLazyCallThroughManager.from_pyobj(LCTM)._ptr,
         LLVMOrcOpaqueIndirectStubsManager.from_pyobj(ISM)._ptr,
         LLVMOrcOpaqueJITDylib.from_pyobj(SourceRef)._ptr,
@@ -6991,7 +6991,7 @@ def LLVMOrcMaterializationResponsibilityGetTargetDylib(object MR):
         MR (`~.LLVMOrcOpaqueMaterializationResponsibility`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcMaterializationResponsibilityGetTargetDylib__retval = LLVMOrcJITDylibRef.from_value(corc.LLVMOrcMaterializationResponsibilityGetTargetDylib(
+    _LLVMOrcMaterializationResponsibilityGetTargetDylib__retval = LLVMOrcOpaqueJITDylib.from_ptr(corc.LLVMOrcMaterializationResponsibilityGetTargetDylib(
         LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR)._ptr))    # fully specified
     return (_LLVMOrcMaterializationResponsibilityGetTargetDylib__retval,)
 
@@ -7006,7 +7006,7 @@ def LLVMOrcMaterializationResponsibilityGetExecutionSession(object MR):
         MR (`~.LLVMOrcOpaqueMaterializationResponsibility`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcMaterializationResponsibilityGetExecutionSession__retval = LLVMOrcExecutionSessionRef.from_value(corc.LLVMOrcMaterializationResponsibilityGetExecutionSession(
+    _LLVMOrcMaterializationResponsibilityGetExecutionSession__retval = LLVMOrcOpaqueExecutionSession.from_ptr(corc.LLVMOrcMaterializationResponsibilityGetExecutionSession(
         LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR)._ptr))    # fully specified
     return (_LLVMOrcMaterializationResponsibilityGetExecutionSession__retval,)
 
@@ -7028,12 +7028,12 @@ def LLVMOrcMaterializationResponsibilityGetSymbols(object MR, object NumPairs):
         MR (`~.LLVMOrcOpaqueMaterializationResponsibility`/`~.object`):
             (undocumented)
 
-        NumPairs (`~.rocm.llvm._util.ListOfUnsignedLong`/`~.object`):
+        NumPairs (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcMaterializationResponsibilityGetSymbols__retval = LLVMOrcCSymbolFlagsMapPairs.from_value(corc.LLVMOrcMaterializationResponsibilityGetSymbols(
+    _LLVMOrcMaterializationResponsibilityGetSymbols__retval = LLVMOrcCSymbolFlagsMapPair.from_ptr(corc.LLVMOrcMaterializationResponsibilityGetSymbols(
         LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR)._ptr,
-        <unsigned long *>rocm.llvm._util.ListOfUnsignedLong.from_pyobj(NumPairs)._ptr))    # fully specified
+        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(NumPairs)._ptr))    # fully specified
     return (_LLVMOrcMaterializationResponsibilityGetSymbols__retval,)
 
 
@@ -7068,7 +7068,7 @@ def LLVMOrcMaterializationResponsibilityGetInitializerSymbol(object MR):
         MR (`~.LLVMOrcOpaqueMaterializationResponsibility`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcMaterializationResponsibilityGetInitializerSymbol__retval = LLVMOrcSymbolStringPoolEntryRef.from_value(corc.LLVMOrcMaterializationResponsibilityGetInitializerSymbol(
+    _LLVMOrcMaterializationResponsibilityGetInitializerSymbol__retval = LLVMOrcOpaqueSymbolStringPoolEntry.from_ptr(corc.LLVMOrcMaterializationResponsibilityGetInitializerSymbol(
         LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR)._ptr))    # fully specified
     return (_LLVMOrcMaterializationResponsibilityGetInitializerSymbol__retval,)
 
@@ -7086,12 +7086,12 @@ def LLVMOrcMaterializationResponsibilityGetRequestedSymbols(object MR, object Nu
         MR (`~.LLVMOrcOpaqueMaterializationResponsibility`/`~.object`):
             (undocumented)
 
-        NumSymbols (`~.rocm.llvm._util.ListOfUnsignedLong`/`~.object`):
+        NumSymbols (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcMaterializationResponsibilityGetRequestedSymbols__retval = LLVMOrcSymbolStringPoolEntryRef*.from_value(corc.LLVMOrcMaterializationResponsibilityGetRequestedSymbols(
+    _LLVMOrcMaterializationResponsibilityGetRequestedSymbols__retval = rocm.llvm._util.types.Pointer.from_ptr(corc.LLVMOrcMaterializationResponsibilityGetRequestedSymbols(
         LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR)._ptr,
-        <unsigned long *>rocm.llvm._util.ListOfUnsignedLong.from_pyobj(NumSymbols)._ptr))    # fully specified
+        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(NumSymbols)._ptr))    # fully specified
     return (_LLVMOrcMaterializationResponsibilityGetRequestedSymbols__retval,)
 
 
@@ -7104,11 +7104,11 @@ def LLVMOrcDisposeSymbols(object Symbols):
     Does not release the symbols themselves.
 
     Args:
-        Symbols (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Symbols (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     corc.LLVMOrcDisposeSymbols(
-        <corc.LLVMOrcSymbolStringPoolEntryRef*>rocm.llvm._util.Pointer.from_pyobj(Symbols)._ptr)    # fully specified
+        <corc.LLVMOrcSymbolStringPoolEntryRef*>rocm.llvm._util.types.Pointer.from_pyobj(Symbols)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -7140,7 +7140,7 @@ def LLVMOrcMaterializationResponsibilityNotifyResolved(object MR, object Symbols
         NumPairs (`~.int`):
             (undocumented)
     """
-    _LLVMOrcMaterializationResponsibilityNotifyResolved__retval = LLVMErrorRef.from_value(corc.LLVMOrcMaterializationResponsibilityNotifyResolved(
+    _LLVMOrcMaterializationResponsibilityNotifyResolved__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcMaterializationResponsibilityNotifyResolved(
         LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR)._ptr,
         LLVMOrcCSymbolMapPair.from_pyobj(Symbols)._ptr,NumPairs))    # fully specified
     return (_LLVMOrcMaterializationResponsibilityNotifyResolved__retval,)
@@ -7166,7 +7166,7 @@ def LLVMOrcMaterializationResponsibilityNotifyEmitted(object MR):
         MR (`~.LLVMOrcOpaqueMaterializationResponsibility`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcMaterializationResponsibilityNotifyEmitted__retval = LLVMErrorRef.from_value(corc.LLVMOrcMaterializationResponsibilityNotifyEmitted(
+    _LLVMOrcMaterializationResponsibilityNotifyEmitted__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcMaterializationResponsibilityNotifyEmitted(
         LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR)._ptr))    # fully specified
     return (_LLVMOrcMaterializationResponsibilityNotifyEmitted__retval,)
 
@@ -7197,7 +7197,7 @@ def LLVMOrcMaterializationResponsibilityDefineMaterializing(object MR, object Pa
         NumPairs (`~.int`):
             (undocumented)
     """
-    _LLVMOrcMaterializationResponsibilityDefineMaterializing__retval = LLVMErrorRef.from_value(corc.LLVMOrcMaterializationResponsibilityDefineMaterializing(
+    _LLVMOrcMaterializationResponsibilityDefineMaterializing__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcMaterializationResponsibilityDefineMaterializing(
         LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR)._ptr,
         LLVMOrcCSymbolFlagsMapPair.from_pyobj(Pairs)._ptr,NumPairs))    # fully specified
     return (_LLVMOrcMaterializationResponsibilityDefineMaterializing__retval,)
@@ -7238,7 +7238,7 @@ def LLVMOrcMaterializationResponsibilityReplace(object MR, object MU):
         MU (`~.LLVMOrcOpaqueMaterializationUnit`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcMaterializationResponsibilityReplace__retval = LLVMErrorRef.from_value(corc.LLVMOrcMaterializationResponsibilityReplace(
+    _LLVMOrcMaterializationResponsibilityReplace__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcMaterializationResponsibilityReplace(
         LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR)._ptr,
         LLVMOrcOpaqueMaterializationUnit.from_pyobj(MU)._ptr))    # fully specified
     return (_LLVMOrcMaterializationResponsibilityReplace__retval,)
@@ -7259,19 +7259,19 @@ def LLVMOrcMaterializationResponsibilityDelegate(object MR, object Symbols, unsi
         MR (`~.LLVMOrcOpaqueMaterializationResponsibility`/`~.object`):
             (undocumented)
 
-        Symbols (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Symbols (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         NumSymbols (`~.int`):
             (undocumented)
 
-        Result (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Result (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcMaterializationResponsibilityDelegate__retval = LLVMErrorRef.from_value(corc.LLVMOrcMaterializationResponsibilityDelegate(
+    _LLVMOrcMaterializationResponsibilityDelegate__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcMaterializationResponsibilityDelegate(
         LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR)._ptr,
-        <corc.LLVMOrcSymbolStringPoolEntryRef*>rocm.llvm._util.Pointer.from_pyobj(Symbols)._ptr,NumSymbols,
-        <corc.LLVMOrcMaterializationResponsibilityRef*>rocm.llvm._util.Pointer.from_pyobj(Result)._ptr))    # fully specified
+        <corc.LLVMOrcSymbolStringPoolEntryRef*>rocm.llvm._util.types.Pointer.from_pyobj(Symbols)._ptr,NumSymbols,
+        <corc.LLVMOrcMaterializationResponsibilityRef*>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr))    # fully specified
     return (_LLVMOrcMaterializationResponsibilityDelegate__retval,)
 
 
@@ -7357,7 +7357,7 @@ def LLVMOrcExecutionSessionCreateBareJITDylib(object ES, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMOrcExecutionSessionCreateBareJITDylib__retval = LLVMOrcJITDylibRef.from_value(corc.LLVMOrcExecutionSessionCreateBareJITDylib(
+    _LLVMOrcExecutionSessionCreateBareJITDylib__retval = LLVMOrcOpaqueJITDylib.from_ptr(corc.LLVMOrcExecutionSessionCreateBareJITDylib(
         LLVMOrcOpaqueExecutionSession.from_pyobj(ES)._ptr,Name))    # fully specified
     return (_LLVMOrcExecutionSessionCreateBareJITDylib__retval,)
 
@@ -7381,15 +7381,15 @@ def LLVMOrcExecutionSessionCreateJITDylib(object ES, object Result, const char *
         ES (`~.LLVMOrcOpaqueExecutionSession`/`~.object`):
             (undocumented)
 
-        Result (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Result (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMOrcExecutionSessionCreateJITDylib__retval = LLVMErrorRef.from_value(corc.LLVMOrcExecutionSessionCreateJITDylib(
+    _LLVMOrcExecutionSessionCreateJITDylib__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcExecutionSessionCreateJITDylib(
         LLVMOrcOpaqueExecutionSession.from_pyobj(ES)._ptr,
-        <corc.LLVMOrcJITDylibRef*>rocm.llvm._util.Pointer.from_pyobj(Result)._ptr,Name))    # fully specified
+        <corc.LLVMOrcJITDylibRef*>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr,Name))    # fully specified
     return (_LLVMOrcExecutionSessionCreateJITDylib__retval,)
 
 
@@ -7407,7 +7407,7 @@ def LLVMOrcExecutionSessionGetJITDylibByName(object ES, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMOrcExecutionSessionGetJITDylibByName__retval = LLVMOrcJITDylibRef.from_value(corc.LLVMOrcExecutionSessionGetJITDylibByName(
+    _LLVMOrcExecutionSessionGetJITDylibByName__retval = LLVMOrcOpaqueJITDylib.from_ptr(corc.LLVMOrcExecutionSessionGetJITDylibByName(
         LLVMOrcOpaqueExecutionSession.from_pyobj(ES)._ptr,Name))    # fully specified
     return (_LLVMOrcExecutionSessionGetJITDylibByName__retval,)
 
@@ -7424,7 +7424,7 @@ def LLVMOrcJITDylibCreateResourceTracker(object JD):
         JD (`~.LLVMOrcOpaqueJITDylib`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcJITDylibCreateResourceTracker__retval = LLVMOrcResourceTrackerRef.from_value(corc.LLVMOrcJITDylibCreateResourceTracker(
+    _LLVMOrcJITDylibCreateResourceTracker__retval = LLVMOrcOpaqueResourceTracker.from_ptr(corc.LLVMOrcJITDylibCreateResourceTracker(
         LLVMOrcOpaqueJITDylib.from_pyobj(JD)._ptr))    # fully specified
     return (_LLVMOrcJITDylibCreateResourceTracker__retval,)
 
@@ -7441,7 +7441,7 @@ def LLVMOrcJITDylibGetDefaultResourceTracker(object JD):
         JD (`~.LLVMOrcOpaqueJITDylib`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcJITDylibGetDefaultResourceTracker__retval = LLVMOrcResourceTrackerRef.from_value(corc.LLVMOrcJITDylibGetDefaultResourceTracker(
+    _LLVMOrcJITDylibGetDefaultResourceTracker__retval = LLVMOrcOpaqueResourceTracker.from_ptr(corc.LLVMOrcJITDylibGetDefaultResourceTracker(
         LLVMOrcOpaqueJITDylib.from_pyobj(JD)._ptr))    # fully specified
     return (_LLVMOrcJITDylibGetDefaultResourceTracker__retval,)
 
@@ -7463,7 +7463,7 @@ def LLVMOrcJITDylibDefine(object JD, object MU):
         MU (`~.LLVMOrcOpaqueMaterializationUnit`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcJITDylibDefine__retval = LLVMErrorRef.from_value(corc.LLVMOrcJITDylibDefine(
+    _LLVMOrcJITDylibDefine__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcJITDylibDefine(
         LLVMOrcOpaqueJITDylib.from_pyobj(JD)._ptr,
         LLVMOrcOpaqueMaterializationUnit.from_pyobj(MU)._ptr))    # fully specified
     return (_LLVMOrcJITDylibDefine__retval,)
@@ -7480,7 +7480,7 @@ def LLVMOrcJITDylibClear(object JD):
         JD (`~.LLVMOrcOpaqueJITDylib`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcJITDylibClear__retval = LLVMErrorRef.from_value(corc.LLVMOrcJITDylibClear(
+    _LLVMOrcJITDylibClear__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcJITDylibClear(
         LLVMOrcOpaqueJITDylib.from_pyobj(JD)._ptr))    # fully specified
     return (_LLVMOrcJITDylibClear__retval,)
 
@@ -7526,15 +7526,15 @@ def LLVMOrcCreateCustomCAPIDefinitionGenerator(object F, object Ctx, object Disp
         F (`~.LLVMOrcCAPIDefinitionGeneratorTryToGenerateFunction`/`~.object`):
             (undocumented)
 
-        Ctx (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Ctx (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         Dispose (`~.LLVMOrcDisposeCAPIDefinitionGeneratorFunction`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcCreateCustomCAPIDefinitionGenerator__retval = LLVMOrcDefinitionGeneratorRef.from_value(corc.LLVMOrcCreateCustomCAPIDefinitionGenerator(
+    _LLVMOrcCreateCustomCAPIDefinitionGenerator__retval = LLVMOrcOpaqueDefinitionGenerator.from_ptr(corc.LLVMOrcCreateCustomCAPIDefinitionGenerator(
         LLVMOrcCAPIDefinitionGeneratorTryToGenerateFunction.from_pyobj(F)._ptr,
-        <void *>rocm.llvm._util.Pointer.from_pyobj(Ctx)._ptr,
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Ctx)._ptr,
         LLVMOrcDisposeCAPIDefinitionGeneratorFunction.from_pyobj(Dispose)._ptr))    # fully specified
     return (_LLVMOrcCreateCustomCAPIDefinitionGenerator__retval,)
 
@@ -7580,7 +7580,7 @@ def LLVMOrcCreateDynamicLibrarySearchGeneratorForProcess(object Result, char Glo
     the global prefix if present.
 
     Args:
-        Result (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Result (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         GlobalPrefx (`~.int`):
@@ -7589,13 +7589,13 @@ def LLVMOrcCreateDynamicLibrarySearchGeneratorForProcess(object Result, char Glo
         Filter (`~.LLVMOrcSymbolPredicate`/`~.object`):
             (undocumented)
 
-        FilterCtx (`~.rocm.llvm._util.Pointer`/`~.object`):
+        FilterCtx (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcCreateDynamicLibrarySearchGeneratorForProcess__retval = LLVMErrorRef.from_value(corc.LLVMOrcCreateDynamicLibrarySearchGeneratorForProcess(
-        <corc.LLVMOrcDefinitionGeneratorRef*>rocm.llvm._util.Pointer.from_pyobj(Result)._ptr,GlobalPrefx,
+    _LLVMOrcCreateDynamicLibrarySearchGeneratorForProcess__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcCreateDynamicLibrarySearchGeneratorForProcess(
+        <corc.LLVMOrcDefinitionGeneratorRef*>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr,GlobalPrefx,
         LLVMOrcSymbolPredicate.from_pyobj(Filter)._ptr,
-        <void *>rocm.llvm._util.Pointer.from_pyobj(FilterCtx)._ptr))    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(FilterCtx)._ptr))    # fully specified
     return (_LLVMOrcCreateDynamicLibrarySearchGeneratorForProcess__retval,)
 
 
@@ -7623,7 +7623,7 @@ def LLVMOrcCreateDynamicLibrarySearchGeneratorForPath(object Result, const char 
     THIS API IS EXPERIMENTAL AND LIKELY TO CHANGE IN THE NEAR FUTURE!
 
     Args:
-        Result (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Result (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         FileName (`~.bytes`):
@@ -7635,13 +7635,13 @@ def LLVMOrcCreateDynamicLibrarySearchGeneratorForPath(object Result, const char 
         Filter (`~.LLVMOrcSymbolPredicate`/`~.object`):
             (undocumented)
 
-        FilterCtx (`~.rocm.llvm._util.Pointer`/`~.object`):
+        FilterCtx (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcCreateDynamicLibrarySearchGeneratorForPath__retval = LLVMErrorRef.from_value(corc.LLVMOrcCreateDynamicLibrarySearchGeneratorForPath(
-        <corc.LLVMOrcDefinitionGeneratorRef*>rocm.llvm._util.Pointer.from_pyobj(Result)._ptr,FileName,GlobalPrefix,
+    _LLVMOrcCreateDynamicLibrarySearchGeneratorForPath__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcCreateDynamicLibrarySearchGeneratorForPath(
+        <corc.LLVMOrcDefinitionGeneratorRef*>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr,FileName,GlobalPrefix,
         LLVMOrcSymbolPredicate.from_pyobj(Filter)._ptr,
-        <void *>rocm.llvm._util.Pointer.from_pyobj(FilterCtx)._ptr))    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(FilterCtx)._ptr))    # fully specified
     return (_LLVMOrcCreateDynamicLibrarySearchGeneratorForPath__retval,)
 
 
@@ -7662,7 +7662,7 @@ def LLVMOrcCreateStaticLibrarySearchGeneratorForPath(object Result, object ObjLa
     THIS API IS EXPERIMENTAL AND LIKELY TO CHANGE IN THE NEAR FUTURE!
 
     Args:
-        Result (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Result (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         ObjLayer (`~.LLVMOrcOpaqueObjectLayer`/`~.object`):
@@ -7674,8 +7674,8 @@ def LLVMOrcCreateStaticLibrarySearchGeneratorForPath(object Result, object ObjLa
         TargetTriple (`~.bytes`):
             (undocumented)
     """
-    _LLVMOrcCreateStaticLibrarySearchGeneratorForPath__retval = LLVMErrorRef.from_value(corc.LLVMOrcCreateStaticLibrarySearchGeneratorForPath(
-        <corc.LLVMOrcDefinitionGeneratorRef*>rocm.llvm._util.Pointer.from_pyobj(Result)._ptr,
+    _LLVMOrcCreateStaticLibrarySearchGeneratorForPath__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcCreateStaticLibrarySearchGeneratorForPath(
+        <corc.LLVMOrcDefinitionGeneratorRef*>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr,
         LLVMOrcOpaqueObjectLayer.from_pyobj(ObjLayer)._ptr,FileName,TargetTriple))    # fully specified
     return (_LLVMOrcCreateStaticLibrarySearchGeneratorForPath__retval,)
 
@@ -7691,7 +7691,7 @@ def LLVMOrcCreateNewThreadSafeContext():
     need to refer to it directly. Other references (e.g. from ThreadSafeModules)
     will keep the data alive as long as it is needed.
     """
-    _LLVMOrcCreateNewThreadSafeContext__retval = LLVMOrcThreadSafeContextRef.from_value(corc.LLVMOrcCreateNewThreadSafeContext())    # fully specified
+    _LLVMOrcCreateNewThreadSafeContext__retval = LLVMOrcOpaqueThreadSafeContext.from_ptr(corc.LLVMOrcCreateNewThreadSafeContext())    # fully specified
     return (_LLVMOrcCreateNewThreadSafeContext__retval,)
 
 
@@ -7705,7 +7705,7 @@ def LLVMOrcThreadSafeContextGetContext(object TSCtx):
         TSCtx (`~.LLVMOrcOpaqueThreadSafeContext`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcThreadSafeContextGetContext__retval = LLVMContextRef.from_value(corc.LLVMOrcThreadSafeContextGetContext(
+    _LLVMOrcThreadSafeContextGetContext__retval = LLVMOpaqueContext.from_ptr(corc.LLVMOrcThreadSafeContextGetContext(
         LLVMOrcOpaqueThreadSafeContext.from_pyobj(TSCtx)._ptr))    # fully specified
     return (_LLVMOrcThreadSafeContextGetContext__retval,)
 
@@ -7744,7 +7744,7 @@ def LLVMOrcCreateNewThreadSafeModule(object M, object TSCtx):
         TSCtx (`~.LLVMOrcOpaqueThreadSafeContext`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcCreateNewThreadSafeModule__retval = LLVMOrcThreadSafeModuleRef.from_value(corc.LLVMOrcCreateNewThreadSafeModule(
+    _LLVMOrcCreateNewThreadSafeModule__retval = LLVMOrcOpaqueThreadSafeModule.from_ptr(corc.LLVMOrcCreateNewThreadSafeModule(
         LLVMOpaqueModule.from_pyobj(M)._ptr,
         LLVMOrcOpaqueThreadSafeContext.from_pyobj(TSCtx)._ptr))    # fully specified
     return (_LLVMOrcCreateNewThreadSafeModule__retval,)
@@ -7779,13 +7779,13 @@ def LLVMOrcThreadSafeModuleWithModuleDo(object TSM, object F, object Ctx):
         F (`~.LLVMOrcGenericIRModuleOperationFunction`/`~.object`):
             (undocumented)
 
-        Ctx (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Ctx (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcThreadSafeModuleWithModuleDo__retval = LLVMErrorRef.from_value(corc.LLVMOrcThreadSafeModuleWithModuleDo(
+    _LLVMOrcThreadSafeModuleWithModuleDo__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcThreadSafeModuleWithModuleDo(
         LLVMOrcOpaqueThreadSafeModule.from_pyobj(TSM)._ptr,
         LLVMOrcGenericIRModuleOperationFunction.from_pyobj(F)._ptr,
-        <void *>rocm.llvm._util.Pointer.from_pyobj(Ctx)._ptr))    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Ctx)._ptr))    # fully specified
     return (_LLVMOrcThreadSafeModuleWithModuleDo__retval,)
 
 
@@ -7801,11 +7801,11 @@ def LLVMOrcJITTargetMachineBuilderDetectHost(object Result):
     LLVMOrcDisposeJITTargetMachineBuilder.
 
     Args:
-        Result (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Result (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcJITTargetMachineBuilderDetectHost__retval = LLVMErrorRef.from_value(corc.LLVMOrcJITTargetMachineBuilderDetectHost(
-        <corc.LLVMOrcJITTargetMachineBuilderRef*>rocm.llvm._util.Pointer.from_pyobj(Result)._ptr))    # fully specified
+    _LLVMOrcJITTargetMachineBuilderDetectHost__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcJITTargetMachineBuilderDetectHost(
+        <corc.LLVMOrcJITTargetMachineBuilderRef*>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr))    # fully specified
     return (_LLVMOrcJITTargetMachineBuilderDetectHost__retval,)
 
 
@@ -7825,7 +7825,7 @@ def LLVMOrcJITTargetMachineBuilderCreateFromTargetMachine(object TM):
         TM (`~.LLVMOpaqueTargetMachine`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcJITTargetMachineBuilderCreateFromTargetMachine__retval = LLVMOrcJITTargetMachineBuilderRef.from_value(corc.LLVMOrcJITTargetMachineBuilderCreateFromTargetMachine(
+    _LLVMOrcJITTargetMachineBuilderCreateFromTargetMachine__retval = LLVMOrcOpaqueJITTargetMachineBuilder.from_ptr(corc.LLVMOrcJITTargetMachineBuilderCreateFromTargetMachine(
         LLVMOpaqueTargetMachine.from_pyobj(TM)._ptr))    # fully specified
     return (_LLVMOrcJITTargetMachineBuilderCreateFromTargetMachine__retval,)
 
@@ -7909,7 +7909,7 @@ def LLVMOrcObjectLayerAddObjectFile(object ObjLayer, object JD, object ObjBuffer
         ObjBuffer (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcObjectLayerAddObjectFile__retval = LLVMErrorRef.from_value(corc.LLVMOrcObjectLayerAddObjectFile(
+    _LLVMOrcObjectLayerAddObjectFile__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcObjectLayerAddObjectFile(
         LLVMOrcOpaqueObjectLayer.from_pyobj(ObjLayer)._ptr,
         LLVMOrcOpaqueJITDylib.from_pyobj(JD)._ptr,
         LLVMOpaqueMemoryBuffer.from_pyobj(ObjBuffer)._ptr))    # fully specified
@@ -7940,7 +7940,7 @@ def LLVMOrcObjectLayerAddObjectFileWithRT(object ObjLayer, object RT, object Obj
         ObjBuffer (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcObjectLayerAddObjectFileWithRT__retval = LLVMErrorRef.from_value(corc.LLVMOrcObjectLayerAddObjectFileWithRT(
+    _LLVMOrcObjectLayerAddObjectFileWithRT__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcObjectLayerAddObjectFileWithRT(
         LLVMOrcOpaqueObjectLayer.from_pyobj(ObjLayer)._ptr,
         LLVMOrcOpaqueResourceTracker.from_pyobj(RT)._ptr,
         LLVMOpaqueMemoryBuffer.from_pyobj(ObjBuffer)._ptr))    # fully specified
@@ -8020,13 +8020,13 @@ def LLVMOrcIRTransformLayerSetTransform(object IRTransformLayer, object Transfor
         TransformFunction (`~.LLVMOrcIRTransformLayerTransformFunction`/`~.object`):
             (undocumented)
 
-        Ctx (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Ctx (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     corc.LLVMOrcIRTransformLayerSetTransform(
         LLVMOrcOpaqueIRTransformLayer.from_pyobj(IRTransformLayer)._ptr,
         LLVMOrcIRTransformLayerTransformFunction.from_pyobj(TransformFunction)._ptr,
-        <void *>rocm.llvm._util.Pointer.from_pyobj(Ctx)._ptr)    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Ctx)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -8042,13 +8042,13 @@ def LLVMOrcObjectTransformLayerSetTransform(object ObjTransformLayer, object Tra
         TransformFunction (`~.LLVMOrcObjectTransformLayerTransformFunction`/`~.object`):
             (undocumented)
 
-        Ctx (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Ctx (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     corc.LLVMOrcObjectTransformLayerSetTransform(
         LLVMOrcOpaqueObjectTransformLayer.from_pyobj(ObjTransformLayer)._ptr,
         LLVMOrcObjectTransformLayerTransformFunction.from_pyobj(TransformFunction)._ptr,
-        <void *>rocm.llvm._util.Pointer.from_pyobj(Ctx)._ptr)    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Ctx)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -8064,7 +8064,7 @@ def LLVMOrcCreateLocalIndirectStubsManager(const char * TargetTriple):
         TargetTriple (`~.bytes`):
             (undocumented)
     """
-    _LLVMOrcCreateLocalIndirectStubsManager__retval = LLVMOrcIndirectStubsManagerRef.from_value(corc.LLVMOrcCreateLocalIndirectStubsManager(TargetTriple))    # fully specified
+    _LLVMOrcCreateLocalIndirectStubsManager__retval = LLVMOrcOpaqueIndirectStubsManager.from_ptr(corc.LLVMOrcCreateLocalIndirectStubsManager(TargetTriple))    # fully specified
     return (_LLVMOrcCreateLocalIndirectStubsManager__retval,)
 
 
@@ -8096,12 +8096,12 @@ def LLVMOrcCreateLocalLazyCallThroughManager(const char * TargetTriple, object E
         ErrorHandlerAddr (`~.int`):
             (undocumented)
 
-        LCTM (`~.rocm.llvm._util.Pointer`/`~.object`):
+        LCTM (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcCreateLocalLazyCallThroughManager__retval = LLVMErrorRef.from_value(corc.LLVMOrcCreateLocalLazyCallThroughManager(TargetTriple,
+    _LLVMOrcCreateLocalLazyCallThroughManager__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcCreateLocalLazyCallThroughManager(TargetTriple,
         LLVMOrcOpaqueExecutionSession.from_pyobj(ES)._ptr,ErrorHandlerAddr,
-        <corc.LLVMOrcLazyCallThroughManagerRef*>rocm.llvm._util.Pointer.from_pyobj(LCTM)._ptr))    # fully specified
+        <corc.LLVMOrcLazyCallThroughManagerRef*>rocm.llvm._util.types.Pointer.from_pyobj(LCTM)._ptr))    # fully specified
     return (_LLVMOrcCreateLocalLazyCallThroughManager__retval,)
 
 
@@ -8143,7 +8143,7 @@ def LLVMOrcCreateDumpObjects(const char * DumpDir, const char * IdentifierOverri
         IdentifierOverride (`~.bytes`):
             (undocumented)
     """
-    _LLVMOrcCreateDumpObjects__retval = LLVMOrcDumpObjectsRef.from_value(corc.LLVMOrcCreateDumpObjects(DumpDir,IdentifierOverride))    # fully specified
+    _LLVMOrcCreateDumpObjects__retval = LLVMOrcOpaqueDumpObjects.from_ptr(corc.LLVMOrcCreateDumpObjects(DumpDir,IdentifierOverride))    # fully specified
     return (_LLVMOrcCreateDumpObjects__retval,)
 
 
@@ -8171,12 +8171,12 @@ def LLVMOrcDumpObjects_CallOperator(object DumpObjects, object ObjBuffer):
         DumpObjects (`~.LLVMOrcOpaqueDumpObjects`/`~.object`):
             (undocumented)
 
-        ObjBuffer (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ObjBuffer (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcDumpObjects_CallOperator__retval = LLVMErrorRef.from_value(corc.LLVMOrcDumpObjects_CallOperator(
+    _LLVMOrcDumpObjects_CallOperator__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcDumpObjects_CallOperator(
         LLVMOrcOpaqueDumpObjects.from_pyobj(DumpObjects)._ptr,
-        <corc.LLVMMemoryBufferRef*>rocm.llvm._util.Pointer.from_pyobj(ObjBuffer)._ptr))    # fully specified
+        <corc.LLVMMemoryBufferRef*>rocm.llvm._util.types.Pointer.from_pyobj(ObjBuffer)._ptr))    # fully specified
     return (_LLVMOrcDumpObjects_CallOperator__retval,)
 
 __all__ = [

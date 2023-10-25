@@ -26,27 +26,29 @@ from libc.stdint cimport *
 ctypedef bint _Bool # bool is not a reserved keyword in C, _Bool is
 cdef extern from "llvm/Config/llvm-config.h":
 
-    cdef char * LLVM_DEFAULT_TARGET_TRIPLE
+    cdef const char * LLVM_DEFAULT_TARGET_TRIPLE
 
     cdef bint LLVM_ENABLE_THREADS
 
     cdef bint LLVM_HAS_ATOMICS
 
-    cdef char * LLVM_HOST_TRIPLE
+    cdef const char * LLVM_HOST_TRIPLE
 
-    cdef char * LLVM_NATIVE_ARCH
+cdef const char * LLVM_NATIVE_ARCH = "X86"
 
-    cdef char * LLVM_NATIVE_ASMPARSER
+cdef const char * LLVM_NATIVE_ASMPARSER = "LLVMInitializeX86AsmParser"
 
-    cdef char * LLVM_NATIVE_ASMPRINTER
+cdef const char * LLVM_NATIVE_ASMPRINTER = "LLVMInitializeX86AsmPrinter"
 
-    cdef char * LLVM_NATIVE_DISASSEMBLER
+cdef const char * LLVM_NATIVE_DISASSEMBLER = "LLVMInitializeX86Disassembler"
 
-    cdef char * LLVM_NATIVE_TARGET
+cdef const char * LLVM_NATIVE_TARGET = "LLVMInitializeX86Target"
 
-    cdef char * LLVM_NATIVE_TARGETINFO
+cdef const char * LLVM_NATIVE_TARGETINFO = "LLVMInitializeX86TargetInfo"
 
-    cdef char * LLVM_NATIVE_TARGETMC
+cdef const char * LLVM_NATIVE_TARGETMC = "LLVMInitializeX86TargetMC"
+
+cdef extern from "llvm/Config/llvm-config.h":
 
     cdef bint LLVM_ON_UNIX
 
@@ -62,7 +64,7 @@ cdef extern from "llvm/Config/llvm-config.h":
 
     cdef int LLVM_VERSION_PATCH
 
-    cdef char * LLVM_VERSION_STRING
+    cdef const char * LLVM_VERSION_STRING
 
     cdef bint LLVM_FORCE_ENABLE_STATS
 

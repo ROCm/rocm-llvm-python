@@ -103,7 +103,7 @@ def LLVMGetOrInsertComdat(object M, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMGetOrInsertComdat__retval = LLVMComdatRef.from_value(ccomdat.LLVMGetOrInsertComdat(
+    _LLVMGetOrInsertComdat__retval = LLVMComdat.from_ptr(ccomdat.LLVMGetOrInsertComdat(
         LLVMOpaqueModule.from_pyobj(M)._ptr,Name))    # fully specified
     return (_LLVMGetOrInsertComdat__retval,)
 
@@ -121,7 +121,7 @@ def LLVMGetComdat(object V):
         V (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetComdat__retval = LLVMComdatRef.from_value(ccomdat.LLVMGetComdat(
+    _LLVMGetComdat__retval = LLVMComdat.from_ptr(ccomdat.LLVMGetComdat(
         LLVMOpaqueValue.from_pyobj(V)._ptr))    # fully specified
     return (_LLVMGetComdat__retval,)
 

@@ -39,25 +39,25 @@ Attributes:
     LLVM_HOST_TRIPLE (`~.bytes`):
         Macro constant.
 
-    LLVM_NATIVE_ARCH (`~.bytes`):
+    LLVM_NATIVE_ARCH (`~.list`):
         Macro constant.
 
-    LLVM_NATIVE_ASMPARSER (`~.bytes`):
+    LLVM_NATIVE_ASMPARSER (`~.list`):
         Macro constant.
 
-    LLVM_NATIVE_ASMPRINTER (`~.bytes`):
+    LLVM_NATIVE_ASMPRINTER (`~.list`):
         Macro constant.
 
-    LLVM_NATIVE_DISASSEMBLER (`~.bytes`):
+    LLVM_NATIVE_DISASSEMBLER (`~.list`):
         Macro constant.
 
-    LLVM_NATIVE_TARGET (`~.bytes`):
+    LLVM_NATIVE_TARGET (`~.list`):
         Macro constant.
 
-    LLVM_NATIVE_TARGETINFO (`~.bytes`):
+    LLVM_NATIVE_TARGETINFO (`~.list`):
         Macro constant.
 
-    LLVM_NATIVE_TARGETMC (`~.bytes`):
+    LLVM_NATIVE_TARGETMC (`~.list`):
         Macro constant.
 
     LLVM_ON_UNIX (`~.bool`):

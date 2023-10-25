@@ -521,7 +521,7 @@ def LLVMGetFirstTarget():
 
     Returns the first llvm`~.Target` in the registered targets list. */
     """
-    _LLVMGetFirstTarget__retval = LLVMTargetRef.from_value(ctargetmachine.LLVMGetFirstTarget())    # fully specified
+    _LLVMGetFirstTarget__retval = LLVMTarget.from_ptr(ctargetmachine.LLVMGetFirstTarget())    # fully specified
     return (_LLVMGetFirstTarget__retval,)
 
 
@@ -535,7 +535,7 @@ def LLVMGetNextTarget(object T):
         T (`~.LLVMTarget`/`~.object`):
             (undocumented)
     """
-    _LLVMGetNextTarget__retval = LLVMTargetRef.from_value(ctargetmachine.LLVMGetNextTarget(
+    _LLVMGetNextTarget__retval = LLVMTarget.from_ptr(ctargetmachine.LLVMGetNextTarget(
         LLVMTarget.from_pyobj(T)._ptr))    # fully specified
     return (_LLVMGetNextTarget__retval,)
 
@@ -551,7 +551,7 @@ def LLVMGetTargetFromName(const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMGetTargetFromName__retval = LLVMTargetRef.from_value(ctargetmachine.LLVMGetTargetFromName(Name))    # fully specified
+    _LLVMGetTargetFromName__retval = LLVMTarget.from_ptr(ctargetmachine.LLVMGetTargetFromName(Name))    # fully specified
     return (_LLVMGetTargetFromName__retval,)
 
 
@@ -567,10 +567,10 @@ def LLVMGetTargetFromTriple(const char * Triple, object T, object ErrorMessage):
         Triple (`~.bytes`):
             (undocumented)
 
-        T (`~.rocm.llvm._util.Pointer`/`~.object`):
+        T (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
-        ErrorMessage (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ErrorMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -579,8 +579,8 @@ def LLVMGetTargetFromTriple(const char * Triple, object T, object ErrorMessage):
         * `~.int`
     """
     cdef int _LLVMGetTargetFromTriple__retval = ctargetmachine.LLVMGetTargetFromTriple(Triple,
-        <ctargetmachine.LLVMTargetRef*>rocm.llvm._util.Pointer.from_pyobj(T)._ptr,
-        <char **>rocm.llvm._util.Pointer.from_pyobj(ErrorMessage)._ptr)    # fully specified
+        <ctargetmachine.LLVMTargetRef*>rocm.llvm._util.types.Pointer.from_pyobj(T)._ptr,
+        <char **>rocm.llvm._util.types.Pointer.from_pyobj(ErrorMessage)._ptr)    # fully specified
     return (_LLVMGetTargetFromTriple__retval,)
 
 
@@ -718,7 +718,7 @@ def LLVMCreateTargetMachine(object T, const char * Triple, const char * CPU, con
         raise TypeError("argument 'Reloc' must be of type '_LLVMRelocMode__Base'")                    
     if not isinstance(CodeModel,_LLVMCodeModel__Base):
         raise TypeError("argument 'CodeModel' must be of type '_LLVMCodeModel__Base'")
-    _LLVMCreateTargetMachine__retval = LLVMTargetMachineRef.from_value(ctargetmachine.LLVMCreateTargetMachine(
+    _LLVMCreateTargetMachine__retval = LLVMOpaqueTargetMachine.from_ptr(ctargetmachine.LLVMCreateTargetMachine(
         LLVMTarget.from_pyobj(T)._ptr,Triple,CPU,Features,Level.value,Reloc.value,CodeModel.value))    # fully specified
     return (_LLVMCreateTargetMachine__retval,)
 
@@ -748,7 +748,7 @@ def LLVMGetTargetMachineTarget(object T):
         T (`~.LLVMOpaqueTargetMachine`/`~.object`):
             (undocumented)
     """
-    _LLVMGetTargetMachineTarget__retval = LLVMTargetRef.from_value(ctargetmachine.LLVMGetTargetMachineTarget(
+    _LLVMGetTargetMachineTarget__retval = LLVMTarget.from_ptr(ctargetmachine.LLVMGetTargetMachineTarget(
         LLVMOpaqueTargetMachine.from_pyobj(T)._ptr))    # fully specified
     return (_LLVMGetTargetMachineTarget__retval,)
 
@@ -829,7 +829,7 @@ def LLVMCreateTargetDataLayout(object T):
         T (`~.LLVMOpaqueTargetMachine`/`~.object`):
             (undocumented)
     """
-    _LLVMCreateTargetDataLayout__retval = LLVMTargetDataRef.from_value(ctargetmachine.LLVMCreateTargetDataLayout(
+    _LLVMCreateTargetDataLayout__retval = LLVMOpaqueTargetData.from_ptr(ctargetmachine.LLVMCreateTargetDataLayout(
         LLVMOpaqueTargetMachine.from_pyobj(T)._ptr))    # fully specified
     return (_LLVMCreateTargetDataLayout__retval,)
 
@@ -872,7 +872,7 @@ def LLVMTargetMachineEmitToFile(object T, object M, const char * Filename, objec
         codegen (`~.LLVMCodeGenFileType`):
             (undocumented)
 
-        ErrorMessage (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ErrorMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -885,7 +885,7 @@ def LLVMTargetMachineEmitToFile(object T, object M, const char * Filename, objec
     cdef int _LLVMTargetMachineEmitToFile__retval = ctargetmachine.LLVMTargetMachineEmitToFile(
         LLVMOpaqueTargetMachine.from_pyobj(T)._ptr,
         LLVMOpaqueModule.from_pyobj(M)._ptr,Filename,codegen.value,
-        <char **>rocm.llvm._util.Pointer.from_pyobj(ErrorMessage)._ptr)    # fully specified
+        <char **>rocm.llvm._util.types.Pointer.from_pyobj(ErrorMessage)._ptr)    # fully specified
     return (_LLVMTargetMachineEmitToFile__retval,)
 
 
@@ -905,10 +905,10 @@ def LLVMTargetMachineEmitToMemoryBuffer(object T, object M, object codegen, obje
         codegen (`~.LLVMCodeGenFileType`):
             (undocumented)
 
-        ErrorMessage (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ErrorMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
-        OutMemBuf (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutMemBuf (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -921,8 +921,8 @@ def LLVMTargetMachineEmitToMemoryBuffer(object T, object M, object codegen, obje
     cdef int _LLVMTargetMachineEmitToMemoryBuffer__retval = ctargetmachine.LLVMTargetMachineEmitToMemoryBuffer(
         LLVMOpaqueTargetMachine.from_pyobj(T)._ptr,
         LLVMOpaqueModule.from_pyobj(M)._ptr,codegen.value,
-        <char **>rocm.llvm._util.Pointer.from_pyobj(ErrorMessage)._ptr,
-        <ctargetmachine.LLVMMemoryBufferRef*>rocm.llvm._util.Pointer.from_pyobj(OutMemBuf)._ptr)    # fully specified
+        <char **>rocm.llvm._util.types.Pointer.from_pyobj(ErrorMessage)._ptr,
+        <ctargetmachine.LLVMMemoryBufferRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutMemBuf)._ptr)    # fully specified
     return (_LLVMTargetMachineEmitToMemoryBuffer__retval,)
 
 

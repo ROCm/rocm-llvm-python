@@ -338,16 +338,16 @@ def LLVMAddInternalizePassWithMustPreservePredicate(object PM, object Context, o
         PM (`~.LLVMOpaquePassManager`/`~.object`):
             (undocumented)
 
-        Context (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Context (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
-        MustPreserve (`~.anon_funptr_0`/`~.object`):
+        MustPreserve (`~.LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0`/`~.object`):
             (undocumented)
     """
     cipo.LLVMAddInternalizePassWithMustPreservePredicate(
         LLVMOpaquePassManager.from_pyobj(PM)._ptr,
-        <void *>rocm.llvm._util.Pointer.from_pyobj(Context)._ptr,
-        anon_funptr_0.from_pyobj(MustPreserve)._ptr)    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Context)._ptr,
+        LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0.from_pyobj(MustPreserve)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)

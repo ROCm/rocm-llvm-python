@@ -3543,7 +3543,7 @@ def LLVMCreateDIBuilderDisallowUnresolved(object M):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
     """
-    _LLVMCreateDIBuilderDisallowUnresolved__retval = LLVMDIBuilderRef.from_value(cdebuginfo.LLVMCreateDIBuilderDisallowUnresolved(
+    _LLVMCreateDIBuilderDisallowUnresolved__retval = LLVMOpaqueDIBuilder.from_ptr(cdebuginfo.LLVMCreateDIBuilderDisallowUnresolved(
         LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
     return (_LLVMCreateDIBuilderDisallowUnresolved__retval,)
 
@@ -3560,7 +3560,7 @@ def LLVMCreateDIBuilder(object M):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
     """
-    _LLVMCreateDIBuilder__retval = LLVMDIBuilderRef.from_value(cdebuginfo.LLVMCreateDIBuilder(
+    _LLVMCreateDIBuilder__retval = LLVMOpaqueDIBuilder.from_ptr(cdebuginfo.LLVMCreateDIBuilder(
         LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
     return (_LLVMCreateDIBuilder__retval,)
 
@@ -3694,7 +3694,7 @@ def LLVMDIBuilderCreateCompileUnit(object Builder, object Lang, object FileRef, 
         raise TypeError("argument 'Lang' must be of type '_LLVMDWARFSourceLanguage__Base'")                    
     if not isinstance(Kind,_LLVMDWARFEmissionKind__Base):
         raise TypeError("argument 'Kind' must be of type '_LLVMDWARFEmissionKind__Base'")
-    _LLVMDIBuilderCreateCompileUnit__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateCompileUnit(
+    _LLVMDIBuilderCreateCompileUnit__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateCompileUnit(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,Lang.value,
         LLVMOpaqueMetadata.from_pyobj(FileRef)._ptr,Producer,ProducerLen,isOptimized,Flags,FlagsLen,RuntimeVer,SplitName,SplitNameLen,Kind.value,DWOId,SplitDebugInlining,DebugInfoForProfiling,SysRoot,SysRootLen,SDK,SDKLen))    # fully specified
     return (_LLVMDIBuilderCreateCompileUnit__retval,)
@@ -3722,7 +3722,7 @@ def LLVMDIBuilderCreateFile(object Builder, const char * Filename, unsigned long
         DirectoryLen (`~.int`):
             The length of the C string passed to ``Directory.``
     """
-    _LLVMDIBuilderCreateFile__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateFile(
+    _LLVMDIBuilderCreateFile__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateFile(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,Filename,FilenameLen,Directory,DirectoryLen))    # fully specified
     return (_LLVMDIBuilderCreateFile__retval,)
 
@@ -3765,7 +3765,7 @@ def LLVMDIBuilderCreateModule(object Builder, object ParentScope, const char * N
         APINotesFileLen (`~.int`):
             The length of the C string passed to ``APINotestFile.``
     """
-    _LLVMDIBuilderCreateModule__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateModule(
+    _LLVMDIBuilderCreateModule__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateModule(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(ParentScope)._ptr,Name,NameLen,ConfigMacros,ConfigMacrosLen,IncludePath,IncludePathLen,APINotesFile,APINotesFileLen))    # fully specified
     return (_LLVMDIBuilderCreateModule__retval,)
@@ -3794,7 +3794,7 @@ def LLVMDIBuilderCreateNameSpace(object Builder, object ParentScope, const char 
             Whether or not the namespace exports symbols, e.g.
             this is true of C++ inline namespaces.
     """
-    _LLVMDIBuilderCreateNameSpace__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateNameSpace(
+    _LLVMDIBuilderCreateNameSpace__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateNameSpace(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(ParentScope)._ptr,Name,NameLen,ExportSymbols))    # fully specified
     return (_LLVMDIBuilderCreateNameSpace__retval,)
@@ -3852,7 +3852,7 @@ def LLVMDIBuilderCreateFunction(object Builder, object Scope, const char * Name,
     """
     if not isinstance(Flags,_LLVMDIFlags__Base):
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
-    _LLVMDIBuilderCreateFunction__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateFunction(
+    _LLVMDIBuilderCreateFunction__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateFunction(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Scope)._ptr,Name,NameLen,LinkageName,LinkageNameLen,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,LineNo,
@@ -3882,7 +3882,7 @@ def LLVMDIBuilderCreateLexicalBlock(object Builder, object Scope, object File, u
         Column (`~.int`):
             The column in the source file.
     """
-    _LLVMDIBuilderCreateLexicalBlock__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateLexicalBlock(
+    _LLVMDIBuilderCreateLexicalBlock__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateLexicalBlock(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Scope)._ptr,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,Line,Column))    # fully specified
@@ -3908,7 +3908,7 @@ def LLVMDIBuilderCreateLexicalBlockFile(object Builder, object Scope, object Fil
         Discriminator (`~.int`):
             DWARF path discriminator value.
     """
-    _LLVMDIBuilderCreateLexicalBlockFile__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateLexicalBlockFile(
+    _LLVMDIBuilderCreateLexicalBlockFile__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateLexicalBlockFile(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Scope)._ptr,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,Discriminator))    # fully specified
@@ -3938,7 +3938,7 @@ def LLVMDIBuilderCreateImportedModuleFromNamespace(object Builder, object Scope,
         Line (`~.int`):
             Line number of the declaration.
     """
-    _LLVMDIBuilderCreateImportedModuleFromNamespace__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateImportedModuleFromNamespace(
+    _LLVMDIBuilderCreateImportedModuleFromNamespace__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateImportedModuleFromNamespace(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Scope)._ptr,
         LLVMOpaqueMetadata.from_pyobj(NS)._ptr,
@@ -3969,18 +3969,18 @@ def LLVMDIBuilderCreateImportedModuleFromAlias(object Builder, object Scope, obj
         Line (`~.int`):
             Line number of the declaration.
 
-        Elements (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Elements (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             Renamed elements.
 
         NumElements (`~.int`):
             Number of renamed elements.
     """
-    _LLVMDIBuilderCreateImportedModuleFromAlias__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateImportedModuleFromAlias(
+    _LLVMDIBuilderCreateImportedModuleFromAlias__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateImportedModuleFromAlias(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Scope)._ptr,
         LLVMOpaqueMetadata.from_pyobj(ImportedEntity)._ptr,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,Line,
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.Pointer.from_pyobj(Elements)._ptr,NumElements))    # fully specified
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements))    # fully specified
     return (_LLVMDIBuilderCreateImportedModuleFromAlias__retval,)
 
 
@@ -4006,18 +4006,18 @@ def LLVMDIBuilderCreateImportedModuleFromModule(object Builder, object Scope, ob
         Line (`~.int`):
             Line number of the declaration.
 
-        Elements (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Elements (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             Renamed elements.
 
         NumElements (`~.int`):
             Number of renamed elements.
     """
-    _LLVMDIBuilderCreateImportedModuleFromModule__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateImportedModuleFromModule(
+    _LLVMDIBuilderCreateImportedModuleFromModule__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateImportedModuleFromModule(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Scope)._ptr,
         LLVMOpaqueMetadata.from_pyobj(M)._ptr,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,Line,
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.Pointer.from_pyobj(Elements)._ptr,NumElements))    # fully specified
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements))    # fully specified
     return (_LLVMDIBuilderCreateImportedModuleFromModule__retval,)
 
 
@@ -4052,18 +4052,18 @@ def LLVMDIBuilderCreateImportedDeclaration(object Builder, object Scope, object 
         NameLen (`~.int`):
             The length of the C string passed to ``Name.``
 
-        Elements (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Elements (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             Renamed elements.
 
         NumElements (`~.int`):
             Number of renamed elements.
     """
-    _LLVMDIBuilderCreateImportedDeclaration__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateImportedDeclaration(
+    _LLVMDIBuilderCreateImportedDeclaration__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateImportedDeclaration(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Scope)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Decl)._ptr,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,Line,Name,NameLen,
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.Pointer.from_pyobj(Elements)._ptr,NumElements))    # fully specified
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements))    # fully specified
     return (_LLVMDIBuilderCreateImportedDeclaration__retval,)
 
 
@@ -4094,7 +4094,7 @@ def LLVMDIBuilderCreateDebugLocation(object Ctx, unsigned int Line, unsigned int
             The scope where this location was inlined, if at all.
             (optional).
     """
-    _LLVMDIBuilderCreateDebugLocation__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateDebugLocation(
+    _LLVMDIBuilderCreateDebugLocation__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateDebugLocation(
         LLVMOpaqueContext.from_pyobj(Ctx)._ptr,Line,Column,
         LLVMOpaqueMetadata.from_pyobj(Scope)._ptr,
         LLVMOpaqueMetadata.from_pyobj(InlinedAt)._ptr))    # fully specified
@@ -4160,7 +4160,7 @@ def LLVMDILocationGetScope(object Location):
         Location (`~.LLVMOpaqueMetadata`/`~.object`):
             The debug location.
     """
-    _LLVMDILocationGetScope__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDILocationGetScope(
+    _LLVMDILocationGetScope__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDILocationGetScope(
         LLVMOpaqueMetadata.from_pyobj(Location)._ptr))    # fully specified
     return (_LLVMDILocationGetScope__retval,)
 
@@ -4178,7 +4178,7 @@ def LLVMDILocationGetInlinedAt(object Location):
         Location (`~.LLVMOpaqueMetadata`/`~.object`):
             The debug location.
     """
-    _LLVMDILocationGetInlinedAt__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDILocationGetInlinedAt(
+    _LLVMDILocationGetInlinedAt__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDILocationGetInlinedAt(
         LLVMOpaqueMetadata.from_pyobj(Location)._ptr))    # fully specified
     return (_LLVMDILocationGetInlinedAt__retval,)
 
@@ -4196,7 +4196,7 @@ def LLVMDIScopeGetFile(object Scope):
         Scope (`~.LLVMOpaqueMetadata`/`~.object`):
             The scope object.
     """
-    _LLVMDIScopeGetFile__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIScopeGetFile(
+    _LLVMDIScopeGetFile__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIScopeGetFile(
         LLVMOpaqueMetadata.from_pyobj(Scope)._ptr))    # fully specified
     return (_LLVMDIScopeGetFile__retval,)
 
@@ -4214,7 +4214,7 @@ def LLVMDIFileGetDirectory(object File, object Len):
         File (`~.LLVMOpaqueMetadata`/`~.object`):
             The file object.
 
-        Len (`~.rocm.llvm._util.ListOfUnsigned`/`~.object`):
+        Len (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
             The length of the returned string.
 
     Returns:
@@ -4224,7 +4224,7 @@ def LLVMDIFileGetDirectory(object File, object Len):
     """
     cdef const char * _LLVMDIFileGetDirectory__retval = cdebuginfo.LLVMDIFileGetDirectory(
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,
-        <unsigned int *>rocm.llvm._util.ListOfUnsigned.from_pyobj(Len)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(Len)._ptr)    # fully specified
     return (_LLVMDIFileGetDirectory__retval,)
 
 
@@ -4241,7 +4241,7 @@ def LLVMDIFileGetFilename(object File, object Len):
         File (`~.LLVMOpaqueMetadata`/`~.object`):
             The file object.
 
-        Len (`~.rocm.llvm._util.ListOfUnsigned`/`~.object`):
+        Len (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
             The length of the returned string.
 
     Returns:
@@ -4251,7 +4251,7 @@ def LLVMDIFileGetFilename(object File, object Len):
     """
     cdef const char * _LLVMDIFileGetFilename__retval = cdebuginfo.LLVMDIFileGetFilename(
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,
-        <unsigned int *>rocm.llvm._util.ListOfUnsigned.from_pyobj(Len)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(Len)._ptr)    # fully specified
     return (_LLVMDIFileGetFilename__retval,)
 
 
@@ -4268,7 +4268,7 @@ def LLVMDIFileGetSource(object File, object Len):
         File (`~.LLVMOpaqueMetadata`/`~.object`):
             The file object.
 
-        Len (`~.rocm.llvm._util.ListOfUnsigned`/`~.object`):
+        Len (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
             The length of the returned string.
 
     Returns:
@@ -4278,7 +4278,7 @@ def LLVMDIFileGetSource(object File, object Len):
     """
     cdef const char * _LLVMDIFileGetSource__retval = cdebuginfo.LLVMDIFileGetSource(
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,
-        <unsigned int *>rocm.llvm._util.ListOfUnsigned.from_pyobj(Len)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(Len)._ptr)    # fully specified
     return (_LLVMDIFileGetSource__retval,)
 
 
@@ -4292,15 +4292,15 @@ def LLVMDIBuilderGetOrCreateTypeArray(object Builder, object Data, unsigned long
         Builder (`~.LLVMOpaqueDIBuilder`/`~.object`):
             The DIBuilder.
 
-        Data (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Data (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             The type elements.
 
         NumElements (`~.int`):
             Number of type elements.
     """
-    _LLVMDIBuilderGetOrCreateTypeArray__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderGetOrCreateTypeArray(
+    _LLVMDIBuilderGetOrCreateTypeArray__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderGetOrCreateTypeArray(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.Pointer.from_pyobj(Data)._ptr,NumElements))    # fully specified
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Data)._ptr,NumElements))    # fully specified
     return (_LLVMDIBuilderGetOrCreateTypeArray__retval,)
 
 
@@ -4317,7 +4317,7 @@ def LLVMDIBuilderCreateSubroutineType(object Builder, object File, object Parame
         File (`~.LLVMOpaqueMetadata`/`~.object`):
             The file in which the subroutine resides.
 
-        ParameterTypes (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ParameterTypes (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             An array of subroutine parameter types. This
             includes return type at 0th index.
 
@@ -4330,10 +4330,10 @@ def LLVMDIBuilderCreateSubroutineType(object Builder, object File, object Parame
     """
     if not isinstance(Flags,_LLVMDIFlags__Base):
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
-    _LLVMDIBuilderCreateSubroutineType__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateSubroutineType(
+    _LLVMDIBuilderCreateSubroutineType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateSubroutineType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.Pointer.from_pyobj(ParameterTypes)._ptr,NumParameterTypes,Flags.value))    # fully specified
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(ParameterTypes)._ptr,NumParameterTypes,Flags.value))    # fully specified
     return (_LLVMDIBuilderCreateSubroutineType__retval,)
 
 
@@ -4370,7 +4370,7 @@ def LLVMDIBuilderCreateMacro(object Builder, object ParentMacroFile, unsigned in
     """
     if not isinstance(RecordType,_LLVMDWARFMacinfoRecordType__Base):
         raise TypeError("argument 'RecordType' must be of type '_LLVMDWARFMacinfoRecordType__Base'")
-    _LLVMDIBuilderCreateMacro__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateMacro(
+    _LLVMDIBuilderCreateMacro__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateMacro(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(ParentMacroFile)._ptr,Line,RecordType.value,Name,NameLen,Value,ValueLen))    # fully specified
     return (_LLVMDIBuilderCreateMacro__retval,)
@@ -4397,7 +4397,7 @@ def LLVMDIBuilderCreateTempMacroFile(object Builder, object ParentMacroFile, uns
         File (`~.LLVMOpaqueMetadata`/`~.object`):
             File descriptor containing the name of the macro file.
     """
-    _LLVMDIBuilderCreateTempMacroFile__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateTempMacroFile(
+    _LLVMDIBuilderCreateTempMacroFile__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateTempMacroFile(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(ParentMacroFile)._ptr,Line,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr))    # fully specified
@@ -4426,7 +4426,7 @@ def LLVMDIBuilderCreateEnumerator(object Builder, const char * Name, unsigned lo
         IsUnsigned (`~.int`):
             True if the value is unsigned.
     """
-    _LLVMDIBuilderCreateEnumerator__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateEnumerator(
+    _LLVMDIBuilderCreateEnumerator__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateEnumerator(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,Name,NameLen,Value,IsUnsigned))    # fully specified
     return (_LLVMDIBuilderCreateEnumerator__retval,)
 
@@ -4462,7 +4462,7 @@ def LLVMDIBuilderCreateEnumerationType(object Builder, object Scope, const char 
         AlignInBits (`~.int`):
             Member alignment.
 
-        Elements (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Elements (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             Enumeration elements.
 
         NumElements (`~.int`):
@@ -4471,11 +4471,11 @@ def LLVMDIBuilderCreateEnumerationType(object Builder, object Scope, const char 
         ClassTy (`~.LLVMOpaqueMetadata`/`~.object`):
             Underlying type of a C++11/ObjC fixed enum.
     """
-    _LLVMDIBuilderCreateEnumerationType__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateEnumerationType(
+    _LLVMDIBuilderCreateEnumerationType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateEnumerationType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Scope)._ptr,Name,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,LineNumber,SizeInBits,AlignInBits,
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.Pointer.from_pyobj(Elements)._ptr,NumElements,
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements,
         LLVMOpaqueMetadata.from_pyobj(ClassTy)._ptr))    # fully specified
     return (_LLVMDIBuilderCreateEnumerationType__retval,)
 
@@ -4514,7 +4514,7 @@ def LLVMDIBuilderCreateUnionType(object Builder, object Scope, const char * Name
         Flags (`~.LLVMDIFlags`):
             Flags to encode member attribute, e.g. private
 
-        Elements (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Elements (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             Union elements.
 
         NumElements (`~.int`):
@@ -4531,11 +4531,11 @@ def LLVMDIBuilderCreateUnionType(object Builder, object Scope, const char * Name
     """
     if not isinstance(Flags,_LLVMDIFlags__Base):
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
-    _LLVMDIBuilderCreateUnionType__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateUnionType(
+    _LLVMDIBuilderCreateUnionType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateUnionType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Scope)._ptr,Name,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,LineNumber,SizeInBits,AlignInBits,Flags.value,
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.Pointer.from_pyobj(Elements)._ptr,NumElements,RunTimeLang,UniqueId,UniqueIdLen))    # fully specified
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements,RunTimeLang,UniqueId,UniqueIdLen))    # fully specified
     return (_LLVMDIBuilderCreateUnionType__retval,)
 
 
@@ -4558,16 +4558,16 @@ def LLVMDIBuilderCreateArrayType(object Builder, unsigned long Size, unsigned in
         Ty (`~.LLVMOpaqueMetadata`/`~.object`):
             Element type.
 
-        Subscripts (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Subscripts (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             Subscripts.
 
         NumSubscripts (`~.int`):
             Number of subscripts.
     """
-    _LLVMDIBuilderCreateArrayType__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateArrayType(
+    _LLVMDIBuilderCreateArrayType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateArrayType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,Size,AlignInBits,
         LLVMOpaqueMetadata.from_pyobj(Ty)._ptr,
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.Pointer.from_pyobj(Subscripts)._ptr,NumSubscripts))    # fully specified
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Subscripts)._ptr,NumSubscripts))    # fully specified
     return (_LLVMDIBuilderCreateArrayType__retval,)
 
 
@@ -4590,16 +4590,16 @@ def LLVMDIBuilderCreateVectorType(object Builder, unsigned long Size, unsigned i
         Ty (`~.LLVMOpaqueMetadata`/`~.object`):
             Element type.
 
-        Subscripts (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Subscripts (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             Subscripts.
 
         NumSubscripts (`~.int`):
             Number of subscripts.
     """
-    _LLVMDIBuilderCreateVectorType__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateVectorType(
+    _LLVMDIBuilderCreateVectorType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateVectorType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,Size,AlignInBits,
         LLVMOpaqueMetadata.from_pyobj(Ty)._ptr,
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.Pointer.from_pyobj(Subscripts)._ptr,NumSubscripts))    # fully specified
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Subscripts)._ptr,NumSubscripts))    # fully specified
     return (_LLVMDIBuilderCreateVectorType__retval,)
 
 
@@ -4619,7 +4619,7 @@ def LLVMDIBuilderCreateUnspecifiedType(object Builder, const char * Name, unsign
         NameLen (`~.int`):
             Length of type name.
     """
-    _LLVMDIBuilderCreateUnspecifiedType__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateUnspecifiedType(
+    _LLVMDIBuilderCreateUnspecifiedType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateUnspecifiedType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,Name,NameLen))    # fully specified
     return (_LLVMDIBuilderCreateUnspecifiedType__retval,)
 
@@ -4652,7 +4652,7 @@ def LLVMDIBuilderCreateBasicType(object Builder, const char * Name, unsigned lon
     """
     if not isinstance(Flags,_LLVMDIFlags__Base):
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
-    _LLVMDIBuilderCreateBasicType__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateBasicType(
+    _LLVMDIBuilderCreateBasicType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateBasicType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,Name,NameLen,SizeInBits,Encoding,Flags.value))    # fully specified
     return (_LLVMDIBuilderCreateBasicType__retval,)
 
@@ -4685,7 +4685,7 @@ def LLVMDIBuilderCreatePointerType(object Builder, object PointeeTy, unsigned lo
         NameLen (`~.int`):
             Length of pointer type name. (optional)
     """
-    _LLVMDIBuilderCreatePointerType__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreatePointerType(
+    _LLVMDIBuilderCreatePointerType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreatePointerType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(PointeeTy)._ptr,SizeInBits,AlignInBits,AddressSpace,Name,NameLen))    # fully specified
     return (_LLVMDIBuilderCreatePointerType__retval,)
@@ -4728,7 +4728,7 @@ def LLVMDIBuilderCreateStructType(object Builder, object Scope, const char * Nam
         DerivedFrom (`~.LLVMOpaqueMetadata`/`~.object`):
             (undocumented)
 
-        Elements (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Elements (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             Struct elements.
 
         NumElements (`~.int`):
@@ -4748,12 +4748,12 @@ def LLVMDIBuilderCreateStructType(object Builder, object Scope, const char * Nam
     """
     if not isinstance(Flags,_LLVMDIFlags__Base):
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
-    _LLVMDIBuilderCreateStructType__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateStructType(
+    _LLVMDIBuilderCreateStructType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateStructType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Scope)._ptr,Name,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,LineNumber,SizeInBits,AlignInBits,Flags.value,
         LLVMOpaqueMetadata.from_pyobj(DerivedFrom)._ptr,
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.Pointer.from_pyobj(Elements)._ptr,NumElements,RunTimeLang,
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements,RunTimeLang,
         LLVMOpaqueMetadata.from_pyobj(VTableHolder)._ptr,UniqueId,UniqueIdLen))    # fully specified
     return (_LLVMDIBuilderCreateStructType__retval,)
 
@@ -4800,7 +4800,7 @@ def LLVMDIBuilderCreateMemberType(object Builder, object Scope, const char * Nam
     """
     if not isinstance(Flags,_LLVMDIFlags__Base):
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
-    _LLVMDIBuilderCreateMemberType__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateMemberType(
+    _LLVMDIBuilderCreateMemberType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateMemberType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Scope)._ptr,Name,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,LineNo,SizeInBits,AlignInBits,OffsetInBits,Flags.value,
@@ -4848,7 +4848,7 @@ def LLVMDIBuilderCreateStaticMemberType(object Builder, object Scope, const char
     """
     if not isinstance(Flags,_LLVMDIFlags__Base):
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
-    _LLVMDIBuilderCreateStaticMemberType__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateStaticMemberType(
+    _LLVMDIBuilderCreateStaticMemberType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateStaticMemberType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Scope)._ptr,Name,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,LineNumber,
@@ -4884,7 +4884,7 @@ def LLVMDIBuilderCreateMemberPointerType(object Builder, object PointeeType, obj
     """
     if not isinstance(Flags,_LLVMDIFlags__Base):
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
-    _LLVMDIBuilderCreateMemberPointerType__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateMemberPointerType(
+    _LLVMDIBuilderCreateMemberPointerType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateMemberPointerType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(PointeeType)._ptr,
         LLVMOpaqueMetadata.from_pyobj(ClassType)._ptr,SizeInBits,AlignInBits,Flags.value))    # fully specified
@@ -4933,7 +4933,7 @@ def LLVMDIBuilderCreateObjCIVar(object Builder, const char * Name, unsigned long
     """
     if not isinstance(Flags,_LLVMDIFlags__Base):
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
-    _LLVMDIBuilderCreateObjCIVar__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateObjCIVar(
+    _LLVMDIBuilderCreateObjCIVar__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateObjCIVar(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,Name,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,LineNo,SizeInBits,AlignInBits,OffsetInBits,Flags.value,
         LLVMOpaqueMetadata.from_pyobj(Ty)._ptr,
@@ -4981,7 +4981,7 @@ def LLVMDIBuilderCreateObjCProperty(object Builder, const char * Name, unsigned 
         Ty (`~.LLVMOpaqueMetadata`/`~.object`):
             Type.
     """
-    _LLVMDIBuilderCreateObjCProperty__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateObjCProperty(
+    _LLVMDIBuilderCreateObjCProperty__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateObjCProperty(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,Name,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,LineNo,GetterName,GetterNameLen,SetterName,SetterNameLen,PropertyAttributes,
         LLVMOpaqueMetadata.from_pyobj(Ty)._ptr))    # fully specified
@@ -5001,7 +5001,7 @@ def LLVMDIBuilderCreateObjectPointerType(object Builder, object Type):
         Type (`~.LLVMOpaqueMetadata`/`~.object`):
             The underlying type to which this pointer points.
     """
-    _LLVMDIBuilderCreateObjectPointerType__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateObjectPointerType(
+    _LLVMDIBuilderCreateObjectPointerType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateObjectPointerType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Type)._ptr))    # fully specified
     return (_LLVMDIBuilderCreateObjectPointerType__retval,)
@@ -5025,7 +5025,7 @@ def LLVMDIBuilderCreateQualifiedType(object Builder, unsigned int Tag, object Ty
         Type (`~.LLVMOpaqueMetadata`/`~.object`):
             Base Type.
     """
-    _LLVMDIBuilderCreateQualifiedType__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateQualifiedType(
+    _LLVMDIBuilderCreateQualifiedType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateQualifiedType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,Tag,
         LLVMOpaqueMetadata.from_pyobj(Type)._ptr))    # fully specified
     return (_LLVMDIBuilderCreateQualifiedType__retval,)
@@ -5048,7 +5048,7 @@ def LLVMDIBuilderCreateReferenceType(object Builder, unsigned int Tag, object Ty
         Type (`~.LLVMOpaqueMetadata`/`~.object`):
             Base Type.
     """
-    _LLVMDIBuilderCreateReferenceType__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateReferenceType(
+    _LLVMDIBuilderCreateReferenceType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateReferenceType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,Tag,
         LLVMOpaqueMetadata.from_pyobj(Type)._ptr))    # fully specified
     return (_LLVMDIBuilderCreateReferenceType__retval,)
@@ -5064,7 +5064,7 @@ def LLVMDIBuilderCreateNullPtrType(object Builder):
         Builder (`~.LLVMOpaqueDIBuilder`/`~.object`):
             The DIBuilder.
     """
-    _LLVMDIBuilderCreateNullPtrType__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateNullPtrType(
+    _LLVMDIBuilderCreateNullPtrType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateNullPtrType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr))    # fully specified
     return (_LLVMDIBuilderCreateNullPtrType__retval,)
 
@@ -5100,7 +5100,7 @@ def LLVMDIBuilderCreateTypedef(object Builder, object Type, const char * Name, u
         AlignInBits (`~.int`):
             (undocumented)
     """
-    _LLVMDIBuilderCreateTypedef__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateTypedef(
+    _LLVMDIBuilderCreateTypedef__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateTypedef(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Type)._ptr,Name,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,LineNo,
@@ -5136,7 +5136,7 @@ def LLVMDIBuilderCreateInheritance(object Builder, object Ty, object BaseTy, uns
     """
     if not isinstance(Flags,_LLVMDIFlags__Base):
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
-    _LLVMDIBuilderCreateInheritance__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateInheritance(
+    _LLVMDIBuilderCreateInheritance__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateInheritance(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Ty)._ptr,
         LLVMOpaqueMetadata.from_pyobj(BaseTy)._ptr,BaseOffset,VBPtrOffset,Flags.value))    # fully specified
@@ -5187,7 +5187,7 @@ def LLVMDIBuilderCreateForwardDecl(object Builder, unsigned int Tag, const char 
         UniqueIdentifierLen (`~.int`):
             Length of the unique identifier.
     """
-    _LLVMDIBuilderCreateForwardDecl__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateForwardDecl(
+    _LLVMDIBuilderCreateForwardDecl__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateForwardDecl(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,Tag,Name,NameLen,
         LLVMOpaqueMetadata.from_pyobj(Scope)._ptr,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,Line,RuntimeLang,SizeInBits,AlignInBits,UniqueIdentifier,UniqueIdentifierLen))    # fully specified
@@ -5243,7 +5243,7 @@ def LLVMDIBuilderCreateReplaceableCompositeType(object Builder, unsigned int Tag
     """
     if not isinstance(Flags,_LLVMDIFlags__Base):
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
-    _LLVMDIBuilderCreateReplaceableCompositeType__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateReplaceableCompositeType(
+    _LLVMDIBuilderCreateReplaceableCompositeType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateReplaceableCompositeType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,Tag,Name,NameLen,
         LLVMOpaqueMetadata.from_pyobj(Scope)._ptr,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,Line,RuntimeLang,SizeInBits,AlignInBits,Flags.value,UniqueIdentifier,UniqueIdentifierLen))    # fully specified
@@ -5292,7 +5292,7 @@ def LLVMDIBuilderCreateBitFieldMemberType(object Builder, object Scope, const ch
     """
     if not isinstance(Flags,_LLVMDIFlags__Base):
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
-    _LLVMDIBuilderCreateBitFieldMemberType__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateBitFieldMemberType(
+    _LLVMDIBuilderCreateBitFieldMemberType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateBitFieldMemberType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Scope)._ptr,Name,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,LineNumber,SizeInBits,OffsetInBits,StorageOffsetInBits,Flags.value,
@@ -5340,7 +5340,7 @@ def LLVMDIBuilderCreateClassType(object Builder, object Scope, const char * Name
         DerivedFrom (`~.LLVMOpaqueMetadata`/`~.object`):
             Debug info of the base class of this type.
 
-        Elements (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Elements (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             Class members.
 
         NumElements (`~.int`):
@@ -5363,12 +5363,12 @@ def LLVMDIBuilderCreateClassType(object Builder, object Scope, const char * Name
     """
     if not isinstance(Flags,_LLVMDIFlags__Base):
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
-    _LLVMDIBuilderCreateClassType__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateClassType(
+    _LLVMDIBuilderCreateClassType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateClassType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Scope)._ptr,Name,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,LineNumber,SizeInBits,AlignInBits,OffsetInBits,Flags.value,
         LLVMOpaqueMetadata.from_pyobj(DerivedFrom)._ptr,
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.Pointer.from_pyobj(Elements)._ptr,NumElements,
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements,
         LLVMOpaqueMetadata.from_pyobj(VTableHolder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(TemplateParamsNode)._ptr,UniqueIdentifier,UniqueIdentifierLen))    # fully specified
     return (_LLVMDIBuilderCreateClassType__retval,)
@@ -5387,7 +5387,7 @@ def LLVMDIBuilderCreateArtificialType(object Builder, object Type):
         Type (`~.LLVMOpaqueMetadata`/`~.object`):
             The underlying type.
     """
-    _LLVMDIBuilderCreateArtificialType__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateArtificialType(
+    _LLVMDIBuilderCreateArtificialType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateArtificialType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Type)._ptr))    # fully specified
     return (_LLVMDIBuilderCreateArtificialType__retval,)
@@ -5406,7 +5406,7 @@ def LLVMDITypeGetName(object DType, object Length):
         DType (`~.LLVMOpaqueMetadata`/`~.object`):
             The DIType.
 
-        Length (`~.rocm.llvm._util.ListOfUnsignedLong`/`~.object`):
+        Length (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
             The length of the returned string.
 
     Returns:
@@ -5416,7 +5416,7 @@ def LLVMDITypeGetName(object DType, object Length):
     """
     cdef const char * _LLVMDITypeGetName__retval = cdebuginfo.LLVMDITypeGetName(
         LLVMOpaqueMetadata.from_pyobj(DType)._ptr,
-        <unsigned long *>rocm.llvm._util.ListOfUnsignedLong.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(Length)._ptr)    # fully specified
     return (_LLVMDITypeGetName__retval,)
 
 
@@ -5551,7 +5551,7 @@ def LLVMDIBuilderGetOrCreateSubrange(object Builder, long LowerBound, long Count
         Count (`~.int`):
             Count of elements in the subrange.
     """
-    _LLVMDIBuilderGetOrCreateSubrange__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderGetOrCreateSubrange(
+    _LLVMDIBuilderGetOrCreateSubrange__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderGetOrCreateSubrange(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,LowerBound,Count))    # fully specified
     return (_LLVMDIBuilderGetOrCreateSubrange__retval,)
 
@@ -5566,15 +5566,15 @@ def LLVMDIBuilderGetOrCreateArray(object Builder, object Data, unsigned long Num
         Builder (`~.LLVMOpaqueDIBuilder`/`~.object`):
             The DIBuilder.
 
-        Data (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Data (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             The DI Node elements.
 
         NumElements (`~.int`):
             Number of DI Node elements.
     """
-    _LLVMDIBuilderGetOrCreateArray__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderGetOrCreateArray(
+    _LLVMDIBuilderGetOrCreateArray__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderGetOrCreateArray(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.Pointer.from_pyobj(Data)._ptr,NumElements))    # fully specified
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Data)._ptr,NumElements))    # fully specified
     return (_LLVMDIBuilderGetOrCreateArray__retval,)
 
 
@@ -5589,15 +5589,15 @@ def LLVMDIBuilderCreateExpression(object Builder, object Addr, unsigned long Len
         Builder (`~.LLVMOpaqueDIBuilder`/`~.object`):
             The DIBuilder.
 
-        Addr (`~.rocm.llvm._util.ListOfUnsignedLong`/`~.object`):
+        Addr (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
             An array of complex address operations.
 
         Length (`~.int`):
             Length of the address operation array.
     """
-    _LLVMDIBuilderCreateExpression__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateExpression(
+    _LLVMDIBuilderCreateExpression__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateExpression(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
-        <unsigned long *>rocm.llvm._util.ListOfUnsignedLong.from_pyobj(Addr)._ptr,Length))    # fully specified
+        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(Addr)._ptr,Length))    # fully specified
     return (_LLVMDIBuilderCreateExpression__retval,)
 
 
@@ -5615,7 +5615,7 @@ def LLVMDIBuilderCreateConstantValueExpression(object Builder, unsigned long Val
         Value (`~.int`):
             The constant value.
     """
-    _LLVMDIBuilderCreateConstantValueExpression__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateConstantValueExpression(
+    _LLVMDIBuilderCreateConstantValueExpression__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateConstantValueExpression(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,Value))    # fully specified
     return (_LLVMDIBuilderCreateConstantValueExpression__retval,)
 
@@ -5670,7 +5670,7 @@ def LLVMDIBuilderCreateGlobalVariableExpression(object Builder, object Scope, co
             Variable alignment(or 0 if no alignment attr was
             specified)
     """
-    _LLVMDIBuilderCreateGlobalVariableExpression__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateGlobalVariableExpression(
+    _LLVMDIBuilderCreateGlobalVariableExpression__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateGlobalVariableExpression(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Scope)._ptr,Name,NameLen,Linkage,LinkLen,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,LineNo,
@@ -5693,7 +5693,7 @@ def LLVMDIGlobalVariableExpressionGetVariable(object GVE):
         GVE (`~.LLVMOpaqueMetadata`/`~.object`):
             The global variable expression.
     """
-    _LLVMDIGlobalVariableExpressionGetVariable__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIGlobalVariableExpressionGetVariable(
+    _LLVMDIGlobalVariableExpressionGetVariable__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIGlobalVariableExpressionGetVariable(
         LLVMOpaqueMetadata.from_pyobj(GVE)._ptr))    # fully specified
     return (_LLVMDIGlobalVariableExpressionGetVariable__retval,)
 
@@ -5711,7 +5711,7 @@ def LLVMDIGlobalVariableExpressionGetExpression(object GVE):
         GVE (`~.LLVMOpaqueMetadata`/`~.object`):
             The global variable expression.
     """
-    _LLVMDIGlobalVariableExpressionGetExpression__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIGlobalVariableExpressionGetExpression(
+    _LLVMDIGlobalVariableExpressionGetExpression__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIGlobalVariableExpressionGetExpression(
         LLVMOpaqueMetadata.from_pyobj(GVE)._ptr))    # fully specified
     return (_LLVMDIGlobalVariableExpressionGetExpression__retval,)
 
@@ -5729,7 +5729,7 @@ def LLVMDIVariableGetFile(object Var):
         Var (`~.LLVMOpaqueMetadata`/`~.object`):
             The variable object.
     """
-    _LLVMDIVariableGetFile__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIVariableGetFile(
+    _LLVMDIVariableGetFile__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIVariableGetFile(
         LLVMOpaqueMetadata.from_pyobj(Var)._ptr))    # fully specified
     return (_LLVMDIVariableGetFile__retval,)
 
@@ -5747,7 +5747,7 @@ def LLVMDIVariableGetScope(object Var):
         Var (`~.LLVMOpaqueMetadata`/`~.object`):
             The variable object.
     """
-    _LLVMDIVariableGetScope__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIVariableGetScope(
+    _LLVMDIVariableGetScope__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIVariableGetScope(
         LLVMOpaqueMetadata.from_pyobj(Var)._ptr))    # fully specified
     return (_LLVMDIVariableGetScope__retval,)
 
@@ -5787,15 +5787,15 @@ def LLVMTemporaryMDNode(object Ctx, object Data, unsigned long NumElements):
         Ctx (`~.LLVMOpaqueContext`/`~.object`):
             The context in which to construct the temporary node.
 
-        Data (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Data (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             The metadata elements.
 
         NumElements (`~.int`):
             Number of metadata elements.
     """
-    _LLVMTemporaryMDNode__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMTemporaryMDNode(
+    _LLVMTemporaryMDNode__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMTemporaryMDNode(
         LLVMOpaqueContext.from_pyobj(Ctx)._ptr,
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.Pointer.from_pyobj(Data)._ptr,NumElements))    # fully specified
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Data)._ptr,NumElements))    # fully specified
     return (_LLVMTemporaryMDNode__retval,)
 
 
@@ -5880,7 +5880,7 @@ def LLVMDIBuilderCreateTempGlobalVariableFwdDecl(object Builder, object Scope, c
             Variable alignment(or 0 if no alignment attr was
             specified)
     """
-    _LLVMDIBuilderCreateTempGlobalVariableFwdDecl__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateTempGlobalVariableFwdDecl(
+    _LLVMDIBuilderCreateTempGlobalVariableFwdDecl__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateTempGlobalVariableFwdDecl(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Scope)._ptr,Name,NameLen,Linkage,LnkLen,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,LineNo,
@@ -5914,7 +5914,7 @@ def LLVMDIBuilderInsertDeclareBefore(object Builder, object Storage, object VarI
         Instr (`~.LLVMOpaqueValue`/`~.object`):
             Instruction acting as a location for the new intrinsic.
     """
-    _LLVMDIBuilderInsertDeclareBefore__retval = LLVMValueRef.from_value(cdebuginfo.LLVMDIBuilderInsertDeclareBefore(
+    _LLVMDIBuilderInsertDeclareBefore__retval = LLVMOpaqueValue.from_ptr(cdebuginfo.LLVMDIBuilderInsertDeclareBefore(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueValue.from_pyobj(Storage)._ptr,
         LLVMOpaqueMetadata.from_pyobj(VarInfo)._ptr,
@@ -5951,7 +5951,7 @@ def LLVMDIBuilderInsertDeclareAtEnd(object Builder, object Storage, object VarIn
         Block (`~.LLVMOpaqueBasicBlock`/`~.object`):
             Basic block acting as a location for the new intrinsic.
     """
-    _LLVMDIBuilderInsertDeclareAtEnd__retval = LLVMValueRef.from_value(cdebuginfo.LLVMDIBuilderInsertDeclareAtEnd(
+    _LLVMDIBuilderInsertDeclareAtEnd__retval = LLVMOpaqueValue.from_ptr(cdebuginfo.LLVMDIBuilderInsertDeclareAtEnd(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueValue.from_pyobj(Storage)._ptr,
         LLVMOpaqueMetadata.from_pyobj(VarInfo)._ptr,
@@ -5986,7 +5986,7 @@ def LLVMDIBuilderInsertDbgValueBefore(object Builder, object Val, object VarInfo
         Instr (`~.LLVMOpaqueValue`/`~.object`):
             Instruction acting as a location for the new intrinsic.
     """
-    _LLVMDIBuilderInsertDbgValueBefore__retval = LLVMValueRef.from_value(cdebuginfo.LLVMDIBuilderInsertDbgValueBefore(
+    _LLVMDIBuilderInsertDbgValueBefore__retval = LLVMOpaqueValue.from_ptr(cdebuginfo.LLVMDIBuilderInsertDbgValueBefore(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueMetadata.from_pyobj(VarInfo)._ptr,
@@ -6023,7 +6023,7 @@ def LLVMDIBuilderInsertDbgValueAtEnd(object Builder, object Val, object VarInfo,
         Block (`~.LLVMOpaqueBasicBlock`/`~.object`):
             Basic block acting as a location for the new intrinsic.
     """
-    _LLVMDIBuilderInsertDbgValueAtEnd__retval = LLVMValueRef.from_value(cdebuginfo.LLVMDIBuilderInsertDbgValueAtEnd(
+    _LLVMDIBuilderInsertDbgValueAtEnd__retval = LLVMOpaqueValue.from_ptr(cdebuginfo.LLVMDIBuilderInsertDbgValueAtEnd(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueMetadata.from_pyobj(VarInfo)._ptr,
@@ -6072,7 +6072,7 @@ def LLVMDIBuilderCreateAutoVariable(object Builder, object Scope, const char * N
     """
     if not isinstance(Flags,_LLVMDIFlags__Base):
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
-    _LLVMDIBuilderCreateAutoVariable__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateAutoVariable(
+    _LLVMDIBuilderCreateAutoVariable__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateAutoVariable(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Scope)._ptr,Name,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,LineNo,
@@ -6119,7 +6119,7 @@ def LLVMDIBuilderCreateParameterVariable(object Builder, object Scope, const cha
     """
     if not isinstance(Flags,_LLVMDIFlags__Base):
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
-    _LLVMDIBuilderCreateParameterVariable__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMDIBuilderCreateParameterVariable(
+    _LLVMDIBuilderCreateParameterVariable__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateParameterVariable(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
         LLVMOpaqueMetadata.from_pyobj(Scope)._ptr,Name,NameLen,ArgNo,
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,LineNo,
@@ -6140,7 +6140,7 @@ def LLVMGetSubprogram(object Func):
         Func (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetSubprogram__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMGetSubprogram(
+    _LLVMGetSubprogram__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMGetSubprogram(
         LLVMOpaqueValue.from_pyobj(Func)._ptr))    # fully specified
     return (_LLVMGetSubprogram__retval,)
 
@@ -6202,7 +6202,7 @@ def LLVMInstructionGetDebugLoc(object Inst):
         Inst (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMInstructionGetDebugLoc__retval = LLVMMetadataRef.from_value(cdebuginfo.LLVMInstructionGetDebugLoc(
+    _LLVMInstructionGetDebugLoc__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMInstructionGetDebugLoc(
         LLVMOpaqueValue.from_pyobj(Inst)._ptr))    # fully specified
     return (_LLVMInstructionGetDebugLoc__retval,)
 

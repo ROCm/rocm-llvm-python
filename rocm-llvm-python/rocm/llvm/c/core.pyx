@@ -1116,19 +1116,19 @@ def LLVMGetVersion(object Major, object Minor, object Patch):
     parameters or skipped if a NULL pointer was supplied.
 
     Args:
-        Major (`~.rocm.llvm._util.ListOfUnsigned`/`~.object`):
+        Major (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
             (undocumented)
 
-        Minor (`~.rocm.llvm._util.ListOfUnsigned`/`~.object`):
+        Minor (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
             (undocumented)
 
-        Patch (`~.rocm.llvm._util.ListOfUnsigned`/`~.object`):
+        Patch (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
             (undocumented)
     """
     ccore.LLVMGetVersion(
-        <unsigned int *>rocm.llvm._util.ListOfUnsigned.from_pyobj(Major)._ptr,
-        <unsigned int *>rocm.llvm._util.ListOfUnsigned.from_pyobj(Minor)._ptr,
-        <unsigned int *>rocm.llvm._util.ListOfUnsigned.from_pyobj(Patch)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(Major)._ptr,
+        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(Minor)._ptr,
+        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(Patch)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -1382,7 +1382,7 @@ def LLVMContextCreate():
     Every call to this function should be paired with a call to
     LLVMContextDispose() or the context will leak memory.
     """
-    _LLVMContextCreate__retval = LLVMContextRef.from_value(ccore.LLVMContextCreate())    # fully specified
+    _LLVMContextCreate__retval = LLVMOpaqueContext.from_ptr(ccore.LLVMContextCreate())    # fully specified
     return (_LLVMContextCreate__retval,)
 
 
@@ -1392,7 +1392,7 @@ def LLVMGetGlobalContext():
 
     Obtain the global context instance.
     """
-    _LLVMGetGlobalContext__retval = LLVMContextRef.from_value(ccore.LLVMGetGlobalContext())    # fully specified
+    _LLVMGetGlobalContext__retval = LLVMOpaqueContext.from_ptr(ccore.LLVMGetGlobalContext())    # fully specified
     return (_LLVMGetGlobalContext__retval,)
 
 
@@ -1409,13 +1409,13 @@ def LLVMContextSetDiagnosticHandler(object C, object Handler, object DiagnosticC
         Handler (`~.LLVMDiagnosticHandler`/`~.object`):
             (undocumented)
 
-        DiagnosticContext (`~.rocm.llvm._util.Pointer`/`~.object`):
+        DiagnosticContext (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     ccore.LLVMContextSetDiagnosticHandler(
         LLVMOpaqueContext.from_pyobj(C)._ptr,
         LLVMDiagnosticHandler.from_pyobj(Handler)._ptr,
-        <void *>rocm.llvm._util.Pointer.from_pyobj(DiagnosticContext)._ptr)    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(DiagnosticContext)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -1428,7 +1428,7 @@ def LLVMContextGetDiagnosticHandler(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMContextGetDiagnosticHandler__retval = LLVMDiagnosticHandler.from_value(ccore.LLVMContextGetDiagnosticHandler(
+    _LLVMContextGetDiagnosticHandler__retval = rocm.llvm._util.types.Pointer.from_ptr(ccore.LLVMContextGetDiagnosticHandler(
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMContextGetDiagnosticHandler__retval,)
 
@@ -1443,7 +1443,7 @@ def LLVMContextGetDiagnosticContext(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMContextGetDiagnosticContext__retval = void *.from_value(ccore.LLVMContextGetDiagnosticContext(
+    _LLVMContextGetDiagnosticContext__retval = rocm.llvm._util.types.Pointer.from_ptr(ccore.LLVMContextGetDiagnosticContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMContextGetDiagnosticContext__retval,)
 
@@ -1464,13 +1464,13 @@ def LLVMContextSetYieldCallback(object C, object Callback, object OpaqueHandle):
         Callback (`~.LLVMYieldCallback`/`~.object`):
             (undocumented)
 
-        OpaqueHandle (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OpaqueHandle (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     ccore.LLVMContextSetYieldCallback(
         LLVMOpaqueContext.from_pyobj(C)._ptr,
         LLVMYieldCallback.from_pyobj(Callback)._ptr,
-        <void *>rocm.llvm._util.Pointer.from_pyobj(OpaqueHandle)._ptr)    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(OpaqueHandle)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -1706,7 +1706,7 @@ def LLVMCreateEnumAttribute(object C, unsigned int KindID, unsigned long Val):
         Val (`~.int`):
             (undocumented)
     """
-    _LLVMCreateEnumAttribute__retval = LLVMAttributeRef.from_value(ccore.LLVMCreateEnumAttribute(
+    _LLVMCreateEnumAttribute__retval = LLVMOpaqueAttributeRef.from_ptr(ccore.LLVMCreateEnumAttribute(
         LLVMOpaqueContext.from_pyobj(C)._ptr,KindID,Val))    # fully specified
     return (_LLVMCreateEnumAttribute__retval,)
 
@@ -1768,7 +1768,7 @@ def LLVMCreateTypeAttribute(object C, unsigned int KindID, object type_ref):
         type_ref (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMCreateTypeAttribute__retval = LLVMAttributeRef.from_value(ccore.LLVMCreateTypeAttribute(
+    _LLVMCreateTypeAttribute__retval = LLVMOpaqueAttributeRef.from_ptr(ccore.LLVMCreateTypeAttribute(
         LLVMOpaqueContext.from_pyobj(C)._ptr,KindID,
         LLVMOpaqueType.from_pyobj(type_ref)._ptr))    # fully specified
     return (_LLVMCreateTypeAttribute__retval,)
@@ -1784,7 +1784,7 @@ def LLVMGetTypeAttributeValue(object A):
         A (`~.LLVMOpaqueAttributeRef`/`~.object`):
             (undocumented)
     """
-    _LLVMGetTypeAttributeValue__retval = LLVMTypeRef.from_value(ccore.LLVMGetTypeAttributeValue(
+    _LLVMGetTypeAttributeValue__retval = LLVMOpaqueType.from_ptr(ccore.LLVMGetTypeAttributeValue(
         LLVMOpaqueAttributeRef.from_pyobj(A)._ptr))    # fully specified
     return (_LLVMGetTypeAttributeValue__retval,)
 
@@ -1811,7 +1811,7 @@ def LLVMCreateStringAttribute(object C, const char * K, unsigned int KLength, co
         VLength (`~.int`):
             (undocumented)
     """
-    _LLVMCreateStringAttribute__retval = LLVMAttributeRef.from_value(ccore.LLVMCreateStringAttribute(
+    _LLVMCreateStringAttribute__retval = LLVMOpaqueAttributeRef.from_ptr(ccore.LLVMCreateStringAttribute(
         LLVMOpaqueContext.from_pyobj(C)._ptr,K,KLength,V,VLength))    # fully specified
     return (_LLVMCreateStringAttribute__retval,)
 
@@ -1826,7 +1826,7 @@ def LLVMGetStringAttributeKind(object A, object Length):
         A (`~.LLVMOpaqueAttributeRef`/`~.object`):
             (undocumented)
 
-        Length (`~.rocm.llvm._util.ListOfUnsigned`/`~.object`):
+        Length (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
             (undocumented)
 
     Returns:
@@ -1836,7 +1836,7 @@ def LLVMGetStringAttributeKind(object A, object Length):
     """
     cdef const char * _LLVMGetStringAttributeKind__retval = ccore.LLVMGetStringAttributeKind(
         LLVMOpaqueAttributeRef.from_pyobj(A)._ptr,
-        <unsigned int *>rocm.llvm._util.ListOfUnsigned.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(Length)._ptr)    # fully specified
     return (_LLVMGetStringAttributeKind__retval,)
 
 
@@ -1850,7 +1850,7 @@ def LLVMGetStringAttributeValue(object A, object Length):
         A (`~.LLVMOpaqueAttributeRef`/`~.object`):
             (undocumented)
 
-        Length (`~.rocm.llvm._util.ListOfUnsigned`/`~.object`):
+        Length (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
             (undocumented)
 
     Returns:
@@ -1860,7 +1860,7 @@ def LLVMGetStringAttributeValue(object A, object Length):
     """
     cdef const char * _LLVMGetStringAttributeValue__retval = ccore.LLVMGetStringAttributeValue(
         LLVMOpaqueAttributeRef.from_pyobj(A)._ptr,
-        <unsigned int *>rocm.llvm._util.ListOfUnsigned.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(Length)._ptr)    # fully specified
     return (_LLVMGetStringAttributeValue__retval,)
 
 
@@ -1933,7 +1933,7 @@ def LLVMGetTypeByName2(object C, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMGetTypeByName2__retval = LLVMTypeRef.from_value(ccore.LLVMGetTypeByName2(
+    _LLVMGetTypeByName2__retval = LLVMOpaqueType.from_ptr(ccore.LLVMGetTypeByName2(
         LLVMOpaqueContext.from_pyobj(C)._ptr,Name))    # fully specified
     return (_LLVMGetTypeByName2__retval,)
 
@@ -1954,7 +1954,7 @@ def LLVMModuleCreateWithName(const char * ModuleID):
         ModuleID (`~.bytes`):
             (undocumented)
     """
-    _LLVMModuleCreateWithName__retval = LLVMModuleRef.from_value(ccore.LLVMModuleCreateWithName(ModuleID))    # fully specified
+    _LLVMModuleCreateWithName__retval = LLVMOpaqueModule.from_ptr(ccore.LLVMModuleCreateWithName(ModuleID))    # fully specified
     return (_LLVMModuleCreateWithName__retval,)
 
 
@@ -1974,7 +1974,7 @@ def LLVMModuleCreateWithNameInContext(const char * ModuleID, object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMModuleCreateWithNameInContext__retval = LLVMModuleRef.from_value(ccore.LLVMModuleCreateWithNameInContext(ModuleID,
+    _LLVMModuleCreateWithNameInContext__retval = LLVMOpaqueModule.from_ptr(ccore.LLVMModuleCreateWithNameInContext(ModuleID,
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMModuleCreateWithNameInContext__retval,)
 
@@ -1989,7 +1989,7 @@ def LLVMCloneModule(object M):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
     """
-    _LLVMCloneModule__retval = LLVMModuleRef.from_value(ccore.LLVMCloneModule(
+    _LLVMCloneModule__retval = LLVMOpaqueModule.from_ptr(ccore.LLVMCloneModule(
         LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
     return (_LLVMCloneModule__retval,)
 
@@ -2024,7 +2024,7 @@ def LLVMGetModuleIdentifier(object M, object Len):
         M (`~.LLVMOpaqueModule`/`~.object`):
             Module to obtain identifier of
 
-        Len (`~.rocm.llvm._util.ListOfUnsignedLong`/`~.object`):
+        Len (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
             Out parameter which holds the length of the returned string.
 
     Returns:
@@ -2034,7 +2034,7 @@ def LLVMGetModuleIdentifier(object M, object Len):
     """
     cdef const char * _LLVMGetModuleIdentifier__retval = ccore.LLVMGetModuleIdentifier(
         LLVMOpaqueModule.from_pyobj(M)._ptr,
-        <unsigned long *>rocm.llvm._util.ListOfUnsignedLong.from_pyobj(Len)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(Len)._ptr)    # fully specified
     return (_LLVMGetModuleIdentifier__retval,)
 
 
@@ -2074,7 +2074,7 @@ def LLVMGetSourceFileName(object M, object Len):
         M (`~.LLVMOpaqueModule`/`~.object`):
             Module to obtain the name of
 
-        Len (`~.rocm.llvm._util.ListOfUnsignedLong`/`~.object`):
+        Len (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
             Out parameter which holds the length of the returned string
 
     Returns:
@@ -2084,7 +2084,7 @@ def LLVMGetSourceFileName(object M, object Len):
     """
     cdef const char * _LLVMGetSourceFileName__retval = ccore.LLVMGetSourceFileName(
         LLVMOpaqueModule.from_pyobj(M)._ptr,
-        <unsigned long *>rocm.llvm._util.ListOfUnsignedLong.from_pyobj(Len)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(Len)._ptr)    # fully specified
     return (_LLVMGetSourceFileName__retval,)
 
 
@@ -2235,12 +2235,12 @@ def LLVMCopyModuleFlagsMetadata(object M, object Len):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Len (`~.rocm.llvm._util.ListOfUnsignedLong`/`~.object`):
+        Len (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
             (undocumented)
     """
-    _LLVMCopyModuleFlagsMetadata__retval = LLVMOpaqueModuleFlagEntry *.from_value(ccore.LLVMCopyModuleFlagsMetadata(
+    _LLVMCopyModuleFlagsMetadata__retval = LLVMOpaqueModuleFlagEntry.from_ptr(ccore.LLVMCopyModuleFlagsMetadata(
         LLVMOpaqueModule.from_pyobj(M)._ptr,
-        <unsigned long *>rocm.llvm._util.ListOfUnsignedLong.from_pyobj(Len)._ptr))    # fully specified
+        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(Len)._ptr))    # fully specified
     return (_LLVMCopyModuleFlagsMetadata__retval,)
 
 
@@ -2300,7 +2300,7 @@ def LLVMModuleFlagEntriesGetKey(object Entries, unsigned int Index, object Len):
         Index (`~.int`):
             (undocumented)
 
-        Len (`~.rocm.llvm._util.ListOfUnsignedLong`/`~.object`):
+        Len (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
             (undocumented)
 
     Returns:
@@ -2310,7 +2310,7 @@ def LLVMModuleFlagEntriesGetKey(object Entries, unsigned int Index, object Len):
     """
     cdef const char * _LLVMModuleFlagEntriesGetKey__retval = ccore.LLVMModuleFlagEntriesGetKey(
         LLVMOpaqueModuleFlagEntry.from_pyobj(Entries)._ptr,Index,
-        <unsigned long *>rocm.llvm._util.ListOfUnsignedLong.from_pyobj(Len)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(Len)._ptr)    # fully specified
     return (_LLVMModuleFlagEntriesGetKey__retval,)
 
 
@@ -2330,7 +2330,7 @@ def LLVMModuleFlagEntriesGetMetadata(object Entries, unsigned int Index):
         Index (`~.int`):
             (undocumented)
     """
-    _LLVMModuleFlagEntriesGetMetadata__retval = LLVMMetadataRef.from_value(ccore.LLVMModuleFlagEntriesGetMetadata(
+    _LLVMModuleFlagEntriesGetMetadata__retval = LLVMOpaqueMetadata.from_ptr(ccore.LLVMModuleFlagEntriesGetMetadata(
         LLVMOpaqueModuleFlagEntry.from_pyobj(Entries)._ptr,Index))    # fully specified
     return (_LLVMModuleFlagEntriesGetMetadata__retval,)
 
@@ -2355,7 +2355,7 @@ def LLVMGetModuleFlag(object M, const char * Key, unsigned long KeyLen):
         KeyLen (`~.int`):
             (undocumented)
     """
-    _LLVMGetModuleFlag__retval = LLVMMetadataRef.from_value(ccore.LLVMGetModuleFlag(
+    _LLVMGetModuleFlag__retval = LLVMOpaqueMetadata.from_ptr(ccore.LLVMGetModuleFlag(
         LLVMOpaqueModule.from_pyobj(M)._ptr,Key,KeyLen))    # fully specified
     return (_LLVMGetModuleFlag__retval,)
 
@@ -2427,7 +2427,7 @@ def LLVMPrintModuleToFile(object M, const char * Filename, object ErrorMessage):
         Filename (`~.bytes`):
             (undocumented)
 
-        ErrorMessage (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ErrorMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -2437,7 +2437,7 @@ def LLVMPrintModuleToFile(object M, const char * Filename, object ErrorMessage):
     """
     cdef int _LLVMPrintModuleToFile__retval = ccore.LLVMPrintModuleToFile(
         LLVMOpaqueModule.from_pyobj(M)._ptr,Filename,
-        <char **>rocm.llvm._util.Pointer.from_pyobj(ErrorMessage)._ptr)    # fully specified
+        <char **>rocm.llvm._util.types.Pointer.from_pyobj(ErrorMessage)._ptr)    # fully specified
     return (_LLVMPrintModuleToFile__retval,)
 
 
@@ -2478,7 +2478,7 @@ def LLVMGetModuleInlineAsm(object M, object Len):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Len (`~.rocm.llvm._util.ListOfUnsignedLong`/`~.object`):
+        Len (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
             (undocumented)
 
     Returns:
@@ -2488,7 +2488,7 @@ def LLVMGetModuleInlineAsm(object M, object Len):
     """
     cdef const char * _LLVMGetModuleInlineAsm__retval = ccore.LLVMGetModuleInlineAsm(
         LLVMOpaqueModule.from_pyobj(M)._ptr,
-        <unsigned long *>rocm.llvm._util.ListOfUnsignedLong.from_pyobj(Len)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(Len)._ptr)    # fully specified
     return (_LLVMGetModuleInlineAsm__retval,)
 
 
@@ -2577,7 +2577,7 @@ def LLVMGetInlineAsm(object Ty, char * AsmString, unsigned long AsmStringSize, c
     """
     if not isinstance(Dialect,_LLVMInlineAsmDialect__Base):
         raise TypeError("argument 'Dialect' must be of type '_LLVMInlineAsmDialect__Base'")
-    _LLVMGetInlineAsm__retval = LLVMValueRef.from_value(ccore.LLVMGetInlineAsm(
+    _LLVMGetInlineAsm__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetInlineAsm(
         LLVMOpaqueType.from_pyobj(Ty)._ptr,AsmString,AsmStringSize,Constraints,ConstraintsSize,HasSideEffects,IsAlignStack,Dialect.value,CanThrow))    # fully specified
     return (_LLVMGetInlineAsm__retval,)
 
@@ -2595,7 +2595,7 @@ def LLVMGetModuleContext(object M):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
     """
-    _LLVMGetModuleContext__retval = LLVMContextRef.from_value(ccore.LLVMGetModuleContext(
+    _LLVMGetModuleContext__retval = LLVMOpaqueContext.from_ptr(ccore.LLVMGetModuleContext(
         LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
     return (_LLVMGetModuleContext__retval,)
 
@@ -2613,7 +2613,7 @@ def LLVMGetTypeByName(object M, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMGetTypeByName__retval = LLVMTypeRef.from_value(ccore.LLVMGetTypeByName(
+    _LLVMGetTypeByName__retval = LLVMOpaqueType.from_ptr(ccore.LLVMGetTypeByName(
         LLVMOpaqueModule.from_pyobj(M)._ptr,Name))    # fully specified
     return (_LLVMGetTypeByName__retval,)
 
@@ -2631,7 +2631,7 @@ def LLVMGetFirstNamedMetadata(object M):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
     """
-    _LLVMGetFirstNamedMetadata__retval = LLVMNamedMDNodeRef.from_value(ccore.LLVMGetFirstNamedMetadata(
+    _LLVMGetFirstNamedMetadata__retval = LLVMOpaqueNamedMDNode.from_ptr(ccore.LLVMGetFirstNamedMetadata(
         LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
     return (_LLVMGetFirstNamedMetadata__retval,)
 
@@ -2649,7 +2649,7 @@ def LLVMGetLastNamedMetadata(object M):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
     """
-    _LLVMGetLastNamedMetadata__retval = LLVMNamedMDNodeRef.from_value(ccore.LLVMGetLastNamedMetadata(
+    _LLVMGetLastNamedMetadata__retval = LLVMOpaqueNamedMDNode.from_ptr(ccore.LLVMGetLastNamedMetadata(
         LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
     return (_LLVMGetLastNamedMetadata__retval,)
 
@@ -2667,7 +2667,7 @@ def LLVMGetNextNamedMetadata(object NamedMDNode):
         NamedMDNode (`~.LLVMOpaqueNamedMDNode`/`~.object`):
             (undocumented)
     """
-    _LLVMGetNextNamedMetadata__retval = LLVMNamedMDNodeRef.from_value(ccore.LLVMGetNextNamedMetadata(
+    _LLVMGetNextNamedMetadata__retval = LLVMOpaqueNamedMDNode.from_ptr(ccore.LLVMGetNextNamedMetadata(
         LLVMOpaqueNamedMDNode.from_pyobj(NamedMDNode)._ptr))    # fully specified
     return (_LLVMGetNextNamedMetadata__retval,)
 
@@ -2685,7 +2685,7 @@ def LLVMGetPreviousNamedMetadata(object NamedMDNode):
         NamedMDNode (`~.LLVMOpaqueNamedMDNode`/`~.object`):
             (undocumented)
     """
-    _LLVMGetPreviousNamedMetadata__retval = LLVMNamedMDNodeRef.from_value(ccore.LLVMGetPreviousNamedMetadata(
+    _LLVMGetPreviousNamedMetadata__retval = LLVMOpaqueNamedMDNode.from_ptr(ccore.LLVMGetPreviousNamedMetadata(
         LLVMOpaqueNamedMDNode.from_pyobj(NamedMDNode)._ptr))    # fully specified
     return (_LLVMGetPreviousNamedMetadata__retval,)
 
@@ -2710,7 +2710,7 @@ def LLVMGetNamedMetadata(object M, const char * Name, unsigned long NameLen):
         NameLen (`~.int`):
             (undocumented)
     """
-    _LLVMGetNamedMetadata__retval = LLVMNamedMDNodeRef.from_value(ccore.LLVMGetNamedMetadata(
+    _LLVMGetNamedMetadata__retval = LLVMOpaqueNamedMDNode.from_ptr(ccore.LLVMGetNamedMetadata(
         LLVMOpaqueModule.from_pyobj(M)._ptr,Name,NameLen))    # fully specified
     return (_LLVMGetNamedMetadata__retval,)
 
@@ -2735,7 +2735,7 @@ def LLVMGetOrInsertNamedMetadata(object M, const char * Name, unsigned long Name
         NameLen (`~.int`):
             (undocumented)
     """
-    _LLVMGetOrInsertNamedMetadata__retval = LLVMNamedMDNodeRef.from_value(ccore.LLVMGetOrInsertNamedMetadata(
+    _LLVMGetOrInsertNamedMetadata__retval = LLVMOpaqueNamedMDNode.from_ptr(ccore.LLVMGetOrInsertNamedMetadata(
         LLVMOpaqueModule.from_pyobj(M)._ptr,Name,NameLen))    # fully specified
     return (_LLVMGetOrInsertNamedMetadata__retval,)
 
@@ -2753,7 +2753,7 @@ def LLVMGetNamedMetadataName(object NamedMD, object NameLen):
         NamedMD (`~.LLVMOpaqueNamedMDNode`/`~.object`):
             (undocumented)
 
-        NameLen (`~.rocm.llvm._util.ListOfUnsignedLong`/`~.object`):
+        NameLen (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
             (undocumented)
 
     Returns:
@@ -2763,7 +2763,7 @@ def LLVMGetNamedMetadataName(object NamedMD, object NameLen):
     """
     cdef const char * _LLVMGetNamedMetadataName__retval = ccore.LLVMGetNamedMetadataName(
         LLVMOpaqueNamedMDNode.from_pyobj(NamedMD)._ptr,
-        <unsigned long *>rocm.llvm._util.ListOfUnsignedLong.from_pyobj(NameLen)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(NameLen)._ptr)    # fully specified
     return (_LLVMGetNamedMetadataName__retval,)
 
 
@@ -2817,12 +2817,12 @@ def LLVMGetNamedMetadataOperands(object M, const char * Name, object Dest):
         Name (`~.bytes`):
             (undocumented)
 
-        Dest (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Dest (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     ccore.LLVMGetNamedMetadataOperands(
         LLVMOpaqueModule.from_pyobj(M)._ptr,Name,
-        <ccore.LLVMValueRef*>rocm.llvm._util.Pointer.from_pyobj(Dest)._ptr)    # fully specified
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Dest)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -2872,7 +2872,7 @@ def LLVMGetDebugLocDirectory(object Val, object Length):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Length (`~.rocm.llvm._util.ListOfUnsigned`/`~.object`):
+        Length (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
             (undocumented)
 
     Returns:
@@ -2882,7 +2882,7 @@ def LLVMGetDebugLocDirectory(object Val, object Length):
     """
     cdef const char * _LLVMGetDebugLocDirectory__retval = ccore.LLVMGetDebugLocDirectory(
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        <unsigned int *>rocm.llvm._util.ListOfUnsigned.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(Length)._ptr)    # fully specified
     return (_LLVMGetDebugLocDirectory__retval,)
 
 
@@ -2906,7 +2906,7 @@ def LLVMGetDebugLocFilename(object Val, object Length):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Length (`~.rocm.llvm._util.ListOfUnsigned`/`~.object`):
+        Length (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
             (undocumented)
 
     Returns:
@@ -2916,7 +2916,7 @@ def LLVMGetDebugLocFilename(object Val, object Length):
     """
     cdef const char * _LLVMGetDebugLocFilename__retval = ccore.LLVMGetDebugLocFilename(
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        <unsigned int *>rocm.llvm._util.ListOfUnsigned.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(Length)._ptr)    # fully specified
     return (_LLVMGetDebugLocFilename__retval,)
 
 
@@ -2993,7 +2993,7 @@ def LLVMAddFunction(object M, const char * Name, object FunctionTy):
         FunctionTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMAddFunction__retval = LLVMValueRef.from_value(ccore.LLVMAddFunction(
+    _LLVMAddFunction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMAddFunction(
         LLVMOpaqueModule.from_pyobj(M)._ptr,Name,
         LLVMOpaqueType.from_pyobj(FunctionTy)._ptr))    # fully specified
     return (_LLVMAddFunction__retval,)
@@ -3017,7 +3017,7 @@ def LLVMGetNamedFunction(object M, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMGetNamedFunction__retval = LLVMValueRef.from_value(ccore.LLVMGetNamedFunction(
+    _LLVMGetNamedFunction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNamedFunction(
         LLVMOpaqueModule.from_pyobj(M)._ptr,Name))    # fully specified
     return (_LLVMGetNamedFunction__retval,)
 
@@ -3035,7 +3035,7 @@ def LLVMGetFirstFunction(object M):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
     """
-    _LLVMGetFirstFunction__retval = LLVMValueRef.from_value(ccore.LLVMGetFirstFunction(
+    _LLVMGetFirstFunction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetFirstFunction(
         LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
     return (_LLVMGetFirstFunction__retval,)
 
@@ -3053,7 +3053,7 @@ def LLVMGetLastFunction(object M):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
     """
-    _LLVMGetLastFunction__retval = LLVMValueRef.from_value(ccore.LLVMGetLastFunction(
+    _LLVMGetLastFunction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetLastFunction(
         LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
     return (_LLVMGetLastFunction__retval,)
 
@@ -3071,7 +3071,7 @@ def LLVMGetNextFunction(object Fn):
         Fn (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetNextFunction__retval = LLVMValueRef.from_value(ccore.LLVMGetNextFunction(
+    _LLVMGetNextFunction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNextFunction(
         LLVMOpaqueValue.from_pyobj(Fn)._ptr))    # fully specified
     return (_LLVMGetNextFunction__retval,)
 
@@ -3089,7 +3089,7 @@ def LLVMGetPreviousFunction(object Fn):
         Fn (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetPreviousFunction__retval = LLVMValueRef.from_value(ccore.LLVMGetPreviousFunction(
+    _LLVMGetPreviousFunction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetPreviousFunction(
         LLVMOpaqueValue.from_pyobj(Fn)._ptr))    # fully specified
     return (_LLVMGetPreviousFunction__retval,)
 
@@ -3172,7 +3172,7 @@ def LLVMGetTypeContext(object Ty):
         Ty (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMGetTypeContext__retval = LLVMContextRef.from_value(ccore.LLVMGetTypeContext(
+    _LLVMGetTypeContext__retval = LLVMOpaqueContext.from_ptr(ccore.LLVMGetTypeContext(
         LLVMOpaqueType.from_pyobj(Ty)._ptr))    # fully specified
     return (_LLVMGetTypeContext__retval,)
 
@@ -3228,7 +3228,7 @@ def LLVMInt1TypeInContext(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMInt1TypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMInt1TypeInContext(
+    _LLVMInt1TypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt1TypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMInt1TypeInContext__retval,)
 
@@ -3241,7 +3241,7 @@ def LLVMInt8TypeInContext(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMInt8TypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMInt8TypeInContext(
+    _LLVMInt8TypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt8TypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMInt8TypeInContext__retval,)
 
@@ -3254,7 +3254,7 @@ def LLVMInt16TypeInContext(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMInt16TypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMInt16TypeInContext(
+    _LLVMInt16TypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt16TypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMInt16TypeInContext__retval,)
 
@@ -3267,7 +3267,7 @@ def LLVMInt32TypeInContext(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMInt32TypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMInt32TypeInContext(
+    _LLVMInt32TypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt32TypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMInt32TypeInContext__retval,)
 
@@ -3280,7 +3280,7 @@ def LLVMInt64TypeInContext(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMInt64TypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMInt64TypeInContext(
+    _LLVMInt64TypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt64TypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMInt64TypeInContext__retval,)
 
@@ -3293,7 +3293,7 @@ def LLVMInt128TypeInContext(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMInt128TypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMInt128TypeInContext(
+    _LLVMInt128TypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt128TypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMInt128TypeInContext__retval,)
 
@@ -3309,7 +3309,7 @@ def LLVMIntTypeInContext(object C, unsigned int NumBits):
         NumBits (`~.int`):
             (undocumented)
     """
-    _LLVMIntTypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMIntTypeInContext(
+    _LLVMIntTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMIntTypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr,NumBits))    # fully specified
     return (_LLVMIntTypeInContext__retval,)
 
@@ -3321,7 +3321,7 @@ def LLVMInt1Type():
     Obtain an integer type from the global context with a specified bit
     width.
     """
-    _LLVMInt1Type__retval = LLVMTypeRef.from_value(ccore.LLVMInt1Type())    # fully specified
+    _LLVMInt1Type__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt1Type())    # fully specified
     return (_LLVMInt1Type__retval,)
 
 
@@ -3329,7 +3329,7 @@ def LLVMInt1Type():
 def LLVMInt8Type():
     r"""(No short description, might be part of a group.)
     """
-    _LLVMInt8Type__retval = LLVMTypeRef.from_value(ccore.LLVMInt8Type())    # fully specified
+    _LLVMInt8Type__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt8Type())    # fully specified
     return (_LLVMInt8Type__retval,)
 
 
@@ -3337,7 +3337,7 @@ def LLVMInt8Type():
 def LLVMInt16Type():
     r"""(No short description, might be part of a group.)
     """
-    _LLVMInt16Type__retval = LLVMTypeRef.from_value(ccore.LLVMInt16Type())    # fully specified
+    _LLVMInt16Type__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt16Type())    # fully specified
     return (_LLVMInt16Type__retval,)
 
 
@@ -3345,7 +3345,7 @@ def LLVMInt16Type():
 def LLVMInt32Type():
     r"""(No short description, might be part of a group.)
     """
-    _LLVMInt32Type__retval = LLVMTypeRef.from_value(ccore.LLVMInt32Type())    # fully specified
+    _LLVMInt32Type__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt32Type())    # fully specified
     return (_LLVMInt32Type__retval,)
 
 
@@ -3353,7 +3353,7 @@ def LLVMInt32Type():
 def LLVMInt64Type():
     r"""(No short description, might be part of a group.)
     """
-    _LLVMInt64Type__retval = LLVMTypeRef.from_value(ccore.LLVMInt64Type())    # fully specified
+    _LLVMInt64Type__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt64Type())    # fully specified
     return (_LLVMInt64Type__retval,)
 
 
@@ -3361,7 +3361,7 @@ def LLVMInt64Type():
 def LLVMInt128Type():
     r"""(No short description, might be part of a group.)
     """
-    _LLVMInt128Type__retval = LLVMTypeRef.from_value(ccore.LLVMInt128Type())    # fully specified
+    _LLVMInt128Type__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt128Type())    # fully specified
     return (_LLVMInt128Type__retval,)
 
 
@@ -3373,7 +3373,7 @@ def LLVMIntType(unsigned int NumBits):
         NumBits (`~.int`):
             (undocumented)
     """
-    _LLVMIntType__retval = LLVMTypeRef.from_value(ccore.LLVMIntType(NumBits))    # fully specified
+    _LLVMIntType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMIntType(NumBits))    # fully specified
     return (_LLVMIntType__retval,)
 
 
@@ -3405,7 +3405,7 @@ def LLVMHalfTypeInContext(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMHalfTypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMHalfTypeInContext(
+    _LLVMHalfTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMHalfTypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMHalfTypeInContext__retval,)
 
@@ -3420,7 +3420,7 @@ def LLVMBFloatTypeInContext(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMBFloatTypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMBFloatTypeInContext(
+    _LLVMBFloatTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMBFloatTypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMBFloatTypeInContext__retval,)
 
@@ -3435,7 +3435,7 @@ def LLVMFloatTypeInContext(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMFloatTypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMFloatTypeInContext(
+    _LLVMFloatTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMFloatTypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMFloatTypeInContext__retval,)
 
@@ -3450,7 +3450,7 @@ def LLVMDoubleTypeInContext(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMDoubleTypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMDoubleTypeInContext(
+    _LLVMDoubleTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMDoubleTypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMDoubleTypeInContext__retval,)
 
@@ -3465,7 +3465,7 @@ def LLVMX86FP80TypeInContext(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMX86FP80TypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMX86FP80TypeInContext(
+    _LLVMX86FP80TypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMX86FP80TypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMX86FP80TypeInContext__retval,)
 
@@ -3481,7 +3481,7 @@ def LLVMFP128TypeInContext(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMFP128TypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMFP128TypeInContext(
+    _LLVMFP128TypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMFP128TypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMFP128TypeInContext__retval,)
 
@@ -3496,7 +3496,7 @@ def LLVMPPCFP128TypeInContext(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMPPCFP128TypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMPPCFP128TypeInContext(
+    _LLVMPPCFP128TypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMPPCFP128TypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMPPCFP128TypeInContext__retval,)
 
@@ -3509,7 +3509,7 @@ def LLVMHalfType():
 
     These map to the functions in this group of the same name.
     """
-    _LLVMHalfType__retval = LLVMTypeRef.from_value(ccore.LLVMHalfType())    # fully specified
+    _LLVMHalfType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMHalfType())    # fully specified
     return (_LLVMHalfType__retval,)
 
 
@@ -3517,7 +3517,7 @@ def LLVMHalfType():
 def LLVMBFloatType():
     r"""(No short description, might be part of a group.)
     """
-    _LLVMBFloatType__retval = LLVMTypeRef.from_value(ccore.LLVMBFloatType())    # fully specified
+    _LLVMBFloatType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMBFloatType())    # fully specified
     return (_LLVMBFloatType__retval,)
 
 
@@ -3525,7 +3525,7 @@ def LLVMBFloatType():
 def LLVMFloatType():
     r"""(No short description, might be part of a group.)
     """
-    _LLVMFloatType__retval = LLVMTypeRef.from_value(ccore.LLVMFloatType())    # fully specified
+    _LLVMFloatType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMFloatType())    # fully specified
     return (_LLVMFloatType__retval,)
 
 
@@ -3533,7 +3533,7 @@ def LLVMFloatType():
 def LLVMDoubleType():
     r"""(No short description, might be part of a group.)
     """
-    _LLVMDoubleType__retval = LLVMTypeRef.from_value(ccore.LLVMDoubleType())    # fully specified
+    _LLVMDoubleType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMDoubleType())    # fully specified
     return (_LLVMDoubleType__retval,)
 
 
@@ -3541,7 +3541,7 @@ def LLVMDoubleType():
 def LLVMX86FP80Type():
     r"""(No short description, might be part of a group.)
     """
-    _LLVMX86FP80Type__retval = LLVMTypeRef.from_value(ccore.LLVMX86FP80Type())    # fully specified
+    _LLVMX86FP80Type__retval = LLVMOpaqueType.from_ptr(ccore.LLVMX86FP80Type())    # fully specified
     return (_LLVMX86FP80Type__retval,)
 
 
@@ -3549,7 +3549,7 @@ def LLVMX86FP80Type():
 def LLVMFP128Type():
     r"""(No short description, might be part of a group.)
     """
-    _LLVMFP128Type__retval = LLVMTypeRef.from_value(ccore.LLVMFP128Type())    # fully specified
+    _LLVMFP128Type__retval = LLVMOpaqueType.from_ptr(ccore.LLVMFP128Type())    # fully specified
     return (_LLVMFP128Type__retval,)
 
 
@@ -3557,7 +3557,7 @@ def LLVMFP128Type():
 def LLVMPPCFP128Type():
     r"""(No short description, might be part of a group.)
     """
-    _LLVMPPCFP128Type__retval = LLVMTypeRef.from_value(ccore.LLVMPPCFP128Type())    # fully specified
+    _LLVMPPCFP128Type__retval = LLVMOpaqueType.from_ptr(ccore.LLVMPPCFP128Type())    # fully specified
     return (_LLVMPPCFP128Type__retval,)
 
 
@@ -3574,7 +3574,7 @@ def LLVMFunctionType(object ReturnType, object ParamTypes, unsigned int ParamCou
         ReturnType (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        ParamTypes (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ParamTypes (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         ParamCount (`~.int`):
@@ -3583,9 +3583,9 @@ def LLVMFunctionType(object ReturnType, object ParamTypes, unsigned int ParamCou
         IsVarArg (`~.int`):
             (undocumented)
     """
-    _LLVMFunctionType__retval = LLVMTypeRef.from_value(ccore.LLVMFunctionType(
+    _LLVMFunctionType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMFunctionType(
         LLVMOpaqueType.from_pyobj(ReturnType)._ptr,
-        <ccore.LLVMTypeRef*>rocm.llvm._util.Pointer.from_pyobj(ParamTypes)._ptr,ParamCount,IsVarArg))    # fully specified
+        <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(ParamTypes)._ptr,ParamCount,IsVarArg))    # fully specified
     return (_LLVMFunctionType__retval,)
 
 
@@ -3619,7 +3619,7 @@ def LLVMGetReturnType(object FunctionTy):
         FunctionTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMGetReturnType__retval = LLVMTypeRef.from_value(ccore.LLVMGetReturnType(
+    _LLVMGetReturnType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMGetReturnType(
         LLVMOpaqueType.from_pyobj(FunctionTy)._ptr))    # fully specified
     return (_LLVMGetReturnType__retval,)
 
@@ -3659,12 +3659,12 @@ def LLVMGetParamTypes(object FunctionTy, object Dest):
         FunctionTy (`~.LLVMOpaqueType`/`~.object`):
             The function type to operate on.
 
-        Dest (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Dest (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             Memory address of an array to be filled with result.
     """
     ccore.LLVMGetParamTypes(
         LLVMOpaqueType.from_pyobj(FunctionTy)._ptr,
-        <ccore.LLVMTypeRef*>rocm.llvm._util.Pointer.from_pyobj(Dest)._ptr)    # fully specified
+        <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(Dest)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -3683,7 +3683,7 @@ def LLVMStructTypeInContext(object C, object ElementTypes, unsigned int ElementC
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
 
-        ElementTypes (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ElementTypes (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         ElementCount (`~.int`):
@@ -3692,9 +3692,9 @@ def LLVMStructTypeInContext(object C, object ElementTypes, unsigned int ElementC
         Packed (`~.int`):
             (undocumented)
     """
-    _LLVMStructTypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMStructTypeInContext(
+    _LLVMStructTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMStructTypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr,
-        <ccore.LLVMTypeRef*>rocm.llvm._util.Pointer.from_pyobj(ElementTypes)._ptr,ElementCount,Packed))    # fully specified
+        <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(ElementTypes)._ptr,ElementCount,Packed))    # fully specified
     return (_LLVMStructTypeInContext__retval,)
 
 
@@ -3708,7 +3708,7 @@ def LLVMStructType(object ElementTypes, unsigned int ElementCount, int Packed):
         `~.llvm``~.`~.StructType`.`~.create``()
 
     Args:
-        ElementTypes (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ElementTypes (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         ElementCount (`~.int`):
@@ -3717,8 +3717,8 @@ def LLVMStructType(object ElementTypes, unsigned int ElementCount, int Packed):
         Packed (`~.int`):
             (undocumented)
     """
-    _LLVMStructType__retval = LLVMTypeRef.from_value(ccore.LLVMStructType(
-        <ccore.LLVMTypeRef*>rocm.llvm._util.Pointer.from_pyobj(ElementTypes)._ptr,ElementCount,Packed))    # fully specified
+    _LLVMStructType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMStructType(
+        <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(ElementTypes)._ptr,ElementCount,Packed))    # fully specified
     return (_LLVMStructType__retval,)
 
 
@@ -3738,7 +3738,7 @@ def LLVMStructCreateNamed(object C, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMStructCreateNamed__retval = LLVMTypeRef.from_value(ccore.LLVMStructCreateNamed(
+    _LLVMStructCreateNamed__retval = LLVMOpaqueType.from_ptr(ccore.LLVMStructCreateNamed(
         LLVMOpaqueContext.from_pyobj(C)._ptr,Name))    # fully specified
     return (_LLVMStructCreateNamed__retval,)
 
@@ -3779,7 +3779,7 @@ def LLVMStructSetBody(object StructTy, object ElementTypes, unsigned int Element
         StructTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        ElementTypes (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ElementTypes (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         ElementCount (`~.int`):
@@ -3790,7 +3790,7 @@ def LLVMStructSetBody(object StructTy, object ElementTypes, unsigned int Element
     """
     ccore.LLVMStructSetBody(
         LLVMOpaqueType.from_pyobj(StructTy)._ptr,
-        <ccore.LLVMTypeRef*>rocm.llvm._util.Pointer.from_pyobj(ElementTypes)._ptr,ElementCount,Packed)    # fully specified
+        <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(ElementTypes)._ptr,ElementCount,Packed)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -3833,12 +3833,12 @@ def LLVMGetStructElementTypes(object StructTy, object Dest):
         StructTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Dest (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Dest (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     ccore.LLVMGetStructElementTypes(
         LLVMOpaqueType.from_pyobj(StructTy)._ptr,
-        <ccore.LLVMTypeRef*>rocm.llvm._util.Pointer.from_pyobj(Dest)._ptr)    # fully specified
+        <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(Dest)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -3857,7 +3857,7 @@ def LLVMStructGetTypeAtIndex(object StructTy, unsigned int i):
         i (`~.int`):
             (undocumented)
     """
-    _LLVMStructGetTypeAtIndex__retval = LLVMTypeRef.from_value(ccore.LLVMStructGetTypeAtIndex(
+    _LLVMStructGetTypeAtIndex__retval = LLVMOpaqueType.from_ptr(ccore.LLVMStructGetTypeAtIndex(
         LLVMOpaqueType.from_pyobj(StructTy)._ptr,i))    # fully specified
     return (_LLVMStructGetTypeAtIndex__retval,)
 
@@ -3946,7 +3946,7 @@ def LLVMGetElementType(object Ty):
         Ty (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMGetElementType__retval = LLVMTypeRef.from_value(ccore.LLVMGetElementType(
+    _LLVMGetElementType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMGetElementType(
         LLVMOpaqueType.from_pyobj(Ty)._ptr))    # fully specified
     return (_LLVMGetElementType__retval,)
 
@@ -3964,12 +3964,12 @@ def LLVMGetSubtypes(object Tp, object Arr):
         Tp (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Arr (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Arr (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     ccore.LLVMGetSubtypes(
         LLVMOpaqueType.from_pyobj(Tp)._ptr,
-        <ccore.LLVMTypeRef*>rocm.llvm._util.Pointer.from_pyobj(Arr)._ptr)    # fully specified
+        <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(Arr)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -4014,7 +4014,7 @@ def LLVMArrayType(object ElementType, unsigned int ElementCount):
         ElementCount (`~.int`):
             (undocumented)
     """
-    _LLVMArrayType__retval = LLVMTypeRef.from_value(ccore.LLVMArrayType(
+    _LLVMArrayType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMArrayType(
         LLVMOpaqueType.from_pyobj(ElementType)._ptr,ElementCount))    # fully specified
     return (_LLVMArrayType__retval,)
 
@@ -4063,7 +4063,7 @@ def LLVMPointerType(object ElementType, unsigned int AddressSpace):
         AddressSpace (`~.int`):
             (undocumented)
     """
-    _LLVMPointerType__retval = LLVMTypeRef.from_value(ccore.LLVMPointerType(
+    _LLVMPointerType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMPointerType(
         LLVMOpaqueType.from_pyobj(ElementType)._ptr,AddressSpace))    # fully specified
     return (_LLVMPointerType__retval,)
 
@@ -4109,7 +4109,7 @@ def LLVMPointerTypeInContext(object C, unsigned int AddressSpace):
         AddressSpace (`~.int`):
             (undocumented)
     """
-    _LLVMPointerTypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMPointerTypeInContext(
+    _LLVMPointerTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMPointerTypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr,AddressSpace))    # fully specified
     return (_LLVMPointerTypeInContext__retval,)
 
@@ -4159,7 +4159,7 @@ def LLVMVectorType(object ElementType, unsigned int ElementCount):
         ElementCount (`~.int`):
             (undocumented)
     """
-    _LLVMVectorType__retval = LLVMTypeRef.from_value(ccore.LLVMVectorType(
+    _LLVMVectorType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMVectorType(
         LLVMOpaqueType.from_pyobj(ElementType)._ptr,ElementCount))    # fully specified
     return (_LLVMVectorType__retval,)
 
@@ -4184,7 +4184,7 @@ def LLVMScalableVectorType(object ElementType, unsigned int ElementCount):
         ElementCount (`~.int`):
             (undocumented)
     """
-    _LLVMScalableVectorType__retval = LLVMTypeRef.from_value(ccore.LLVMScalableVectorType(
+    _LLVMScalableVectorType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMScalableVectorType(
         LLVMOpaqueType.from_pyobj(ElementType)._ptr,ElementCount))    # fully specified
     return (_LLVMScalableVectorType__retval,)
 
@@ -4224,7 +4224,7 @@ def LLVMVoidTypeInContext(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMVoidTypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMVoidTypeInContext(
+    _LLVMVoidTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMVoidTypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMVoidTypeInContext__retval,)
 
@@ -4239,7 +4239,7 @@ def LLVMLabelTypeInContext(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMLabelTypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMLabelTypeInContext(
+    _LLVMLabelTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMLabelTypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMLabelTypeInContext__retval,)
 
@@ -4254,7 +4254,7 @@ def LLVMX86MMXTypeInContext(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMX86MMXTypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMX86MMXTypeInContext(
+    _LLVMX86MMXTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMX86MMXTypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMX86MMXTypeInContext__retval,)
 
@@ -4269,7 +4269,7 @@ def LLVMX86AMXTypeInContext(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMX86AMXTypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMX86AMXTypeInContext(
+    _LLVMX86AMXTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMX86AMXTypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMX86AMXTypeInContext__retval,)
 
@@ -4284,7 +4284,7 @@ def LLVMTokenTypeInContext(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMTokenTypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMTokenTypeInContext(
+    _LLVMTokenTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMTokenTypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMTokenTypeInContext__retval,)
 
@@ -4299,7 +4299,7 @@ def LLVMMetadataTypeInContext(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMMetadataTypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMMetadataTypeInContext(
+    _LLVMMetadataTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMMetadataTypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMMetadataTypeInContext__retval,)
 
@@ -4311,7 +4311,7 @@ def LLVMVoidType():
     These are similar to the above functions except they operate on the
     global context.
     """
-    _LLVMVoidType__retval = LLVMTypeRef.from_value(ccore.LLVMVoidType())    # fully specified
+    _LLVMVoidType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMVoidType())    # fully specified
     return (_LLVMVoidType__retval,)
 
 
@@ -4319,7 +4319,7 @@ def LLVMVoidType():
 def LLVMLabelType():
     r"""(No short description, might be part of a group.)
     """
-    _LLVMLabelType__retval = LLVMTypeRef.from_value(ccore.LLVMLabelType())    # fully specified
+    _LLVMLabelType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMLabelType())    # fully specified
     return (_LLVMLabelType__retval,)
 
 
@@ -4327,7 +4327,7 @@ def LLVMLabelType():
 def LLVMX86MMXType():
     r"""(No short description, might be part of a group.)
     """
-    _LLVMX86MMXType__retval = LLVMTypeRef.from_value(ccore.LLVMX86MMXType())    # fully specified
+    _LLVMX86MMXType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMX86MMXType())    # fully specified
     return (_LLVMX86MMXType__retval,)
 
 
@@ -4335,7 +4335,7 @@ def LLVMX86MMXType():
 def LLVMX86AMXType():
     r"""(No short description, might be part of a group.)
     """
-    _LLVMX86AMXType__retval = LLVMTypeRef.from_value(ccore.LLVMX86AMXType())    # fully specified
+    _LLVMX86AMXType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMX86AMXType())    # fully specified
     return (_LLVMX86AMXType__retval,)
 
 
@@ -4352,22 +4352,22 @@ def LLVMTargetExtTypeInContext(object C, const char * Name, object TypeParams, u
         Name (`~.bytes`):
             (undocumented)
 
-        TypeParams (`~.rocm.llvm._util.Pointer`/`~.object`):
+        TypeParams (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         TypeParamCount (`~.int`):
             (undocumented)
 
-        IntParams (`~.rocm.llvm._util.ListOfUnsigned`/`~.object`):
+        IntParams (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
             (undocumented)
 
         IntParamCount (`~.int`):
             (undocumented)
     """
-    _LLVMTargetExtTypeInContext__retval = LLVMTypeRef.from_value(ccore.LLVMTargetExtTypeInContext(
+    _LLVMTargetExtTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMTargetExtTypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr,Name,
-        <ccore.LLVMTypeRef*>rocm.llvm._util.Pointer.from_pyobj(TypeParams)._ptr,TypeParamCount,
-        <unsigned int *>rocm.llvm._util.ListOfUnsigned.from_pyobj(IntParams)._ptr,IntParamCount))    # fully specified
+        <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(TypeParams)._ptr,TypeParamCount,
+        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(IntParams)._ptr,IntParamCount))    # fully specified
     return (_LLVMTargetExtTypeInContext__retval,)
 
 
@@ -4384,7 +4384,7 @@ def LLVMTypeOf(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMTypeOf__retval = LLVMTypeRef.from_value(ccore.LLVMTypeOf(
+    _LLVMTypeOf__retval = LLVMOpaqueType.from_ptr(ccore.LLVMTypeOf(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMTypeOf__retval,)
 
@@ -4425,7 +4425,7 @@ def LLVMGetValueName2(object Val, object Length):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Length (`~.rocm.llvm._util.ListOfUnsignedLong`/`~.object`):
+        Length (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
             (undocumented)
 
     Returns:
@@ -4435,7 +4435,7 @@ def LLVMGetValueName2(object Val, object Length):
     """
     cdef const char * _LLVMGetValueName2__retval = ccore.LLVMGetValueName2(
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        <unsigned long *>rocm.llvm._util.ListOfUnsignedLong.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(Length)._ptr)    # fully specified
     return (_LLVMGetValueName2__retval,)
 
 
@@ -4592,7 +4592,7 @@ def LLVMIsAArgument(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAArgument__retval = LLVMValueRef.from_value(ccore.LLVMIsAArgument(
+    _LLVMIsAArgument__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAArgument(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAArgument__retval,)
 
@@ -4605,7 +4605,7 @@ def LLVMIsABasicBlock(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsABasicBlock__retval = LLVMValueRef.from_value(ccore.LLVMIsABasicBlock(
+    _LLVMIsABasicBlock__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsABasicBlock(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsABasicBlock__retval,)
 
@@ -4618,7 +4618,7 @@ def LLVMIsAInlineAsm(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAInlineAsm__retval = LLVMValueRef.from_value(ccore.LLVMIsAInlineAsm(
+    _LLVMIsAInlineAsm__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAInlineAsm(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAInlineAsm__retval,)
 
@@ -4631,7 +4631,7 @@ def LLVMIsAUser(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAUser__retval = LLVMValueRef.from_value(ccore.LLVMIsAUser(
+    _LLVMIsAUser__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAUser(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAUser__retval,)
 
@@ -4644,7 +4644,7 @@ def LLVMIsAConstant(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAConstant__retval = LLVMValueRef.from_value(ccore.LLVMIsAConstant(
+    _LLVMIsAConstant__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstant(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAConstant__retval,)
 
@@ -4657,7 +4657,7 @@ def LLVMIsABlockAddress(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsABlockAddress__retval = LLVMValueRef.from_value(ccore.LLVMIsABlockAddress(
+    _LLVMIsABlockAddress__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsABlockAddress(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsABlockAddress__retval,)
 
@@ -4670,7 +4670,7 @@ def LLVMIsAConstantAggregateZero(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAConstantAggregateZero__retval = LLVMValueRef.from_value(ccore.LLVMIsAConstantAggregateZero(
+    _LLVMIsAConstantAggregateZero__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantAggregateZero(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAConstantAggregateZero__retval,)
 
@@ -4683,7 +4683,7 @@ def LLVMIsAConstantArray(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAConstantArray__retval = LLVMValueRef.from_value(ccore.LLVMIsAConstantArray(
+    _LLVMIsAConstantArray__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantArray(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAConstantArray__retval,)
 
@@ -4696,7 +4696,7 @@ def LLVMIsAConstantDataSequential(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAConstantDataSequential__retval = LLVMValueRef.from_value(ccore.LLVMIsAConstantDataSequential(
+    _LLVMIsAConstantDataSequential__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantDataSequential(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAConstantDataSequential__retval,)
 
@@ -4709,7 +4709,7 @@ def LLVMIsAConstantDataArray(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAConstantDataArray__retval = LLVMValueRef.from_value(ccore.LLVMIsAConstantDataArray(
+    _LLVMIsAConstantDataArray__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantDataArray(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAConstantDataArray__retval,)
 
@@ -4722,7 +4722,7 @@ def LLVMIsAConstantDataVector(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAConstantDataVector__retval = LLVMValueRef.from_value(ccore.LLVMIsAConstantDataVector(
+    _LLVMIsAConstantDataVector__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantDataVector(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAConstantDataVector__retval,)
 
@@ -4735,7 +4735,7 @@ def LLVMIsAConstantExpr(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAConstantExpr__retval = LLVMValueRef.from_value(ccore.LLVMIsAConstantExpr(
+    _LLVMIsAConstantExpr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantExpr(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAConstantExpr__retval,)
 
@@ -4748,7 +4748,7 @@ def LLVMIsAConstantFP(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAConstantFP__retval = LLVMValueRef.from_value(ccore.LLVMIsAConstantFP(
+    _LLVMIsAConstantFP__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantFP(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAConstantFP__retval,)
 
@@ -4761,7 +4761,7 @@ def LLVMIsAConstantInt(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAConstantInt__retval = LLVMValueRef.from_value(ccore.LLVMIsAConstantInt(
+    _LLVMIsAConstantInt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantInt(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAConstantInt__retval,)
 
@@ -4774,7 +4774,7 @@ def LLVMIsAConstantPointerNull(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAConstantPointerNull__retval = LLVMValueRef.from_value(ccore.LLVMIsAConstantPointerNull(
+    _LLVMIsAConstantPointerNull__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantPointerNull(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAConstantPointerNull__retval,)
 
@@ -4787,7 +4787,7 @@ def LLVMIsAConstantStruct(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAConstantStruct__retval = LLVMValueRef.from_value(ccore.LLVMIsAConstantStruct(
+    _LLVMIsAConstantStruct__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantStruct(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAConstantStruct__retval,)
 
@@ -4800,7 +4800,7 @@ def LLVMIsAConstantTokenNone(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAConstantTokenNone__retval = LLVMValueRef.from_value(ccore.LLVMIsAConstantTokenNone(
+    _LLVMIsAConstantTokenNone__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantTokenNone(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAConstantTokenNone__retval,)
 
@@ -4813,7 +4813,7 @@ def LLVMIsAConstantVector(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAConstantVector__retval = LLVMValueRef.from_value(ccore.LLVMIsAConstantVector(
+    _LLVMIsAConstantVector__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantVector(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAConstantVector__retval,)
 
@@ -4826,7 +4826,7 @@ def LLVMIsAGlobalValue(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAGlobalValue__retval = LLVMValueRef.from_value(ccore.LLVMIsAGlobalValue(
+    _LLVMIsAGlobalValue__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAGlobalValue(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAGlobalValue__retval,)
 
@@ -4839,7 +4839,7 @@ def LLVMIsAGlobalAlias(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAGlobalAlias__retval = LLVMValueRef.from_value(ccore.LLVMIsAGlobalAlias(
+    _LLVMIsAGlobalAlias__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAGlobalAlias(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAGlobalAlias__retval,)
 
@@ -4852,7 +4852,7 @@ def LLVMIsAGlobalObject(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAGlobalObject__retval = LLVMValueRef.from_value(ccore.LLVMIsAGlobalObject(
+    _LLVMIsAGlobalObject__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAGlobalObject(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAGlobalObject__retval,)
 
@@ -4865,7 +4865,7 @@ def LLVMIsAFunction(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAFunction__retval = LLVMValueRef.from_value(ccore.LLVMIsAFunction(
+    _LLVMIsAFunction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAFunction(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAFunction__retval,)
 
@@ -4878,7 +4878,7 @@ def LLVMIsAGlobalVariable(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAGlobalVariable__retval = LLVMValueRef.from_value(ccore.LLVMIsAGlobalVariable(
+    _LLVMIsAGlobalVariable__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAGlobalVariable(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAGlobalVariable__retval,)
 
@@ -4891,7 +4891,7 @@ def LLVMIsAGlobalIFunc(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAGlobalIFunc__retval = LLVMValueRef.from_value(ccore.LLVMIsAGlobalIFunc(
+    _LLVMIsAGlobalIFunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAGlobalIFunc(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAGlobalIFunc__retval,)
 
@@ -4904,7 +4904,7 @@ def LLVMIsAUndefValue(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAUndefValue__retval = LLVMValueRef.from_value(ccore.LLVMIsAUndefValue(
+    _LLVMIsAUndefValue__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAUndefValue(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAUndefValue__retval,)
 
@@ -4917,7 +4917,7 @@ def LLVMIsAPoisonValue(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAPoisonValue__retval = LLVMValueRef.from_value(ccore.LLVMIsAPoisonValue(
+    _LLVMIsAPoisonValue__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAPoisonValue(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAPoisonValue__retval,)
 
@@ -4930,7 +4930,7 @@ def LLVMIsAInstruction(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAInstruction__retval = LLVMValueRef.from_value(ccore.LLVMIsAInstruction(
+    _LLVMIsAInstruction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAInstruction(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAInstruction__retval,)
 
@@ -4943,7 +4943,7 @@ def LLVMIsAUnaryOperator(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAUnaryOperator__retval = LLVMValueRef.from_value(ccore.LLVMIsAUnaryOperator(
+    _LLVMIsAUnaryOperator__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAUnaryOperator(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAUnaryOperator__retval,)
 
@@ -4956,7 +4956,7 @@ def LLVMIsABinaryOperator(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsABinaryOperator__retval = LLVMValueRef.from_value(ccore.LLVMIsABinaryOperator(
+    _LLVMIsABinaryOperator__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsABinaryOperator(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsABinaryOperator__retval,)
 
@@ -4969,7 +4969,7 @@ def LLVMIsACallInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsACallInst__retval = LLVMValueRef.from_value(ccore.LLVMIsACallInst(
+    _LLVMIsACallInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsACallInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsACallInst__retval,)
 
@@ -4982,7 +4982,7 @@ def LLVMIsAIntrinsicInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAIntrinsicInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAIntrinsicInst(
+    _LLVMIsAIntrinsicInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAIntrinsicInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAIntrinsicInst__retval,)
 
@@ -4995,7 +4995,7 @@ def LLVMIsADbgInfoIntrinsic(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsADbgInfoIntrinsic__retval = LLVMValueRef.from_value(ccore.LLVMIsADbgInfoIntrinsic(
+    _LLVMIsADbgInfoIntrinsic__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsADbgInfoIntrinsic(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsADbgInfoIntrinsic__retval,)
 
@@ -5008,7 +5008,7 @@ def LLVMIsADbgVariableIntrinsic(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsADbgVariableIntrinsic__retval = LLVMValueRef.from_value(ccore.LLVMIsADbgVariableIntrinsic(
+    _LLVMIsADbgVariableIntrinsic__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsADbgVariableIntrinsic(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsADbgVariableIntrinsic__retval,)
 
@@ -5021,7 +5021,7 @@ def LLVMIsADbgDeclareInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsADbgDeclareInst__retval = LLVMValueRef.from_value(ccore.LLVMIsADbgDeclareInst(
+    _LLVMIsADbgDeclareInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsADbgDeclareInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsADbgDeclareInst__retval,)
 
@@ -5034,7 +5034,7 @@ def LLVMIsADbgLabelInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsADbgLabelInst__retval = LLVMValueRef.from_value(ccore.LLVMIsADbgLabelInst(
+    _LLVMIsADbgLabelInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsADbgLabelInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsADbgLabelInst__retval,)
 
@@ -5047,7 +5047,7 @@ def LLVMIsAMemIntrinsic(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAMemIntrinsic__retval = LLVMValueRef.from_value(ccore.LLVMIsAMemIntrinsic(
+    _LLVMIsAMemIntrinsic__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAMemIntrinsic(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAMemIntrinsic__retval,)
 
@@ -5060,7 +5060,7 @@ def LLVMIsAMemCpyInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAMemCpyInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAMemCpyInst(
+    _LLVMIsAMemCpyInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAMemCpyInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAMemCpyInst__retval,)
 
@@ -5073,7 +5073,7 @@ def LLVMIsAMemMoveInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAMemMoveInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAMemMoveInst(
+    _LLVMIsAMemMoveInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAMemMoveInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAMemMoveInst__retval,)
 
@@ -5086,7 +5086,7 @@ def LLVMIsAMemSetInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAMemSetInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAMemSetInst(
+    _LLVMIsAMemSetInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAMemSetInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAMemSetInst__retval,)
 
@@ -5099,7 +5099,7 @@ def LLVMIsACmpInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsACmpInst__retval = LLVMValueRef.from_value(ccore.LLVMIsACmpInst(
+    _LLVMIsACmpInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsACmpInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsACmpInst__retval,)
 
@@ -5112,7 +5112,7 @@ def LLVMIsAFCmpInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAFCmpInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAFCmpInst(
+    _LLVMIsAFCmpInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAFCmpInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAFCmpInst__retval,)
 
@@ -5125,7 +5125,7 @@ def LLVMIsAICmpInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAICmpInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAICmpInst(
+    _LLVMIsAICmpInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAICmpInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAICmpInst__retval,)
 
@@ -5138,7 +5138,7 @@ def LLVMIsAExtractElementInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAExtractElementInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAExtractElementInst(
+    _LLVMIsAExtractElementInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAExtractElementInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAExtractElementInst__retval,)
 
@@ -5151,7 +5151,7 @@ def LLVMIsAGetElementPtrInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAGetElementPtrInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAGetElementPtrInst(
+    _LLVMIsAGetElementPtrInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAGetElementPtrInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAGetElementPtrInst__retval,)
 
@@ -5164,7 +5164,7 @@ def LLVMIsAInsertElementInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAInsertElementInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAInsertElementInst(
+    _LLVMIsAInsertElementInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAInsertElementInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAInsertElementInst__retval,)
 
@@ -5177,7 +5177,7 @@ def LLVMIsAInsertValueInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAInsertValueInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAInsertValueInst(
+    _LLVMIsAInsertValueInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAInsertValueInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAInsertValueInst__retval,)
 
@@ -5190,7 +5190,7 @@ def LLVMIsALandingPadInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsALandingPadInst__retval = LLVMValueRef.from_value(ccore.LLVMIsALandingPadInst(
+    _LLVMIsALandingPadInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsALandingPadInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsALandingPadInst__retval,)
 
@@ -5203,7 +5203,7 @@ def LLVMIsAPHINode(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAPHINode__retval = LLVMValueRef.from_value(ccore.LLVMIsAPHINode(
+    _LLVMIsAPHINode__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAPHINode(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAPHINode__retval,)
 
@@ -5216,7 +5216,7 @@ def LLVMIsASelectInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsASelectInst__retval = LLVMValueRef.from_value(ccore.LLVMIsASelectInst(
+    _LLVMIsASelectInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsASelectInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsASelectInst__retval,)
 
@@ -5229,7 +5229,7 @@ def LLVMIsAShuffleVectorInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAShuffleVectorInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAShuffleVectorInst(
+    _LLVMIsAShuffleVectorInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAShuffleVectorInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAShuffleVectorInst__retval,)
 
@@ -5242,7 +5242,7 @@ def LLVMIsAStoreInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAStoreInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAStoreInst(
+    _LLVMIsAStoreInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAStoreInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAStoreInst__retval,)
 
@@ -5255,7 +5255,7 @@ def LLVMIsABranchInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsABranchInst__retval = LLVMValueRef.from_value(ccore.LLVMIsABranchInst(
+    _LLVMIsABranchInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsABranchInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsABranchInst__retval,)
 
@@ -5268,7 +5268,7 @@ def LLVMIsAIndirectBrInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAIndirectBrInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAIndirectBrInst(
+    _LLVMIsAIndirectBrInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAIndirectBrInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAIndirectBrInst__retval,)
 
@@ -5281,7 +5281,7 @@ def LLVMIsAInvokeInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAInvokeInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAInvokeInst(
+    _LLVMIsAInvokeInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAInvokeInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAInvokeInst__retval,)
 
@@ -5294,7 +5294,7 @@ def LLVMIsAReturnInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAReturnInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAReturnInst(
+    _LLVMIsAReturnInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAReturnInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAReturnInst__retval,)
 
@@ -5307,7 +5307,7 @@ def LLVMIsASwitchInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsASwitchInst__retval = LLVMValueRef.from_value(ccore.LLVMIsASwitchInst(
+    _LLVMIsASwitchInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsASwitchInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsASwitchInst__retval,)
 
@@ -5320,7 +5320,7 @@ def LLVMIsAUnreachableInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAUnreachableInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAUnreachableInst(
+    _LLVMIsAUnreachableInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAUnreachableInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAUnreachableInst__retval,)
 
@@ -5333,7 +5333,7 @@ def LLVMIsAResumeInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAResumeInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAResumeInst(
+    _LLVMIsAResumeInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAResumeInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAResumeInst__retval,)
 
@@ -5346,7 +5346,7 @@ def LLVMIsACleanupReturnInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsACleanupReturnInst__retval = LLVMValueRef.from_value(ccore.LLVMIsACleanupReturnInst(
+    _LLVMIsACleanupReturnInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsACleanupReturnInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsACleanupReturnInst__retval,)
 
@@ -5359,7 +5359,7 @@ def LLVMIsACatchReturnInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsACatchReturnInst__retval = LLVMValueRef.from_value(ccore.LLVMIsACatchReturnInst(
+    _LLVMIsACatchReturnInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsACatchReturnInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsACatchReturnInst__retval,)
 
@@ -5372,7 +5372,7 @@ def LLVMIsACatchSwitchInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsACatchSwitchInst__retval = LLVMValueRef.from_value(ccore.LLVMIsACatchSwitchInst(
+    _LLVMIsACatchSwitchInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsACatchSwitchInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsACatchSwitchInst__retval,)
 
@@ -5385,7 +5385,7 @@ def LLVMIsACallBrInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsACallBrInst__retval = LLVMValueRef.from_value(ccore.LLVMIsACallBrInst(
+    _LLVMIsACallBrInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsACallBrInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsACallBrInst__retval,)
 
@@ -5398,7 +5398,7 @@ def LLVMIsAFuncletPadInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAFuncletPadInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAFuncletPadInst(
+    _LLVMIsAFuncletPadInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAFuncletPadInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAFuncletPadInst__retval,)
 
@@ -5411,7 +5411,7 @@ def LLVMIsACatchPadInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsACatchPadInst__retval = LLVMValueRef.from_value(ccore.LLVMIsACatchPadInst(
+    _LLVMIsACatchPadInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsACatchPadInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsACatchPadInst__retval,)
 
@@ -5424,7 +5424,7 @@ def LLVMIsACleanupPadInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsACleanupPadInst__retval = LLVMValueRef.from_value(ccore.LLVMIsACleanupPadInst(
+    _LLVMIsACleanupPadInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsACleanupPadInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsACleanupPadInst__retval,)
 
@@ -5437,7 +5437,7 @@ def LLVMIsAUnaryInstruction(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAUnaryInstruction__retval = LLVMValueRef.from_value(ccore.LLVMIsAUnaryInstruction(
+    _LLVMIsAUnaryInstruction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAUnaryInstruction(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAUnaryInstruction__retval,)
 
@@ -5450,7 +5450,7 @@ def LLVMIsAAllocaInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAAllocaInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAAllocaInst(
+    _LLVMIsAAllocaInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAAllocaInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAAllocaInst__retval,)
 
@@ -5463,7 +5463,7 @@ def LLVMIsACastInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsACastInst__retval = LLVMValueRef.from_value(ccore.LLVMIsACastInst(
+    _LLVMIsACastInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsACastInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsACastInst__retval,)
 
@@ -5476,7 +5476,7 @@ def LLVMIsAAddrSpaceCastInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAAddrSpaceCastInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAAddrSpaceCastInst(
+    _LLVMIsAAddrSpaceCastInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAAddrSpaceCastInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAAddrSpaceCastInst__retval,)
 
@@ -5489,7 +5489,7 @@ def LLVMIsABitCastInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsABitCastInst__retval = LLVMValueRef.from_value(ccore.LLVMIsABitCastInst(
+    _LLVMIsABitCastInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsABitCastInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsABitCastInst__retval,)
 
@@ -5502,7 +5502,7 @@ def LLVMIsAFPExtInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAFPExtInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAFPExtInst(
+    _LLVMIsAFPExtInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAFPExtInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAFPExtInst__retval,)
 
@@ -5515,7 +5515,7 @@ def LLVMIsAFPToSIInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAFPToSIInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAFPToSIInst(
+    _LLVMIsAFPToSIInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAFPToSIInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAFPToSIInst__retval,)
 
@@ -5528,7 +5528,7 @@ def LLVMIsAFPToUIInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAFPToUIInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAFPToUIInst(
+    _LLVMIsAFPToUIInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAFPToUIInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAFPToUIInst__retval,)
 
@@ -5541,7 +5541,7 @@ def LLVMIsAFPTruncInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAFPTruncInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAFPTruncInst(
+    _LLVMIsAFPTruncInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAFPTruncInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAFPTruncInst__retval,)
 
@@ -5554,7 +5554,7 @@ def LLVMIsAIntToPtrInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAIntToPtrInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAIntToPtrInst(
+    _LLVMIsAIntToPtrInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAIntToPtrInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAIntToPtrInst__retval,)
 
@@ -5567,7 +5567,7 @@ def LLVMIsAPtrToIntInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAPtrToIntInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAPtrToIntInst(
+    _LLVMIsAPtrToIntInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAPtrToIntInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAPtrToIntInst__retval,)
 
@@ -5580,7 +5580,7 @@ def LLVMIsASExtInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsASExtInst__retval = LLVMValueRef.from_value(ccore.LLVMIsASExtInst(
+    _LLVMIsASExtInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsASExtInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsASExtInst__retval,)
 
@@ -5593,7 +5593,7 @@ def LLVMIsASIToFPInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsASIToFPInst__retval = LLVMValueRef.from_value(ccore.LLVMIsASIToFPInst(
+    _LLVMIsASIToFPInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsASIToFPInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsASIToFPInst__retval,)
 
@@ -5606,7 +5606,7 @@ def LLVMIsATruncInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsATruncInst__retval = LLVMValueRef.from_value(ccore.LLVMIsATruncInst(
+    _LLVMIsATruncInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsATruncInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsATruncInst__retval,)
 
@@ -5619,7 +5619,7 @@ def LLVMIsAUIToFPInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAUIToFPInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAUIToFPInst(
+    _LLVMIsAUIToFPInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAUIToFPInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAUIToFPInst__retval,)
 
@@ -5632,7 +5632,7 @@ def LLVMIsAZExtInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAZExtInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAZExtInst(
+    _LLVMIsAZExtInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAZExtInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAZExtInst__retval,)
 
@@ -5645,7 +5645,7 @@ def LLVMIsAExtractValueInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAExtractValueInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAExtractValueInst(
+    _LLVMIsAExtractValueInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAExtractValueInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAExtractValueInst__retval,)
 
@@ -5658,7 +5658,7 @@ def LLVMIsALoadInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsALoadInst__retval = LLVMValueRef.from_value(ccore.LLVMIsALoadInst(
+    _LLVMIsALoadInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsALoadInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsALoadInst__retval,)
 
@@ -5671,7 +5671,7 @@ def LLVMIsAVAArgInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAVAArgInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAVAArgInst(
+    _LLVMIsAVAArgInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAVAArgInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAVAArgInst__retval,)
 
@@ -5684,7 +5684,7 @@ def LLVMIsAFreezeInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAFreezeInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAFreezeInst(
+    _LLVMIsAFreezeInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAFreezeInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAFreezeInst__retval,)
 
@@ -5697,7 +5697,7 @@ def LLVMIsAAtomicCmpXchgInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAAtomicCmpXchgInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAAtomicCmpXchgInst(
+    _LLVMIsAAtomicCmpXchgInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAAtomicCmpXchgInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAAtomicCmpXchgInst__retval,)
 
@@ -5710,7 +5710,7 @@ def LLVMIsAAtomicRMWInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAAtomicRMWInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAAtomicRMWInst(
+    _LLVMIsAAtomicRMWInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAAtomicRMWInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAAtomicRMWInst__retval,)
 
@@ -5723,7 +5723,7 @@ def LLVMIsAFenceInst(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAFenceInst__retval = LLVMValueRef.from_value(ccore.LLVMIsAFenceInst(
+    _LLVMIsAFenceInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAFenceInst(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAFenceInst__retval,)
 
@@ -5736,7 +5736,7 @@ def LLVMIsAMDNode(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAMDNode__retval = LLVMValueRef.from_value(ccore.LLVMIsAMDNode(
+    _LLVMIsAMDNode__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAMDNode(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAMDNode__retval,)
 
@@ -5749,7 +5749,7 @@ def LLVMIsAMDString(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsAMDString__retval = LLVMValueRef.from_value(ccore.LLVMIsAMDString(
+    _LLVMIsAMDString__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAMDString(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMIsAMDString__retval,)
 
@@ -5809,7 +5809,7 @@ def LLVMGetFirstUse(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetFirstUse__retval = LLVMUseRef.from_value(ccore.LLVMGetFirstUse(
+    _LLVMGetFirstUse__retval = LLVMOpaqueUse.from_ptr(ccore.LLVMGetFirstUse(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMGetFirstUse__retval,)
 
@@ -5827,7 +5827,7 @@ def LLVMGetNextUse(object U):
         U (`~.LLVMOpaqueUse`/`~.object`):
             (undocumented)
     """
-    _LLVMGetNextUse__retval = LLVMUseRef.from_value(ccore.LLVMGetNextUse(
+    _LLVMGetNextUse__retval = LLVMOpaqueUse.from_ptr(ccore.LLVMGetNextUse(
         LLVMOpaqueUse.from_pyobj(U)._ptr))    # fully specified
     return (_LLVMGetNextUse__retval,)
 
@@ -5847,7 +5847,7 @@ def LLVMGetUser(object U):
         U (`~.LLVMOpaqueUse`/`~.object`):
             (undocumented)
     """
-    _LLVMGetUser__retval = LLVMValueRef.from_value(ccore.LLVMGetUser(
+    _LLVMGetUser__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetUser(
         LLVMOpaqueUse.from_pyobj(U)._ptr))    # fully specified
     return (_LLVMGetUser__retval,)
 
@@ -5865,7 +5865,7 @@ def LLVMGetUsedValue(object U):
         U (`~.LLVMOpaqueUse`/`~.object`):
             (undocumented)
     """
-    _LLVMGetUsedValue__retval = LLVMValueRef.from_value(ccore.LLVMGetUsedValue(
+    _LLVMGetUsedValue__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetUsedValue(
         LLVMOpaqueUse.from_pyobj(U)._ptr))    # fully specified
     return (_LLVMGetUsedValue__retval,)
 
@@ -5886,7 +5886,7 @@ def LLVMGetOperand(object Val, unsigned int Index):
         Index (`~.int`):
             (undocumented)
     """
-    _LLVMGetOperand__retval = LLVMValueRef.from_value(ccore.LLVMGetOperand(
+    _LLVMGetOperand__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetOperand(
         LLVMOpaqueValue.from_pyobj(Val)._ptr,Index))    # fully specified
     return (_LLVMGetOperand__retval,)
 
@@ -5907,7 +5907,7 @@ def LLVMGetOperandUse(object Val, unsigned int Index):
         Index (`~.int`):
             (undocumented)
     """
-    _LLVMGetOperandUse__retval = LLVMUseRef.from_value(ccore.LLVMGetOperandUse(
+    _LLVMGetOperandUse__retval = LLVMOpaqueUse.from_ptr(ccore.LLVMGetOperandUse(
         LLVMOpaqueValue.from_pyobj(Val)._ptr,Index))    # fully specified
     return (_LLVMGetOperandUse__retval,)
 
@@ -5972,7 +5972,7 @@ def LLVMConstNull(object Ty):
         Ty (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMConstNull__retval = LLVMValueRef.from_value(ccore.LLVMConstNull(
+    _LLVMConstNull__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNull(
         LLVMOpaqueType.from_pyobj(Ty)._ptr))    # fully specified
     return (_LLVMConstNull__retval,)
 
@@ -5993,7 +5993,7 @@ def LLVMConstAllOnes(object Ty):
         Ty (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMConstAllOnes__retval = LLVMValueRef.from_value(ccore.LLVMConstAllOnes(
+    _LLVMConstAllOnes__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstAllOnes(
         LLVMOpaqueType.from_pyobj(Ty)._ptr))    # fully specified
     return (_LLVMConstAllOnes__retval,)
 
@@ -6011,7 +6011,7 @@ def LLVMGetUndef(object Ty):
         Ty (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMGetUndef__retval = LLVMValueRef.from_value(ccore.LLVMGetUndef(
+    _LLVMGetUndef__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetUndef(
         LLVMOpaqueType.from_pyobj(Ty)._ptr))    # fully specified
     return (_LLVMGetUndef__retval,)
 
@@ -6029,7 +6029,7 @@ def LLVMGetPoison(object Ty):
         Ty (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMGetPoison__retval = LLVMValueRef.from_value(ccore.LLVMGetPoison(
+    _LLVMGetPoison__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetPoison(
         LLVMOpaqueType.from_pyobj(Ty)._ptr))    # fully specified
     return (_LLVMGetPoison__retval,)
 
@@ -6068,7 +6068,7 @@ def LLVMConstPointerNull(object Ty):
         Ty (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMConstPointerNull__retval = LLVMValueRef.from_value(ccore.LLVMConstPointerNull(
+    _LLVMConstPointerNull__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstPointerNull(
         LLVMOpaqueType.from_pyobj(Ty)._ptr))    # fully specified
     return (_LLVMConstPointerNull__retval,)
 
@@ -6094,7 +6094,7 @@ def LLVMConstInt(object IntTy, unsigned long long N, int SignExtend):
         SignExtend (`~.int`):
             Whether to sign extend the produced value.
     """
-    _LLVMConstInt__retval = LLVMValueRef.from_value(ccore.LLVMConstInt(
+    _LLVMConstInt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstInt(
         LLVMOpaqueType.from_pyobj(IntTy)._ptr,N,SignExtend))    # fully specified
     return (_LLVMConstInt__retval,)
 
@@ -6115,12 +6115,12 @@ def LLVMConstIntOfArbitraryPrecision(object IntTy, unsigned int NumWords, object
         NumWords (`~.int`):
             (undocumented)
 
-        Words (`~.rocm.llvm._util.ListOfUnsignedLong`/`~.object`):
+        Words (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
             (undocumented)
     """
-    _LLVMConstIntOfArbitraryPrecision__retval = LLVMValueRef.from_value(ccore.LLVMConstIntOfArbitraryPrecision(
+    _LLVMConstIntOfArbitraryPrecision__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstIntOfArbitraryPrecision(
         LLVMOpaqueType.from_pyobj(IntTy)._ptr,NumWords,
-        <const unsigned long*>rocm.llvm._util.ListOfUnsignedLong.from_pyobj(Words)._ptr))    # fully specified
+        <const unsigned long*>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(Words)._ptr))    # fully specified
     return (_LLVMConstIntOfArbitraryPrecision__retval,)
 
 
@@ -6147,7 +6147,7 @@ def LLVMConstIntOfString(object IntTy, const char * Text, unsigned char Radix):
         Radix (`~.int`):
             (undocumented)
     """
-    _LLVMConstIntOfString__retval = LLVMValueRef.from_value(ccore.LLVMConstIntOfString(
+    _LLVMConstIntOfString__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstIntOfString(
         LLVMOpaqueType.from_pyobj(IntTy)._ptr,Text,Radix))    # fully specified
     return (_LLVMConstIntOfString__retval,)
 
@@ -6175,7 +6175,7 @@ def LLVMConstIntOfStringAndSize(object IntTy, const char * Text, unsigned int SL
         Radix (`~.int`):
             (undocumented)
     """
-    _LLVMConstIntOfStringAndSize__retval = LLVMValueRef.from_value(ccore.LLVMConstIntOfStringAndSize(
+    _LLVMConstIntOfStringAndSize__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstIntOfStringAndSize(
         LLVMOpaqueType.from_pyobj(IntTy)._ptr,Text,SLen,Radix))    # fully specified
     return (_LLVMConstIntOfStringAndSize__retval,)
 
@@ -6193,7 +6193,7 @@ def LLVMConstReal(object RealTy, double N):
         N (`~.float`/`~.int`):
             (undocumented)
     """
-    _LLVMConstReal__retval = LLVMValueRef.from_value(ccore.LLVMConstReal(
+    _LLVMConstReal__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstReal(
         LLVMOpaqueType.from_pyobj(RealTy)._ptr,N))    # fully specified
     return (_LLVMConstReal__retval,)
 
@@ -6214,7 +6214,7 @@ def LLVMConstRealOfString(object RealTy, const char * Text):
         Text (`~.bytes`):
             (undocumented)
     """
-    _LLVMConstRealOfString__retval = LLVMValueRef.from_value(ccore.LLVMConstRealOfString(
+    _LLVMConstRealOfString__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstRealOfString(
         LLVMOpaqueType.from_pyobj(RealTy)._ptr,Text))    # fully specified
     return (_LLVMConstRealOfString__retval,)
 
@@ -6235,7 +6235,7 @@ def LLVMConstRealOfStringAndSize(object RealTy, const char * Text, unsigned int 
         SLen (`~.int`):
             (undocumented)
     """
-    _LLVMConstRealOfStringAndSize__retval = LLVMValueRef.from_value(ccore.LLVMConstRealOfStringAndSize(
+    _LLVMConstRealOfStringAndSize__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstRealOfStringAndSize(
         LLVMOpaqueType.from_pyobj(RealTy)._ptr,Text,SLen))    # fully specified
     return (_LLVMConstRealOfStringAndSize__retval,)
 
@@ -6300,7 +6300,7 @@ def LLVMConstRealGetDouble(object ConstantVal, object losesInfo):
         ConstantVal (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        losesInfo (`~.rocm.llvm._util.ListOfInt`/`~.object`):
+        losesInfo (`~.rocm.llvm._util.types.ListOfInt`/`~.object`):
             (undocumented)
 
     Returns:
@@ -6310,7 +6310,7 @@ def LLVMConstRealGetDouble(object ConstantVal, object losesInfo):
     """
     cdef double _LLVMConstRealGetDouble__retval = ccore.LLVMConstRealGetDouble(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        <int *>rocm.llvm._util.ListOfInt.from_pyobj(losesInfo)._ptr)    # fully specified
+        <int *>rocm.llvm._util.types.ListOfInt.from_pyobj(losesInfo)._ptr)    # fully specified
     return (_LLVMConstRealGetDouble__retval,)
 
 
@@ -6336,7 +6336,7 @@ def LLVMConstStringInContext(object C, const char * Str, unsigned int Length, in
         DontNullTerminate (`~.int`):
             (undocumented)
     """
-    _LLVMConstStringInContext__retval = LLVMValueRef.from_value(ccore.LLVMConstStringInContext(
+    _LLVMConstStringInContext__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstStringInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr,Str,Length,DontNullTerminate))    # fully specified
     return (_LLVMConstStringInContext__retval,)
 
@@ -6366,7 +6366,7 @@ def LLVMConstString(const char * Str, unsigned int Length, int DontNullTerminate
         DontNullTerminate (`~.int`):
             (undocumented)
     """
-    _LLVMConstString__retval = LLVMValueRef.from_value(ccore.LLVMConstString(Str,Length,DontNullTerminate))    # fully specified
+    _LLVMConstString__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstString(Str,Length,DontNullTerminate))    # fully specified
     return (_LLVMConstString__retval,)
 
 
@@ -6406,7 +6406,7 @@ def LLVMGetAsString(object c, object Length):
         c (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Length (`~.rocm.llvm._util.ListOfUnsignedLong`/`~.object`):
+        Length (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
             (undocumented)
 
     Returns:
@@ -6416,7 +6416,7 @@ def LLVMGetAsString(object c, object Length):
     """
     cdef const char * _LLVMGetAsString__retval = ccore.LLVMGetAsString(
         LLVMOpaqueValue.from_pyobj(c)._ptr,
-        <unsigned long *>rocm.llvm._util.ListOfUnsignedLong.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(Length)._ptr)    # fully specified
     return (_LLVMGetAsString__retval,)
 
 
@@ -6433,7 +6433,7 @@ def LLVMConstStructInContext(object C, object ConstantVals, unsigned int Count, 
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
 
-        ConstantVals (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ConstantVals (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         Count (`~.int`):
@@ -6442,9 +6442,9 @@ def LLVMConstStructInContext(object C, object ConstantVals, unsigned int Count, 
         Packed (`~.int`):
             (undocumented)
     """
-    _LLVMConstStructInContext__retval = LLVMValueRef.from_value(ccore.LLVMConstStructInContext(
+    _LLVMConstStructInContext__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstStructInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr,
-        <ccore.LLVMValueRef*>rocm.llvm._util.Pointer.from_pyobj(ConstantVals)._ptr,Count,Packed))    # fully specified
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(ConstantVals)._ptr,Count,Packed))    # fully specified
     return (_LLVMConstStructInContext__retval,)
 
 
@@ -6461,7 +6461,7 @@ def LLVMConstStruct(object ConstantVals, unsigned int Count, int Packed):
         `~.LLVMConstStructInContext`()
 
     Args:
-        ConstantVals (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ConstantVals (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         Count (`~.int`):
@@ -6470,8 +6470,8 @@ def LLVMConstStruct(object ConstantVals, unsigned int Count, int Packed):
         Packed (`~.int`):
             (undocumented)
     """
-    _LLVMConstStruct__retval = LLVMValueRef.from_value(ccore.LLVMConstStruct(
-        <ccore.LLVMValueRef*>rocm.llvm._util.Pointer.from_pyobj(ConstantVals)._ptr,Count,Packed))    # fully specified
+    _LLVMConstStruct__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstStruct(
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(ConstantVals)._ptr,Count,Packed))    # fully specified
     return (_LLVMConstStruct__retval,)
 
 
@@ -6488,15 +6488,15 @@ def LLVMConstArray(object ElementTy, object ConstantVals, unsigned int Length):
         ElementTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        ConstantVals (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ConstantVals (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         Length (`~.int`):
             (undocumented)
     """
-    _LLVMConstArray__retval = LLVMValueRef.from_value(ccore.LLVMConstArray(
+    _LLVMConstArray__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstArray(
         LLVMOpaqueType.from_pyobj(ElementTy)._ptr,
-        <ccore.LLVMValueRef*>rocm.llvm._util.Pointer.from_pyobj(ConstantVals)._ptr,Length))    # fully specified
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(ConstantVals)._ptr,Length))    # fully specified
     return (_LLVMConstArray__retval,)
 
 
@@ -6513,15 +6513,15 @@ def LLVMConstNamedStruct(object StructTy, object ConstantVals, unsigned int Coun
         StructTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        ConstantVals (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ConstantVals (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         Count (`~.int`):
             (undocumented)
     """
-    _LLVMConstNamedStruct__retval = LLVMValueRef.from_value(ccore.LLVMConstNamedStruct(
+    _LLVMConstNamedStruct__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNamedStruct(
         LLVMOpaqueType.from_pyobj(StructTy)._ptr,
-        <ccore.LLVMValueRef*>rocm.llvm._util.Pointer.from_pyobj(ConstantVals)._ptr,Count))    # fully specified
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(ConstantVals)._ptr,Count))    # fully specified
     return (_LLVMConstNamedStruct__retval,)
 
 
@@ -6544,7 +6544,7 @@ def LLVMGetAggregateElement(object C, unsigned int Idx):
         Idx (`~.int`):
             (undocumented)
     """
-    _LLVMGetAggregateElement__retval = LLVMValueRef.from_value(ccore.LLVMGetAggregateElement(
+    _LLVMGetAggregateElement__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetAggregateElement(
         LLVMOpaqueValue.from_pyobj(C)._ptr,Idx))    # fully specified
     return (_LLVMGetAggregateElement__retval,)
 
@@ -6560,7 +6560,7 @@ def LLVMGetElementAsConstant(object C, unsigned int idx):
         idx (`~.int`):
             (undocumented)
     """
-    _LLVMGetElementAsConstant__retval = LLVMValueRef.from_value(ccore.LLVMGetElementAsConstant(
+    _LLVMGetElementAsConstant__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetElementAsConstant(
         LLVMOpaqueValue.from_pyobj(C)._ptr,idx))    # fully specified
     return (_LLVMGetElementAsConstant__retval,)
 
@@ -6575,14 +6575,14 @@ def LLVMConstVector(object ScalarConstantVals, unsigned int Size):
         `~.llvm``~.`~.ConstantVector`.`~.get``()
 
     Args:
-        ScalarConstantVals (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ScalarConstantVals (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         Size (`~.int`):
             (undocumented)
     """
-    _LLVMConstVector__retval = LLVMValueRef.from_value(ccore.LLVMConstVector(
-        <ccore.LLVMValueRef*>rocm.llvm._util.Pointer.from_pyobj(ScalarConstantVals)._ptr,Size))    # fully specified
+    _LLVMConstVector__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstVector(
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(ScalarConstantVals)._ptr,Size))    # fully specified
     return (_LLVMConstVector__retval,)
 
 
@@ -6619,7 +6619,7 @@ def LLVMAlignOf(object Ty):
         Ty (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMAlignOf__retval = LLVMValueRef.from_value(ccore.LLVMAlignOf(
+    _LLVMAlignOf__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMAlignOf(
         LLVMOpaqueType.from_pyobj(Ty)._ptr))    # fully specified
     return (_LLVMAlignOf__retval,)
 
@@ -6632,7 +6632,7 @@ def LLVMSizeOf(object Ty):
         Ty (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMSizeOf__retval = LLVMValueRef.from_value(ccore.LLVMSizeOf(
+    _LLVMSizeOf__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMSizeOf(
         LLVMOpaqueType.from_pyobj(Ty)._ptr))    # fully specified
     return (_LLVMSizeOf__retval,)
 
@@ -6645,7 +6645,7 @@ def LLVMConstNeg(object ConstantVal):
         ConstantVal (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstNeg__retval = LLVMValueRef.from_value(ccore.LLVMConstNeg(
+    _LLVMConstNeg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNeg(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr))    # fully specified
     return (_LLVMConstNeg__retval,)
 
@@ -6658,7 +6658,7 @@ def LLVMConstNSWNeg(object ConstantVal):
         ConstantVal (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstNSWNeg__retval = LLVMValueRef.from_value(ccore.LLVMConstNSWNeg(
+    _LLVMConstNSWNeg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNSWNeg(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr))    # fully specified
     return (_LLVMConstNSWNeg__retval,)
 
@@ -6671,7 +6671,7 @@ def LLVMConstNUWNeg(object ConstantVal):
         ConstantVal (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstNUWNeg__retval = LLVMValueRef.from_value(ccore.LLVMConstNUWNeg(
+    _LLVMConstNUWNeg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNUWNeg(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr))    # fully specified
     return (_LLVMConstNUWNeg__retval,)
 
@@ -6684,7 +6684,7 @@ def LLVMConstNot(object ConstantVal):
         ConstantVal (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstNot__retval = LLVMValueRef.from_value(ccore.LLVMConstNot(
+    _LLVMConstNot__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNot(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr))    # fully specified
     return (_LLVMConstNot__retval,)
 
@@ -6700,7 +6700,7 @@ def LLVMConstAdd(object LHSConstant, object RHSConstant):
         RHSConstant (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstAdd__retval = LLVMValueRef.from_value(ccore.LLVMConstAdd(
+    _LLVMConstAdd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstAdd(
         LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
         LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
     return (_LLVMConstAdd__retval,)
@@ -6717,7 +6717,7 @@ def LLVMConstNSWAdd(object LHSConstant, object RHSConstant):
         RHSConstant (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstNSWAdd__retval = LLVMValueRef.from_value(ccore.LLVMConstNSWAdd(
+    _LLVMConstNSWAdd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNSWAdd(
         LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
         LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
     return (_LLVMConstNSWAdd__retval,)
@@ -6734,7 +6734,7 @@ def LLVMConstNUWAdd(object LHSConstant, object RHSConstant):
         RHSConstant (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstNUWAdd__retval = LLVMValueRef.from_value(ccore.LLVMConstNUWAdd(
+    _LLVMConstNUWAdd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNUWAdd(
         LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
         LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
     return (_LLVMConstNUWAdd__retval,)
@@ -6751,7 +6751,7 @@ def LLVMConstSub(object LHSConstant, object RHSConstant):
         RHSConstant (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstSub__retval = LLVMValueRef.from_value(ccore.LLVMConstSub(
+    _LLVMConstSub__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstSub(
         LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
         LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
     return (_LLVMConstSub__retval,)
@@ -6768,7 +6768,7 @@ def LLVMConstNSWSub(object LHSConstant, object RHSConstant):
         RHSConstant (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstNSWSub__retval = LLVMValueRef.from_value(ccore.LLVMConstNSWSub(
+    _LLVMConstNSWSub__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNSWSub(
         LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
         LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
     return (_LLVMConstNSWSub__retval,)
@@ -6785,7 +6785,7 @@ def LLVMConstNUWSub(object LHSConstant, object RHSConstant):
         RHSConstant (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstNUWSub__retval = LLVMValueRef.from_value(ccore.LLVMConstNUWSub(
+    _LLVMConstNUWSub__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNUWSub(
         LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
         LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
     return (_LLVMConstNUWSub__retval,)
@@ -6802,7 +6802,7 @@ def LLVMConstMul(object LHSConstant, object RHSConstant):
         RHSConstant (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstMul__retval = LLVMValueRef.from_value(ccore.LLVMConstMul(
+    _LLVMConstMul__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstMul(
         LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
         LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
     return (_LLVMConstMul__retval,)
@@ -6819,7 +6819,7 @@ def LLVMConstNSWMul(object LHSConstant, object RHSConstant):
         RHSConstant (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstNSWMul__retval = LLVMValueRef.from_value(ccore.LLVMConstNSWMul(
+    _LLVMConstNSWMul__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNSWMul(
         LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
         LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
     return (_LLVMConstNSWMul__retval,)
@@ -6836,7 +6836,7 @@ def LLVMConstNUWMul(object LHSConstant, object RHSConstant):
         RHSConstant (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstNUWMul__retval = LLVMValueRef.from_value(ccore.LLVMConstNUWMul(
+    _LLVMConstNUWMul__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNUWMul(
         LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
         LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
     return (_LLVMConstNUWMul__retval,)
@@ -6853,7 +6853,7 @@ def LLVMConstAnd(object LHSConstant, object RHSConstant):
         RHSConstant (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstAnd__retval = LLVMValueRef.from_value(ccore.LLVMConstAnd(
+    _LLVMConstAnd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstAnd(
         LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
         LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
     return (_LLVMConstAnd__retval,)
@@ -6870,7 +6870,7 @@ def LLVMConstOr(object LHSConstant, object RHSConstant):
         RHSConstant (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstOr__retval = LLVMValueRef.from_value(ccore.LLVMConstOr(
+    _LLVMConstOr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstOr(
         LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
         LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
     return (_LLVMConstOr__retval,)
@@ -6887,7 +6887,7 @@ def LLVMConstXor(object LHSConstant, object RHSConstant):
         RHSConstant (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstXor__retval = LLVMValueRef.from_value(ccore.LLVMConstXor(
+    _LLVMConstXor__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstXor(
         LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
         LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
     return (_LLVMConstXor__retval,)
@@ -6909,7 +6909,7 @@ def LLVMConstICmp(object Predicate, object LHSConstant, object RHSConstant):
     """
     if not isinstance(Predicate,_LLVMIntPredicate__Base):
         raise TypeError("argument 'Predicate' must be of type '_LLVMIntPredicate__Base'")
-    _LLVMConstICmp__retval = LLVMValueRef.from_value(ccore.LLVMConstICmp(Predicate.value,
+    _LLVMConstICmp__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstICmp(Predicate.value,
         LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
         LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
     return (_LLVMConstICmp__retval,)
@@ -6931,7 +6931,7 @@ def LLVMConstFCmp(object Predicate, object LHSConstant, object RHSConstant):
     """
     if not isinstance(Predicate,_LLVMRealPredicate__Base):
         raise TypeError("argument 'Predicate' must be of type '_LLVMRealPredicate__Base'")
-    _LLVMConstFCmp__retval = LLVMValueRef.from_value(ccore.LLVMConstFCmp(Predicate.value,
+    _LLVMConstFCmp__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstFCmp(Predicate.value,
         LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
         LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
     return (_LLVMConstFCmp__retval,)
@@ -6948,7 +6948,7 @@ def LLVMConstShl(object LHSConstant, object RHSConstant):
         RHSConstant (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstShl__retval = LLVMValueRef.from_value(ccore.LLVMConstShl(
+    _LLVMConstShl__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstShl(
         LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
         LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
     return (_LLVMConstShl__retval,)
@@ -6965,7 +6965,7 @@ def LLVMConstLShr(object LHSConstant, object RHSConstant):
         RHSConstant (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstLShr__retval = LLVMValueRef.from_value(ccore.LLVMConstLShr(
+    _LLVMConstLShr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstLShr(
         LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
         LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
     return (_LLVMConstLShr__retval,)
@@ -6982,7 +6982,7 @@ def LLVMConstAShr(object LHSConstant, object RHSConstant):
         RHSConstant (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstAShr__retval = LLVMValueRef.from_value(ccore.LLVMConstAShr(
+    _LLVMConstAShr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstAShr(
         LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
         LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
     return (_LLVMConstAShr__retval,)
@@ -6999,16 +6999,16 @@ def LLVMConstGEP2(object Ty, object ConstantVal, object ConstantIndices, unsigne
         ConstantVal (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        ConstantIndices (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ConstantIndices (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         NumIndices (`~.int`):
             (undocumented)
     """
-    _LLVMConstGEP2__retval = LLVMValueRef.from_value(ccore.LLVMConstGEP2(
+    _LLVMConstGEP2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstGEP2(
         LLVMOpaqueType.from_pyobj(Ty)._ptr,
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        <ccore.LLVMValueRef*>rocm.llvm._util.Pointer.from_pyobj(ConstantIndices)._ptr,NumIndices))    # fully specified
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(ConstantIndices)._ptr,NumIndices))    # fully specified
     return (_LLVMConstGEP2__retval,)
 
 
@@ -7023,16 +7023,16 @@ def LLVMConstInBoundsGEP2(object Ty, object ConstantVal, object ConstantIndices,
         ConstantVal (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        ConstantIndices (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ConstantIndices (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         NumIndices (`~.int`):
             (undocumented)
     """
-    _LLVMConstInBoundsGEP2__retval = LLVMValueRef.from_value(ccore.LLVMConstInBoundsGEP2(
+    _LLVMConstInBoundsGEP2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstInBoundsGEP2(
         LLVMOpaqueType.from_pyobj(Ty)._ptr,
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        <ccore.LLVMValueRef*>rocm.llvm._util.Pointer.from_pyobj(ConstantIndices)._ptr,NumIndices))    # fully specified
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(ConstantIndices)._ptr,NumIndices))    # fully specified
     return (_LLVMConstInBoundsGEP2__retval,)
 
 
@@ -7047,7 +7047,7 @@ def LLVMConstTrunc(object ConstantVal, object ToType):
         ToType (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMConstTrunc__retval = LLVMValueRef.from_value(ccore.LLVMConstTrunc(
+    _LLVMConstTrunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstTrunc(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
         LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
     return (_LLVMConstTrunc__retval,)
@@ -7064,7 +7064,7 @@ def LLVMConstSExt(object ConstantVal, object ToType):
         ToType (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMConstSExt__retval = LLVMValueRef.from_value(ccore.LLVMConstSExt(
+    _LLVMConstSExt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstSExt(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
         LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
     return (_LLVMConstSExt__retval,)
@@ -7081,7 +7081,7 @@ def LLVMConstZExt(object ConstantVal, object ToType):
         ToType (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMConstZExt__retval = LLVMValueRef.from_value(ccore.LLVMConstZExt(
+    _LLVMConstZExt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstZExt(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
         LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
     return (_LLVMConstZExt__retval,)
@@ -7098,7 +7098,7 @@ def LLVMConstFPTrunc(object ConstantVal, object ToType):
         ToType (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMConstFPTrunc__retval = LLVMValueRef.from_value(ccore.LLVMConstFPTrunc(
+    _LLVMConstFPTrunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstFPTrunc(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
         LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
     return (_LLVMConstFPTrunc__retval,)
@@ -7115,7 +7115,7 @@ def LLVMConstFPExt(object ConstantVal, object ToType):
         ToType (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMConstFPExt__retval = LLVMValueRef.from_value(ccore.LLVMConstFPExt(
+    _LLVMConstFPExt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstFPExt(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
         LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
     return (_LLVMConstFPExt__retval,)
@@ -7132,7 +7132,7 @@ def LLVMConstUIToFP(object ConstantVal, object ToType):
         ToType (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMConstUIToFP__retval = LLVMValueRef.from_value(ccore.LLVMConstUIToFP(
+    _LLVMConstUIToFP__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstUIToFP(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
         LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
     return (_LLVMConstUIToFP__retval,)
@@ -7149,7 +7149,7 @@ def LLVMConstSIToFP(object ConstantVal, object ToType):
         ToType (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMConstSIToFP__retval = LLVMValueRef.from_value(ccore.LLVMConstSIToFP(
+    _LLVMConstSIToFP__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstSIToFP(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
         LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
     return (_LLVMConstSIToFP__retval,)
@@ -7166,7 +7166,7 @@ def LLVMConstFPToUI(object ConstantVal, object ToType):
         ToType (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMConstFPToUI__retval = LLVMValueRef.from_value(ccore.LLVMConstFPToUI(
+    _LLVMConstFPToUI__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstFPToUI(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
         LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
     return (_LLVMConstFPToUI__retval,)
@@ -7183,7 +7183,7 @@ def LLVMConstFPToSI(object ConstantVal, object ToType):
         ToType (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMConstFPToSI__retval = LLVMValueRef.from_value(ccore.LLVMConstFPToSI(
+    _LLVMConstFPToSI__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstFPToSI(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
         LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
     return (_LLVMConstFPToSI__retval,)
@@ -7200,7 +7200,7 @@ def LLVMConstPtrToInt(object ConstantVal, object ToType):
         ToType (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMConstPtrToInt__retval = LLVMValueRef.from_value(ccore.LLVMConstPtrToInt(
+    _LLVMConstPtrToInt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstPtrToInt(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
         LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
     return (_LLVMConstPtrToInt__retval,)
@@ -7217,7 +7217,7 @@ def LLVMConstIntToPtr(object ConstantVal, object ToType):
         ToType (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMConstIntToPtr__retval = LLVMValueRef.from_value(ccore.LLVMConstIntToPtr(
+    _LLVMConstIntToPtr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstIntToPtr(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
         LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
     return (_LLVMConstIntToPtr__retval,)
@@ -7234,7 +7234,7 @@ def LLVMConstBitCast(object ConstantVal, object ToType):
         ToType (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMConstBitCast__retval = LLVMValueRef.from_value(ccore.LLVMConstBitCast(
+    _LLVMConstBitCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstBitCast(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
         LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
     return (_LLVMConstBitCast__retval,)
@@ -7251,7 +7251,7 @@ def LLVMConstAddrSpaceCast(object ConstantVal, object ToType):
         ToType (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMConstAddrSpaceCast__retval = LLVMValueRef.from_value(ccore.LLVMConstAddrSpaceCast(
+    _LLVMConstAddrSpaceCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstAddrSpaceCast(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
         LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
     return (_LLVMConstAddrSpaceCast__retval,)
@@ -7268,7 +7268,7 @@ def LLVMConstZExtOrBitCast(object ConstantVal, object ToType):
         ToType (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMConstZExtOrBitCast__retval = LLVMValueRef.from_value(ccore.LLVMConstZExtOrBitCast(
+    _LLVMConstZExtOrBitCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstZExtOrBitCast(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
         LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
     return (_LLVMConstZExtOrBitCast__retval,)
@@ -7285,7 +7285,7 @@ def LLVMConstSExtOrBitCast(object ConstantVal, object ToType):
         ToType (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMConstSExtOrBitCast__retval = LLVMValueRef.from_value(ccore.LLVMConstSExtOrBitCast(
+    _LLVMConstSExtOrBitCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstSExtOrBitCast(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
         LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
     return (_LLVMConstSExtOrBitCast__retval,)
@@ -7302,7 +7302,7 @@ def LLVMConstTruncOrBitCast(object ConstantVal, object ToType):
         ToType (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMConstTruncOrBitCast__retval = LLVMValueRef.from_value(ccore.LLVMConstTruncOrBitCast(
+    _LLVMConstTruncOrBitCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstTruncOrBitCast(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
         LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
     return (_LLVMConstTruncOrBitCast__retval,)
@@ -7319,7 +7319,7 @@ def LLVMConstPointerCast(object ConstantVal, object ToType):
         ToType (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMConstPointerCast__retval = LLVMValueRef.from_value(ccore.LLVMConstPointerCast(
+    _LLVMConstPointerCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstPointerCast(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
         LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
     return (_LLVMConstPointerCast__retval,)
@@ -7339,7 +7339,7 @@ def LLVMConstIntCast(object ConstantVal, object ToType, int isSigned):
         isSigned (`~.int`):
             (undocumented)
     """
-    _LLVMConstIntCast__retval = LLVMValueRef.from_value(ccore.LLVMConstIntCast(
+    _LLVMConstIntCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstIntCast(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
         LLVMOpaqueType.from_pyobj(ToType)._ptr,isSigned))    # fully specified
     return (_LLVMConstIntCast__retval,)
@@ -7356,7 +7356,7 @@ def LLVMConstFPCast(object ConstantVal, object ToType):
         ToType (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
-    _LLVMConstFPCast__retval = LLVMValueRef.from_value(ccore.LLVMConstFPCast(
+    _LLVMConstFPCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstFPCast(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
         LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
     return (_LLVMConstFPCast__retval,)
@@ -7376,7 +7376,7 @@ def LLVMConstSelect(object ConstantCondition, object ConstantIfTrue, object Cons
         ConstantIfFalse (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstSelect__retval = LLVMValueRef.from_value(ccore.LLVMConstSelect(
+    _LLVMConstSelect__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstSelect(
         LLVMOpaqueValue.from_pyobj(ConstantCondition)._ptr,
         LLVMOpaqueValue.from_pyobj(ConstantIfTrue)._ptr,
         LLVMOpaqueValue.from_pyobj(ConstantIfFalse)._ptr))    # fully specified
@@ -7394,7 +7394,7 @@ def LLVMConstExtractElement(object VectorConstant, object IndexConstant):
         IndexConstant (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstExtractElement__retval = LLVMValueRef.from_value(ccore.LLVMConstExtractElement(
+    _LLVMConstExtractElement__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstExtractElement(
         LLVMOpaqueValue.from_pyobj(VectorConstant)._ptr,
         LLVMOpaqueValue.from_pyobj(IndexConstant)._ptr))    # fully specified
     return (_LLVMConstExtractElement__retval,)
@@ -7414,7 +7414,7 @@ def LLVMConstInsertElement(object VectorConstant, object ElementValueConstant, o
         IndexConstant (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstInsertElement__retval = LLVMValueRef.from_value(ccore.LLVMConstInsertElement(
+    _LLVMConstInsertElement__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstInsertElement(
         LLVMOpaqueValue.from_pyobj(VectorConstant)._ptr,
         LLVMOpaqueValue.from_pyobj(ElementValueConstant)._ptr,
         LLVMOpaqueValue.from_pyobj(IndexConstant)._ptr))    # fully specified
@@ -7435,7 +7435,7 @@ def LLVMConstShuffleVector(object VectorAConstant, object VectorBConstant, objec
         MaskConstant (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMConstShuffleVector__retval = LLVMValueRef.from_value(ccore.LLVMConstShuffleVector(
+    _LLVMConstShuffleVector__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstShuffleVector(
         LLVMOpaqueValue.from_pyobj(VectorAConstant)._ptr,
         LLVMOpaqueValue.from_pyobj(VectorBConstant)._ptr,
         LLVMOpaqueValue.from_pyobj(MaskConstant)._ptr))    # fully specified
@@ -7453,7 +7453,7 @@ def LLVMBlockAddress(object F, object BB):
         BB (`~.LLVMOpaqueBasicBlock`/`~.object`):
             (undocumented)
     """
-    _LLVMBlockAddress__retval = LLVMValueRef.from_value(ccore.LLVMBlockAddress(
+    _LLVMBlockAddress__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBlockAddress(
         LLVMOpaqueValue.from_pyobj(F)._ptr,
         LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr))    # fully specified
     return (_LLVMBlockAddress__retval,)
@@ -7481,7 +7481,7 @@ def LLVMConstInlineAsm(object Ty, const char * AsmString, const char * Constrain
         IsAlignStack (`~.int`):
             (undocumented)
     """
-    _LLVMConstInlineAsm__retval = LLVMValueRef.from_value(ccore.LLVMConstInlineAsm(
+    _LLVMConstInlineAsm__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstInlineAsm(
         LLVMOpaqueType.from_pyobj(Ty)._ptr,AsmString,Constraints,HasSideEffects,IsAlignStack))    # fully specified
     return (_LLVMConstInlineAsm__retval,)
 
@@ -7502,7 +7502,7 @@ def LLVMGetGlobalParent(object Global):
         Global (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetGlobalParent__retval = LLVMModuleRef.from_value(ccore.LLVMGetGlobalParent(
+    _LLVMGetGlobalParent__retval = LLVMOpaqueModule.from_ptr(ccore.LLVMGetGlobalParent(
         LLVMOpaqueValue.from_pyobj(Global)._ptr))    # fully specified
     return (_LLVMGetGlobalParent__retval,)
 
@@ -7712,7 +7712,7 @@ def LLVMGlobalGetValueType(object Global):
         Global (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGlobalGetValueType__retval = LLVMTypeRef.from_value(ccore.LLVMGlobalGetValueType(
+    _LLVMGlobalGetValueType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMGlobalGetValueType(
         LLVMOpaqueValue.from_pyobj(Global)._ptr))    # fully specified
     return (_LLVMGlobalGetValueType__retval,)
 
@@ -7904,12 +7904,12 @@ def LLVMGlobalCopyAllMetadata(object Value, object NumEntries):
         Value (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        NumEntries (`~.rocm.llvm._util.ListOfUnsignedLong`/`~.object`):
+        NumEntries (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
             (undocumented)
     """
-    _LLVMGlobalCopyAllMetadata__retval = LLVMOpaqueValueMetadataEntry *.from_value(ccore.LLVMGlobalCopyAllMetadata(
+    _LLVMGlobalCopyAllMetadata__retval = LLVMOpaqueValueMetadataEntry.from_ptr(ccore.LLVMGlobalCopyAllMetadata(
         LLVMOpaqueValue.from_pyobj(Value)._ptr,
-        <unsigned long *>rocm.llvm._util.ListOfUnsignedLong.from_pyobj(NumEntries)._ptr))    # fully specified
+        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(NumEntries)._ptr))    # fully specified
     return (_LLVMGlobalCopyAllMetadata__retval,)
 
 
@@ -7964,7 +7964,7 @@ def LLVMValueMetadataEntriesGetMetadata(object Entries, unsigned int Index):
         Index (`~.int`):
             (undocumented)
     """
-    _LLVMValueMetadataEntriesGetMetadata__retval = LLVMMetadataRef.from_value(ccore.LLVMValueMetadataEntriesGetMetadata(
+    _LLVMValueMetadataEntriesGetMetadata__retval = LLVMOpaqueMetadata.from_ptr(ccore.LLVMValueMetadataEntriesGetMetadata(
         LLVMOpaqueValueMetadataEntry.from_pyobj(Entries)._ptr,Index))    # fully specified
     return (_LLVMValueMetadataEntriesGetMetadata__retval,)
 
@@ -7990,7 +7990,7 @@ def LLVMAddGlobal(object M, object Ty, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMAddGlobal__retval = LLVMValueRef.from_value(ccore.LLVMAddGlobal(
+    _LLVMAddGlobal__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMAddGlobal(
         LLVMOpaqueModule.from_pyobj(M)._ptr,
         LLVMOpaqueType.from_pyobj(Ty)._ptr,Name))    # fully specified
     return (_LLVMAddGlobal__retval,)
@@ -8013,7 +8013,7 @@ def LLVMAddGlobalInAddressSpace(object M, object Ty, const char * Name, unsigned
         AddressSpace (`~.int`):
             (undocumented)
     """
-    _LLVMAddGlobalInAddressSpace__retval = LLVMValueRef.from_value(ccore.LLVMAddGlobalInAddressSpace(
+    _LLVMAddGlobalInAddressSpace__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMAddGlobalInAddressSpace(
         LLVMOpaqueModule.from_pyobj(M)._ptr,
         LLVMOpaqueType.from_pyobj(Ty)._ptr,Name,AddressSpace))    # fully specified
     return (_LLVMAddGlobalInAddressSpace__retval,)
@@ -8030,7 +8030,7 @@ def LLVMGetNamedGlobal(object M, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMGetNamedGlobal__retval = LLVMValueRef.from_value(ccore.LLVMGetNamedGlobal(
+    _LLVMGetNamedGlobal__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNamedGlobal(
         LLVMOpaqueModule.from_pyobj(M)._ptr,Name))    # fully specified
     return (_LLVMGetNamedGlobal__retval,)
 
@@ -8043,7 +8043,7 @@ def LLVMGetFirstGlobal(object M):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
     """
-    _LLVMGetFirstGlobal__retval = LLVMValueRef.from_value(ccore.LLVMGetFirstGlobal(
+    _LLVMGetFirstGlobal__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetFirstGlobal(
         LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
     return (_LLVMGetFirstGlobal__retval,)
 
@@ -8056,7 +8056,7 @@ def LLVMGetLastGlobal(object M):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
     """
-    _LLVMGetLastGlobal__retval = LLVMValueRef.from_value(ccore.LLVMGetLastGlobal(
+    _LLVMGetLastGlobal__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetLastGlobal(
         LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
     return (_LLVMGetLastGlobal__retval,)
 
@@ -8069,7 +8069,7 @@ def LLVMGetNextGlobal(object GlobalVar):
         GlobalVar (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetNextGlobal__retval = LLVMValueRef.from_value(ccore.LLVMGetNextGlobal(
+    _LLVMGetNextGlobal__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNextGlobal(
         LLVMOpaqueValue.from_pyobj(GlobalVar)._ptr))    # fully specified
     return (_LLVMGetNextGlobal__retval,)
 
@@ -8082,7 +8082,7 @@ def LLVMGetPreviousGlobal(object GlobalVar):
         GlobalVar (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetPreviousGlobal__retval = LLVMValueRef.from_value(ccore.LLVMGetPreviousGlobal(
+    _LLVMGetPreviousGlobal__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetPreviousGlobal(
         LLVMOpaqueValue.from_pyobj(GlobalVar)._ptr))    # fully specified
     return (_LLVMGetPreviousGlobal__retval,)
 
@@ -8107,7 +8107,7 @@ def LLVMGetInitializer(object GlobalVar):
         GlobalVar (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetInitializer__retval = LLVMValueRef.from_value(ccore.LLVMGetInitializer(
+    _LLVMGetInitializer__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetInitializer(
         LLVMOpaqueValue.from_pyobj(GlobalVar)._ptr))    # fully specified
     return (_LLVMGetInitializer__retval,)
 
@@ -8287,7 +8287,7 @@ def LLVMAddAlias2(object M, object ValueTy, unsigned int AddrSpace, object Alias
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMAddAlias2__retval = LLVMValueRef.from_value(ccore.LLVMAddAlias2(
+    _LLVMAddAlias2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMAddAlias2(
         LLVMOpaqueModule.from_pyobj(M)._ptr,
         LLVMOpaqueType.from_pyobj(ValueTy)._ptr,AddrSpace,
         LLVMOpaqueValue.from_pyobj(Aliasee)._ptr,Name))    # fully specified
@@ -8315,7 +8315,7 @@ def LLVMGetNamedGlobalAlias(object M, const char * Name, unsigned long NameLen):
         NameLen (`~.int`):
             (undocumented)
     """
-    _LLVMGetNamedGlobalAlias__retval = LLVMValueRef.from_value(ccore.LLVMGetNamedGlobalAlias(
+    _LLVMGetNamedGlobalAlias__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNamedGlobalAlias(
         LLVMOpaqueModule.from_pyobj(M)._ptr,Name,NameLen))    # fully specified
     return (_LLVMGetNamedGlobalAlias__retval,)
 
@@ -8333,7 +8333,7 @@ def LLVMGetFirstGlobalAlias(object M):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
     """
-    _LLVMGetFirstGlobalAlias__retval = LLVMValueRef.from_value(ccore.LLVMGetFirstGlobalAlias(
+    _LLVMGetFirstGlobalAlias__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetFirstGlobalAlias(
         LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
     return (_LLVMGetFirstGlobalAlias__retval,)
 
@@ -8351,7 +8351,7 @@ def LLVMGetLastGlobalAlias(object M):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
     """
-    _LLVMGetLastGlobalAlias__retval = LLVMValueRef.from_value(ccore.LLVMGetLastGlobalAlias(
+    _LLVMGetLastGlobalAlias__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetLastGlobalAlias(
         LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
     return (_LLVMGetLastGlobalAlias__retval,)
 
@@ -8369,7 +8369,7 @@ def LLVMGetNextGlobalAlias(object GA):
         GA (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetNextGlobalAlias__retval = LLVMValueRef.from_value(ccore.LLVMGetNextGlobalAlias(
+    _LLVMGetNextGlobalAlias__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNextGlobalAlias(
         LLVMOpaqueValue.from_pyobj(GA)._ptr))    # fully specified
     return (_LLVMGetNextGlobalAlias__retval,)
 
@@ -8387,7 +8387,7 @@ def LLVMGetPreviousGlobalAlias(object GA):
         GA (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetPreviousGlobalAlias__retval = LLVMValueRef.from_value(ccore.LLVMGetPreviousGlobalAlias(
+    _LLVMGetPreviousGlobalAlias__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetPreviousGlobalAlias(
         LLVMOpaqueValue.from_pyobj(GA)._ptr))    # fully specified
     return (_LLVMGetPreviousGlobalAlias__retval,)
 
@@ -8402,7 +8402,7 @@ def LLVMAliasGetAliasee(object Alias):
         Alias (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMAliasGetAliasee__retval = LLVMValueRef.from_value(ccore.LLVMAliasGetAliasee(
+    _LLVMAliasGetAliasee__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMAliasGetAliasee(
         LLVMOpaqueValue.from_pyobj(Alias)._ptr))    # fully specified
     return (_LLVMAliasGetAliasee__retval,)
 
@@ -8478,7 +8478,7 @@ def LLVMGetPersonalityFn(object Fn):
         Fn (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetPersonalityFn__retval = LLVMValueRef.from_value(ccore.LLVMGetPersonalityFn(
+    _LLVMGetPersonalityFn__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetPersonalityFn(
         LLVMOpaqueValue.from_pyobj(Fn)._ptr))    # fully specified
     return (_LLVMGetPersonalityFn__retval,)
 
@@ -8569,15 +8569,15 @@ def LLVMGetIntrinsicDeclaration(object Mod, unsigned int ID, object ParamTypes, 
         ID (`~.int`):
             (undocumented)
 
-        ParamTypes (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ParamTypes (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         ParamCount (`~.int`):
             (undocumented)
     """
-    _LLVMGetIntrinsicDeclaration__retval = LLVMValueRef.from_value(ccore.LLVMGetIntrinsicDeclaration(
+    _LLVMGetIntrinsicDeclaration__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetIntrinsicDeclaration(
         LLVMOpaqueModule.from_pyobj(Mod)._ptr,ID,
-        <ccore.LLVMTypeRef*>rocm.llvm._util.Pointer.from_pyobj(ParamTypes)._ptr,ParamCount))    # fully specified
+        <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(ParamTypes)._ptr,ParamCount))    # fully specified
     return (_LLVMGetIntrinsicDeclaration__retval,)
 
 
@@ -8598,15 +8598,15 @@ def LLVMIntrinsicGetType(object Ctx, unsigned int ID, object ParamTypes, unsigne
         ID (`~.int`):
             (undocumented)
 
-        ParamTypes (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ParamTypes (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         ParamCount (`~.int`):
             (undocumented)
     """
-    _LLVMIntrinsicGetType__retval = LLVMTypeRef.from_value(ccore.LLVMIntrinsicGetType(
+    _LLVMIntrinsicGetType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMIntrinsicGetType(
         LLVMOpaqueContext.from_pyobj(Ctx)._ptr,ID,
-        <ccore.LLVMTypeRef*>rocm.llvm._util.Pointer.from_pyobj(ParamTypes)._ptr,ParamCount))    # fully specified
+        <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(ParamTypes)._ptr,ParamCount))    # fully specified
     return (_LLVMIntrinsicGetType__retval,)
 
 
@@ -8623,7 +8623,7 @@ def LLVMIntrinsicGetName(unsigned int ID, object NameLength):
         ID (`~.int`):
             (undocumented)
 
-        NameLength (`~.rocm.llvm._util.ListOfUnsignedLong`/`~.object`):
+        NameLength (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
             (undocumented)
 
     Returns:
@@ -8632,7 +8632,7 @@ def LLVMIntrinsicGetName(unsigned int ID, object NameLength):
         * `~.bytes`
     """
     cdef const char * _LLVMIntrinsicGetName__retval = ccore.LLVMIntrinsicGetName(ID,
-        <unsigned long *>rocm.llvm._util.ListOfUnsignedLong.from_pyobj(NameLength)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(NameLength)._ptr)    # fully specified
     return (_LLVMIntrinsicGetName__retval,)
 
 
@@ -8646,13 +8646,13 @@ def LLVMIntrinsicCopyOverloadedName(unsigned int ID, object ParamTypes, unsigned
         ID (`~.int`):
             (undocumented)
 
-        ParamTypes (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ParamTypes (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         ParamCount (`~.int`):
             (undocumented)
 
-        NameLength (`~.rocm.llvm._util.ListOfUnsignedLong`/`~.object`):
+        NameLength (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
             (undocumented)
 
     Returns:
@@ -8661,8 +8661,8 @@ def LLVMIntrinsicCopyOverloadedName(unsigned int ID, object ParamTypes, unsigned
         * `~.bytes`
     """
     cdef const char * _LLVMIntrinsicCopyOverloadedName__retval = ccore.LLVMIntrinsicCopyOverloadedName(ID,
-        <ccore.LLVMTypeRef*>rocm.llvm._util.Pointer.from_pyobj(ParamTypes)._ptr,ParamCount,
-        <unsigned long *>rocm.llvm._util.ListOfUnsignedLong.from_pyobj(NameLength)._ptr)    # fully specified
+        <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(ParamTypes)._ptr,ParamCount,
+        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(NameLength)._ptr)    # fully specified
     return (_LLVMIntrinsicCopyOverloadedName__retval,)
 
 
@@ -8688,13 +8688,13 @@ def LLVMIntrinsicCopyOverloadedName2(object Mod, unsigned int ID, object ParamTy
         ID (`~.int`):
             (undocumented)
 
-        ParamTypes (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ParamTypes (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         ParamCount (`~.int`):
             (undocumented)
 
-        NameLength (`~.rocm.llvm._util.ListOfUnsignedLong`/`~.object`):
+        NameLength (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
             (undocumented)
 
     Returns:
@@ -8704,8 +8704,8 @@ def LLVMIntrinsicCopyOverloadedName2(object Mod, unsigned int ID, object ParamTy
     """
     cdef const char * _LLVMIntrinsicCopyOverloadedName2__retval = ccore.LLVMIntrinsicCopyOverloadedName2(
         LLVMOpaqueModule.from_pyobj(Mod)._ptr,ID,
-        <ccore.LLVMTypeRef*>rocm.llvm._util.Pointer.from_pyobj(ParamTypes)._ptr,ParamCount,
-        <unsigned long *>rocm.llvm._util.ListOfUnsignedLong.from_pyobj(NameLength)._ptr)    # fully specified
+        <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(ParamTypes)._ptr,ParamCount,
+        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(NameLength)._ptr)    # fully specified
     return (_LLVMIntrinsicCopyOverloadedName2__retval,)
 
 
@@ -8876,12 +8876,12 @@ def LLVMGetAttributesAtIndex(object F, unsigned int Idx, object Attrs):
         Idx (`~.int`):
             (undocumented)
 
-        Attrs (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Attrs (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     ccore.LLVMGetAttributesAtIndex(
         LLVMOpaqueValue.from_pyobj(F)._ptr,Idx,
-        <ccore.LLVMAttributeRef*>rocm.llvm._util.Pointer.from_pyobj(Attrs)._ptr)    # fully specified
+        <ccore.LLVMAttributeRef*>rocm.llvm._util.types.Pointer.from_pyobj(Attrs)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -8898,7 +8898,7 @@ def LLVMGetEnumAttributeAtIndex(object F, unsigned int Idx, unsigned int KindID)
         KindID (`~.int`):
             (undocumented)
     """
-    _LLVMGetEnumAttributeAtIndex__retval = LLVMAttributeRef.from_value(ccore.LLVMGetEnumAttributeAtIndex(
+    _LLVMGetEnumAttributeAtIndex__retval = LLVMOpaqueAttributeRef.from_ptr(ccore.LLVMGetEnumAttributeAtIndex(
         LLVMOpaqueValue.from_pyobj(F)._ptr,Idx,KindID))    # fully specified
     return (_LLVMGetEnumAttributeAtIndex__retval,)
 
@@ -8920,7 +8920,7 @@ def LLVMGetStringAttributeAtIndex(object F, unsigned int Idx, const char * K, un
         KLen (`~.int`):
             (undocumented)
     """
-    _LLVMGetStringAttributeAtIndex__retval = LLVMAttributeRef.from_value(ccore.LLVMGetStringAttributeAtIndex(
+    _LLVMGetStringAttributeAtIndex__retval = LLVMOpaqueAttributeRef.from_ptr(ccore.LLVMGetStringAttributeAtIndex(
         LLVMOpaqueValue.from_pyobj(F)._ptr,Idx,K,KLen))    # fully specified
     return (_LLVMGetStringAttributeAtIndex__retval,)
 
@@ -9029,12 +9029,12 @@ def LLVMGetParams(object Fn, object Params):
         Fn (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Params (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Params (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     ccore.LLVMGetParams(
         LLVMOpaqueValue.from_pyobj(Fn)._ptr,
-        <ccore.LLVMValueRef*>rocm.llvm._util.Pointer.from_pyobj(Params)._ptr)    # fully specified
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Params)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -9055,7 +9055,7 @@ def LLVMGetParam(object Fn, unsigned int Index):
         Index (`~.int`):
             (undocumented)
     """
-    _LLVMGetParam__retval = LLVMValueRef.from_value(ccore.LLVMGetParam(
+    _LLVMGetParam__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetParam(
         LLVMOpaqueValue.from_pyobj(Fn)._ptr,Index))    # fully specified
     return (_LLVMGetParam__retval,)
 
@@ -9076,7 +9076,7 @@ def LLVMGetParamParent(object Inst):
         Inst (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetParamParent__retval = LLVMValueRef.from_value(ccore.LLVMGetParamParent(
+    _LLVMGetParamParent__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetParamParent(
         LLVMOpaqueValue.from_pyobj(Inst)._ptr))    # fully specified
     return (_LLVMGetParamParent__retval,)
 
@@ -9094,7 +9094,7 @@ def LLVMGetFirstParam(object Fn):
         Fn (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetFirstParam__retval = LLVMValueRef.from_value(ccore.LLVMGetFirstParam(
+    _LLVMGetFirstParam__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetFirstParam(
         LLVMOpaqueValue.from_pyobj(Fn)._ptr))    # fully specified
     return (_LLVMGetFirstParam__retval,)
 
@@ -9112,7 +9112,7 @@ def LLVMGetLastParam(object Fn):
         Fn (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetLastParam__retval = LLVMValueRef.from_value(ccore.LLVMGetLastParam(
+    _LLVMGetLastParam__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetLastParam(
         LLVMOpaqueValue.from_pyobj(Fn)._ptr))    # fully specified
     return (_LLVMGetLastParam__retval,)
 
@@ -9131,7 +9131,7 @@ def LLVMGetNextParam(object Arg):
         Arg (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetNextParam__retval = LLVMValueRef.from_value(ccore.LLVMGetNextParam(
+    _LLVMGetNextParam__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNextParam(
         LLVMOpaqueValue.from_pyobj(Arg)._ptr))    # fully specified
     return (_LLVMGetNextParam__retval,)
 
@@ -9148,7 +9148,7 @@ def LLVMGetPreviousParam(object Arg):
         Arg (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetPreviousParam__retval = LLVMValueRef.from_value(ccore.LLVMGetPreviousParam(
+    _LLVMGetPreviousParam__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetPreviousParam(
         LLVMOpaqueValue.from_pyobj(Arg)._ptr))    # fully specified
     return (_LLVMGetPreviousParam__retval,)
 
@@ -9204,7 +9204,7 @@ def LLVMAddGlobalIFunc(object M, const char * Name, unsigned long NameLen, objec
         Resolver (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMAddGlobalIFunc__retval = LLVMValueRef.from_value(ccore.LLVMAddGlobalIFunc(
+    _LLVMAddGlobalIFunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMAddGlobalIFunc(
         LLVMOpaqueModule.from_pyobj(M)._ptr,Name,NameLen,
         LLVMOpaqueType.from_pyobj(Ty)._ptr,AddrSpace,
         LLVMOpaqueValue.from_pyobj(Resolver)._ptr))    # fully specified
@@ -9232,7 +9232,7 @@ def LLVMGetNamedGlobalIFunc(object M, const char * Name, unsigned long NameLen):
         NameLen (`~.int`):
             (undocumented)
     """
-    _LLVMGetNamedGlobalIFunc__retval = LLVMValueRef.from_value(ccore.LLVMGetNamedGlobalIFunc(
+    _LLVMGetNamedGlobalIFunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNamedGlobalIFunc(
         LLVMOpaqueModule.from_pyobj(M)._ptr,Name,NameLen))    # fully specified
     return (_LLVMGetNamedGlobalIFunc__retval,)
 
@@ -9250,7 +9250,7 @@ def LLVMGetFirstGlobalIFunc(object M):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
     """
-    _LLVMGetFirstGlobalIFunc__retval = LLVMValueRef.from_value(ccore.LLVMGetFirstGlobalIFunc(
+    _LLVMGetFirstGlobalIFunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetFirstGlobalIFunc(
         LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
     return (_LLVMGetFirstGlobalIFunc__retval,)
 
@@ -9268,7 +9268,7 @@ def LLVMGetLastGlobalIFunc(object M):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
     """
-    _LLVMGetLastGlobalIFunc__retval = LLVMValueRef.from_value(ccore.LLVMGetLastGlobalIFunc(
+    _LLVMGetLastGlobalIFunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetLastGlobalIFunc(
         LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
     return (_LLVMGetLastGlobalIFunc__retval,)
 
@@ -9286,7 +9286,7 @@ def LLVMGetNextGlobalIFunc(object IFunc):
         IFunc (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetNextGlobalIFunc__retval = LLVMValueRef.from_value(ccore.LLVMGetNextGlobalIFunc(
+    _LLVMGetNextGlobalIFunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNextGlobalIFunc(
         LLVMOpaqueValue.from_pyobj(IFunc)._ptr))    # fully specified
     return (_LLVMGetNextGlobalIFunc__retval,)
 
@@ -9304,7 +9304,7 @@ def LLVMGetPreviousGlobalIFunc(object IFunc):
         IFunc (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetPreviousGlobalIFunc__retval = LLVMValueRef.from_value(ccore.LLVMGetPreviousGlobalIFunc(
+    _LLVMGetPreviousGlobalIFunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetPreviousGlobalIFunc(
         LLVMOpaqueValue.from_pyobj(IFunc)._ptr))    # fully specified
     return (_LLVMGetPreviousGlobalIFunc__retval,)
 
@@ -9323,7 +9323,7 @@ def LLVMGetGlobalIFuncResolver(object IFunc):
         IFunc (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetGlobalIFuncResolver__retval = LLVMValueRef.from_value(ccore.LLVMGetGlobalIFuncResolver(
+    _LLVMGetGlobalIFuncResolver__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetGlobalIFuncResolver(
         LLVMOpaqueValue.from_pyobj(IFunc)._ptr))    # fully specified
     return (_LLVMGetGlobalIFuncResolver__retval,)
 
@@ -9408,7 +9408,7 @@ def LLVMMDStringInContext2(object C, const char * Str, unsigned long SLen):
         SLen (`~.int`):
             (undocumented)
     """
-    _LLVMMDStringInContext2__retval = LLVMMetadataRef.from_value(ccore.LLVMMDStringInContext2(
+    _LLVMMDStringInContext2__retval = LLVMOpaqueMetadata.from_ptr(ccore.LLVMMDStringInContext2(
         LLVMOpaqueContext.from_pyobj(C)._ptr,Str,SLen))    # fully specified
     return (_LLVMMDStringInContext2__retval,)
 
@@ -9426,15 +9426,15 @@ def LLVMMDNodeInContext2(object C, object MDs, unsigned long Count):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
 
-        MDs (`~.rocm.llvm._util.Pointer`/`~.object`):
+        MDs (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         Count (`~.int`):
             (undocumented)
     """
-    _LLVMMDNodeInContext2__retval = LLVMMetadataRef.from_value(ccore.LLVMMDNodeInContext2(
+    _LLVMMDNodeInContext2__retval = LLVMOpaqueMetadata.from_ptr(ccore.LLVMMDNodeInContext2(
         LLVMOpaqueContext.from_pyobj(C)._ptr,
-        <ccore.LLVMMetadataRef*>rocm.llvm._util.Pointer.from_pyobj(MDs)._ptr,Count))    # fully specified
+        <ccore.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(MDs)._ptr,Count))    # fully specified
     return (_LLVMMDNodeInContext2__retval,)
 
 
@@ -9451,7 +9451,7 @@ def LLVMMetadataAsValue(object C, object MD):
         MD (`~.LLVMOpaqueMetadata`/`~.object`):
             (undocumented)
     """
-    _LLVMMetadataAsValue__retval = LLVMValueRef.from_value(ccore.LLVMMetadataAsValue(
+    _LLVMMetadataAsValue__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMMetadataAsValue(
         LLVMOpaqueContext.from_pyobj(C)._ptr,
         LLVMOpaqueMetadata.from_pyobj(MD)._ptr))    # fully specified
     return (_LLVMMetadataAsValue__retval,)
@@ -9467,7 +9467,7 @@ def LLVMValueAsMetadata(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMValueAsMetadata__retval = LLVMMetadataRef.from_value(ccore.LLVMValueAsMetadata(
+    _LLVMValueAsMetadata__retval = LLVMOpaqueMetadata.from_ptr(ccore.LLVMValueAsMetadata(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMValueAsMetadata__retval,)
 
@@ -9482,7 +9482,7 @@ def LLVMGetMDString(object V, object Length):
         V (`~.LLVMOpaqueValue`/`~.object`):
             Instance to obtain string from.
 
-        Length (`~.rocm.llvm._util.ListOfUnsigned`/`~.object`):
+        Length (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
             Memory address which will hold length of returned string.
 
     Returns:
@@ -9492,7 +9492,7 @@ def LLVMGetMDString(object V, object Length):
     """
     cdef const char * _LLVMGetMDString__retval = ccore.LLVMGetMDString(
         LLVMOpaqueValue.from_pyobj(V)._ptr,
-        <unsigned int *>rocm.llvm._util.ListOfUnsigned.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(Length)._ptr)    # fully specified
     return (_LLVMGetMDString__retval,)
 
 
@@ -9531,12 +9531,12 @@ def LLVMGetMDNodeOperands(object V, object Dest):
         V (`~.LLVMOpaqueValue`/`~.object`):
             MDNode to get the operands from.
 
-        Dest (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Dest (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             Destination array for operands.
     """
     ccore.LLVMGetMDNodeOperands(
         LLVMOpaqueValue.from_pyobj(V)._ptr,
-        <ccore.LLVMValueRef*>rocm.llvm._util.Pointer.from_pyobj(Dest)._ptr)    # fully specified
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Dest)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -9555,7 +9555,7 @@ def LLVMMDStringInContext(object C, const char * Str, unsigned int SLen):
         SLen (`~.int`):
             (undocumented)
     """
-    _LLVMMDStringInContext__retval = LLVMValueRef.from_value(ccore.LLVMMDStringInContext(
+    _LLVMMDStringInContext__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMMDStringInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr,Str,SLen))    # fully specified
     return (_LLVMMDStringInContext__retval,)
 
@@ -9573,7 +9573,7 @@ def LLVMMDString(const char * Str, unsigned int SLen):
         SLen (`~.int`):
             (undocumented)
     """
-    _LLVMMDString__retval = LLVMValueRef.from_value(ccore.LLVMMDString(Str,SLen))    # fully specified
+    _LLVMMDString__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMMDString(Str,SLen))    # fully specified
     return (_LLVMMDString__retval,)
 
 
@@ -9587,15 +9587,15 @@ def LLVMMDNodeInContext(object C, object Vals, unsigned int Count):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
 
-        Vals (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Vals (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         Count (`~.int`):
             (undocumented)
     """
-    _LLVMMDNodeInContext__retval = LLVMValueRef.from_value(ccore.LLVMMDNodeInContext(
+    _LLVMMDNodeInContext__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMMDNodeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr,
-        <ccore.LLVMValueRef*>rocm.llvm._util.Pointer.from_pyobj(Vals)._ptr,Count))    # fully specified
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Vals)._ptr,Count))    # fully specified
     return (_LLVMMDNodeInContext__retval,)
 
 
@@ -9606,14 +9606,14 @@ def LLVMMDNode(object Vals, unsigned int Count):
     Deprecated: Use LLVMMDNodeInContext2 instead. */
 
     Args:
-        Vals (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Vals (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         Count (`~.int`):
             (undocumented)
     """
-    _LLVMMDNode__retval = LLVMValueRef.from_value(ccore.LLVMMDNode(
-        <ccore.LLVMValueRef*>rocm.llvm._util.Pointer.from_pyobj(Vals)._ptr,Count))    # fully specified
+    _LLVMMDNode__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMMDNode(
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Vals)._ptr,Count))    # fully specified
     return (_LLVMMDNode__retval,)
 
 
@@ -9627,7 +9627,7 @@ def LLVMBasicBlockAsValue(object BB):
         BB (`~.LLVMOpaqueBasicBlock`/`~.object`):
             (undocumented)
     """
-    _LLVMBasicBlockAsValue__retval = LLVMValueRef.from_value(ccore.LLVMBasicBlockAsValue(
+    _LLVMBasicBlockAsValue__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBasicBlockAsValue(
         LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr))    # fully specified
     return (_LLVMBasicBlockAsValue__retval,)
 
@@ -9662,7 +9662,7 @@ def LLVMValueAsBasicBlock(object Val):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMValueAsBasicBlock__retval = LLVMBasicBlockRef.from_value(ccore.LLVMValueAsBasicBlock(
+    _LLVMValueAsBasicBlock__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMValueAsBasicBlock(
         LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
     return (_LLVMValueAsBasicBlock__retval,)
 
@@ -9700,7 +9700,7 @@ def LLVMGetBasicBlockParent(object BB):
         BB (`~.LLVMOpaqueBasicBlock`/`~.object`):
             (undocumented)
     """
-    _LLVMGetBasicBlockParent__retval = LLVMValueRef.from_value(ccore.LLVMGetBasicBlockParent(
+    _LLVMGetBasicBlockParent__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetBasicBlockParent(
         LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr))    # fully specified
     return (_LLVMGetBasicBlockParent__retval,)
 
@@ -9723,7 +9723,7 @@ def LLVMGetBasicBlockTerminator(object BB):
         BB (`~.LLVMOpaqueBasicBlock`/`~.object`):
             (undocumented)
     """
-    _LLVMGetBasicBlockTerminator__retval = LLVMValueRef.from_value(ccore.LLVMGetBasicBlockTerminator(
+    _LLVMGetBasicBlockTerminator__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetBasicBlockTerminator(
         LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr))    # fully specified
     return (_LLVMGetBasicBlockTerminator__retval,)
 
@@ -9763,12 +9763,12 @@ def LLVMGetBasicBlocks(object Fn, object BasicBlocks):
         Fn (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        BasicBlocks (`~.rocm.llvm._util.Pointer`/`~.object`):
+        BasicBlocks (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     ccore.LLVMGetBasicBlocks(
         LLVMOpaqueValue.from_pyobj(Fn)._ptr,
-        <ccore.LLVMBasicBlockRef*>rocm.llvm._util.Pointer.from_pyobj(BasicBlocks)._ptr)    # fully specified
+        <ccore.LLVMBasicBlockRef*>rocm.llvm._util.types.Pointer.from_pyobj(BasicBlocks)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -9787,7 +9787,7 @@ def LLVMGetFirstBasicBlock(object Fn):
         Fn (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetFirstBasicBlock__retval = LLVMBasicBlockRef.from_value(ccore.LLVMGetFirstBasicBlock(
+    _LLVMGetFirstBasicBlock__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetFirstBasicBlock(
         LLVMOpaqueValue.from_pyobj(Fn)._ptr))    # fully specified
     return (_LLVMGetFirstBasicBlock__retval,)
 
@@ -9805,7 +9805,7 @@ def LLVMGetLastBasicBlock(object Fn):
         Fn (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetLastBasicBlock__retval = LLVMBasicBlockRef.from_value(ccore.LLVMGetLastBasicBlock(
+    _LLVMGetLastBasicBlock__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetLastBasicBlock(
         LLVMOpaqueValue.from_pyobj(Fn)._ptr))    # fully specified
     return (_LLVMGetLastBasicBlock__retval,)
 
@@ -9820,7 +9820,7 @@ def LLVMGetNextBasicBlock(object BB):
         BB (`~.LLVMOpaqueBasicBlock`/`~.object`):
             (undocumented)
     """
-    _LLVMGetNextBasicBlock__retval = LLVMBasicBlockRef.from_value(ccore.LLVMGetNextBasicBlock(
+    _LLVMGetNextBasicBlock__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetNextBasicBlock(
         LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr))    # fully specified
     return (_LLVMGetNextBasicBlock__retval,)
 
@@ -9835,7 +9835,7 @@ def LLVMGetPreviousBasicBlock(object BB):
         BB (`~.LLVMOpaqueBasicBlock`/`~.object`):
             (undocumented)
     """
-    _LLVMGetPreviousBasicBlock__retval = LLVMBasicBlockRef.from_value(ccore.LLVMGetPreviousBasicBlock(
+    _LLVMGetPreviousBasicBlock__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetPreviousBasicBlock(
         LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr))    # fully specified
     return (_LLVMGetPreviousBasicBlock__retval,)
 
@@ -9854,7 +9854,7 @@ def LLVMGetEntryBasicBlock(object Fn):
         Fn (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetEntryBasicBlock__retval = LLVMBasicBlockRef.from_value(ccore.LLVMGetEntryBasicBlock(
+    _LLVMGetEntryBasicBlock__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetEntryBasicBlock(
         LLVMOpaqueValue.from_pyobj(Fn)._ptr))    # fully specified
     return (_LLVMGetEntryBasicBlock__retval,)
 
@@ -9919,7 +9919,7 @@ def LLVMCreateBasicBlockInContext(object C, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMCreateBasicBlockInContext__retval = LLVMBasicBlockRef.from_value(ccore.LLVMCreateBasicBlockInContext(
+    _LLVMCreateBasicBlockInContext__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMCreateBasicBlockInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr,Name))    # fully specified
     return (_LLVMCreateBasicBlockInContext__retval,)
 
@@ -9943,7 +9943,7 @@ def LLVMAppendBasicBlockInContext(object C, object Fn, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMAppendBasicBlockInContext__retval = LLVMBasicBlockRef.from_value(ccore.LLVMAppendBasicBlockInContext(
+    _LLVMAppendBasicBlockInContext__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMAppendBasicBlockInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr,
         LLVMOpaqueValue.from_pyobj(Fn)._ptr,Name))    # fully specified
     return (_LLVMAppendBasicBlockInContext__retval,)
@@ -9966,7 +9966,7 @@ def LLVMAppendBasicBlock(object Fn, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMAppendBasicBlock__retval = LLVMBasicBlockRef.from_value(ccore.LLVMAppendBasicBlock(
+    _LLVMAppendBasicBlock__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMAppendBasicBlock(
         LLVMOpaqueValue.from_pyobj(Fn)._ptr,Name))    # fully specified
     return (_LLVMAppendBasicBlock__retval,)
 
@@ -9993,7 +9993,7 @@ def LLVMInsertBasicBlockInContext(object C, object BB, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMInsertBasicBlockInContext__retval = LLVMBasicBlockRef.from_value(ccore.LLVMInsertBasicBlockInContext(
+    _LLVMInsertBasicBlockInContext__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMInsertBasicBlockInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr,
         LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr,Name))    # fully specified
     return (_LLVMInsertBasicBlockInContext__retval,)
@@ -10015,7 +10015,7 @@ def LLVMInsertBasicBlock(object InsertBeforeBB, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMInsertBasicBlock__retval = LLVMBasicBlockRef.from_value(ccore.LLVMInsertBasicBlock(
+    _LLVMInsertBasicBlock__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMInsertBasicBlock(
         LLVMOpaqueBasicBlock.from_pyobj(InsertBeforeBB)._ptr,Name))    # fully specified
     return (_LLVMInsertBasicBlock__retval,)
 
@@ -10115,7 +10115,7 @@ def LLVMGetFirstInstruction(object BB):
         BB (`~.LLVMOpaqueBasicBlock`/`~.object`):
             (undocumented)
     """
-    _LLVMGetFirstInstruction__retval = LLVMValueRef.from_value(ccore.LLVMGetFirstInstruction(
+    _LLVMGetFirstInstruction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetFirstInstruction(
         LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr))    # fully specified
     return (_LLVMGetFirstInstruction__retval,)
 
@@ -10132,7 +10132,7 @@ def LLVMGetLastInstruction(object BB):
         BB (`~.LLVMOpaqueBasicBlock`/`~.object`):
             (undocumented)
     """
-    _LLVMGetLastInstruction__retval = LLVMValueRef.from_value(ccore.LLVMGetLastInstruction(
+    _LLVMGetLastInstruction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetLastInstruction(
         LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr))    # fully specified
     return (_LLVMGetLastInstruction__retval,)
 
@@ -10170,7 +10170,7 @@ def LLVMGetMetadata(object Val, unsigned int KindID):
         KindID (`~.int`):
             (undocumented)
     """
-    _LLVMGetMetadata__retval = LLVMValueRef.from_value(ccore.LLVMGetMetadata(
+    _LLVMGetMetadata__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetMetadata(
         LLVMOpaqueValue.from_pyobj(Val)._ptr,KindID))    # fully specified
     return (_LLVMGetMetadata__retval,)
 
@@ -10210,12 +10210,12 @@ def LLVMInstructionGetAllMetadataOtherThanDebugLoc(object Instr, object NumEntri
         Instr (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        NumEntries (`~.rocm.llvm._util.ListOfUnsignedLong`/`~.object`):
+        NumEntries (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
             (undocumented)
     """
-    _LLVMInstructionGetAllMetadataOtherThanDebugLoc__retval = LLVMOpaqueValueMetadataEntry *.from_value(ccore.LLVMInstructionGetAllMetadataOtherThanDebugLoc(
+    _LLVMInstructionGetAllMetadataOtherThanDebugLoc__retval = LLVMOpaqueValueMetadataEntry.from_ptr(ccore.LLVMInstructionGetAllMetadataOtherThanDebugLoc(
         LLVMOpaqueValue.from_pyobj(Instr)._ptr,
-        <unsigned long *>rocm.llvm._util.ListOfUnsignedLong.from_pyobj(NumEntries)._ptr))    # fully specified
+        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(NumEntries)._ptr))    # fully specified
     return (_LLVMInstructionGetAllMetadataOtherThanDebugLoc__retval,)
 
 
@@ -10232,7 +10232,7 @@ def LLVMGetInstructionParent(object Inst):
         Inst (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetInstructionParent__retval = LLVMBasicBlockRef.from_value(ccore.LLVMGetInstructionParent(
+    _LLVMGetInstructionParent__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetInstructionParent(
         LLVMOpaqueValue.from_pyobj(Inst)._ptr))    # fully specified
     return (_LLVMGetInstructionParent__retval,)
 
@@ -10252,7 +10252,7 @@ def LLVMGetNextInstruction(object Inst):
         Inst (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetNextInstruction__retval = LLVMValueRef.from_value(ccore.LLVMGetNextInstruction(
+    _LLVMGetNextInstruction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNextInstruction(
         LLVMOpaqueValue.from_pyobj(Inst)._ptr))    # fully specified
     return (_LLVMGetNextInstruction__retval,)
 
@@ -10270,7 +10270,7 @@ def LLVMGetPreviousInstruction(object Inst):
         Inst (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetPreviousInstruction__retval = LLVMValueRef.from_value(ccore.LLVMGetPreviousInstruction(
+    _LLVMGetPreviousInstruction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetPreviousInstruction(
         LLVMOpaqueValue.from_pyobj(Inst)._ptr))    # fully specified
     return (_LLVMGetPreviousInstruction__retval,)
 
@@ -10426,7 +10426,7 @@ def LLVMInstructionClone(object Inst):
         Inst (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMInstructionClone__retval = LLVMValueRef.from_value(ccore.LLVMInstructionClone(
+    _LLVMInstructionClone__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMInstructionClone(
         LLVMOpaqueValue.from_pyobj(Inst)._ptr))    # fully specified
     return (_LLVMInstructionClone__retval,)
 
@@ -10446,7 +10446,7 @@ def LLVMIsATerminatorInst(object Inst):
         Inst (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMIsATerminatorInst__retval = LLVMValueRef.from_value(ccore.LLVMIsATerminatorInst(
+    _LLVMIsATerminatorInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsATerminatorInst(
         LLVMOpaqueValue.from_pyobj(Inst)._ptr))    # fully specified
     return (_LLVMIsATerminatorInst__retval,)
 
@@ -10604,12 +10604,12 @@ def LLVMGetCallSiteAttributes(object C, unsigned int Idx, object Attrs):
         Idx (`~.int`):
             (undocumented)
 
-        Attrs (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Attrs (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     ccore.LLVMGetCallSiteAttributes(
         LLVMOpaqueValue.from_pyobj(C)._ptr,Idx,
-        <ccore.LLVMAttributeRef*>rocm.llvm._util.Pointer.from_pyobj(Attrs)._ptr)    # fully specified
+        <ccore.LLVMAttributeRef*>rocm.llvm._util.types.Pointer.from_pyobj(Attrs)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -10626,7 +10626,7 @@ def LLVMGetCallSiteEnumAttribute(object C, unsigned int Idx, unsigned int KindID
         KindID (`~.int`):
             (undocumented)
     """
-    _LLVMGetCallSiteEnumAttribute__retval = LLVMAttributeRef.from_value(ccore.LLVMGetCallSiteEnumAttribute(
+    _LLVMGetCallSiteEnumAttribute__retval = LLVMOpaqueAttributeRef.from_ptr(ccore.LLVMGetCallSiteEnumAttribute(
         LLVMOpaqueValue.from_pyobj(C)._ptr,Idx,KindID))    # fully specified
     return (_LLVMGetCallSiteEnumAttribute__retval,)
 
@@ -10648,7 +10648,7 @@ def LLVMGetCallSiteStringAttribute(object C, unsigned int Idx, const char * K, u
         KLen (`~.int`):
             (undocumented)
     """
-    _LLVMGetCallSiteStringAttribute__retval = LLVMAttributeRef.from_value(ccore.LLVMGetCallSiteStringAttribute(
+    _LLVMGetCallSiteStringAttribute__retval = LLVMOpaqueAttributeRef.from_ptr(ccore.LLVMGetCallSiteStringAttribute(
         LLVMOpaqueValue.from_pyobj(C)._ptr,Idx,K,KLen))    # fully specified
     return (_LLVMGetCallSiteStringAttribute__retval,)
 
@@ -10705,7 +10705,7 @@ def LLVMGetCalledFunctionType(object C):
         C (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetCalledFunctionType__retval = LLVMTypeRef.from_value(ccore.LLVMGetCalledFunctionType(
+    _LLVMGetCalledFunctionType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMGetCalledFunctionType(
         LLVMOpaqueValue.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMGetCalledFunctionType__retval,)
 
@@ -10729,7 +10729,7 @@ def LLVMGetCalledValue(object Instr):
         Instr (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetCalledValue__retval = LLVMValueRef.from_value(ccore.LLVMGetCalledValue(
+    _LLVMGetCalledValue__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetCalledValue(
         LLVMOpaqueValue.from_pyobj(Instr)._ptr))    # fully specified
     return (_LLVMGetCalledValue__retval,)
 
@@ -10796,7 +10796,7 @@ def LLVMGetNormalDest(object InvokeInst):
         InvokeInst (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetNormalDest__retval = LLVMBasicBlockRef.from_value(ccore.LLVMGetNormalDest(
+    _LLVMGetNormalDest__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetNormalDest(
         LLVMOpaqueValue.from_pyobj(InvokeInst)._ptr))    # fully specified
     return (_LLVMGetNormalDest__retval,)
 
@@ -10823,7 +10823,7 @@ def LLVMGetUnwindDest(object InvokeInst):
         InvokeInst (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetUnwindDest__retval = LLVMBasicBlockRef.from_value(ccore.LLVMGetUnwindDest(
+    _LLVMGetUnwindDest__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetUnwindDest(
         LLVMOpaqueValue.from_pyobj(InvokeInst)._ptr))    # fully specified
     return (_LLVMGetUnwindDest__retval,)
 
@@ -10920,7 +10920,7 @@ def LLVMGetSuccessor(object Term, unsigned int i):
         i (`~.int`):
             (undocumented)
     """
-    _LLVMGetSuccessor__retval = LLVMBasicBlockRef.from_value(ccore.LLVMGetSuccessor(
+    _LLVMGetSuccessor__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetSuccessor(
         LLVMOpaqueValue.from_pyobj(Term)._ptr,i))    # fully specified
     return (_LLVMGetSuccessor__retval,)
 
@@ -10989,7 +10989,7 @@ def LLVMGetCondition(object Branch):
         Branch (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetCondition__retval = LLVMValueRef.from_value(ccore.LLVMGetCondition(
+    _LLVMGetCondition__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetCondition(
         LLVMOpaqueValue.from_pyobj(Branch)._ptr))    # fully specified
     return (_LLVMGetCondition__retval,)
 
@@ -11032,7 +11032,7 @@ def LLVMGetSwitchDefaultDest(object SwitchInstr):
         SwitchInstr (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetSwitchDefaultDest__retval = LLVMBasicBlockRef.from_value(ccore.LLVMGetSwitchDefaultDest(
+    _LLVMGetSwitchDefaultDest__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetSwitchDefaultDest(
         LLVMOpaqueValue.from_pyobj(SwitchInstr)._ptr))    # fully specified
     return (_LLVMGetSwitchDefaultDest__retval,)
 
@@ -11047,7 +11047,7 @@ def LLVMGetAllocatedType(object Alloca):
         Alloca (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetAllocatedType__retval = LLVMTypeRef.from_value(ccore.LLVMGetAllocatedType(
+    _LLVMGetAllocatedType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMGetAllocatedType(
         LLVMOpaqueValue.from_pyobj(Alloca)._ptr))    # fully specified
     return (_LLVMGetAllocatedType__retval,)
 
@@ -11099,7 +11099,7 @@ def LLVMGetGEPSourceElementType(object GEP):
         GEP (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetGEPSourceElementType__retval = LLVMTypeRef.from_value(ccore.LLVMGetGEPSourceElementType(
+    _LLVMGetGEPSourceElementType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMGetGEPSourceElementType(
         LLVMOpaqueValue.from_pyobj(GEP)._ptr))    # fully specified
     return (_LLVMGetGEPSourceElementType__retval,)
 
@@ -11114,10 +11114,10 @@ def LLVMAddIncoming(object PhiNode, object IncomingValues, object IncomingBlocks
         PhiNode (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        IncomingValues (`~.rocm.llvm._util.Pointer`/`~.object`):
+        IncomingValues (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
-        IncomingBlocks (`~.rocm.llvm._util.Pointer`/`~.object`):
+        IncomingBlocks (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         Count (`~.int`):
@@ -11125,8 +11125,8 @@ def LLVMAddIncoming(object PhiNode, object IncomingValues, object IncomingBlocks
     """
     ccore.LLVMAddIncoming(
         LLVMOpaqueValue.from_pyobj(PhiNode)._ptr,
-        <ccore.LLVMValueRef*>rocm.llvm._util.Pointer.from_pyobj(IncomingValues)._ptr,
-        <ccore.LLVMBasicBlockRef*>rocm.llvm._util.Pointer.from_pyobj(IncomingBlocks)._ptr,Count)    # fully specified
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(IncomingValues)._ptr,
+        <ccore.LLVMBasicBlockRef*>rocm.llvm._util.types.Pointer.from_pyobj(IncomingBlocks)._ptr,Count)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -11162,7 +11162,7 @@ def LLVMGetIncomingValue(object PhiNode, unsigned int Index):
         Index (`~.int`):
             (undocumented)
     """
-    _LLVMGetIncomingValue__retval = LLVMValueRef.from_value(ccore.LLVMGetIncomingValue(
+    _LLVMGetIncomingValue__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetIncomingValue(
         LLVMOpaqueValue.from_pyobj(PhiNode)._ptr,Index))    # fully specified
     return (_LLVMGetIncomingValue__retval,)
 
@@ -11180,7 +11180,7 @@ def LLVMGetIncomingBlock(object PhiNode, unsigned int Index):
         Index (`~.int`):
             (undocumented)
     """
-    _LLVMGetIncomingBlock__retval = LLVMBasicBlockRef.from_value(ccore.LLVMGetIncomingBlock(
+    _LLVMGetIncomingBlock__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetIncomingBlock(
         LLVMOpaqueValue.from_pyobj(PhiNode)._ptr,Index))    # fully specified
     return (_LLVMGetIncomingBlock__retval,)
 
@@ -11216,7 +11216,7 @@ def LLVMGetIndices(object Inst):
         Inst (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetIndices__retval = const unsigned int *.from_value(ccore.LLVMGetIndices(
+    _LLVMGetIndices__retval = rocm.llvm._util.types.Pointer.from_ptr(ccore.LLVMGetIndices(
         LLVMOpaqueValue.from_pyobj(Inst)._ptr))    # fully specified
     return (_LLVMGetIndices__retval,)
 
@@ -11234,7 +11234,7 @@ def LLVMCreateBuilderInContext(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMCreateBuilderInContext__retval = LLVMBuilderRef.from_value(ccore.LLVMCreateBuilderInContext(
+    _LLVMCreateBuilderInContext__retval = LLVMOpaqueBuilder.from_ptr(ccore.LLVMCreateBuilderInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
     return (_LLVMCreateBuilderInContext__retval,)
 
@@ -11243,7 +11243,7 @@ def LLVMCreateBuilderInContext(object C):
 def LLVMCreateBuilder():
     r"""(No short description, might be part of a group.)
     """
-    _LLVMCreateBuilder__retval = LLVMBuilderRef.from_value(ccore.LLVMCreateBuilder())    # fully specified
+    _LLVMCreateBuilder__retval = LLVMOpaqueBuilder.from_ptr(ccore.LLVMCreateBuilder())    # fully specified
     return (_LLVMCreateBuilder__retval,)
 
 
@@ -11307,7 +11307,7 @@ def LLVMGetInsertBlock(object Builder):
         Builder (`~.LLVMOpaqueBuilder`/`~.object`):
             (undocumented)
     """
-    _LLVMGetInsertBlock__retval = LLVMBasicBlockRef.from_value(ccore.LLVMGetInsertBlock(
+    _LLVMGetInsertBlock__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetInsertBlock(
         LLVMOpaqueBuilder.from_pyobj(Builder)._ptr))    # fully specified
     return (_LLVMGetInsertBlock__retval,)
 
@@ -11384,7 +11384,7 @@ def LLVMGetCurrentDebugLocation2(object Builder):
         Builder (`~.LLVMOpaqueBuilder`/`~.object`):
             (undocumented)
     """
-    _LLVMGetCurrentDebugLocation2__retval = LLVMMetadataRef.from_value(ccore.LLVMGetCurrentDebugLocation2(
+    _LLVMGetCurrentDebugLocation2__retval = LLVMOpaqueMetadata.from_ptr(ccore.LLVMGetCurrentDebugLocation2(
         LLVMOpaqueBuilder.from_pyobj(Builder)._ptr))    # fully specified
     return (_LLVMGetCurrentDebugLocation2__retval,)
 
@@ -11473,7 +11473,7 @@ def LLVMBuilderGetDefaultFPMathTag(object Builder):
         Builder (`~.LLVMOpaqueBuilder`/`~.object`):
             (undocumented)
     """
-    _LLVMBuilderGetDefaultFPMathTag__retval = LLVMMetadataRef.from_value(ccore.LLVMBuilderGetDefaultFPMathTag(
+    _LLVMBuilderGetDefaultFPMathTag__retval = LLVMOpaqueMetadata.from_ptr(ccore.LLVMBuilderGetDefaultFPMathTag(
         LLVMOpaqueBuilder.from_pyobj(Builder)._ptr))    # fully specified
     return (_LLVMBuilderGetDefaultFPMathTag__retval,)
 
@@ -11531,7 +11531,7 @@ def LLVMGetCurrentDebugLocation(object Builder):
         Builder (`~.LLVMOpaqueBuilder`/`~.object`):
             (undocumented)
     """
-    _LLVMGetCurrentDebugLocation__retval = LLVMValueRef.from_value(ccore.LLVMGetCurrentDebugLocation(
+    _LLVMGetCurrentDebugLocation__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetCurrentDebugLocation(
         LLVMOpaqueBuilder.from_pyobj(Builder)._ptr))    # fully specified
     return (_LLVMGetCurrentDebugLocation__retval,)
 
@@ -11544,7 +11544,7 @@ def LLVMBuildRetVoid(object arg0):
         arg0 (`~.LLVMOpaqueBuilder`/`~.object`):
             (undocumented)
     """
-    _LLVMBuildRetVoid__retval = LLVMValueRef.from_value(ccore.LLVMBuildRetVoid(
+    _LLVMBuildRetVoid__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildRetVoid(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr))    # fully specified
     return (_LLVMBuildRetVoid__retval,)
 
@@ -11560,7 +11560,7 @@ def LLVMBuildRet(object arg0, object V):
         V (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMBuildRet__retval = LLVMValueRef.from_value(ccore.LLVMBuildRet(
+    _LLVMBuildRet__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildRet(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(V)._ptr))    # fully specified
     return (_LLVMBuildRet__retval,)
@@ -11574,15 +11574,15 @@ def LLVMBuildAggregateRet(object arg0, object RetVals, unsigned int N):
         arg0 (`~.LLVMOpaqueBuilder`/`~.object`):
             (undocumented)
 
-        RetVals (`~.rocm.llvm._util.Pointer`/`~.object`):
+        RetVals (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         N (`~.int`):
             (undocumented)
     """
-    _LLVMBuildAggregateRet__retval = LLVMValueRef.from_value(ccore.LLVMBuildAggregateRet(
+    _LLVMBuildAggregateRet__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildAggregateRet(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        <ccore.LLVMValueRef*>rocm.llvm._util.Pointer.from_pyobj(RetVals)._ptr,N))    # fully specified
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(RetVals)._ptr,N))    # fully specified
     return (_LLVMBuildAggregateRet__retval,)
 
 
@@ -11597,7 +11597,7 @@ def LLVMBuildBr(object arg0, object Dest):
         Dest (`~.LLVMOpaqueBasicBlock`/`~.object`):
             (undocumented)
     """
-    _LLVMBuildBr__retval = LLVMValueRef.from_value(ccore.LLVMBuildBr(
+    _LLVMBuildBr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildBr(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueBasicBlock.from_pyobj(Dest)._ptr))    # fully specified
     return (_LLVMBuildBr__retval,)
@@ -11620,7 +11620,7 @@ def LLVMBuildCondBr(object arg0, object If, object Then, object Else):
         Else (`~.LLVMOpaqueBasicBlock`/`~.object`):
             (undocumented)
     """
-    _LLVMBuildCondBr__retval = LLVMValueRef.from_value(ccore.LLVMBuildCondBr(
+    _LLVMBuildCondBr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildCondBr(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(If)._ptr,
         LLVMOpaqueBasicBlock.from_pyobj(Then)._ptr,
@@ -11645,7 +11645,7 @@ def LLVMBuildSwitch(object arg0, object V, object Else, unsigned int NumCases):
         NumCases (`~.int`):
             (undocumented)
     """
-    _LLVMBuildSwitch__retval = LLVMValueRef.from_value(ccore.LLVMBuildSwitch(
+    _LLVMBuildSwitch__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSwitch(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(V)._ptr,
         LLVMOpaqueBasicBlock.from_pyobj(Else)._ptr,NumCases))    # fully specified
@@ -11666,7 +11666,7 @@ def LLVMBuildIndirectBr(object B, object Addr, unsigned int NumDests):
         NumDests (`~.int`):
             (undocumented)
     """
-    _LLVMBuildIndirectBr__retval = LLVMValueRef.from_value(ccore.LLVMBuildIndirectBr(
+    _LLVMBuildIndirectBr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildIndirectBr(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,
         LLVMOpaqueValue.from_pyobj(Addr)._ptr,NumDests))    # fully specified
     return (_LLVMBuildIndirectBr__retval,)
@@ -11686,7 +11686,7 @@ def LLVMBuildInvoke2(object arg0, object Ty, object Fn, object Args, unsigned in
         Fn (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Args (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Args (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         NumArgs (`~.int`):
@@ -11701,11 +11701,11 @@ def LLVMBuildInvoke2(object arg0, object Ty, object Fn, object Args, unsigned in
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildInvoke2__retval = LLVMValueRef.from_value(ccore.LLVMBuildInvoke2(
+    _LLVMBuildInvoke2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildInvoke2(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueType.from_pyobj(Ty)._ptr,
         LLVMOpaqueValue.from_pyobj(Fn)._ptr,
-        <ccore.LLVMValueRef*>rocm.llvm._util.Pointer.from_pyobj(Args)._ptr,NumArgs,
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Args)._ptr,NumArgs,
         LLVMOpaqueBasicBlock.from_pyobj(Then)._ptr,
         LLVMOpaqueBasicBlock.from_pyobj(Catch)._ptr,Name))    # fully specified
     return (_LLVMBuildInvoke2__retval,)
@@ -11719,7 +11719,7 @@ def LLVMBuildUnreachable(object arg0):
         arg0 (`~.LLVMOpaqueBuilder`/`~.object`):
             (undocumented)
     """
-    _LLVMBuildUnreachable__retval = LLVMValueRef.from_value(ccore.LLVMBuildUnreachable(
+    _LLVMBuildUnreachable__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildUnreachable(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr))    # fully specified
     return (_LLVMBuildUnreachable__retval,)
 
@@ -11735,7 +11735,7 @@ def LLVMBuildResume(object B, object Exn):
         Exn (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMBuildResume__retval = LLVMValueRef.from_value(ccore.LLVMBuildResume(
+    _LLVMBuildResume__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildResume(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,
         LLVMOpaqueValue.from_pyobj(Exn)._ptr))    # fully specified
     return (_LLVMBuildResume__retval,)
@@ -11761,7 +11761,7 @@ def LLVMBuildLandingPad(object B, object Ty, object PersFn, unsigned int NumClau
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildLandingPad__retval = LLVMValueRef.from_value(ccore.LLVMBuildLandingPad(
+    _LLVMBuildLandingPad__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildLandingPad(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,
         LLVMOpaqueType.from_pyobj(Ty)._ptr,
         LLVMOpaqueValue.from_pyobj(PersFn)._ptr,NumClauses,Name))    # fully specified
@@ -11782,7 +11782,7 @@ def LLVMBuildCleanupRet(object B, object CatchPad, object BB):
         BB (`~.LLVMOpaqueBasicBlock`/`~.object`):
             (undocumented)
     """
-    _LLVMBuildCleanupRet__retval = LLVMValueRef.from_value(ccore.LLVMBuildCleanupRet(
+    _LLVMBuildCleanupRet__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildCleanupRet(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,
         LLVMOpaqueValue.from_pyobj(CatchPad)._ptr,
         LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr))    # fully specified
@@ -11803,7 +11803,7 @@ def LLVMBuildCatchRet(object B, object CatchPad, object BB):
         BB (`~.LLVMOpaqueBasicBlock`/`~.object`):
             (undocumented)
     """
-    _LLVMBuildCatchRet__retval = LLVMValueRef.from_value(ccore.LLVMBuildCatchRet(
+    _LLVMBuildCatchRet__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildCatchRet(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,
         LLVMOpaqueValue.from_pyobj(CatchPad)._ptr,
         LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr))    # fully specified
@@ -11821,7 +11821,7 @@ def LLVMBuildCatchPad(object B, object ParentPad, object Args, unsigned int NumA
         ParentPad (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Args (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Args (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         NumArgs (`~.int`):
@@ -11830,10 +11830,10 @@ def LLVMBuildCatchPad(object B, object ParentPad, object Args, unsigned int NumA
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildCatchPad__retval = LLVMValueRef.from_value(ccore.LLVMBuildCatchPad(
+    _LLVMBuildCatchPad__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildCatchPad(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,
         LLVMOpaqueValue.from_pyobj(ParentPad)._ptr,
-        <ccore.LLVMValueRef*>rocm.llvm._util.Pointer.from_pyobj(Args)._ptr,NumArgs,Name))    # fully specified
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Args)._ptr,NumArgs,Name))    # fully specified
     return (_LLVMBuildCatchPad__retval,)
 
 
@@ -11848,7 +11848,7 @@ def LLVMBuildCleanupPad(object B, object ParentPad, object Args, unsigned int Nu
         ParentPad (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Args (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Args (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         NumArgs (`~.int`):
@@ -11857,10 +11857,10 @@ def LLVMBuildCleanupPad(object B, object ParentPad, object Args, unsigned int Nu
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildCleanupPad__retval = LLVMValueRef.from_value(ccore.LLVMBuildCleanupPad(
+    _LLVMBuildCleanupPad__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildCleanupPad(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,
         LLVMOpaqueValue.from_pyobj(ParentPad)._ptr,
-        <ccore.LLVMValueRef*>rocm.llvm._util.Pointer.from_pyobj(Args)._ptr,NumArgs,Name))    # fully specified
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Args)._ptr,NumArgs,Name))    # fully specified
     return (_LLVMBuildCleanupPad__retval,)
 
 
@@ -11884,7 +11884,7 @@ def LLVMBuildCatchSwitch(object B, object ParentPad, object UnwindBB, unsigned i
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildCatchSwitch__retval = LLVMValueRef.from_value(ccore.LLVMBuildCatchSwitch(
+    _LLVMBuildCatchSwitch__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildCatchSwitch(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,
         LLVMOpaqueValue.from_pyobj(ParentPad)._ptr,
         LLVMOpaqueBasicBlock.from_pyobj(UnwindBB)._ptr,NumHandlers,Name))    # fully specified
@@ -11956,7 +11956,7 @@ def LLVMGetClause(object LandingPad, unsigned int Idx):
         Idx (`~.int`):
             (undocumented)
     """
-    _LLVMGetClause__retval = LLVMValueRef.from_value(ccore.LLVMGetClause(
+    _LLVMGetClause__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetClause(
         LLVMOpaqueValue.from_pyobj(LandingPad)._ptr,Idx))    # fully specified
     return (_LLVMGetClause__retval,)
 
@@ -12059,12 +12059,12 @@ def LLVMGetHandlers(object CatchSwitch, object Handlers):
         CatchSwitch (`~.LLVMOpaqueValue`/`~.object`):
             The catchswitch instruction to operate on.
 
-        Handlers (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Handlers (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             Memory address of an array to be filled with basic blocks.
     """
     ccore.LLVMGetHandlers(
         LLVMOpaqueValue.from_pyobj(CatchSwitch)._ptr,
-        <ccore.LLVMBasicBlockRef*>rocm.llvm._util.Pointer.from_pyobj(Handlers)._ptr)    # fully specified
+        <ccore.LLVMBasicBlockRef*>rocm.llvm._util.types.Pointer.from_pyobj(Handlers)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -12078,7 +12078,7 @@ def LLVMGetArgOperand(object Funclet, unsigned int i):
         i (`~.int`):
             (undocumented)
     """
-    _LLVMGetArgOperand__retval = LLVMValueRef.from_value(ccore.LLVMGetArgOperand(
+    _LLVMGetArgOperand__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetArgOperand(
         LLVMOpaqueValue.from_pyobj(Funclet)._ptr,i))    # fully specified
     return (_LLVMGetArgOperand__retval,)
 
@@ -12117,7 +12117,7 @@ def LLVMGetParentCatchSwitch(object CatchPad):
         CatchPad (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetParentCatchSwitch__retval = LLVMValueRef.from_value(ccore.LLVMGetParentCatchSwitch(
+    _LLVMGetParentCatchSwitch__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetParentCatchSwitch(
         LLVMOpaqueValue.from_pyobj(CatchPad)._ptr))    # fully specified
     return (_LLVMGetParentCatchSwitch__retval,)
 
@@ -12162,7 +12162,7 @@ def LLVMBuildAdd(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildAdd__retval = LLVMValueRef.from_value(ccore.LLVMBuildAdd(
+    _LLVMBuildAdd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildAdd(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12186,7 +12186,7 @@ def LLVMBuildNSWAdd(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildNSWAdd__retval = LLVMValueRef.from_value(ccore.LLVMBuildNSWAdd(
+    _LLVMBuildNSWAdd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNSWAdd(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12210,7 +12210,7 @@ def LLVMBuildNUWAdd(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildNUWAdd__retval = LLVMValueRef.from_value(ccore.LLVMBuildNUWAdd(
+    _LLVMBuildNUWAdd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNUWAdd(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12234,7 +12234,7 @@ def LLVMBuildFAdd(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildFAdd__retval = LLVMValueRef.from_value(ccore.LLVMBuildFAdd(
+    _LLVMBuildFAdd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFAdd(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12258,7 +12258,7 @@ def LLVMBuildSub(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildSub__retval = LLVMValueRef.from_value(ccore.LLVMBuildSub(
+    _LLVMBuildSub__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSub(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12282,7 +12282,7 @@ def LLVMBuildNSWSub(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildNSWSub__retval = LLVMValueRef.from_value(ccore.LLVMBuildNSWSub(
+    _LLVMBuildNSWSub__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNSWSub(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12306,7 +12306,7 @@ def LLVMBuildNUWSub(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildNUWSub__retval = LLVMValueRef.from_value(ccore.LLVMBuildNUWSub(
+    _LLVMBuildNUWSub__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNUWSub(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12330,7 +12330,7 @@ def LLVMBuildFSub(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildFSub__retval = LLVMValueRef.from_value(ccore.LLVMBuildFSub(
+    _LLVMBuildFSub__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFSub(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12354,7 +12354,7 @@ def LLVMBuildMul(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildMul__retval = LLVMValueRef.from_value(ccore.LLVMBuildMul(
+    _LLVMBuildMul__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildMul(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12378,7 +12378,7 @@ def LLVMBuildNSWMul(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildNSWMul__retval = LLVMValueRef.from_value(ccore.LLVMBuildNSWMul(
+    _LLVMBuildNSWMul__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNSWMul(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12402,7 +12402,7 @@ def LLVMBuildNUWMul(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildNUWMul__retval = LLVMValueRef.from_value(ccore.LLVMBuildNUWMul(
+    _LLVMBuildNUWMul__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNUWMul(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12426,7 +12426,7 @@ def LLVMBuildFMul(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildFMul__retval = LLVMValueRef.from_value(ccore.LLVMBuildFMul(
+    _LLVMBuildFMul__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFMul(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12450,7 +12450,7 @@ def LLVMBuildUDiv(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildUDiv__retval = LLVMValueRef.from_value(ccore.LLVMBuildUDiv(
+    _LLVMBuildUDiv__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildUDiv(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12474,7 +12474,7 @@ def LLVMBuildExactUDiv(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildExactUDiv__retval = LLVMValueRef.from_value(ccore.LLVMBuildExactUDiv(
+    _LLVMBuildExactUDiv__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildExactUDiv(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12498,7 +12498,7 @@ def LLVMBuildSDiv(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildSDiv__retval = LLVMValueRef.from_value(ccore.LLVMBuildSDiv(
+    _LLVMBuildSDiv__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSDiv(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12522,7 +12522,7 @@ def LLVMBuildExactSDiv(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildExactSDiv__retval = LLVMValueRef.from_value(ccore.LLVMBuildExactSDiv(
+    _LLVMBuildExactSDiv__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildExactSDiv(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12546,7 +12546,7 @@ def LLVMBuildFDiv(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildFDiv__retval = LLVMValueRef.from_value(ccore.LLVMBuildFDiv(
+    _LLVMBuildFDiv__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFDiv(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12570,7 +12570,7 @@ def LLVMBuildURem(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildURem__retval = LLVMValueRef.from_value(ccore.LLVMBuildURem(
+    _LLVMBuildURem__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildURem(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12594,7 +12594,7 @@ def LLVMBuildSRem(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildSRem__retval = LLVMValueRef.from_value(ccore.LLVMBuildSRem(
+    _LLVMBuildSRem__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSRem(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12618,7 +12618,7 @@ def LLVMBuildFRem(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildFRem__retval = LLVMValueRef.from_value(ccore.LLVMBuildFRem(
+    _LLVMBuildFRem__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFRem(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12642,7 +12642,7 @@ def LLVMBuildShl(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildShl__retval = LLVMValueRef.from_value(ccore.LLVMBuildShl(
+    _LLVMBuildShl__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildShl(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12666,7 +12666,7 @@ def LLVMBuildLShr(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildLShr__retval = LLVMValueRef.from_value(ccore.LLVMBuildLShr(
+    _LLVMBuildLShr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildLShr(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12690,7 +12690,7 @@ def LLVMBuildAShr(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildAShr__retval = LLVMValueRef.from_value(ccore.LLVMBuildAShr(
+    _LLVMBuildAShr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildAShr(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12714,7 +12714,7 @@ def LLVMBuildAnd(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildAnd__retval = LLVMValueRef.from_value(ccore.LLVMBuildAnd(
+    _LLVMBuildAnd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildAnd(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12738,7 +12738,7 @@ def LLVMBuildOr(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildOr__retval = LLVMValueRef.from_value(ccore.LLVMBuildOr(
+    _LLVMBuildOr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildOr(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12762,7 +12762,7 @@ def LLVMBuildXor(object arg0, object LHS, object RHS, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildXor__retval = LLVMValueRef.from_value(ccore.LLVMBuildXor(
+    _LLVMBuildXor__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildXor(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12791,7 +12791,7 @@ def LLVMBuildBinOp(object B, object Op, object LHS, object RHS, const char * Nam
     """
     if not isinstance(Op,_LLVMOpcode__Base):
         raise TypeError("argument 'Op' must be of type '_LLVMOpcode__Base'")
-    _LLVMBuildBinOp__retval = LLVMValueRef.from_value(ccore.LLVMBuildBinOp(
+    _LLVMBuildBinOp__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildBinOp(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,Op.value,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -12812,7 +12812,7 @@ def LLVMBuildNeg(object arg0, object V, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildNeg__retval = LLVMValueRef.from_value(ccore.LLVMBuildNeg(
+    _LLVMBuildNeg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNeg(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(V)._ptr,Name))    # fully specified
     return (_LLVMBuildNeg__retval,)
@@ -12832,7 +12832,7 @@ def LLVMBuildNSWNeg(object B, object V, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildNSWNeg__retval = LLVMValueRef.from_value(ccore.LLVMBuildNSWNeg(
+    _LLVMBuildNSWNeg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNSWNeg(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,
         LLVMOpaqueValue.from_pyobj(V)._ptr,Name))    # fully specified
     return (_LLVMBuildNSWNeg__retval,)
@@ -12852,7 +12852,7 @@ def LLVMBuildNUWNeg(object B, object V, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildNUWNeg__retval = LLVMValueRef.from_value(ccore.LLVMBuildNUWNeg(
+    _LLVMBuildNUWNeg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNUWNeg(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,
         LLVMOpaqueValue.from_pyobj(V)._ptr,Name))    # fully specified
     return (_LLVMBuildNUWNeg__retval,)
@@ -12872,7 +12872,7 @@ def LLVMBuildFNeg(object arg0, object V, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildFNeg__retval = LLVMValueRef.from_value(ccore.LLVMBuildFNeg(
+    _LLVMBuildFNeg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFNeg(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(V)._ptr,Name))    # fully specified
     return (_LLVMBuildFNeg__retval,)
@@ -12892,7 +12892,7 @@ def LLVMBuildNot(object arg0, object V, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildNot__retval = LLVMValueRef.from_value(ccore.LLVMBuildNot(
+    _LLVMBuildNot__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNot(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(V)._ptr,Name))    # fully specified
     return (_LLVMBuildNot__retval,)
@@ -12912,7 +12912,7 @@ def LLVMBuildMalloc(object arg0, object Ty, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildMalloc__retval = LLVMValueRef.from_value(ccore.LLVMBuildMalloc(
+    _LLVMBuildMalloc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildMalloc(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueType.from_pyobj(Ty)._ptr,Name))    # fully specified
     return (_LLVMBuildMalloc__retval,)
@@ -12935,7 +12935,7 @@ def LLVMBuildArrayMalloc(object arg0, object Ty, object Val, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildArrayMalloc__retval = LLVMValueRef.from_value(ccore.LLVMBuildArrayMalloc(
+    _LLVMBuildArrayMalloc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildArrayMalloc(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueType.from_pyobj(Ty)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,Name))    # fully specified
@@ -12968,7 +12968,7 @@ def LLVMBuildMemSet(object B, object Ptr, object Val, object Len, unsigned int A
         Align (`~.int`):
             (undocumented)
     """
-    _LLVMBuildMemSet__retval = LLVMValueRef.from_value(ccore.LLVMBuildMemSet(
+    _LLVMBuildMemSet__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildMemSet(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,
         LLVMOpaqueValue.from_pyobj(Ptr)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
@@ -13004,7 +13004,7 @@ def LLVMBuildMemCpy(object B, object Dst, unsigned int DstAlign, object Src, uns
         Size (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMBuildMemCpy__retval = LLVMValueRef.from_value(ccore.LLVMBuildMemCpy(
+    _LLVMBuildMemCpy__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildMemCpy(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,
         LLVMOpaqueValue.from_pyobj(Dst)._ptr,DstAlign,
         LLVMOpaqueValue.from_pyobj(Src)._ptr,SrcAlign,
@@ -13040,7 +13040,7 @@ def LLVMBuildMemMove(object B, object Dst, unsigned int DstAlign, object Src, un
         Size (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMBuildMemMove__retval = LLVMValueRef.from_value(ccore.LLVMBuildMemMove(
+    _LLVMBuildMemMove__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildMemMove(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,
         LLVMOpaqueValue.from_pyobj(Dst)._ptr,DstAlign,
         LLVMOpaqueValue.from_pyobj(Src)._ptr,SrcAlign,
@@ -13062,7 +13062,7 @@ def LLVMBuildAlloca(object arg0, object Ty, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildAlloca__retval = LLVMValueRef.from_value(ccore.LLVMBuildAlloca(
+    _LLVMBuildAlloca__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildAlloca(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueType.from_pyobj(Ty)._ptr,Name))    # fully specified
     return (_LLVMBuildAlloca__retval,)
@@ -13085,7 +13085,7 @@ def LLVMBuildArrayAlloca(object arg0, object Ty, object Val, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildArrayAlloca__retval = LLVMValueRef.from_value(ccore.LLVMBuildArrayAlloca(
+    _LLVMBuildArrayAlloca__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildArrayAlloca(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueType.from_pyobj(Ty)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,Name))    # fully specified
@@ -13103,7 +13103,7 @@ def LLVMBuildFree(object arg0, object PointerVal):
         PointerVal (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMBuildFree__retval = LLVMValueRef.from_value(ccore.LLVMBuildFree(
+    _LLVMBuildFree__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFree(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(PointerVal)._ptr))    # fully specified
     return (_LLVMBuildFree__retval,)
@@ -13126,7 +13126,7 @@ def LLVMBuildLoad2(object arg0, object Ty, object PointerVal, const char * Name)
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildLoad2__retval = LLVMValueRef.from_value(ccore.LLVMBuildLoad2(
+    _LLVMBuildLoad2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildLoad2(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueType.from_pyobj(Ty)._ptr,
         LLVMOpaqueValue.from_pyobj(PointerVal)._ptr,Name))    # fully specified
@@ -13147,7 +13147,7 @@ def LLVMBuildStore(object arg0, object Val, object Ptr):
         Ptr (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMBuildStore__retval = LLVMValueRef.from_value(ccore.LLVMBuildStore(
+    _LLVMBuildStore__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildStore(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueValue.from_pyobj(Ptr)._ptr))    # fully specified
@@ -13168,7 +13168,7 @@ def LLVMBuildGEP2(object B, object Ty, object Pointer, object Indices, unsigned 
         Pointer (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Indices (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Indices (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         NumIndices (`~.int`):
@@ -13177,11 +13177,11 @@ def LLVMBuildGEP2(object B, object Ty, object Pointer, object Indices, unsigned 
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildGEP2__retval = LLVMValueRef.from_value(ccore.LLVMBuildGEP2(
+    _LLVMBuildGEP2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildGEP2(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,
         LLVMOpaqueType.from_pyobj(Ty)._ptr,
         LLVMOpaqueValue.from_pyobj(Pointer)._ptr,
-        <ccore.LLVMValueRef*>rocm.llvm._util.Pointer.from_pyobj(Indices)._ptr,NumIndices,Name))    # fully specified
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Indices)._ptr,NumIndices,Name))    # fully specified
     return (_LLVMBuildGEP2__retval,)
 
 
@@ -13199,7 +13199,7 @@ def LLVMBuildInBoundsGEP2(object B, object Ty, object Pointer, object Indices, u
         Pointer (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Indices (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Indices (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         NumIndices (`~.int`):
@@ -13208,11 +13208,11 @@ def LLVMBuildInBoundsGEP2(object B, object Ty, object Pointer, object Indices, u
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildInBoundsGEP2__retval = LLVMValueRef.from_value(ccore.LLVMBuildInBoundsGEP2(
+    _LLVMBuildInBoundsGEP2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildInBoundsGEP2(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,
         LLVMOpaqueType.from_pyobj(Ty)._ptr,
         LLVMOpaqueValue.from_pyobj(Pointer)._ptr,
-        <ccore.LLVMValueRef*>rocm.llvm._util.Pointer.from_pyobj(Indices)._ptr,NumIndices,Name))    # fully specified
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Indices)._ptr,NumIndices,Name))    # fully specified
     return (_LLVMBuildInBoundsGEP2__retval,)
 
 
@@ -13236,7 +13236,7 @@ def LLVMBuildStructGEP2(object B, object Ty, object Pointer, unsigned int Idx, c
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildStructGEP2__retval = LLVMValueRef.from_value(ccore.LLVMBuildStructGEP2(
+    _LLVMBuildStructGEP2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildStructGEP2(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,
         LLVMOpaqueType.from_pyobj(Ty)._ptr,
         LLVMOpaqueValue.from_pyobj(Pointer)._ptr,Idx,Name))    # fully specified
@@ -13257,7 +13257,7 @@ def LLVMBuildGlobalString(object B, const char * Str, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildGlobalString__retval = LLVMValueRef.from_value(ccore.LLVMBuildGlobalString(
+    _LLVMBuildGlobalString__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildGlobalString(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,Str,Name))    # fully specified
     return (_LLVMBuildGlobalString__retval,)
 
@@ -13276,7 +13276,7 @@ def LLVMBuildGlobalStringPtr(object B, const char * Str, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildGlobalStringPtr__retval = LLVMValueRef.from_value(ccore.LLVMBuildGlobalStringPtr(
+    _LLVMBuildGlobalStringPtr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildGlobalStringPtr(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,Str,Name))    # fully specified
     return (_LLVMBuildGlobalStringPtr__retval,)
 
@@ -13434,7 +13434,7 @@ def LLVMBuildTrunc(object arg0, object Val, object DestTy, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildTrunc__retval = LLVMValueRef.from_value(ccore.LLVMBuildTrunc(
+    _LLVMBuildTrunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildTrunc(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
@@ -13458,7 +13458,7 @@ def LLVMBuildZExt(object arg0, object Val, object DestTy, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildZExt__retval = LLVMValueRef.from_value(ccore.LLVMBuildZExt(
+    _LLVMBuildZExt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildZExt(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
@@ -13482,7 +13482,7 @@ def LLVMBuildSExt(object arg0, object Val, object DestTy, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildSExt__retval = LLVMValueRef.from_value(ccore.LLVMBuildSExt(
+    _LLVMBuildSExt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSExt(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
@@ -13506,7 +13506,7 @@ def LLVMBuildFPToUI(object arg0, object Val, object DestTy, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildFPToUI__retval = LLVMValueRef.from_value(ccore.LLVMBuildFPToUI(
+    _LLVMBuildFPToUI__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFPToUI(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
@@ -13530,7 +13530,7 @@ def LLVMBuildFPToSI(object arg0, object Val, object DestTy, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildFPToSI__retval = LLVMValueRef.from_value(ccore.LLVMBuildFPToSI(
+    _LLVMBuildFPToSI__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFPToSI(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
@@ -13554,7 +13554,7 @@ def LLVMBuildUIToFP(object arg0, object Val, object DestTy, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildUIToFP__retval = LLVMValueRef.from_value(ccore.LLVMBuildUIToFP(
+    _LLVMBuildUIToFP__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildUIToFP(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
@@ -13578,7 +13578,7 @@ def LLVMBuildSIToFP(object arg0, object Val, object DestTy, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildSIToFP__retval = LLVMValueRef.from_value(ccore.LLVMBuildSIToFP(
+    _LLVMBuildSIToFP__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSIToFP(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
@@ -13602,7 +13602,7 @@ def LLVMBuildFPTrunc(object arg0, object Val, object DestTy, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildFPTrunc__retval = LLVMValueRef.from_value(ccore.LLVMBuildFPTrunc(
+    _LLVMBuildFPTrunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFPTrunc(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
@@ -13626,7 +13626,7 @@ def LLVMBuildFPExt(object arg0, object Val, object DestTy, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildFPExt__retval = LLVMValueRef.from_value(ccore.LLVMBuildFPExt(
+    _LLVMBuildFPExt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFPExt(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
@@ -13650,7 +13650,7 @@ def LLVMBuildPtrToInt(object arg0, object Val, object DestTy, const char * Name)
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildPtrToInt__retval = LLVMValueRef.from_value(ccore.LLVMBuildPtrToInt(
+    _LLVMBuildPtrToInt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildPtrToInt(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
@@ -13674,7 +13674,7 @@ def LLVMBuildIntToPtr(object arg0, object Val, object DestTy, const char * Name)
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildIntToPtr__retval = LLVMValueRef.from_value(ccore.LLVMBuildIntToPtr(
+    _LLVMBuildIntToPtr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildIntToPtr(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
@@ -13698,7 +13698,7 @@ def LLVMBuildBitCast(object arg0, object Val, object DestTy, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildBitCast__retval = LLVMValueRef.from_value(ccore.LLVMBuildBitCast(
+    _LLVMBuildBitCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildBitCast(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
@@ -13722,7 +13722,7 @@ def LLVMBuildAddrSpaceCast(object arg0, object Val, object DestTy, const char * 
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildAddrSpaceCast__retval = LLVMValueRef.from_value(ccore.LLVMBuildAddrSpaceCast(
+    _LLVMBuildAddrSpaceCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildAddrSpaceCast(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
@@ -13746,7 +13746,7 @@ def LLVMBuildZExtOrBitCast(object arg0, object Val, object DestTy, const char * 
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildZExtOrBitCast__retval = LLVMValueRef.from_value(ccore.LLVMBuildZExtOrBitCast(
+    _LLVMBuildZExtOrBitCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildZExtOrBitCast(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
@@ -13770,7 +13770,7 @@ def LLVMBuildSExtOrBitCast(object arg0, object Val, object DestTy, const char * 
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildSExtOrBitCast__retval = LLVMValueRef.from_value(ccore.LLVMBuildSExtOrBitCast(
+    _LLVMBuildSExtOrBitCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSExtOrBitCast(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
@@ -13794,7 +13794,7 @@ def LLVMBuildTruncOrBitCast(object arg0, object Val, object DestTy, const char *
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildTruncOrBitCast__retval = LLVMValueRef.from_value(ccore.LLVMBuildTruncOrBitCast(
+    _LLVMBuildTruncOrBitCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildTruncOrBitCast(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
@@ -13823,7 +13823,7 @@ def LLVMBuildCast(object B, object Op, object Val, object DestTy, const char * N
     """
     if not isinstance(Op,_LLVMOpcode__Base):
         raise TypeError("argument 'Op' must be of type '_LLVMOpcode__Base'")
-    _LLVMBuildCast__retval = LLVMValueRef.from_value(ccore.LLVMBuildCast(
+    _LLVMBuildCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildCast(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,Op.value,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
@@ -13847,7 +13847,7 @@ def LLVMBuildPointerCast(object arg0, object Val, object DestTy, const char * Na
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildPointerCast__retval = LLVMValueRef.from_value(ccore.LLVMBuildPointerCast(
+    _LLVMBuildPointerCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildPointerCast(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
@@ -13874,7 +13874,7 @@ def LLVMBuildIntCast2(object arg0, object Val, object DestTy, int IsSigned, cons
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildIntCast2__retval = LLVMValueRef.from_value(ccore.LLVMBuildIntCast2(
+    _LLVMBuildIntCast2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildIntCast2(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueType.from_pyobj(DestTy)._ptr,IsSigned,Name))    # fully specified
@@ -13898,7 +13898,7 @@ def LLVMBuildFPCast(object arg0, object Val, object DestTy, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildFPCast__retval = LLVMValueRef.from_value(ccore.LLVMBuildFPCast(
+    _LLVMBuildFPCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFPCast(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
@@ -13924,7 +13924,7 @@ def LLVMBuildIntCast(object arg0, object Val, object DestTy, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildIntCast__retval = LLVMValueRef.from_value(ccore.LLVMBuildIntCast(
+    _LLVMBuildIntCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildIntCast(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
         LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
@@ -13981,7 +13981,7 @@ def LLVMBuildICmp(object arg0, object Op, object LHS, object RHS, const char * N
     """
     if not isinstance(Op,_LLVMIntPredicate__Base):
         raise TypeError("argument 'Op' must be of type '_LLVMIntPredicate__Base'")
-    _LLVMBuildICmp__retval = LLVMValueRef.from_value(ccore.LLVMBuildICmp(
+    _LLVMBuildICmp__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildICmp(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,Op.value,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -14010,7 +14010,7 @@ def LLVMBuildFCmp(object arg0, object Op, object LHS, object RHS, const char * N
     """
     if not isinstance(Op,_LLVMRealPredicate__Base):
         raise TypeError("argument 'Op' must be of type '_LLVMRealPredicate__Base'")
-    _LLVMBuildFCmp__retval = LLVMValueRef.from_value(ccore.LLVMBuildFCmp(
+    _LLVMBuildFCmp__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFCmp(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,Op.value,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
         LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
@@ -14031,7 +14031,7 @@ def LLVMBuildPhi(object arg0, object Ty, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildPhi__retval = LLVMValueRef.from_value(ccore.LLVMBuildPhi(
+    _LLVMBuildPhi__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildPhi(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueType.from_pyobj(Ty)._ptr,Name))    # fully specified
     return (_LLVMBuildPhi__retval,)
@@ -14051,7 +14051,7 @@ def LLVMBuildCall2(object arg0, object arg1, object Fn, object Args, unsigned in
         Fn (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Args (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Args (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         NumArgs (`~.int`):
@@ -14060,11 +14060,11 @@ def LLVMBuildCall2(object arg0, object arg1, object Fn, object Args, unsigned in
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildCall2__retval = LLVMValueRef.from_value(ccore.LLVMBuildCall2(
+    _LLVMBuildCall2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildCall2(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueType.from_pyobj(arg1)._ptr,
         LLVMOpaqueValue.from_pyobj(Fn)._ptr,
-        <ccore.LLVMValueRef*>rocm.llvm._util.Pointer.from_pyobj(Args)._ptr,NumArgs,Name))    # fully specified
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Args)._ptr,NumArgs,Name))    # fully specified
     return (_LLVMBuildCall2__retval,)
 
 
@@ -14088,7 +14088,7 @@ def LLVMBuildSelect(object arg0, object If, object Then, object Else, const char
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildSelect__retval = LLVMValueRef.from_value(ccore.LLVMBuildSelect(
+    _LLVMBuildSelect__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSelect(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(If)._ptr,
         LLVMOpaqueValue.from_pyobj(Then)._ptr,
@@ -14113,7 +14113,7 @@ def LLVMBuildVAArg(object arg0, object List, object Ty, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildVAArg__retval = LLVMValueRef.from_value(ccore.LLVMBuildVAArg(
+    _LLVMBuildVAArg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildVAArg(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(List)._ptr,
         LLVMOpaqueType.from_pyobj(Ty)._ptr,Name))    # fully specified
@@ -14137,7 +14137,7 @@ def LLVMBuildExtractElement(object arg0, object VecVal, object Index, const char
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildExtractElement__retval = LLVMValueRef.from_value(ccore.LLVMBuildExtractElement(
+    _LLVMBuildExtractElement__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildExtractElement(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(VecVal)._ptr,
         LLVMOpaqueValue.from_pyobj(Index)._ptr,Name))    # fully specified
@@ -14164,7 +14164,7 @@ def LLVMBuildInsertElement(object arg0, object VecVal, object EltVal, object Ind
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildInsertElement__retval = LLVMValueRef.from_value(ccore.LLVMBuildInsertElement(
+    _LLVMBuildInsertElement__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildInsertElement(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(VecVal)._ptr,
         LLVMOpaqueValue.from_pyobj(EltVal)._ptr,
@@ -14192,7 +14192,7 @@ def LLVMBuildShuffleVector(object arg0, object V1, object V2, object Mask, const
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildShuffleVector__retval = LLVMValueRef.from_value(ccore.LLVMBuildShuffleVector(
+    _LLVMBuildShuffleVector__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildShuffleVector(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(V1)._ptr,
         LLVMOpaqueValue.from_pyobj(V2)._ptr,
@@ -14217,7 +14217,7 @@ def LLVMBuildExtractValue(object arg0, object AggVal, unsigned int Index, const 
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildExtractValue__retval = LLVMValueRef.from_value(ccore.LLVMBuildExtractValue(
+    _LLVMBuildExtractValue__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildExtractValue(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(AggVal)._ptr,Index,Name))    # fully specified
     return (_LLVMBuildExtractValue__retval,)
@@ -14243,7 +14243,7 @@ def LLVMBuildInsertValue(object arg0, object AggVal, object EltVal, unsigned int
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildInsertValue__retval = LLVMValueRef.from_value(ccore.LLVMBuildInsertValue(
+    _LLVMBuildInsertValue__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildInsertValue(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(AggVal)._ptr,
         LLVMOpaqueValue.from_pyobj(EltVal)._ptr,Index,Name))    # fully specified
@@ -14264,7 +14264,7 @@ def LLVMBuildFreeze(object arg0, object Val, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildFreeze__retval = LLVMValueRef.from_value(ccore.LLVMBuildFreeze(
+    _LLVMBuildFreeze__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFreeze(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,Name))    # fully specified
     return (_LLVMBuildFreeze__retval,)
@@ -14284,7 +14284,7 @@ def LLVMBuildIsNull(object arg0, object Val, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildIsNull__retval = LLVMValueRef.from_value(ccore.LLVMBuildIsNull(
+    _LLVMBuildIsNull__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildIsNull(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,Name))    # fully specified
     return (_LLVMBuildIsNull__retval,)
@@ -14304,7 +14304,7 @@ def LLVMBuildIsNotNull(object arg0, object Val, const char * Name):
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildIsNotNull__retval = LLVMValueRef.from_value(ccore.LLVMBuildIsNotNull(
+    _LLVMBuildIsNotNull__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildIsNotNull(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,Name))    # fully specified
     return (_LLVMBuildIsNotNull__retval,)
@@ -14330,7 +14330,7 @@ def LLVMBuildPtrDiff2(object arg0, object ElemTy, object LHS, object RHS, const 
         Name (`~.bytes`):
             (undocumented)
     """
-    _LLVMBuildPtrDiff2__retval = LLVMValueRef.from_value(ccore.LLVMBuildPtrDiff2(
+    _LLVMBuildPtrDiff2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildPtrDiff2(
         LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
         LLVMOpaqueType.from_pyobj(ElemTy)._ptr,
         LLVMOpaqueValue.from_pyobj(LHS)._ptr,
@@ -14357,7 +14357,7 @@ def LLVMBuildFence(object B, object ordering, int singleThread, const char * Nam
     """
     if not isinstance(ordering,_LLVMAtomicOrdering__Base):
         raise TypeError("argument 'ordering' must be of type '_LLVMAtomicOrdering__Base'")
-    _LLVMBuildFence__retval = LLVMValueRef.from_value(ccore.LLVMBuildFence(
+    _LLVMBuildFence__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFence(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,ordering.value,singleThread,Name))    # fully specified
     return (_LLVMBuildFence__retval,)
 
@@ -14389,7 +14389,7 @@ def LLVMBuildAtomicRMW(object B, object op, object PTR, object Val, object order
         raise TypeError("argument 'op' must be of type '_LLVMAtomicRMWBinOp__Base'")                    
     if not isinstance(ordering,_LLVMAtomicOrdering__Base):
         raise TypeError("argument 'ordering' must be of type '_LLVMAtomicOrdering__Base'")
-    _LLVMBuildAtomicRMW__retval = LLVMValueRef.from_value(ccore.LLVMBuildAtomicRMW(
+    _LLVMBuildAtomicRMW__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildAtomicRMW(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,op.value,
         LLVMOpaqueValue.from_pyobj(PTR)._ptr,
         LLVMOpaqueValue.from_pyobj(Val)._ptr,ordering.value,singleThread))    # fully specified
@@ -14426,7 +14426,7 @@ def LLVMBuildAtomicCmpXchg(object B, object Ptr, object Cmp, object New, object 
         raise TypeError("argument 'SuccessOrdering' must be of type '_LLVMAtomicOrdering__Base'")                    
     if not isinstance(FailureOrdering,_LLVMAtomicOrdering__Base):
         raise TypeError("argument 'FailureOrdering' must be of type '_LLVMAtomicOrdering__Base'")
-    _LLVMBuildAtomicCmpXchg__retval = LLVMValueRef.from_value(ccore.LLVMBuildAtomicCmpXchg(
+    _LLVMBuildAtomicCmpXchg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildAtomicCmpXchg(
         LLVMOpaqueBuilder.from_pyobj(B)._ptr,
         LLVMOpaqueValue.from_pyobj(Ptr)._ptr,
         LLVMOpaqueValue.from_pyobj(Cmp)._ptr,
@@ -14609,7 +14609,7 @@ def LLVMCreateModuleProviderForExistingModule(object M):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
     """
-    _LLVMCreateModuleProviderForExistingModule__retval = LLVMModuleProviderRef.from_value(ccore.LLVMCreateModuleProviderForExistingModule(
+    _LLVMCreateModuleProviderForExistingModule__retval = LLVMOpaqueModuleProvider.from_ptr(ccore.LLVMCreateModuleProviderForExistingModule(
         LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
     return (_LLVMCreateModuleProviderForExistingModule__retval,)
 
@@ -14638,10 +14638,10 @@ def LLVMCreateMemoryBufferWithContentsOfFile(const char * Path, object OutMemBuf
         Path (`~.bytes`):
             (undocumented)
 
-        OutMemBuf (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutMemBuf (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
-        OutMessage (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -14650,8 +14650,8 @@ def LLVMCreateMemoryBufferWithContentsOfFile(const char * Path, object OutMemBuf
         * `~.int`
     """
     cdef int _LLVMCreateMemoryBufferWithContentsOfFile__retval = ccore.LLVMCreateMemoryBufferWithContentsOfFile(Path,
-        <ccore.LLVMMemoryBufferRef*>rocm.llvm._util.Pointer.from_pyobj(OutMemBuf)._ptr,
-        <char **>rocm.llvm._util.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
+        <ccore.LLVMMemoryBufferRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutMemBuf)._ptr,
+        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
     return (_LLVMCreateMemoryBufferWithContentsOfFile__retval,)
 
 
@@ -14660,10 +14660,10 @@ def LLVMCreateMemoryBufferWithSTDIN(object OutMemBuf, object OutMessage):
     r"""(No short description, might be part of a group.)
 
     Args:
-        OutMemBuf (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutMemBuf (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
-        OutMessage (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -14672,8 +14672,8 @@ def LLVMCreateMemoryBufferWithSTDIN(object OutMemBuf, object OutMessage):
         * `~.int`
     """
     cdef int _LLVMCreateMemoryBufferWithSTDIN__retval = ccore.LLVMCreateMemoryBufferWithSTDIN(
-        <ccore.LLVMMemoryBufferRef*>rocm.llvm._util.Pointer.from_pyobj(OutMemBuf)._ptr,
-        <char **>rocm.llvm._util.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
+        <ccore.LLVMMemoryBufferRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutMemBuf)._ptr,
+        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
     return (_LLVMCreateMemoryBufferWithSTDIN__retval,)
 
 
@@ -14694,7 +14694,7 @@ def LLVMCreateMemoryBufferWithMemoryRange(const char * InputData, unsigned long 
         RequiresNullTerminator (`~.int`):
             (undocumented)
     """
-    _LLVMCreateMemoryBufferWithMemoryRange__retval = LLVMMemoryBufferRef.from_value(ccore.LLVMCreateMemoryBufferWithMemoryRange(InputData,InputDataLength,BufferName,RequiresNullTerminator))    # fully specified
+    _LLVMCreateMemoryBufferWithMemoryRange__retval = LLVMOpaqueMemoryBuffer.from_ptr(ccore.LLVMCreateMemoryBufferWithMemoryRange(InputData,InputDataLength,BufferName,RequiresNullTerminator))    # fully specified
     return (_LLVMCreateMemoryBufferWithMemoryRange__retval,)
 
 
@@ -14712,7 +14712,7 @@ def LLVMCreateMemoryBufferWithMemoryRangeCopy(const char * InputData, unsigned l
         BufferName (`~.bytes`):
             (undocumented)
     """
-    _LLVMCreateMemoryBufferWithMemoryRangeCopy__retval = LLVMMemoryBufferRef.from_value(ccore.LLVMCreateMemoryBufferWithMemoryRangeCopy(InputData,InputDataLength,BufferName))    # fully specified
+    _LLVMCreateMemoryBufferWithMemoryRangeCopy__retval = LLVMOpaqueMemoryBuffer.from_ptr(ccore.LLVMCreateMemoryBufferWithMemoryRangeCopy(InputData,InputDataLength,BufferName))    # fully specified
     return (_LLVMCreateMemoryBufferWithMemoryRangeCopy__retval,)
 
 
@@ -14773,7 +14773,7 @@ def LLVMGetGlobalPassRegistry():
     See:
         `~.llvm``~.`~.PassRegistry`.`~.getPassRegistry``
     """
-    _LLVMGetGlobalPassRegistry__retval = LLVMPassRegistryRef.from_value(ccore.LLVMGetGlobalPassRegistry())    # fully specified
+    _LLVMGetGlobalPassRegistry__retval = LLVMOpaquePassRegistry.from_ptr(ccore.LLVMGetGlobalPassRegistry())    # fully specified
     return (_LLVMGetGlobalPassRegistry__retval,)
 
 
@@ -14787,7 +14787,7 @@ def LLVMCreatePassManager():
     See:
         `~.llvm``~.`~.PassManager`.`~.PassManager``
     """
-    _LLVMCreatePassManager__retval = LLVMPassManagerRef.from_value(ccore.LLVMCreatePassManager())    # fully specified
+    _LLVMCreatePassManager__retval = LLVMOpaquePassManager.from_ptr(ccore.LLVMCreatePassManager())    # fully specified
     return (_LLVMCreatePassManager__retval,)
 
 
@@ -14806,7 +14806,7 @@ def LLVMCreateFunctionPassManagerForModule(object M):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
     """
-    _LLVMCreateFunctionPassManagerForModule__retval = LLVMPassManagerRef.from_value(ccore.LLVMCreateFunctionPassManagerForModule(
+    _LLVMCreateFunctionPassManagerForModule__retval = LLVMOpaquePassManager.from_ptr(ccore.LLVMCreateFunctionPassManagerForModule(
         LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
     return (_LLVMCreateFunctionPassManagerForModule__retval,)
 
@@ -14821,7 +14821,7 @@ def LLVMCreateFunctionPassManager(object MP):
         MP (`~.LLVMOpaqueModuleProvider`/`~.object`):
             (undocumented)
     """
-    _LLVMCreateFunctionPassManager__retval = LLVMPassManagerRef.from_value(ccore.LLVMCreateFunctionPassManager(
+    _LLVMCreateFunctionPassManager__retval = LLVMOpaquePassManager.from_ptr(ccore.LLVMCreateFunctionPassManager(
         LLVMOpaqueModuleProvider.from_pyobj(MP)._ptr))    # fully specified
     return (_LLVMCreateFunctionPassManager__retval,)
 

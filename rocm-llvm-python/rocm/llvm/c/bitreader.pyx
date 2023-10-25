@@ -66,10 +66,10 @@ def LLVMParseBitcode(object MemBuf, object OutModule, object OutMessage):
         MemBuf (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
             (undocumented)
 
-        OutModule (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutModule (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
-        OutMessage (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -79,8 +79,8 @@ def LLVMParseBitcode(object MemBuf, object OutModule, object OutMessage):
     """
     cdef int _LLVMParseBitcode__retval = cbitreader.LLVMParseBitcode(
         LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf)._ptr,
-        <cbitreader.LLVMModuleRef*>rocm.llvm._util.Pointer.from_pyobj(OutModule)._ptr,
-        <char **>rocm.llvm._util.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
+        <cbitreader.LLVMModuleRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutModule)._ptr,
+        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
     return (_LLVMParseBitcode__retval,)
 
 
@@ -92,7 +92,7 @@ def LLVMParseBitcode2(object MemBuf, object OutModule):
         MemBuf (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
             (undocumented)
 
-        OutModule (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutModule (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -102,7 +102,7 @@ def LLVMParseBitcode2(object MemBuf, object OutModule):
     """
     cdef int _LLVMParseBitcode2__retval = cbitreader.LLVMParseBitcode2(
         LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf)._ptr,
-        <cbitreader.LLVMModuleRef*>rocm.llvm._util.Pointer.from_pyobj(OutModule)._ptr)    # fully specified
+        <cbitreader.LLVMModuleRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutModule)._ptr)    # fully specified
     return (_LLVMParseBitcode2__retval,)
 
 
@@ -117,10 +117,10 @@ def LLVMParseBitcodeInContext(object ContextRef, object MemBuf, object OutModule
         MemBuf (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
             (undocumented)
 
-        OutModule (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutModule (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
-        OutMessage (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -131,8 +131,8 @@ def LLVMParseBitcodeInContext(object ContextRef, object MemBuf, object OutModule
     cdef int _LLVMParseBitcodeInContext__retval = cbitreader.LLVMParseBitcodeInContext(
         LLVMOpaqueContext.from_pyobj(ContextRef)._ptr,
         LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf)._ptr,
-        <cbitreader.LLVMModuleRef*>rocm.llvm._util.Pointer.from_pyobj(OutModule)._ptr,
-        <char **>rocm.llvm._util.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
+        <cbitreader.LLVMModuleRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutModule)._ptr,
+        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
     return (_LLVMParseBitcodeInContext__retval,)
 
 
@@ -147,7 +147,7 @@ def LLVMParseBitcodeInContext2(object ContextRef, object MemBuf, object OutModul
         MemBuf (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
             (undocumented)
 
-        OutModule (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutModule (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -158,7 +158,7 @@ def LLVMParseBitcodeInContext2(object ContextRef, object MemBuf, object OutModul
     cdef int _LLVMParseBitcodeInContext2__retval = cbitreader.LLVMParseBitcodeInContext2(
         LLVMOpaqueContext.from_pyobj(ContextRef)._ptr,
         LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf)._ptr,
-        <cbitreader.LLVMModuleRef*>rocm.llvm._util.Pointer.from_pyobj(OutModule)._ptr)    # fully specified
+        <cbitreader.LLVMModuleRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutModule)._ptr)    # fully specified
     return (_LLVMParseBitcodeInContext2__retval,)
 
 
@@ -178,10 +178,10 @@ def LLVMGetBitcodeModuleInContext(object ContextRef, object MemBuf, object OutM,
         MemBuf (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
             (undocumented)
 
-        OutM (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutM (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
-        OutMessage (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -192,8 +192,8 @@ def LLVMGetBitcodeModuleInContext(object ContextRef, object MemBuf, object OutM,
     cdef int _LLVMGetBitcodeModuleInContext__retval = cbitreader.LLVMGetBitcodeModuleInContext(
         LLVMOpaqueContext.from_pyobj(ContextRef)._ptr,
         LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf)._ptr,
-        <cbitreader.LLVMModuleRef*>rocm.llvm._util.Pointer.from_pyobj(OutM)._ptr,
-        <char **>rocm.llvm._util.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
+        <cbitreader.LLVMModuleRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutM)._ptr,
+        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
     return (_LLVMGetBitcodeModuleInContext__retval,)
 
 
@@ -216,7 +216,7 @@ def LLVMGetBitcodeModuleInContext2(object ContextRef, object MemBuf, object OutM
         MemBuf (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
             (undocumented)
 
-        OutM (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutM (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -227,7 +227,7 @@ def LLVMGetBitcodeModuleInContext2(object ContextRef, object MemBuf, object OutM
     cdef int _LLVMGetBitcodeModuleInContext2__retval = cbitreader.LLVMGetBitcodeModuleInContext2(
         LLVMOpaqueContext.from_pyobj(ContextRef)._ptr,
         LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf)._ptr,
-        <cbitreader.LLVMModuleRef*>rocm.llvm._util.Pointer.from_pyobj(OutM)._ptr)    # fully specified
+        <cbitreader.LLVMModuleRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutM)._ptr)    # fully specified
     return (_LLVMGetBitcodeModuleInContext2__retval,)
 
 
@@ -239,10 +239,10 @@ def LLVMGetBitcodeModule(object MemBuf, object OutM, object OutMessage):
         MemBuf (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
             (undocumented)
 
-        OutM (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutM (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
-        OutMessage (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -252,8 +252,8 @@ def LLVMGetBitcodeModule(object MemBuf, object OutM, object OutMessage):
     """
     cdef int _LLVMGetBitcodeModule__retval = cbitreader.LLVMGetBitcodeModule(
         LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf)._ptr,
-        <cbitreader.LLVMModuleRef*>rocm.llvm._util.Pointer.from_pyobj(OutM)._ptr,
-        <char **>rocm.llvm._util.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
+        <cbitreader.LLVMModuleRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutM)._ptr,
+        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
     return (_LLVMGetBitcodeModule__retval,)
 
 
@@ -265,7 +265,7 @@ def LLVMGetBitcodeModule2(object MemBuf, object OutM):
         MemBuf (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
             (undocumented)
 
-        OutM (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutM (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -275,7 +275,7 @@ def LLVMGetBitcodeModule2(object MemBuf, object OutM):
     """
     cdef int _LLVMGetBitcodeModule2__retval = cbitreader.LLVMGetBitcodeModule2(
         LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf)._ptr,
-        <cbitreader.LLVMModuleRef*>rocm.llvm._util.Pointer.from_pyobj(OutM)._ptr)    # fully specified
+        <cbitreader.LLVMModuleRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutM)._ptr)    # fully specified
     return (_LLVMGetBitcodeModule2__retval,)
 
 __all__ = [

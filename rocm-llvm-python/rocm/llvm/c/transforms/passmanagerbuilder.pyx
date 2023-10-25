@@ -213,7 +213,7 @@ def LLVMPassManagerBuilderCreate():
 
     See llvm`~.PassManagerBuilder`. */
     """
-    _LLVMPassManagerBuilderCreate__retval = LLVMPassManagerBuilderRef.from_value(cpassmanagerbuilder.LLVMPassManagerBuilderCreate())    # fully specified
+    _LLVMPassManagerBuilderCreate__retval = LLVMOpaquePassManagerBuilder.from_ptr(cpassmanagerbuilder.LLVMPassManagerBuilderCreate())    # fully specified
     return (_LLVMPassManagerBuilderCreate__retval,)
 
 

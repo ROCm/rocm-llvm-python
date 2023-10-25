@@ -76,10 +76,10 @@ def LLVMParseIRInContext(object ContextRef, object MemBuf, object OutM, object O
         MemBuf (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
             (undocumented)
 
-        OutM (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutM (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
-        OutMessage (`~.rocm.llvm._util.Pointer`/`~.object`):
+        OutMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -90,8 +90,8 @@ def LLVMParseIRInContext(object ContextRef, object MemBuf, object OutM, object O
     cdef int _LLVMParseIRInContext__retval = cirreader.LLVMParseIRInContext(
         LLVMOpaqueContext.from_pyobj(ContextRef)._ptr,
         LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf)._ptr,
-        <cirreader.LLVMModuleRef*>rocm.llvm._util.Pointer.from_pyobj(OutM)._ptr,
-        <char **>rocm.llvm._util.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
+        <cirreader.LLVMModuleRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutM)._ptr,
+        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
     return (_LLVMParseIRInContext__retval,)
 
 __all__ = [

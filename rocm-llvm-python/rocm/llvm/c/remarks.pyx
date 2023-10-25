@@ -462,7 +462,7 @@ def LLVMRemarkDebugLocGetSourceFilePath(object DL):
         DL (`~.LLVMRemarkOpaqueDebugLoc`/`~.object`):
             (undocumented)
     """
-    _LLVMRemarkDebugLocGetSourceFilePath__retval = LLVMRemarkStringRef.from_value(cremarks.LLVMRemarkDebugLocGetSourceFilePath(
+    _LLVMRemarkDebugLocGetSourceFilePath__retval = LLVMRemarkOpaqueString.from_ptr(cremarks.LLVMRemarkDebugLocGetSourceFilePath(
         LLVMRemarkOpaqueDebugLoc.from_pyobj(DL)._ptr))    # fully specified
     return (_LLVMRemarkDebugLocGetSourceFilePath__retval,)
 
@@ -675,7 +675,7 @@ def LLVMRemarkArgGetKey(object Arg):
         Arg (`~.LLVMRemarkOpaqueArg`/`~.object`):
             (undocumented)
     """
-    _LLVMRemarkArgGetKey__retval = LLVMRemarkStringRef.from_value(cremarks.LLVMRemarkArgGetKey(
+    _LLVMRemarkArgGetKey__retval = LLVMRemarkOpaqueString.from_ptr(cremarks.LLVMRemarkArgGetKey(
         LLVMRemarkOpaqueArg.from_pyobj(Arg)._ptr))    # fully specified
     return (_LLVMRemarkArgGetKey__retval,)
 
@@ -693,7 +693,7 @@ def LLVMRemarkArgGetValue(object Arg):
         Arg (`~.LLVMRemarkOpaqueArg`/`~.object`):
             (undocumented)
     """
-    _LLVMRemarkArgGetValue__retval = LLVMRemarkStringRef.from_value(cremarks.LLVMRemarkArgGetValue(
+    _LLVMRemarkArgGetValue__retval = LLVMRemarkOpaqueString.from_ptr(cremarks.LLVMRemarkArgGetValue(
         LLVMRemarkOpaqueArg.from_pyobj(Arg)._ptr))    # fully specified
     return (_LLVMRemarkArgGetValue__retval,)
 
@@ -713,7 +713,7 @@ def LLVMRemarkArgGetDebugLoc(object Arg):
         Arg (`~.LLVMRemarkOpaqueArg`/`~.object`):
             (undocumented)
     """
-    _LLVMRemarkArgGetDebugLoc__retval = LLVMRemarkDebugLocRef.from_value(cremarks.LLVMRemarkArgGetDebugLoc(
+    _LLVMRemarkArgGetDebugLoc__retval = LLVMRemarkOpaqueDebugLoc.from_ptr(cremarks.LLVMRemarkArgGetDebugLoc(
         LLVMRemarkOpaqueArg.from_pyobj(Arg)._ptr))    # fully specified
     return (_LLVMRemarkArgGetDebugLoc__retval,)
 
@@ -920,7 +920,7 @@ def LLVMRemarkEntryGetPassName(object Remark):
         Remark (`~.LLVMRemarkOpaqueEntry`/`~.object`):
             (undocumented)
     """
-    _LLVMRemarkEntryGetPassName__retval = LLVMRemarkStringRef.from_value(cremarks.LLVMRemarkEntryGetPassName(
+    _LLVMRemarkEntryGetPassName__retval = LLVMRemarkOpaqueString.from_ptr(cremarks.LLVMRemarkEntryGetPassName(
         LLVMRemarkOpaqueEntry.from_pyobj(Remark)._ptr))    # fully specified
     return (_LLVMRemarkEntryGetPassName__retval,)
 
@@ -938,7 +938,7 @@ def LLVMRemarkEntryGetRemarkName(object Remark):
         Remark (`~.LLVMRemarkOpaqueEntry`/`~.object`):
             (undocumented)
     """
-    _LLVMRemarkEntryGetRemarkName__retval = LLVMRemarkStringRef.from_value(cremarks.LLVMRemarkEntryGetRemarkName(
+    _LLVMRemarkEntryGetRemarkName__retval = LLVMRemarkOpaqueString.from_ptr(cremarks.LLVMRemarkEntryGetRemarkName(
         LLVMRemarkOpaqueEntry.from_pyobj(Remark)._ptr))    # fully specified
     return (_LLVMRemarkEntryGetRemarkName__retval,)
 
@@ -956,7 +956,7 @@ def LLVMRemarkEntryGetFunctionName(object Remark):
         Remark (`~.LLVMRemarkOpaqueEntry`/`~.object`):
             (undocumented)
     """
-    _LLVMRemarkEntryGetFunctionName__retval = LLVMRemarkStringRef.from_value(cremarks.LLVMRemarkEntryGetFunctionName(
+    _LLVMRemarkEntryGetFunctionName__retval = LLVMRemarkOpaqueString.from_ptr(cremarks.LLVMRemarkEntryGetFunctionName(
         LLVMRemarkOpaqueEntry.from_pyobj(Remark)._ptr))    # fully specified
     return (_LLVMRemarkEntryGetFunctionName__retval,)
 
@@ -976,7 +976,7 @@ def LLVMRemarkEntryGetDebugLoc(object Remark):
         Remark (`~.LLVMRemarkOpaqueEntry`/`~.object`):
             (undocumented)
     """
-    _LLVMRemarkEntryGetDebugLoc__retval = LLVMRemarkDebugLocRef.from_value(cremarks.LLVMRemarkEntryGetDebugLoc(
+    _LLVMRemarkEntryGetDebugLoc__retval = LLVMRemarkOpaqueDebugLoc.from_ptr(cremarks.LLVMRemarkEntryGetDebugLoc(
         LLVMRemarkOpaqueEntry.from_pyobj(Remark)._ptr))    # fully specified
     return (_LLVMRemarkEntryGetDebugLoc__retval,)
 
@@ -1046,7 +1046,7 @@ def LLVMRemarkEntryGetFirstArg(object Remark):
         Remark (`~.LLVMRemarkOpaqueEntry`/`~.object`):
             (undocumented)
     """
-    _LLVMRemarkEntryGetFirstArg__retval = LLVMRemarkArgRef.from_value(cremarks.LLVMRemarkEntryGetFirstArg(
+    _LLVMRemarkEntryGetFirstArg__retval = LLVMRemarkOpaqueArg.from_ptr(cremarks.LLVMRemarkEntryGetFirstArg(
         LLVMRemarkOpaqueEntry.from_pyobj(Remark)._ptr))    # fully specified
     return (_LLVMRemarkEntryGetFirstArg__retval,)
 
@@ -1071,7 +1071,7 @@ def LLVMRemarkEntryGetNextArg(object It, object Remark):
         Remark (`~.LLVMRemarkOpaqueEntry`/`~.object`):
             (undocumented)
     """
-    _LLVMRemarkEntryGetNextArg__retval = LLVMRemarkArgRef.from_value(cremarks.LLVMRemarkEntryGetNextArg(
+    _LLVMRemarkEntryGetNextArg__retval = LLVMRemarkOpaqueArg.from_ptr(cremarks.LLVMRemarkEntryGetNextArg(
         LLVMRemarkOpaqueArg.from_pyobj(It)._ptr,
         LLVMRemarkOpaqueEntry.from_pyobj(Remark)._ptr))    # fully specified
     return (_LLVMRemarkEntryGetNextArg__retval,)
@@ -1241,14 +1241,14 @@ def LLVMRemarkParserCreateYAML(object Buf, unsigned long Size):
         REMARKS_API_VERSION=0
 
     Args:
-        Buf (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Buf (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         Size (`~.int`):
             (undocumented)
     """
-    _LLVMRemarkParserCreateYAML__retval = LLVMRemarkParserRef.from_value(cremarks.LLVMRemarkParserCreateYAML(
-        <const void *>rocm.llvm._util.Pointer.from_pyobj(Buf)._ptr,Size))    # fully specified
+    _LLVMRemarkParserCreateYAML__retval = LLVMRemarkOpaqueParser.from_ptr(cremarks.LLVMRemarkParserCreateYAML(
+        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(Buf)._ptr,Size))    # fully specified
     return (_LLVMRemarkParserCreateYAML__retval,)
 
 
@@ -1268,14 +1268,14 @@ def LLVMRemarkParserCreateBitstream(object Buf, unsigned long Size):
         REMARKS_API_VERSION=1
 
     Args:
-        Buf (`~.rocm.llvm._util.Pointer`/`~.object`):
+        Buf (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         Size (`~.int`):
             (undocumented)
     """
-    _LLVMRemarkParserCreateBitstream__retval = LLVMRemarkParserRef.from_value(cremarks.LLVMRemarkParserCreateBitstream(
-        <const void *>rocm.llvm._util.Pointer.from_pyobj(Buf)._ptr,Size))    # fully specified
+    _LLVMRemarkParserCreateBitstream__retval = LLVMRemarkOpaqueParser.from_ptr(cremarks.LLVMRemarkParserCreateBitstream(
+        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(Buf)._ptr,Size))    # fully specified
     return (_LLVMRemarkParserCreateBitstream__retval,)
 
 
@@ -1329,7 +1329,7 @@ def LLVMRemarkParserGetNext(object Parser):
         Parser (`~.LLVMRemarkOpaqueParser`/`~.object`):
             (undocumented)
     """
-    _LLVMRemarkParserGetNext__retval = LLVMRemarkEntryRef.from_value(cremarks.LLVMRemarkParserGetNext(
+    _LLVMRemarkParserGetNext__retval = LLVMRemarkOpaqueEntry.from_ptr(cremarks.LLVMRemarkParserGetNext(
         LLVMRemarkOpaqueParser.from_pyobj(Parser)._ptr))    # fully specified
     return (_LLVMRemarkParserGetNext__retval,)
 

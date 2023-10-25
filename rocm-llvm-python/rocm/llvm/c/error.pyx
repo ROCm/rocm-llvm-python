@@ -194,7 +194,7 @@ def LLVMGetErrorTypeId(object Err):
         Err (`~.LLVMOpaqueError`/`~.object`):
             (undocumented)
     """
-    _LLVMGetErrorTypeId__retval = const void *.from_value(cerror.LLVMGetErrorTypeId(
+    _LLVMGetErrorTypeId__retval = rocm.llvm._util.types.Pointer.from_ptr(cerror.LLVMGetErrorTypeId(
         LLVMOpaqueError.from_pyobj(Err)._ptr))    # fully specified
     return (_LLVMGetErrorTypeId__retval,)
 
@@ -258,7 +258,7 @@ def LLVMGetStringErrorTypeId():
 
     Returns the type id for llvm StringError.
     """
-    _LLVMGetStringErrorTypeId__retval = const void *.from_value(cerror.LLVMGetStringErrorTypeId())    # fully specified
+    _LLVMGetStringErrorTypeId__retval = rocm.llvm._util.types.Pointer.from_ptr(cerror.LLVMGetStringErrorTypeId())    # fully specified
     return (_LLVMGetStringErrorTypeId__retval,)
 
 
@@ -272,7 +272,7 @@ def LLVMCreateStringError(const char * ErrMsg):
         ErrMsg (`~.bytes`):
             (undocumented)
     """
-    _LLVMCreateStringError__retval = LLVMErrorRef.from_value(cerror.LLVMCreateStringError(ErrMsg))    # fully specified
+    _LLVMCreateStringError__retval = LLVMOpaqueError.from_ptr(cerror.LLVMCreateStringError(ErrMsg))    # fully specified
     return (_LLVMCreateStringError__retval,)
 
 __all__ = [

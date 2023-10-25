@@ -630,13 +630,13 @@ def LLVMCreateBinary(object MemBuf, object Context, object ErrorMessage):
         Context (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
 
-        ErrorMessage (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ErrorMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
-    _LLVMCreateBinary__retval = LLVMBinaryRef.from_value(cobject.LLVMCreateBinary(
+    _LLVMCreateBinary__retval = LLVMOpaqueBinary.from_ptr(cobject.LLVMCreateBinary(
         LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf)._ptr,
         LLVMOpaqueContext.from_pyobj(Context)._ptr,
-        <char **>rocm.llvm._util.Pointer.from_pyobj(ErrorMessage)._ptr))    # fully specified
+        <char **>rocm.llvm._util.types.Pointer.from_pyobj(ErrorMessage)._ptr))    # fully specified
     return (_LLVMCreateBinary__retval,)
 
 
@@ -674,7 +674,7 @@ def LLVMBinaryCopyMemoryBuffer(object BR):
         BR (`~.LLVMOpaqueBinary`/`~.object`):
             (undocumented)
     """
-    _LLVMBinaryCopyMemoryBuffer__retval = LLVMMemoryBufferRef.from_value(cobject.LLVMBinaryCopyMemoryBuffer(
+    _LLVMBinaryCopyMemoryBuffer__retval = LLVMOpaqueMemoryBuffer.from_ptr(cobject.LLVMBinaryCopyMemoryBuffer(
         LLVMOpaqueBinary.from_pyobj(BR)._ptr))    # fully specified
     return (_LLVMBinaryCopyMemoryBuffer__retval,)
 
@@ -716,12 +716,12 @@ def LLVMMachOUniversalBinaryCopyObjectForArch(object BR, const char * Arch, unsi
         ArchLen (`~.int`):
             (undocumented)
 
-        ErrorMessage (`~.rocm.llvm._util.Pointer`/`~.object`):
+        ErrorMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
-    _LLVMMachOUniversalBinaryCopyObjectForArch__retval = LLVMBinaryRef.from_value(cobject.LLVMMachOUniversalBinaryCopyObjectForArch(
+    _LLVMMachOUniversalBinaryCopyObjectForArch__retval = LLVMOpaqueBinary.from_ptr(cobject.LLVMMachOUniversalBinaryCopyObjectForArch(
         LLVMOpaqueBinary.from_pyobj(BR)._ptr,Arch,ArchLen,
-        <char **>rocm.llvm._util.Pointer.from_pyobj(ErrorMessage)._ptr))    # fully specified
+        <char **>rocm.llvm._util.types.Pointer.from_pyobj(ErrorMessage)._ptr))    # fully specified
     return (_LLVMMachOUniversalBinaryCopyObjectForArch__retval,)
 
 
@@ -744,7 +744,7 @@ def LLVMObjectFileCopySectionIterator(object BR):
         BR (`~.LLVMOpaqueBinary`/`~.object`):
             (undocumented)
     """
-    _LLVMObjectFileCopySectionIterator__retval = LLVMSectionIteratorRef.from_value(cobject.LLVMObjectFileCopySectionIterator(
+    _LLVMObjectFileCopySectionIterator__retval = LLVMOpaqueSectionIterator.from_ptr(cobject.LLVMObjectFileCopySectionIterator(
         LLVMOpaqueBinary.from_pyobj(BR)._ptr))    # fully specified
     return (_LLVMObjectFileCopySectionIterator__retval,)
 
@@ -795,7 +795,7 @@ def LLVMObjectFileCopySymbolIterator(object BR):
         BR (`~.LLVMOpaqueBinary`/`~.object`):
             (undocumented)
     """
-    _LLVMObjectFileCopySymbolIterator__retval = LLVMSymbolIteratorRef.from_value(cobject.LLVMObjectFileCopySymbolIterator(
+    _LLVMObjectFileCopySymbolIterator__retval = LLVMOpaqueSymbolIterator.from_ptr(cobject.LLVMObjectFileCopySymbolIterator(
         LLVMOpaqueBinary.from_pyobj(BR)._ptr))    # fully specified
     return (_LLVMObjectFileCopySymbolIterator__retval,)
 
@@ -993,7 +993,7 @@ def LLVMGetRelocations(object Section):
         Section (`~.LLVMOpaqueSectionIterator`/`~.object`):
             (undocumented)
     """
-    _LLVMGetRelocations__retval = LLVMRelocationIteratorRef.from_value(cobject.LLVMGetRelocations(
+    _LLVMGetRelocations__retval = LLVMOpaqueRelocationIterator.from_ptr(cobject.LLVMGetRelocations(
         LLVMOpaqueSectionIterator.from_pyobj(Section)._ptr))    # fully specified
     return (_LLVMGetRelocations__retval,)
 
@@ -1124,7 +1124,7 @@ def LLVMGetRelocationSymbol(object RI):
         RI (`~.LLVMOpaqueRelocationIterator`/`~.object`):
             (undocumented)
     """
-    _LLVMGetRelocationSymbol__retval = LLVMSymbolIteratorRef.from_value(cobject.LLVMGetRelocationSymbol(
+    _LLVMGetRelocationSymbol__retval = LLVMOpaqueSymbolIterator.from_ptr(cobject.LLVMGetRelocationSymbol(
         LLVMOpaqueRelocationIterator.from_pyobj(RI)._ptr))    # fully specified
     return (_LLVMGetRelocationSymbol__retval,)
 
@@ -1341,7 +1341,7 @@ def LLVMCreateObjectFile(object MemBuf):
         MemBuf (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
             (undocumented)
     """
-    _LLVMCreateObjectFile__retval = LLVMObjectFileRef.from_value(cobject.LLVMCreateObjectFile(
+    _LLVMCreateObjectFile__retval = LLVMOpaqueObjectFile.from_ptr(cobject.LLVMCreateObjectFile(
         LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf)._ptr))    # fully specified
     return (_LLVMCreateObjectFile__retval,)
 
@@ -1370,7 +1370,7 @@ def LLVMGetSections(object ObjectFile):
         ObjectFile (`~.LLVMOpaqueObjectFile`/`~.object`):
             (undocumented)
     """
-    _LLVMGetSections__retval = LLVMSectionIteratorRef.from_value(cobject.LLVMGetSections(
+    _LLVMGetSections__retval = LLVMOpaqueSectionIterator.from_ptr(cobject.LLVMGetSections(
         LLVMOpaqueObjectFile.from_pyobj(ObjectFile)._ptr))    # fully specified
     return (_LLVMGetSections__retval,)
 
@@ -1409,7 +1409,7 @@ def LLVMGetSymbols(object ObjectFile):
         ObjectFile (`~.LLVMOpaqueObjectFile`/`~.object`):
             (undocumented)
     """
-    _LLVMGetSymbols__retval = LLVMSymbolIteratorRef.from_value(cobject.LLVMGetSymbols(
+    _LLVMGetSymbols__retval = LLVMOpaqueSymbolIterator.from_ptr(cobject.LLVMGetSymbols(
         LLVMOpaqueObjectFile.from_pyobj(ObjectFile)._ptr))    # fully specified
     return (_LLVMGetSymbols__retval,)
 

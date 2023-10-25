@@ -688,7 +688,7 @@ def llvm_blake3_hasher_init_derive_key_raw(object self, object context, unsigned
         self (`~.llvm_blake3_hasher`/`~.object`):
             (undocumented)
 
-        context (`~.rocm.llvm._util.Pointer`/`~.object`):
+        context (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         context_len (`~.int`):
@@ -696,7 +696,7 @@ def llvm_blake3_hasher_init_derive_key_raw(object self, object context, unsigned
     """
     cblake3.llvm_blake3_hasher_init_derive_key_raw(
         llvm_blake3_hasher.from_pyobj(self)._ptr,
-        <const void *>rocm.llvm._util.Pointer.from_pyobj(context)._ptr,context_len)    # fully specified
+        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(context)._ptr,context_len)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -707,7 +707,7 @@ def llvm_blake3_hasher_update(object self, object input, unsigned long input_len
         self (`~.llvm_blake3_hasher`/`~.object`):
             (undocumented)
 
-        input (`~.rocm.llvm._util.Pointer`/`~.object`):
+        input (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         input_len (`~.int`):
@@ -715,7 +715,7 @@ def llvm_blake3_hasher_update(object self, object input, unsigned long input_len
     """
     cblake3.llvm_blake3_hasher_update(
         llvm_blake3_hasher.from_pyobj(self)._ptr,
-        <const void *>rocm.llvm._util.Pointer.from_pyobj(input)._ptr,input_len)    # fully specified
+        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(input)._ptr,input_len)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -726,7 +726,7 @@ def llvm_blake3_hasher_finalize(object self, object out, unsigned long out_len):
         self (`~.llvm_blake3_hasher`/`~.object`):
             (undocumented)
 
-        out (`~.rocm.llvm._util.Pointer`/`~.object`):
+        out (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         out_len (`~.int`):
@@ -734,7 +734,7 @@ def llvm_blake3_hasher_finalize(object self, object out, unsigned long out_len):
     """
     cblake3.llvm_blake3_hasher_finalize(
         llvm_blake3_hasher.from_pyobj(self)._ptr,
-        <unsigned char *>rocm.llvm._util.Pointer.from_pyobj(out)._ptr,out_len)    # fully specified
+        <unsigned char *>rocm.llvm._util.types.Pointer.from_pyobj(out)._ptr,out_len)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -748,7 +748,7 @@ def llvm_blake3_hasher_finalize_seek(object self, unsigned long seek, object out
         seek (`~.int`):
             (undocumented)
 
-        out (`~.rocm.llvm._util.Pointer`/`~.object`):
+        out (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         out_len (`~.int`):
@@ -756,7 +756,7 @@ def llvm_blake3_hasher_finalize_seek(object self, unsigned long seek, object out
     """
     cblake3.llvm_blake3_hasher_finalize_seek(
         llvm_blake3_hasher.from_pyobj(self)._ptr,seek,
-        <unsigned char *>rocm.llvm._util.Pointer.from_pyobj(out)._ptr,out_len)    # fully specified
+        <unsigned char *>rocm.llvm._util.types.Pointer.from_pyobj(out)._ptr,out_len)    # fully specified
 
 
 @cython.embedsignature(True)
