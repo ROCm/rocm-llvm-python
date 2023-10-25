@@ -89,14 +89,16 @@ class Module:
 
     def __init__(self, global_module_name: str):
         parts = global_module_name.split(".")
-        self.pkg_name = parts[:-1]
+        self.pkg_path = "/".join(parts[:-1])
+        self.pkg_name = ".".join(parts[:-1])
         self.name = parts[-1]
+        self._helpers = []
 
     @property
     def ext_modules(self):
         return self._helpers + [
-            (f"{self.pkg_name}.c{self.name}", [f"./{self.pkg_name}/c{self.name}.pyx"]),
-            (f"{self.pkg_name}.{self.name}", [f"./{self.pkg_name}/{self.name}.pyx"]),
+            (f"{self.pkg_name}.c{self.name}", [f"./{self.pkg_path}/c{self.name}.pyx"]),
+            (f"{self.pkg_name}.{self.name}", [f"./{self.pkg_path}/{self.name}.pyx"]),
         ]
 
 # differs between rocm-llvm-python and rocm-llvm-python-as-cuda package
@@ -109,8 +111,6 @@ def gather_ext_modules():
         ("rocm.llvm._util.posixloader", ["./rocm/llvm/_util/posixloader.pyx"])
     )
     ROCM_LLVM_PYTHON_MODULES += [
-        Module("rocm.llvm._util.posixloader"),
-        Module("rocm.llvm._util.types"),
         Module("rocm.llvm.c.analysis"),
         Module("rocm.llvm.c.bitreader"),
         Module("rocm.llvm.c.bitwriter"),
@@ -191,7 +191,7 @@ if __name__ == "__main__":
 
     # load _version.py
     ns = {}
-    exec(open(os.path.join(Module.PKG_NAME,"_version.py"),"r").read(), ns)
+    exec(open(os.path.join("rocm","llvm","_version.py"),"r").read(), ns)
 
     setup(
         ext_modules=ext_modules,
