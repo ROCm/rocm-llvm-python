@@ -29,8 +29,6 @@ files in the `rocm/llvm` subfolder.
 __author__ = "Advanced Micro Devices, Inc. <rocm-llvm-python.maintainer@amd.com>"
 
 import os
-import argparse
-import enum
 
 from setuptools import setup, Extension
 from Cython.Build import cythonize
@@ -80,7 +78,7 @@ def create_extension(name, sources):
         library_dirs=[ROCM_LLVM_LIB],
         libraries=[] if ROCM_LLVM_PYTHON_RUNTIME_LINKING else [mod.lib for mod in ROCM_LLVM_PYTHON_MODULES],
         language="c",
-        extra_compile_args=EXTRA_COMPILE_ARGS + ["-D","__half=uint16_t"],
+        extra_compile_args=EXTRA_COMPILE_ARGS
     )
 
 class Module:
