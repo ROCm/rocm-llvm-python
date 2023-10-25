@@ -127,35 +127,36 @@ if [ -z ${NO_BUILD+x} ]; then
   mv ${PKG}/dist/*.whl ${PKG}/dist/archive/    2> /dev/null
   mv ${PKG}/dist/*.tar.gz ${PKG}/dist/archive/ 2> /dev/null
   PYTHON -m pip install -r ${PKG}/requirements.txt
+  PYTHON _render_update_version.py
   PYTHON -m build ${PKG} -n
 fi
 
-if [ -z ${NO_DOCS+x} ]; then
-  echo "building docs for package rocm-llvm-python"
-  # build docs
-  PYTHON -m pip install --force-reinstall rocm-llvm-python/dist/hip*whl \
-                                                    rocm-llvm-python-as-cuda/dist/hip*whl
-  PYTHON -m pip install -r rocm-llvm-python/docs/requirements.txt
-  DOCS_DIR="rocm-llvm-python/docs"
-  
-  if [ ! -z ${NO_API_DOCS+x} ]; then
-     mv "$DOCS_DIR/python_api" "./_python_api"
-  fi
-
-  if [ -z ${NO_CLEAN_DOCS+x} ]; then
-    PYTHON -m sphinx -j ${NUM_JOBS} -T -E -b html -d _build/doctrees -D language=en ${DOCS_DIR} ${DOCS_DIR}/_build/html
-  else
-    echo "reuse saved sphinx environment" 
-    PYTHON -m sphinx -j ${NUM_JOBS} -T -b html -d _build/doctrees -D language=en ${DOCS_DIR} ${DOCS_DIR}/_build/html
-  fi
-  
-  if [ ! -z ${NO_API_DOCS+x} ]; then
-     mv "./_python_api" "$DOCS_DIR/python_api"
-  fi
-fi
-
-if [ ! -z ${RUN_TESTS+x} ]; then
-  PYTHON -m pip install --force-reinstall rocm-llvm-python/dist/hip*whl
-fi
+# if [ -z ${NO_DOCS+x} ]; then
+#   echo "building docs for package rocm-llvm-python"
+#   # build docs
+#   PYTHON -m pip install --force-reinstall rocm-llvm-python/dist/hip*whl \
+#                                                     rocm-llvm-python-as-cuda/dist/hip*whl
+#   PYTHON -m pip install -r rocm-llvm-python/docs/requirements.txt
+#   DOCS_DIR="rocm-llvm-python/docs"
+#   
+#   if [ ! -z ${NO_API_DOCS+x} ]; then
+#      mv "$DOCS_DIR/python_api" "./_python_api"
+#   fi
+# 
+#   if [ -z ${NO_CLEAN_DOCS+x} ]; then
+#     PYTHON -m sphinx -j ${NUM_JOBS} -T -E -b html -d _build/doctrees -D language=en ${DOCS_DIR} ${DOCS_DIR}/_build/html
+#   else
+#     echo "reuse saved sphinx environment" 
+#     PYTHON -m sphinx -j ${NUM_JOBS} -T -b html -d _build/doctrees -D language=en ${DOCS_DIR} ${DOCS_DIR}/_build/html
+#   fi
+#   
+#   if [ ! -z ${NO_API_DOCS+x} ]; then
+#      mv "./_python_api" "$DOCS_DIR/python_api"
+#   fi
+# fi
+# 
+# if [ ! -z ${RUN_TESTS+x} ]; then
+#   PYTHON -m pip install --force-reinstall rocm-llvm-python/dist/hip*whl
+# fi
 
 [ -z ${POST_CLEAN+x} ] || rm -rf venv
