@@ -24,7 +24,7 @@ if [[ "${BASH_SOURCE[0]}" != "${0}" ]]; then
    echo "ERROR: script must not be sourced";
    return 1
 fi
-set -e # failing subprograms make this script fail too
+# set -e # failing subprograms make this script fail too
 
 HELP_MSG="
 Usage: ./$(basename $0) [OPTIONS]
