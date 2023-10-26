@@ -45,7 +45,6 @@ import cython
 import ctypes
 import enum
 
-from rocm.llvm.c.types import LLVMBool
 from rocm.llvm.c.types import LLVMMemoryBufferRef
 from rocm.llvm.c.types import LLVMContextRef
 from rocm.llvm.c.types import LLVMModuleRef
@@ -73,13 +72,6 @@ from rocm.llvm.config.llvm_config import LLVM_DEFAULT_TARGET_TRIPLE
 from rocm.llvm.config.llvm_config import LLVM_ENABLE_THREADS
 from rocm.llvm.config.llvm_config import LLVM_HAS_ATOMICS
 from rocm.llvm.config.llvm_config import LLVM_HOST_TRIPLE
-from rocm.llvm.config.llvm_config import LLVM_NATIVE_ARCH
-from rocm.llvm.config.llvm_config import LLVM_NATIVE_ASMPARSER
-from rocm.llvm.config.llvm_config import LLVM_NATIVE_ASMPRINTER
-from rocm.llvm.config.llvm_config import LLVM_NATIVE_DISASSEMBLER
-from rocm.llvm.config.llvm_config import LLVM_NATIVE_TARGET
-from rocm.llvm.config.llvm_config import LLVM_NATIVE_TARGETINFO
-from rocm.llvm.config.llvm_config import LLVM_NATIVE_TARGETMC
 from rocm.llvm.config.llvm_config import LLVM_ON_UNIX
 from rocm.llvm.config.llvm_config import LLVM_USE_INTEL_JITEVENTS
 from rocm.llvm.config.llvm_config import LLVM_USE_OPROFILE
@@ -120,17 +112,6 @@ cdef class LLVMOpaqueSectionIterator:
       
       Takes the pointer address ``pyobj.value`` and writes it to ``self._ptr``.
 
-    * `object` that implements the `CUDA Array Interface <https://numba.readthedocs.io/en/stable/cuda/cuda_array_interface.html>`_ protocol:
-      
-      Takes the integer-valued pointer address, i.e. the first entry of the `data` tuple 
-      from `pyobj`'s member ``__cuda_array_interface__``  and writes it to ``self._ptr``.
-
-    * `object` that implements the Python buffer protocol:
-      
-      If the object represents a simple contiguous array,
-      writes the `Py_buffer` associated with ``pyobj`` to `self._py_buffer`,
-      sets the `self._py_buffer_acquired` flag to `True`, and
-      writes `self._py_buffer.buf` to the data pointer `self._ptr`.
     
     Type checks are performed in the above order.
 
@@ -189,11 +170,6 @@ cdef class LLVMOpaqueSectionIterator:
             wrapper._ptr = <cobject.LLVMOpaqueSectionIterator*>cpython.long.PyLong_AsVoidPtr(pyobj)
         elif isinstance(pyobj,ctypes.c_void_p):
             wrapper._ptr = <cobject.LLVMOpaqueSectionIterator*>cpython.long.PyLong_AsVoidPtr(pyobj.value) if pyobj.value != None else NULL
-        elif cuda_array_interface != None:
-            if not "data" in cuda_array_interface:
-                raise ValueError("input object has '__cuda_array_interface__' attribute but the dict has no 'data' key")
-            ptr_as_int = cuda_array_interface["data"][0]
-            wrapper._ptr = <cobject.LLVMOpaqueSectionIterator*>cpython.long.PyLong_AsVoidPtr(ptr_as_int)
         elif cpython.buffer.PyObject_CheckBuffer(pyobj):
             err = cpython.buffer.PyObject_GetBuffer( 
                 pyobj,
@@ -268,17 +244,6 @@ cdef class LLVMOpaqueSymbolIterator:
       
       Takes the pointer address ``pyobj.value`` and writes it to ``self._ptr``.
 
-    * `object` that implements the `CUDA Array Interface <https://numba.readthedocs.io/en/stable/cuda/cuda_array_interface.html>`_ protocol:
-      
-      Takes the integer-valued pointer address, i.e. the first entry of the `data` tuple 
-      from `pyobj`'s member ``__cuda_array_interface__``  and writes it to ``self._ptr``.
-
-    * `object` that implements the Python buffer protocol:
-      
-      If the object represents a simple contiguous array,
-      writes the `Py_buffer` associated with ``pyobj`` to `self._py_buffer`,
-      sets the `self._py_buffer_acquired` flag to `True`, and
-      writes `self._py_buffer.buf` to the data pointer `self._ptr`.
     
     Type checks are performed in the above order.
 
@@ -337,11 +302,6 @@ cdef class LLVMOpaqueSymbolIterator:
             wrapper._ptr = <cobject.LLVMOpaqueSymbolIterator*>cpython.long.PyLong_AsVoidPtr(pyobj)
         elif isinstance(pyobj,ctypes.c_void_p):
             wrapper._ptr = <cobject.LLVMOpaqueSymbolIterator*>cpython.long.PyLong_AsVoidPtr(pyobj.value) if pyobj.value != None else NULL
-        elif cuda_array_interface != None:
-            if not "data" in cuda_array_interface:
-                raise ValueError("input object has '__cuda_array_interface__' attribute but the dict has no 'data' key")
-            ptr_as_int = cuda_array_interface["data"][0]
-            wrapper._ptr = <cobject.LLVMOpaqueSymbolIterator*>cpython.long.PyLong_AsVoidPtr(ptr_as_int)
         elif cpython.buffer.PyObject_CheckBuffer(pyobj):
             err = cpython.buffer.PyObject_GetBuffer( 
                 pyobj,
@@ -416,17 +376,6 @@ cdef class LLVMOpaqueRelocationIterator:
       
       Takes the pointer address ``pyobj.value`` and writes it to ``self._ptr``.
 
-    * `object` that implements the `CUDA Array Interface <https://numba.readthedocs.io/en/stable/cuda/cuda_array_interface.html>`_ protocol:
-      
-      Takes the integer-valued pointer address, i.e. the first entry of the `data` tuple 
-      from `pyobj`'s member ``__cuda_array_interface__``  and writes it to ``self._ptr``.
-
-    * `object` that implements the Python buffer protocol:
-      
-      If the object represents a simple contiguous array,
-      writes the `Py_buffer` associated with ``pyobj`` to `self._py_buffer`,
-      sets the `self._py_buffer_acquired` flag to `True`, and
-      writes `self._py_buffer.buf` to the data pointer `self._ptr`.
     
     Type checks are performed in the above order.
 
@@ -485,11 +434,6 @@ cdef class LLVMOpaqueRelocationIterator:
             wrapper._ptr = <cobject.LLVMOpaqueRelocationIterator*>cpython.long.PyLong_AsVoidPtr(pyobj)
         elif isinstance(pyobj,ctypes.c_void_p):
             wrapper._ptr = <cobject.LLVMOpaqueRelocationIterator*>cpython.long.PyLong_AsVoidPtr(pyobj.value) if pyobj.value != None else NULL
-        elif cuda_array_interface != None:
-            if not "data" in cuda_array_interface:
-                raise ValueError("input object has '__cuda_array_interface__' attribute but the dict has no 'data' key")
-            ptr_as_int = cuda_array_interface["data"][0]
-            wrapper._ptr = <cobject.LLVMOpaqueRelocationIterator*>cpython.long.PyLong_AsVoidPtr(ptr_as_int)
         elif cpython.buffer.PyObject_CheckBuffer(pyobj):
             err = cpython.buffer.PyObject_GetBuffer( 
                 pyobj,
@@ -1207,17 +1151,6 @@ cdef class LLVMOpaqueObjectFile:
       
       Takes the pointer address ``pyobj.value`` and writes it to ``self._ptr``.
 
-    * `object` that implements the `CUDA Array Interface <https://numba.readthedocs.io/en/stable/cuda/cuda_array_interface.html>`_ protocol:
-      
-      Takes the integer-valued pointer address, i.e. the first entry of the `data` tuple 
-      from `pyobj`'s member ``__cuda_array_interface__``  and writes it to ``self._ptr``.
-
-    * `object` that implements the Python buffer protocol:
-      
-      If the object represents a simple contiguous array,
-      writes the `Py_buffer` associated with ``pyobj`` to `self._py_buffer`,
-      sets the `self._py_buffer_acquired` flag to `True`, and
-      writes `self._py_buffer.buf` to the data pointer `self._ptr`.
     
     Type checks are performed in the above order.
 
@@ -1276,11 +1209,6 @@ cdef class LLVMOpaqueObjectFile:
             wrapper._ptr = <cobject.LLVMOpaqueObjectFile*>cpython.long.PyLong_AsVoidPtr(pyobj)
         elif isinstance(pyobj,ctypes.c_void_p):
             wrapper._ptr = <cobject.LLVMOpaqueObjectFile*>cpython.long.PyLong_AsVoidPtr(pyobj.value) if pyobj.value != None else NULL
-        elif cuda_array_interface != None:
-            if not "data" in cuda_array_interface:
-                raise ValueError("input object has '__cuda_array_interface__' attribute but the dict has no 'data' key")
-            ptr_as_int = cuda_array_interface["data"][0]
-            wrapper._ptr = <cobject.LLVMOpaqueObjectFile*>cpython.long.PyLong_AsVoidPtr(ptr_as_int)
         elif cpython.buffer.PyObject_CheckBuffer(pyobj):
             err = cpython.buffer.PyObject_GetBuffer( 
                 pyobj,

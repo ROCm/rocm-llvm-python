@@ -78,28 +78,28 @@ cdef extern from "llvm-c/lto.h":
 # Returns a printable string.
 # 
 # \since prior to LTO_API_VERSION=3
-cdef const char * lto_get_version() nogil
+cdef const char * lto_get_version()
 
 
 # 
 # Returns the last error string or NULL if last operation was successful.
 # 
 # \since prior to LTO_API_VERSION=3
-cdef const char * lto_get_error_message() nogil
+cdef const char * lto_get_error_message()
 
 
 # 
 # Checks if a file is a loadable object file.
 # 
 # \since prior to LTO_API_VERSION=3
-cdef _Bool lto_module_is_object_file(const char * path) nogil
+cdef _Bool lto_module_is_object_file(const char * path)
 
 
 # 
 # Checks if a file is a loadable object compiled for requested target.
 # 
 # \since prior to LTO_API_VERSION=3
-cdef _Bool lto_module_is_object_file_for_target(const char * path,const char * target_triple_prefix) nogil
+cdef _Bool lto_module_is_object_file_for_target(const char * path,const char * target_triple_prefix)
 
 
 # 
@@ -107,21 +107,21 @@ cdef _Bool lto_module_is_object_file_for_target(const char * path,const char * t
 # or class) in it.
 # 
 # \since LTO_API_VERSION=20
-cdef _Bool lto_module_has_objc_category(const void * mem,unsigned long length) nogil
+cdef _Bool lto_module_has_objc_category(const void * mem,unsigned long length)
 
 
 # 
 # Checks if a buffer is a loadable object file.
 # 
 # \since prior to LTO_API_VERSION=3
-cdef _Bool lto_module_is_object_file_in_memory(const void * mem,unsigned long length) nogil
+cdef _Bool lto_module_is_object_file_in_memory(const void * mem,unsigned long length)
 
 
 # 
 # Checks if a buffer is a loadable object compiled for requested target.
 # 
 # \since prior to LTO_API_VERSION=3
-cdef _Bool lto_module_is_object_file_in_memory_for_target(const void * mem,unsigned long length,const char * target_triple_prefix) nogil
+cdef _Bool lto_module_is_object_file_in_memory_for_target(const void * mem,unsigned long length,const char * target_triple_prefix)
 
 
 # 
@@ -129,7 +129,7 @@ cdef _Bool lto_module_is_object_file_in_memory_for_target(const void * mem,unsig
 # Returns NULL on error (check lto_get_error_message() for details).
 # 
 # \since prior to LTO_API_VERSION=3
-cdef lto_module_t lto_module_create(const char * path) nogil
+cdef lto_module_t lto_module_create(const char * path)
 
 
 # 
@@ -137,7 +137,7 @@ cdef lto_module_t lto_module_create(const char * path) nogil
 # Returns NULL on error (check lto_get_error_message() for details).
 # 
 # \since prior to LTO_API_VERSION=3
-cdef lto_module_t lto_module_create_from_memory(const void * mem,unsigned long length) nogil
+cdef lto_module_t lto_module_create_from_memory(const void * mem,unsigned long length)
 
 
 # 
@@ -145,7 +145,7 @@ cdef lto_module_t lto_module_create_from_memory(const void * mem,unsigned long l
 # Returns NULL on error (check lto_get_error_message() for details).
 # 
 # \since LTO_API_VERSION=9
-cdef lto_module_t lto_module_create_from_memory_with_path(const void * mem,unsigned long length,const char * path) nogil
+cdef lto_module_t lto_module_create_from_memory_with_path(const void * mem,unsigned long length,const char * path)
 
 
 # 
@@ -158,7 +158,7 @@ cdef lto_module_t lto_module_create_from_memory_with_path(const void * mem,unsig
 # Returns NULL on error (check lto_get_error_message() for details).
 # 
 # \since LTO_API_VERSION=11
-cdef lto_module_t lto_module_create_in_local_context(const void * mem,unsigned long length,const char * path) nogil
+cdef lto_module_t lto_module_create_in_local_context(const void * mem,unsigned long length,const char * path)
 
 
 # 
@@ -170,7 +170,7 @@ cdef lto_module_t lto_module_create_in_local_context(const void * mem,unsigned l
 # Returns NULL on error (check lto_get_error_message() for details).
 # 
 # \since LTO_API_VERSION=11
-cdef lto_module_t lto_module_create_in_codegen_context(const void * mem,unsigned long length,const char * path,lto_code_gen_t cg) nogil
+cdef lto_module_t lto_module_create_in_codegen_context(const void * mem,unsigned long length,const char * path,lto_code_gen_t cg)
 
 
 # 
@@ -178,7 +178,7 @@ cdef lto_module_t lto_module_create_in_codegen_context(const void * mem,unsigned
 # Returns NULL on error (check lto_get_error_message() for details).
 # 
 # \since LTO_API_VERSION=5
-cdef lto_module_t lto_module_create_from_fd(int fd,const char * path,unsigned long file_size) nogil
+cdef lto_module_t lto_module_create_from_fd(int fd,const char * path,unsigned long file_size)
 
 
 # 
@@ -186,7 +186,7 @@ cdef lto_module_t lto_module_create_from_fd(int fd,const char * path,unsigned lo
 # Returns NULL on error (check lto_get_error_message() for details).
 # 
 # \since LTO_API_VERSION=5
-cdef lto_module_t lto_module_create_from_fd_at_offset(int fd,const char * path,unsigned long file_size,unsigned long map_size,long offset) nogil
+cdef lto_module_t lto_module_create_from_fd_at_offset(int fd,const char * path,unsigned long file_size,unsigned long map_size,long offset)
 
 
 # 
@@ -194,42 +194,42 @@ cdef lto_module_t lto_module_create_from_fd_at_offset(int fd,const char * path,u
 # Upon return the lto_module_t is no longer valid.
 # 
 # \since prior to LTO_API_VERSION=3
-cdef void lto_module_dispose(lto_module_t mod) nogil
+cdef void lto_module_dispose(lto_module_t mod)
 
 
 # 
 # Returns triple string which the object module was compiled under.
 # 
 # \since prior to LTO_API_VERSION=3
-cdef const char * lto_module_get_target_triple(lto_module_t mod) nogil
+cdef const char * lto_module_get_target_triple(lto_module_t mod)
 
 
 # 
 # Sets triple string with which the object will be codegened.
 # 
 # \since LTO_API_VERSION=4
-cdef void lto_module_set_target_triple(lto_module_t mod,const char * triple) nogil
+cdef void lto_module_set_target_triple(lto_module_t mod,const char * triple)
 
 
 # 
 # Returns the number of symbols in the object module.
 # 
 # \since prior to LTO_API_VERSION=3
-cdef unsigned int lto_module_get_num_symbols(lto_module_t mod) nogil
+cdef unsigned int lto_module_get_num_symbols(lto_module_t mod)
 
 
 # 
 # Returns the name of the ith symbol in the object module.
 # 
 # \since prior to LTO_API_VERSION=3
-cdef const char * lto_module_get_symbol_name(lto_module_t mod,unsigned int index) nogil
+cdef const char * lto_module_get_symbol_name(lto_module_t mod,unsigned int index)
 
 
 # 
 # Returns the attributes of the ith symbol in the object module.
 # 
 # \since prior to LTO_API_VERSION=3
-cdef lto_symbol_attributes lto_module_get_symbol_attribute(lto_module_t mod,unsigned int index) nogil
+cdef lto_symbol_attributes lto_module_get_symbol_attribute(lto_module_t mod,unsigned int index)
 
 
 # 
@@ -239,7 +239,7 @@ cdef lto_symbol_attributes lto_module_get_symbol_attribute(lto_module_t mod,unsi
 # responsibility to split the flags using a platform-specific mechanism.
 # 
 # \since LTO_API_VERSION=16
-cdef const char * lto_module_get_linkeropts(lto_module_t mod) nogil
+cdef const char * lto_module_get_linkeropts(lto_module_t mod)
 
 
 # 
@@ -252,7 +252,7 @@ cdef const char * lto_module_get_linkeropts(lto_module_t mod) nogil
 # Returns true on error (check lto_get_error_message() for details).
 # 
 # \since LTO_API_VERSION=27
-cdef _Bool lto_module_get_macho_cputype(lto_module_t mod,unsigned int * out_cputype,unsigned int * out_cpusubtype) nogil
+cdef _Bool lto_module_get_macho_cputype(lto_module_t mod,unsigned int * out_cputype,unsigned int * out_cpusubtype)
 
 
 # 
@@ -263,7 +263,7 @@ cdef _Bool lto_module_get_macho_cputype(lto_module_t mod,unsigned int * out_cput
 # @llvm.global_dtors symbol. Otherwise returns false.
 # 
 # \since LTO_API_VERSION=29
-cdef _Bool lto_module_has_ctor_dtor(lto_module_t mod) nogil
+cdef _Bool lto_module_has_ctor_dtor(lto_module_t mod)
 
 
 cdef extern from "llvm-c/lto.h":
@@ -293,7 +293,7 @@ cdef void lto_codegen_set_diagnostic_handler(lto_code_gen_t arg0,lto_diagnostic_
 # in the same context as the codegen.
 # 
 # \since prior to LTO_API_VERSION=3
-cdef lto_code_gen_t lto_codegen_create() nogil
+cdef lto_code_gen_t lto_codegen_create()
 
 
 # 
@@ -304,7 +304,7 @@ cdef lto_code_gen_t lto_codegen_create() nogil
 # using \a lto_module_create_in_codegen_context().
 # 
 # \since LTO_API_VERSION=11
-cdef lto_code_gen_t lto_codegen_create_in_local_context() nogil
+cdef lto_code_gen_t lto_codegen_create_in_local_context()
 
 
 # 
@@ -312,7 +312,7 @@ cdef lto_code_gen_t lto_codegen_create_in_local_context() nogil
 # Upon return the lto_code_gen_t is no longer valid.
 # 
 # \since prior to LTO_API_VERSION=3
-cdef void lto_codegen_dispose(lto_code_gen_t arg0) nogil
+cdef void lto_codegen_dispose(lto_code_gen_t arg0)
 
 
 # 
@@ -324,7 +324,7 @@ cdef void lto_codegen_dispose(lto_code_gen_t arg0) nogil
 # lto_module_create_in_codegen_context().
 # 
 # \since prior to LTO_API_VERSION=3
-cdef _Bool lto_codegen_add_module(lto_code_gen_t cg,lto_module_t mod) nogil
+cdef _Bool lto_codegen_add_module(lto_code_gen_t cg,lto_module_t mod)
 
 
 # 
@@ -334,7 +334,7 @@ cdef _Bool lto_codegen_add_module(lto_code_gen_t cg,lto_module_t mod) nogil
 # \c cg and \c mod must both be in the same context.
 # 
 # \since LTO_API_VERSION=13
-cdef void lto_codegen_set_module(lto_code_gen_t cg,lto_module_t mod) nogil
+cdef void lto_codegen_set_module(lto_code_gen_t cg,lto_module_t mod)
 
 
 # 
@@ -342,7 +342,7 @@ cdef void lto_codegen_set_module(lto_code_gen_t cg,lto_module_t mod) nogil
 # Returns true on error (check lto_get_error_message() for details).
 # 
 # \since prior to LTO_API_VERSION=3
-cdef _Bool lto_codegen_set_debug_model(lto_code_gen_t cg,lto_debug_model arg1) nogil
+cdef _Bool lto_codegen_set_debug_model(lto_code_gen_t cg,lto_debug_model arg1)
 
 
 # 
@@ -350,14 +350,14 @@ cdef _Bool lto_codegen_set_debug_model(lto_code_gen_t cg,lto_debug_model arg1) n
 # Returns true on error (check lto_get_error_message() for details).
 # 
 # \since prior to LTO_API_VERSION=3
-cdef _Bool lto_codegen_set_pic_model(lto_code_gen_t cg,lto_codegen_model arg1) nogil
+cdef _Bool lto_codegen_set_pic_model(lto_code_gen_t cg,lto_codegen_model arg1)
 
 
 # 
 # Sets the cpu to generate code for.
 # 
 # \since LTO_API_VERSION=4
-cdef void lto_codegen_set_cpu(lto_code_gen_t cg,const char * cpu) nogil
+cdef void lto_codegen_set_cpu(lto_code_gen_t cg,const char * cpu)
 
 
 # 
@@ -365,14 +365,14 @@ cdef void lto_codegen_set_cpu(lto_code_gen_t cg,const char * cpu) nogil
 # will use gcc to invoke the assembler.
 # 
 # \since LTO_API_VERSION=3
-cdef void lto_codegen_set_assembler_path(lto_code_gen_t cg,const char * path) nogil
+cdef void lto_codegen_set_assembler_path(lto_code_gen_t cg,const char * path)
 
 
 # 
 # Sets extra arguments that libLTO should pass to the assembler.
 # 
 # \since LTO_API_VERSION=4
-cdef void lto_codegen_set_assembler_args(lto_code_gen_t cg,const char ** args,int nargs) nogil
+cdef void lto_codegen_set_assembler_args(lto_code_gen_t cg,const char ** args,int nargs)
 
 
 # 
@@ -381,7 +381,7 @@ cdef void lto_codegen_set_assembler_args(lto_code_gen_t cg,const char ** args,in
 # and optimized away.
 # 
 # \since prior to LTO_API_VERSION=3
-cdef void lto_codegen_add_must_preserve_symbol(lto_code_gen_t cg,const char * symbol) nogil
+cdef void lto_codegen_add_must_preserve_symbol(lto_code_gen_t cg,const char * symbol)
 
 
 # 
@@ -390,7 +390,7 @@ cdef void lto_codegen_add_must_preserve_symbol(lto_code_gen_t cg,const char * sy
 # Returns true on error (check lto_get_error_message() for details).
 # 
 # \since LTO_API_VERSION=5
-cdef _Bool lto_codegen_write_merged_modules(lto_code_gen_t cg,const char * path) nogil
+cdef _Bool lto_codegen_write_merged_modules(lto_code_gen_t cg,const char * path)
 
 
 # 
@@ -404,7 +404,7 @@ cdef _Bool lto_codegen_write_merged_modules(lto_code_gen_t cg,const char * path)
 # On failure, returns NULL (check lto_get_error_message() for details).
 # 
 # \since prior to LTO_API_VERSION=3
-cdef const void * lto_codegen_compile(lto_code_gen_t cg,unsigned long * length) nogil
+cdef const void * lto_codegen_compile(lto_code_gen_t cg,unsigned long * length)
 
 
 # 
@@ -415,14 +415,14 @@ cdef const void * lto_codegen_compile(lto_code_gen_t cg,unsigned long * length) 
 # The name of the file is written to name. Returns true on error.
 # 
 # \since LTO_API_VERSION=5
-cdef _Bool lto_codegen_compile_to_file(lto_code_gen_t cg,const char ** name) nogil
+cdef _Bool lto_codegen_compile_to_file(lto_code_gen_t cg,const char ** name)
 
 
 # 
 # Runs optimization for the merged module. Returns true on error.
 # 
 # \since LTO_API_VERSION=12
-cdef _Bool lto_codegen_optimize(lto_code_gen_t cg) nogil
+cdef _Bool lto_codegen_optimize(lto_code_gen_t cg)
 
 
 # 
@@ -436,14 +436,14 @@ cdef _Bool lto_codegen_optimize(lto_code_gen_t cg) nogil
 # (check lto_get_error_message() for details).
 # 
 # \since LTO_API_VERSION=12
-cdef const void * lto_codegen_compile_optimized(lto_code_gen_t cg,unsigned long * length) nogil
+cdef const void * lto_codegen_compile_optimized(lto_code_gen_t cg,unsigned long * length)
 
 
 # 
 # Returns the runtime API version.
 # 
 # \since LTO_API_VERSION=12
-cdef unsigned int lto_api_version() nogil
+cdef unsigned int lto_api_version()
 
 
 # 
@@ -457,7 +457,7 @@ cdef unsigned int lto_api_version() nogil
 # parser if the paths contain spaces.
 # 
 # \since LTO_API_VERSION=28
-cdef void lto_set_debug_options(const char *const * options,int number) nogil
+cdef void lto_set_debug_options(const char *const * options,int number)
 
 
 # 
@@ -470,7 +470,7 @@ cdef void lto_set_debug_options(const char *const * options,int number) nogil
 # parser if the paths contain spaces.
 # 
 # \since prior to LTO_API_VERSION=3
-cdef void lto_codegen_debug_options(lto_code_gen_t cg,const char * arg1) nogil
+cdef void lto_codegen_debug_options(lto_code_gen_t cg,const char * arg1)
 
 
 # 
@@ -478,7 +478,7 @@ cdef void lto_codegen_debug_options(lto_code_gen_t cg,const char * arg1) nogil
 # array.
 # 
 # \since prior to LTO_API_VERSION=26
-cdef void lto_codegen_debug_options_array(lto_code_gen_t cg,const char *const * arg1,int number) nogil
+cdef void lto_codegen_debug_options_array(lto_code_gen_t cg,const char *const * arg1,int number)
 
 
 # 
@@ -486,7 +486,7 @@ cdef void lto_codegen_debug_options_array(lto_code_gen_t cg,const char *const * 
 # FIXME: This doesn't really belong here.
 # 
 # \since LTO_API_VERSION=5
-cdef void lto_initialize_disassembler() nogil
+cdef void lto_initialize_disassembler()
 
 
 # 
@@ -494,7 +494,7 @@ cdef void lto_initialize_disassembler() nogil
 # generation.
 # 
 # \since LTO_API_VERSION=14
-cdef void lto_codegen_set_should_internalize(lto_code_gen_t cg,_Bool ShouldInternalize) nogil
+cdef void lto_codegen_set_should_internalize(lto_code_gen_t cg,_Bool ShouldInternalize)
 
 
 # 
@@ -504,7 +504,7 @@ cdef void lto_codegen_set_should_internalize(lto_code_gen_t cg,_Bool ShouldInter
 # output bitcode.  This should be turned on for all -save-temps output.
 # 
 # \since LTO_API_VERSION=15
-cdef void lto_codegen_set_should_embed_uselists(lto_code_gen_t cg,_Bool ShouldEmbedUselists) nogil
+cdef void lto_codegen_set_should_embed_uselists(lto_code_gen_t cg,_Bool ShouldEmbedUselists)
 
 
 cdef extern from "llvm-c/lto.h":
@@ -521,7 +521,7 @@ cdef extern from "llvm-c/lto.h":
 # is associated with.
 # 
 # \since LTO_API_VERSION=24
-cdef lto_input_t lto_input_create(const void * buffer,unsigned long buffer_size,const char * path) nogil
+cdef lto_input_t lto_input_create(const void * buffer,unsigned long buffer_size,const char * path)
 
 
 # 
@@ -529,7 +529,7 @@ cdef lto_input_t lto_input_create(const void * buffer,unsigned long buffer_size,
 # Upon return the lto_module_t is no longer valid.
 # 
 # \since LTO_API_VERSION=24
-cdef void lto_input_dispose(lto_input_t input) nogil
+cdef void lto_input_dispose(lto_input_t input)
 
 
 # 
@@ -537,7 +537,7 @@ cdef void lto_input_dispose(lto_input_t input) nogil
 # for the given LTO input file.
 # 
 # \since LTO_API_VERSION=24
-cdef unsigned int lto_input_get_num_dependent_libraries(lto_input_t input) nogil
+cdef unsigned int lto_input_get_num_dependent_libraries(lto_input_t input)
 
 
 # 
@@ -546,7 +546,7 @@ cdef unsigned int lto_input_get_num_dependent_libraries(lto_input_t input) nogil
 # string is not null-terminated.
 # 
 # \since LTO_API_VERSION=24
-cdef const char * lto_input_get_dependent_library(lto_input_t input,unsigned long index,unsigned long * size) nogil
+cdef const char * lto_input_get_dependent_library(lto_input_t input,unsigned long index,unsigned long * size)
 
 
 # 
@@ -554,7 +554,7 @@ cdef const char * lto_input_get_dependent_library(lto_input_t input,unsigned lon
 # that might not be visible from the symbol table of bitcode files.
 # 
 # \since prior to LTO_API_VERSION=25
-cdef const char *const * lto_runtime_lib_symbols_list(unsigned long * size) nogil
+cdef const char *const * lto_runtime_lib_symbols_list(unsigned long * size)
 
 
 cdef extern from "llvm-c/lto.h":
@@ -574,7 +574,7 @@ cdef extern from "llvm-c/lto.h":
 # codegenerator.
 # 
 # \since LTO_API_VERSION=18
-cdef thinlto_code_gen_t thinlto_create_codegen() nogil
+cdef thinlto_code_gen_t thinlto_create_codegen()
 
 
 # 
@@ -582,7 +582,7 @@ cdef thinlto_code_gen_t thinlto_create_codegen() nogil
 # Upon return the thinlto_code_gen_t is no longer valid.
 # 
 # \since LTO_API_VERSION=18
-cdef void thinlto_codegen_dispose(thinlto_code_gen_t cg) nogil
+cdef void thinlto_codegen_dispose(thinlto_code_gen_t cg)
 
 
 # 
@@ -595,7 +595,7 @@ cdef void thinlto_codegen_dispose(thinlto_code_gen_t cg) nogil
 # 
 # 
 # \since LTO_API_VERSION=18
-cdef void thinlto_codegen_add_module(thinlto_code_gen_t cg,const char * identifier,const char * data,int length) nogil
+cdef void thinlto_codegen_add_module(thinlto_code_gen_t cg,const char * identifier,const char * data,int length)
 
 
 # 
@@ -603,7 +603,7 @@ cdef void thinlto_codegen_add_module(thinlto_code_gen_t cg,const char * identifi
 # ThinLTO. Resulting objects are accessible using thinlto_module_get_object().
 # 
 # \since LTO_API_VERSION=18
-cdef void thinlto_codegen_process(thinlto_code_gen_t cg) nogil
+cdef void thinlto_codegen_process(thinlto_code_gen_t cg)
 
 
 # 
@@ -614,7 +614,7 @@ cdef void thinlto_codegen_process(thinlto_code_gen_t cg) nogil
 # assume it.
 # 
 # \since LTO_API_VERSION=18
-cdef unsigned int thinlto_module_get_num_objects(thinlto_code_gen_t cg) nogil
+cdef unsigned int thinlto_module_get_num_objects(thinlto_code_gen_t cg)
 
 
 # 
@@ -625,7 +625,7 @@ cdef unsigned int thinlto_module_get_num_objects(thinlto_code_gen_t cg) nogil
 # available objects.
 # 
 # \since LTO_API_VERSION=18
-cdef LTOObjectBuffer thinlto_module_get_object(thinlto_code_gen_t cg,unsigned int index) nogil
+cdef LTOObjectBuffer thinlto_module_get_object(thinlto_code_gen_t cg,unsigned int index)
 
 
 # 
@@ -636,7 +636,7 @@ cdef LTOObjectBuffer thinlto_module_get_object(thinlto_code_gen_t cg,unsigned in
 # assume it.
 # 
 # \since LTO_API_VERSION=21
-cdef unsigned int thinlto_module_get_num_object_files(thinlto_code_gen_t cg) nogil
+cdef unsigned int thinlto_module_get_num_object_files(thinlto_code_gen_t cg)
 
 
 # 
@@ -647,7 +647,7 @@ cdef unsigned int thinlto_module_get_num_object_files(thinlto_code_gen_t cg) nog
 # of available objects.
 # 
 # \since LTO_API_VERSION=21
-cdef const char * thinlto_module_get_object_file(thinlto_code_gen_t cg,unsigned int index) nogil
+cdef const char * thinlto_module_get_object_file(thinlto_code_gen_t cg,unsigned int index)
 
 
 # 
@@ -655,7 +655,7 @@ cdef const char * thinlto_module_get_object_file(thinlto_code_gen_t cg,unsigned 
 # Returns true on error (check lto_get_error_message() for details).
 # 
 # \since LTO_API_VERSION=18
-cdef _Bool thinlto_codegen_set_pic_model(thinlto_code_gen_t cg,lto_codegen_model arg1) nogil
+cdef _Bool thinlto_codegen_set_pic_model(thinlto_code_gen_t cg,lto_codegen_model arg1)
 
 
 # 
@@ -664,7 +664,7 @@ cdef _Bool thinlto_codegen_set_pic_model(thinlto_code_gen_t cg,lto_codegen_model
 # stage of the pipeline.
 # 
 # \since LTO_API_VERSION=18
-cdef void thinlto_codegen_set_savetemps_dir(thinlto_code_gen_t cg,const char * save_temps_dir) nogil
+cdef void thinlto_codegen_set_savetemps_dir(thinlto_code_gen_t cg,const char * save_temps_dir)
 
 
 # 
@@ -674,14 +674,14 @@ cdef void thinlto_codegen_set_savetemps_dir(thinlto_code_gen_t cg,const char * s
 # thinlto_module_get_object_file() instead of thinlto_module_get_object().
 # 
 # \since LTO_API_VERSION=21
-cdef void thinlto_set_generated_objects_dir(thinlto_code_gen_t cg,const char * save_temps_dir) nogil
+cdef void thinlto_set_generated_objects_dir(thinlto_code_gen_t cg,const char * save_temps_dir)
 
 
 # 
 # Sets the cpu to generate code for.
 # 
 # \since LTO_API_VERSION=18
-cdef void thinlto_codegen_set_cpu(thinlto_code_gen_t cg,const char * cpu) nogil
+cdef void thinlto_codegen_set_cpu(thinlto_code_gen_t cg,const char * cpu)
 
 
 # 
@@ -689,28 +689,28 @@ cdef void thinlto_codegen_set_cpu(thinlto_code_gen_t cg,const char * cpu) nogil
 # be bitcode.
 # 
 # \since LTO_API_VERSION=19
-cdef void thinlto_codegen_disable_codegen(thinlto_code_gen_t cg,_Bool disable) nogil
+cdef void thinlto_codegen_disable_codegen(thinlto_code_gen_t cg,_Bool disable)
 
 
 # 
 # Perform CodeGen only: disable all other stages.
 # 
 # \since LTO_API_VERSION=19
-cdef void thinlto_codegen_set_codegen_only(thinlto_code_gen_t cg,_Bool codegen_only) nogil
+cdef void thinlto_codegen_set_codegen_only(thinlto_code_gen_t cg,_Bool codegen_only)
 
 
 # 
 # Parse -mllvm style debug options.
 # 
 # \since LTO_API_VERSION=18
-cdef void thinlto_debug_options(const char *const * options,int number) nogil
+cdef void thinlto_debug_options(const char *const * options,int number)
 
 
 # 
 # Test if a module has support for ThinLTO linking.
 # 
 # \since LTO_API_VERSION=18
-cdef _Bool lto_module_is_thinlto(lto_module_t mod) nogil
+cdef _Bool lto_module_is_thinlto(lto_module_t mod)
 
 
 # 
@@ -720,7 +720,7 @@ cdef _Bool lto_module_is_thinlto(lto_module_t mod) nogil
 # referenced from code outside of the ThinLTO modules need to be added here.
 # 
 # \since LTO_API_VERSION=18
-cdef void thinlto_codegen_add_must_preserve_symbol(thinlto_code_gen_t cg,const char * name,int length) nogil
+cdef void thinlto_codegen_add_must_preserve_symbol(thinlto_code_gen_t cg,const char * name,int length)
 
 
 # 
@@ -730,7 +730,7 @@ cdef void thinlto_codegen_add_must_preserve_symbol(thinlto_code_gen_t cg,const c
 # the symbol can be discarded.
 # 
 # \since LTO_API_VERSION=18
-cdef void thinlto_codegen_add_cross_referenced_symbol(thinlto_code_gen_t cg,const char * name,int length) nogil
+cdef void thinlto_codegen_add_cross_referenced_symbol(thinlto_code_gen_t cg,const char * name,int length)
 
 
 # 
@@ -738,7 +738,7 @@ cdef void thinlto_codegen_add_cross_referenced_symbol(thinlto_code_gen_t cg,cons
 # Setting this activates caching.
 # 
 # \since LTO_API_VERSION=18
-cdef void thinlto_codegen_set_cache_dir(thinlto_code_gen_t cg,const char * cache_dir) nogil
+cdef void thinlto_codegen_set_cache_dir(thinlto_code_gen_t cg,const char * cache_dir)
 
 
 # 
@@ -747,7 +747,7 @@ cdef void thinlto_codegen_set_cache_dir(thinlto_code_gen_t cg,const char * cache
 # force prunning to occur.
 # 
 # \since LTO_API_VERSION=18
-cdef void thinlto_codegen_set_cache_pruning_interval(thinlto_code_gen_t cg,int interval) nogil
+cdef void thinlto_codegen_set_cache_pruning_interval(thinlto_code_gen_t cg,int interval)
 
 
 # 
@@ -762,7 +762,7 @@ cdef void thinlto_codegen_set_cache_pruning_interval(thinlto_code_gen_t cg,int i
 #  NewCacheSize = AvailableSpace * P/100
 # 
 # \since LTO_API_VERSION=18
-cdef void thinlto_codegen_set_final_cache_size_relative_to_available_space(thinlto_code_gen_t cg,unsigned int percentage) nogil
+cdef void thinlto_codegen_set_final_cache_size_relative_to_available_space(thinlto_code_gen_t cg,unsigned int percentage)
 
 
 # 
@@ -770,7 +770,7 @@ cdef void thinlto_codegen_set_final_cache_size_relative_to_available_space(thinl
 # default value will be applied. A value of 0 will be ignored.
 # 
 # \since LTO_API_VERSION=18
-cdef void thinlto_codegen_set_cache_entry_expiration(thinlto_code_gen_t cg,unsigned int expiration) nogil
+cdef void thinlto_codegen_set_cache_entry_expiration(thinlto_code_gen_t cg,unsigned int expiration)
 
 
 # 
@@ -780,7 +780,7 @@ cdef void thinlto_codegen_set_cache_entry_expiration(thinlto_code_gen_t cg,unsig
 # will be ignored.
 # 
 # \since LTO_API_VERSION=22
-cdef void thinlto_codegen_set_cache_size_bytes(thinlto_code_gen_t cg,unsigned int max_size_bytes) nogil
+cdef void thinlto_codegen_set_cache_size_bytes(thinlto_code_gen_t cg,unsigned int max_size_bytes)
 
 
 # 
@@ -788,7 +788,7 @@ cdef void thinlto_codegen_set_cache_size_bytes(thinlto_code_gen_t cg,unsigned in
 # megabytes (2^20 bytes).
 # 
 # \since LTO_API_VERSION=23
-cdef void thinlto_codegen_set_cache_size_megabytes(thinlto_code_gen_t cg,unsigned int max_size_megabytes) nogil
+cdef void thinlto_codegen_set_cache_size_megabytes(thinlto_code_gen_t cg,unsigned int max_size_megabytes)
 
 
 # 
@@ -796,4 +796,4 @@ cdef void thinlto_codegen_set_cache_size_megabytes(thinlto_code_gen_t cg,unsigne
 # default value will be applied. A value of 0 will be ignored.
 # 
 # \since LTO_API_VERSION=22
-cdef void thinlto_codegen_set_cache_size_files(thinlto_code_gen_t cg,unsigned int max_size_files) nogil
+cdef void thinlto_codegen_set_cache_size_files(thinlto_code_gen_t cg,unsigned int max_size_files)

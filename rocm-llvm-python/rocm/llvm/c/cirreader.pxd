@@ -33,4 +33,4 @@ from rocm.llvm.c.ctypes cimport *
 # LLVMDisposeMessage.
 # 
 # @see llvm::ParseIR()
-cdef int LLVMParseIRInContext(LLVMContextRef ContextRef,LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutM,char ** OutMessage) nogil
+cdef int LLVMParseIRInContext(LLVMContextRef ContextRef,LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutM,char ** OutMessage)

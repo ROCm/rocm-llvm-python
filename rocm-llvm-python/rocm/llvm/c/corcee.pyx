@@ -25,29 +25,33 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager__funptr = NULL
 # 
 # Create a RTDyldObjectLinkingLayer instance using the standard
 # SectionMemoryManager for memory management.
-cdef LLVMOrcObjectLayerRef LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager(LLVMOrcExecutionSessionRef ES) nogil:
+cdef LLVMOrcObjectLayerRef LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager(LLVMOrcExecutionSessionRef ES):
     global _LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager__funptr
     __init_symbol(&_LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager__funptr,"LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager")
-    return (<LLVMOrcObjectLayerRef (*)(LLVMOrcExecutionSessionRef) nogil> _LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager__funptr)(ES)
+    with nogil:
+        return (<LLVMOrcObjectLayerRef (*)(LLVMOrcExecutionSessionRef) noexcept nogil> _LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager__funptr)(ES)
 
 
 cdef void* _LLVMOrcCreateRTDyldObjectLinkingLayerWithMCJITMemoryManagerLikeCallbacks__funptr = NULL
@@ -77,7 +81,8 @@ cdef void* _LLVMOrcCreateRTDyldObjectLinkingLayerWithMCJITMemoryManagerLikeCallb
 cdef LLVMOrcObjectLayerRef LLVMOrcCreateRTDyldObjectLinkingLayerWithMCJITMemoryManagerLikeCallbacks(LLVMOrcExecutionSessionRef ES,void * CreateContextCtx,LLVMMemoryManagerCreateContextCallback CreateContext,LLVMMemoryManagerNotifyTerminatingCallback NotifyTerminating,LLVMMemoryManagerAllocateCodeSectionCallback AllocateCodeSection,LLVMMemoryManagerAllocateDataSectionCallback AllocateDataSection,LLVMMemoryManagerFinalizeMemoryCallback FinalizeMemory,LLVMMemoryManagerDestroyCallback Destroy):
     global _LLVMOrcCreateRTDyldObjectLinkingLayerWithMCJITMemoryManagerLikeCallbacks__funptr
     __init_symbol(&_LLVMOrcCreateRTDyldObjectLinkingLayerWithMCJITMemoryManagerLikeCallbacks__funptr,"LLVMOrcCreateRTDyldObjectLinkingLayerWithMCJITMemoryManagerLikeCallbacks")
-    return (<LLVMOrcObjectLayerRef (*)(LLVMOrcExecutionSessionRef,void *,LLVMMemoryManagerCreateContextCallback,LLVMMemoryManagerNotifyTerminatingCallback,LLVMMemoryManagerAllocateCodeSectionCallback,LLVMMemoryManagerAllocateDataSectionCallback,LLVMMemoryManagerFinalizeMemoryCallback,LLVMMemoryManagerDestroyCallback)> _LLVMOrcCreateRTDyldObjectLinkingLayerWithMCJITMemoryManagerLikeCallbacks__funptr)(ES,CreateContextCtx,CreateContext,NotifyTerminating,AllocateCodeSection,AllocateDataSection,FinalizeMemory,Destroy)
+    with nogil:
+        return (<LLVMOrcObjectLayerRef (*)(LLVMOrcExecutionSessionRef,void *,LLVMMemoryManagerCreateContextCallback,LLVMMemoryManagerNotifyTerminatingCallback,LLVMMemoryManagerAllocateCodeSectionCallback,LLVMMemoryManagerAllocateDataSectionCallback,LLVMMemoryManagerFinalizeMemoryCallback,LLVMMemoryManagerDestroyCallback) noexcept nogil> _LLVMOrcCreateRTDyldObjectLinkingLayerWithMCJITMemoryManagerLikeCallbacks__funptr)(ES,CreateContextCtx,CreateContext,NotifyTerminating,AllocateCodeSection,AllocateDataSection,FinalizeMemory,Destroy)
 
 
 cdef void* _LLVMOrcRTDyldObjectLinkingLayerRegisterJITEventListener__funptr = NULL
@@ -86,7 +91,8 @@ cdef void* _LLVMOrcRTDyldObjectLinkingLayerRegisterJITEventListener__funptr = NU
 # 
 # Note: Layer must be an RTDyldObjectLinkingLayer instance or
 # behavior is undefined.
-cdef void LLVMOrcRTDyldObjectLinkingLayerRegisterJITEventListener(LLVMOrcObjectLayerRef RTDyldObjLinkingLayer,LLVMJITEventListenerRef Listener) nogil:
+cdef void LLVMOrcRTDyldObjectLinkingLayerRegisterJITEventListener(LLVMOrcObjectLayerRef RTDyldObjLinkingLayer,LLVMJITEventListenerRef Listener):
     global _LLVMOrcRTDyldObjectLinkingLayerRegisterJITEventListener__funptr
     __init_symbol(&_LLVMOrcRTDyldObjectLinkingLayerRegisterJITEventListener__funptr,"LLVMOrcRTDyldObjectLinkingLayerRegisterJITEventListener")
-    (<void (*)(LLVMOrcObjectLayerRef,LLVMJITEventListenerRef) nogil> _LLVMOrcRTDyldObjectLinkingLayerRegisterJITEventListener__funptr)(RTDyldObjLinkingLayer,Listener)
+    with nogil:
+        (<void (*)(LLVMOrcObjectLayerRef,LLVMJITEventListenerRef) noexcept nogil> _LLVMOrcRTDyldObjectLinkingLayerRegisterJITEventListener__funptr)(RTDyldObjLinkingLayer,Listener)

@@ -32,4 +32,4 @@ cdef extern from "llvm-c/Linker.h":
         LLVMLinkerPreserveSource_Removed
 
 
-cdef int LLVMLinkModules2(LLVMModuleRef Dest,LLVMModuleRef Src) nogil
+cdef int LLVMLinkModules2(LLVMModuleRef Dest,LLVMModuleRef Src)

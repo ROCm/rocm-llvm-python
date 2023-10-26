@@ -35,7 +35,6 @@ import enum
 
 
 
-from rocm.llvm.c.types import LLVMBool
 from rocm.llvm.c.types import LLVMMemoryBufferRef
 from rocm.llvm.c.types import LLVMContextRef
 from rocm.llvm.c.types import LLVMModuleRef

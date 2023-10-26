@@ -320,13 +320,13 @@ cdef extern from "llvm-c/Core.h":
 
 # 
 # @}
-cdef void LLVMInitializeCore(LLVMPassRegistryRef R) nogil
+cdef void LLVMInitializeCore(LLVMPassRegistryRef R)
 
 
 # Deallocate and destroy all ManagedStatic variables.
 # @see llvm::llvm_shutdown
 # @see ManagedStatic
-cdef void LLVMShutdown() nogil
+cdef void LLVMShutdown()
 
 
 # 
@@ -334,15 +334,15 @@ cdef void LLVMShutdown() nogil
 # 
 # The version components are returned via the function's three output
 # parameters or skipped if a NULL pointer was supplied.
-cdef void LLVMGetVersion(unsigned int * Major,unsigned int * Minor,unsigned int * Patch) nogil
+cdef void LLVMGetVersion(unsigned int * Major,unsigned int * Minor,unsigned int * Patch)
 
 
 
-cdef char * LLVMCreateMessage(const char * Message) nogil
+cdef char * LLVMCreateMessage(const char * Message)
 
 
 
-cdef void LLVMDisposeMessage(char * Message) nogil
+cdef void LLVMDisposeMessage(char * Message)
 
 
 cdef extern from "llvm-c/Core.h":
@@ -356,12 +356,12 @@ cdef extern from "llvm-c/Core.h":
 # 
 # Every call to this function should be paired with a call to
 # LLVMContextDispose() or the context will leak memory.
-cdef LLVMContextRef LLVMContextCreate() nogil
+cdef LLVMContextRef LLVMContextCreate()
 
 
 # 
 # Obtain the global context instance.
-cdef LLVMContextRef LLVMGetGlobalContext() nogil
+cdef LLVMContextRef LLVMGetGlobalContext()
 
 
 # 
@@ -371,12 +371,12 @@ cdef void LLVMContextSetDiagnosticHandler(LLVMContextRef C,LLVMDiagnosticHandler
 
 # 
 # Get the diagnostic handler of this context.
-cdef LLVMDiagnosticHandler LLVMContextGetDiagnosticHandler(LLVMContextRef C) nogil
+cdef LLVMDiagnosticHandler LLVMContextGetDiagnosticHandler(LLVMContextRef C)
 
 
 # 
 # Get the diagnostic context of this context.
-cdef void * LLVMContextGetDiagnosticContext(LLVMContextRef C) nogil
+cdef void * LLVMContextGetDiagnosticContext(LLVMContextRef C)
 
 
 # 
@@ -390,7 +390,7 @@ cdef void LLVMContextSetYieldCallback(LLVMContextRef C,LLVMYieldCallback Callbac
 # Retrieve whether the given context is set to discard all value names.
 # 
 # @see LLVMContext::shouldDiscardValueNames()
-cdef int LLVMContextShouldDiscardValueNames(LLVMContextRef C) nogil
+cdef int LLVMContextShouldDiscardValueNames(LLVMContextRef C)
 
 
 # 
@@ -400,14 +400,14 @@ cdef int LLVMContextShouldDiscardValueNames(LLVMContextRef C) nogil
 # This can be used to save memory and runtime, especially in release mode.
 # 
 # @see LLVMContext::setDiscardValueNames()
-cdef void LLVMContextSetDiscardValueNames(LLVMContextRef C,int Discard) nogil
+cdef void LLVMContextSetDiscardValueNames(LLVMContextRef C,int Discard)
 
 
 # 
 # Set whether the given context is in opaque pointer mode.
 # 
 # @see LLVMContext::setOpaquePointers()
-cdef void LLVMContextSetOpaquePointers(LLVMContextRef C,int OpaquePointers) nogil
+cdef void LLVMContextSetOpaquePointers(LLVMContextRef C,int OpaquePointers)
 
 
 # 
@@ -415,7 +415,7 @@ cdef void LLVMContextSetOpaquePointers(LLVMContextRef C,int OpaquePointers) nogi
 # 
 # This should be called for every call to LLVMContextCreate() or memory
 # will be leaked.
-cdef void LLVMContextDispose(LLVMContextRef C) nogil
+cdef void LLVMContextDispose(LLVMContextRef C)
 
 
 # 
@@ -423,22 +423,22 @@ cdef void LLVMContextDispose(LLVMContextRef C) nogil
 # LLVMDisposeMessage to free the string.
 # 
 # @see DiagnosticInfo::print()
-cdef char * LLVMGetDiagInfoDescription(LLVMDiagnosticInfoRef DI) nogil
+cdef char * LLVMGetDiagInfoDescription(LLVMDiagnosticInfoRef DI)
 
 
 # 
 # Return an enum LLVMDiagnosticSeverity.
 # 
 # @see DiagnosticInfo::getSeverity()
-cdef LLVMDiagnosticSeverity LLVMGetDiagInfoSeverity(LLVMDiagnosticInfoRef DI) nogil
+cdef LLVMDiagnosticSeverity LLVMGetDiagInfoSeverity(LLVMDiagnosticInfoRef DI)
 
 
 
-cdef unsigned int LLVMGetMDKindIDInContext(LLVMContextRef C,const char * Name,unsigned int SLen) nogil
+cdef unsigned int LLVMGetMDKindIDInContext(LLVMContextRef C,const char * Name,unsigned int SLen)
 
 
 
-cdef unsigned int LLVMGetMDKindID(const char * Name,unsigned int SLen) nogil
+cdef unsigned int LLVMGetMDKindID(const char * Name,unsigned int SLen)
 
 
 # 
@@ -451,70 +451,70 @@ cdef unsigned int LLVMGetMDKindID(const char * Name,unsigned int SLen) nogil
 # 
 # NB: Attribute names and/or id are subject to change without
 # going through the C API deprecation cycle.
-cdef unsigned int LLVMGetEnumAttributeKindForName(const char * Name,unsigned long SLen) nogil
+cdef unsigned int LLVMGetEnumAttributeKindForName(const char * Name,unsigned long SLen)
 
 
 
-cdef unsigned int LLVMGetLastEnumAttributeKind() nogil
+cdef unsigned int LLVMGetLastEnumAttributeKind()
 
 
 # 
 # Create an enum attribute.
-cdef LLVMAttributeRef LLVMCreateEnumAttribute(LLVMContextRef C,unsigned int KindID,unsigned long Val) nogil
+cdef LLVMAttributeRef LLVMCreateEnumAttribute(LLVMContextRef C,unsigned int KindID,unsigned long Val)
 
 
 # 
 # Get the unique id corresponding to the enum attribute
 # passed as argument.
-cdef unsigned int LLVMGetEnumAttributeKind(LLVMAttributeRef A) nogil
+cdef unsigned int LLVMGetEnumAttributeKind(LLVMAttributeRef A)
 
 
 # 
 # Get the enum attribute's value. 0 is returned if none exists.
-cdef unsigned long LLVMGetEnumAttributeValue(LLVMAttributeRef A) nogil
+cdef unsigned long LLVMGetEnumAttributeValue(LLVMAttributeRef A)
 
 
 # 
 # Create a type attribute
-cdef LLVMAttributeRef LLVMCreateTypeAttribute(LLVMContextRef C,unsigned int KindID,LLVMTypeRef type_ref) nogil
+cdef LLVMAttributeRef LLVMCreateTypeAttribute(LLVMContextRef C,unsigned int KindID,LLVMTypeRef type_ref)
 
 
 # 
 # Get the type attribute's value.
-cdef LLVMTypeRef LLVMGetTypeAttributeValue(LLVMAttributeRef A) nogil
+cdef LLVMTypeRef LLVMGetTypeAttributeValue(LLVMAttributeRef A)
 
 
 # 
 # Create a string attribute.
-cdef LLVMAttributeRef LLVMCreateStringAttribute(LLVMContextRef C,const char * K,unsigned int KLength,const char * V,unsigned int VLength) nogil
+cdef LLVMAttributeRef LLVMCreateStringAttribute(LLVMContextRef C,const char * K,unsigned int KLength,const char * V,unsigned int VLength)
 
 
 # 
 # Get the string attribute's kind.
-cdef const char * LLVMGetStringAttributeKind(LLVMAttributeRef A,unsigned int * Length) nogil
+cdef const char * LLVMGetStringAttributeKind(LLVMAttributeRef A,unsigned int * Length)
 
 
 # 
 # Get the string attribute's value.
-cdef const char * LLVMGetStringAttributeValue(LLVMAttributeRef A,unsigned int * Length) nogil
+cdef const char * LLVMGetStringAttributeValue(LLVMAttributeRef A,unsigned int * Length)
 
 
 # 
 # Check for the different types of attributes.
-cdef int LLVMIsEnumAttribute(LLVMAttributeRef A) nogil
+cdef int LLVMIsEnumAttribute(LLVMAttributeRef A)
 
 
 
-cdef int LLVMIsStringAttribute(LLVMAttributeRef A) nogil
+cdef int LLVMIsStringAttribute(LLVMAttributeRef A)
 
 
 
-cdef int LLVMIsTypeAttribute(LLVMAttributeRef A) nogil
+cdef int LLVMIsTypeAttribute(LLVMAttributeRef A)
 
 
 # 
 # Obtain a Type from a context by its registered name.
-cdef LLVMTypeRef LLVMGetTypeByName2(LLVMContextRef C,const char * Name) nogil
+cdef LLVMTypeRef LLVMGetTypeByName2(LLVMContextRef C,const char * Name)
 
 
 # 
@@ -525,7 +525,7 @@ cdef LLVMTypeRef LLVMGetTypeByName2(LLVMContextRef C,const char * Name) nogil
 # 
 # Every invocation should be paired with LLVMDisposeModule() or memory
 # will be leaked.
-cdef LLVMModuleRef LLVMModuleCreateWithName(const char * ModuleID) nogil
+cdef LLVMModuleRef LLVMModuleCreateWithName(const char * ModuleID)
 
 
 # 
@@ -533,12 +533,12 @@ cdef LLVMModuleRef LLVMModuleCreateWithName(const char * ModuleID) nogil
 # 
 # Every invocation should be paired with LLVMDisposeModule() or memory
 # will be leaked.
-cdef LLVMModuleRef LLVMModuleCreateWithNameInContext(const char * ModuleID,LLVMContextRef C) nogil
+cdef LLVMModuleRef LLVMModuleCreateWithNameInContext(const char * ModuleID,LLVMContextRef C)
 
 
 # 
 # Return an exact copy of the specified module.
-cdef LLVMModuleRef LLVMCloneModule(LLVMModuleRef M) nogil
+cdef LLVMModuleRef LLVMCloneModule(LLVMModuleRef M)
 
 
 # 
@@ -546,7 +546,7 @@ cdef LLVMModuleRef LLVMCloneModule(LLVMModuleRef M) nogil
 # 
 # This must be called for every created module or memory will be
 # leaked.
-cdef void LLVMDisposeModule(LLVMModuleRef M) nogil
+cdef void LLVMDisposeModule(LLVMModuleRef M)
 
 
 # 
@@ -556,7 +556,7 @@ cdef void LLVMDisposeModule(LLVMModuleRef M) nogil
 # @param Len Out parameter which holds the length of the returned string.
 # @return The identifier of M.
 # @see Module::getModuleIdentifier()
-cdef const char * LLVMGetModuleIdentifier(LLVMModuleRef M,unsigned long * Len) nogil
+cdef const char * LLVMGetModuleIdentifier(LLVMModuleRef M,unsigned long * Len)
 
 
 # 
@@ -566,7 +566,7 @@ cdef const char * LLVMGetModuleIdentifier(LLVMModuleRef M,unsigned long * Len) n
 # @param Ident The string to set M's identifier to
 # @param Len Length of Ident
 # @see Module::setModuleIdentifier()
-cdef void LLVMSetModuleIdentifier(LLVMModuleRef M,const char * Ident,unsigned long Len) nogil
+cdef void LLVMSetModuleIdentifier(LLVMModuleRef M,const char * Ident,unsigned long Len)
 
 
 # 
@@ -576,7 +576,7 @@ cdef void LLVMSetModuleIdentifier(LLVMModuleRef M,const char * Ident,unsigned lo
 # @param Len Out parameter which holds the length of the returned string
 # @return The original source file name of M
 # @see Module::getSourceFileName()
-cdef const char * LLVMGetSourceFileName(LLVMModuleRef M,unsigned long * Len) nogil
+cdef const char * LLVMGetSourceFileName(LLVMModuleRef M,unsigned long * Len)
 
 
 # 
@@ -587,7 +587,7 @@ cdef const char * LLVMGetSourceFileName(LLVMModuleRef M,unsigned long * Len) nog
 # @param Name The string to set M's source file name to
 # @param Len Length of Name
 # @see Module::setSourceFileName()
-cdef void LLVMSetSourceFileName(LLVMModuleRef M,const char * Name,unsigned long Len) nogil
+cdef void LLVMSetSourceFileName(LLVMModuleRef M,const char * Name,unsigned long Len)
 
 
 # 
@@ -598,32 +598,32 @@ cdef void LLVMSetSourceFileName(LLVMModuleRef M,const char * Name,unsigned long 
 # LLVMGetDataLayout is DEPRECATED, as the name is not only incorrect,
 # but match the name of another method on the module. Prefer the use
 # of LLVMGetDataLayoutStr, which is not ambiguous.
-cdef const char * LLVMGetDataLayoutStr(LLVMModuleRef M) nogil
+cdef const char * LLVMGetDataLayoutStr(LLVMModuleRef M)
 
 
 
-cdef const char * LLVMGetDataLayout(LLVMModuleRef M) nogil
+cdef const char * LLVMGetDataLayout(LLVMModuleRef M)
 
 
 # 
 # Set the data layout for a module.
 # 
 # @see Module::setDataLayout()
-cdef void LLVMSetDataLayout(LLVMModuleRef M,const char * DataLayoutStr) nogil
+cdef void LLVMSetDataLayout(LLVMModuleRef M,const char * DataLayoutStr)
 
 
 # 
 # Obtain the target triple for a module.
 # 
 # @see Module::getTargetTriple()
-cdef const char * LLVMGetTarget(LLVMModuleRef M) nogil
+cdef const char * LLVMGetTarget(LLVMModuleRef M)
 
 
 # 
 # Set the target triple for a module.
 # 
 # @see Module::setTargetTriple()
-cdef void LLVMSetTarget(LLVMModuleRef M,const char * Triple) nogil
+cdef void LLVMSetTarget(LLVMModuleRef M,const char * Triple)
 
 
 # 
@@ -632,33 +632,33 @@ cdef void LLVMSetTarget(LLVMModuleRef M,const char * Triple) nogil
 # \c LLVMDisposeModuleFlagsMetadata.
 # 
 # @see Module::getModuleFlagsMetadata()
-cdef LLVMOpaqueModuleFlagEntry * LLVMCopyModuleFlagsMetadata(LLVMModuleRef M,unsigned long * Len) nogil
+cdef LLVMOpaqueModuleFlagEntry * LLVMCopyModuleFlagsMetadata(LLVMModuleRef M,unsigned long * Len)
 
 
 # 
 # Destroys module flags metadata entries.
-cdef void LLVMDisposeModuleFlagsMetadata(LLVMOpaqueModuleFlagEntry * Entries) nogil
+cdef void LLVMDisposeModuleFlagsMetadata(LLVMOpaqueModuleFlagEntry * Entries)
 
 
 # 
 # Returns the flag behavior for a module flag entry at a specific index.
 # 
 # @see Module::ModuleFlagEntry::Behavior
-cdef LLVMModuleFlagBehavior LLVMModuleFlagEntriesGetFlagBehavior(LLVMOpaqueModuleFlagEntry * Entries,unsigned int Index) nogil
+cdef LLVMModuleFlagBehavior LLVMModuleFlagEntriesGetFlagBehavior(LLVMOpaqueModuleFlagEntry * Entries,unsigned int Index)
 
 
 # 
 # Returns the key for a module flag entry at a specific index.
 # 
 # @see Module::ModuleFlagEntry::Key
-cdef const char * LLVMModuleFlagEntriesGetKey(LLVMOpaqueModuleFlagEntry * Entries,unsigned int Index,unsigned long * Len) nogil
+cdef const char * LLVMModuleFlagEntriesGetKey(LLVMOpaqueModuleFlagEntry * Entries,unsigned int Index,unsigned long * Len)
 
 
 # 
 # Returns the metadata for a module flag entry at a specific index.
 # 
 # @see Module::ModuleFlagEntry::Val
-cdef LLVMMetadataRef LLVMModuleFlagEntriesGetMetadata(LLVMOpaqueModuleFlagEntry * Entries,unsigned int Index) nogil
+cdef LLVMMetadataRef LLVMModuleFlagEntriesGetMetadata(LLVMOpaqueModuleFlagEntry * Entries,unsigned int Index)
 
 
 # 
@@ -666,7 +666,7 @@ cdef LLVMMetadataRef LLVMModuleFlagEntriesGetMetadata(LLVMOpaqueModuleFlagEntry 
 # already exist.
 # 
 # @see Module::getModuleFlag()
-cdef LLVMMetadataRef LLVMGetModuleFlag(LLVMModuleRef M,const char * Key,unsigned long KeyLen) nogil
+cdef LLVMMetadataRef LLVMGetModuleFlag(LLVMModuleRef M,const char * Key,unsigned long KeyLen)
 
 
 # 
@@ -674,14 +674,14 @@ cdef LLVMMetadataRef LLVMGetModuleFlag(LLVMModuleRef M,const char * Key,unsigned
 # already exist.
 # 
 # @see Module::addModuleFlag()
-cdef void LLVMAddModuleFlag(LLVMModuleRef M,LLVMModuleFlagBehavior Behavior,const char * Key,unsigned long KeyLen,LLVMMetadataRef Val) nogil
+cdef void LLVMAddModuleFlag(LLVMModuleRef M,LLVMModuleFlagBehavior Behavior,const char * Key,unsigned long KeyLen,LLVMMetadataRef Val)
 
 
 # 
 # Dump a representation of a module to stderr.
 # 
 # @see Module::dump()
-cdef void LLVMDumpModule(LLVMModuleRef M) nogil
+cdef void LLVMDumpModule(LLVMModuleRef M)
 
 
 # 
@@ -689,7 +689,7 @@ cdef void LLVMDumpModule(LLVMModuleRef M) nogil
 # disposed with LLVMDisposeMessage. Returns 0 on success, 1 otherwise.
 # 
 # @see Module::print()
-cdef int LLVMPrintModuleToFile(LLVMModuleRef M,const char * Filename,char ** ErrorMessage) nogil
+cdef int LLVMPrintModuleToFile(LLVMModuleRef M,const char * Filename,char ** ErrorMessage)
 
 
 # 
@@ -697,60 +697,60 @@ cdef int LLVMPrintModuleToFile(LLVMModuleRef M,const char * Filename,char ** Err
 # LLVMDisposeMessage to free the string.
 # 
 # @see Module::print()
-cdef char * LLVMPrintModuleToString(LLVMModuleRef M) nogil
+cdef char * LLVMPrintModuleToString(LLVMModuleRef M)
 
 
 # 
 # Get inline assembly for a module.
 # 
 # @see Module::getModuleInlineAsm()
-cdef const char * LLVMGetModuleInlineAsm(LLVMModuleRef M,unsigned long * Len) nogil
+cdef const char * LLVMGetModuleInlineAsm(LLVMModuleRef M,unsigned long * Len)
 
 
 # 
 # Set inline assembly for a module.
 # 
 # @see Module::setModuleInlineAsm()
-cdef void LLVMSetModuleInlineAsm2(LLVMModuleRef M,const char * Asm,unsigned long Len) nogil
+cdef void LLVMSetModuleInlineAsm2(LLVMModuleRef M,const char * Asm,unsigned long Len)
 
 
 # 
 # Append inline assembly to a module.
 # 
 # @see Module::appendModuleInlineAsm()
-cdef void LLVMAppendModuleInlineAsm(LLVMModuleRef M,const char * Asm,unsigned long Len) nogil
+cdef void LLVMAppendModuleInlineAsm(LLVMModuleRef M,const char * Asm,unsigned long Len)
 
 
 # 
 # Create the specified uniqued inline asm string.
 # 
 # @see InlineAsm::get()
-cdef LLVMValueRef LLVMGetInlineAsm(LLVMTypeRef Ty,char * AsmString,unsigned long AsmStringSize,char * Constraints,unsigned long ConstraintsSize,int HasSideEffects,int IsAlignStack,LLVMInlineAsmDialect Dialect,int CanThrow) nogil
+cdef LLVMValueRef LLVMGetInlineAsm(LLVMTypeRef Ty,char * AsmString,unsigned long AsmStringSize,char * Constraints,unsigned long ConstraintsSize,int HasSideEffects,int IsAlignStack,LLVMInlineAsmDialect Dialect,int CanThrow)
 
 
 # 
 # Obtain the context to which this module is associated.
 # 
 # @see Module::getContext()
-cdef LLVMContextRef LLVMGetModuleContext(LLVMModuleRef M) nogil
+cdef LLVMContextRef LLVMGetModuleContext(LLVMModuleRef M)
 
 
 # Deprecated: Use LLVMGetTypeByName2 instead. */
-cdef LLVMTypeRef LLVMGetTypeByName(LLVMModuleRef M,const char * Name) nogil
+cdef LLVMTypeRef LLVMGetTypeByName(LLVMModuleRef M,const char * Name)
 
 
 # 
 # Obtain an iterator to the first NamedMDNode in a Module.
 # 
 # @see llvm::Module::named_metadata_begin()
-cdef LLVMNamedMDNodeRef LLVMGetFirstNamedMetadata(LLVMModuleRef M) nogil
+cdef LLVMNamedMDNodeRef LLVMGetFirstNamedMetadata(LLVMModuleRef M)
 
 
 # 
 # Obtain an iterator to the last NamedMDNode in a Module.
 # 
 # @see llvm::Module::named_metadata_end()
-cdef LLVMNamedMDNodeRef LLVMGetLastNamedMetadata(LLVMModuleRef M) nogil
+cdef LLVMNamedMDNodeRef LLVMGetLastNamedMetadata(LLVMModuleRef M)
 
 
 # 
@@ -758,7 +758,7 @@ cdef LLVMNamedMDNodeRef LLVMGetLastNamedMetadata(LLVMModuleRef M) nogil
 # 
 # Returns NULL if the iterator was already at the end and there are no more
 # named metadata nodes.
-cdef LLVMNamedMDNodeRef LLVMGetNextNamedMetadata(LLVMNamedMDNodeRef NamedMDNode) nogil
+cdef LLVMNamedMDNodeRef LLVMGetNextNamedMetadata(LLVMNamedMDNodeRef NamedMDNode)
 
 
 # 
@@ -766,7 +766,7 @@ cdef LLVMNamedMDNodeRef LLVMGetNextNamedMetadata(LLVMNamedMDNodeRef NamedMDNode)
 # 
 # Returns NULL if the iterator was already at the beginning and there are
 # no previous named metadata nodes.
-cdef LLVMNamedMDNodeRef LLVMGetPreviousNamedMetadata(LLVMNamedMDNodeRef NamedMDNode) nogil
+cdef LLVMNamedMDNodeRef LLVMGetPreviousNamedMetadata(LLVMNamedMDNodeRef NamedMDNode)
 
 
 # 
@@ -774,7 +774,7 @@ cdef LLVMNamedMDNodeRef LLVMGetPreviousNamedMetadata(LLVMNamedMDNodeRef NamedMDN
 # node exists.
 # 
 # @see llvm::Module::getNamedMetadata()
-cdef LLVMNamedMDNodeRef LLVMGetNamedMetadata(LLVMModuleRef M,const char * Name,unsigned long NameLen) nogil
+cdef LLVMNamedMDNodeRef LLVMGetNamedMetadata(LLVMModuleRef M,const char * Name,unsigned long NameLen)
 
 
 # 
@@ -782,21 +782,21 @@ cdef LLVMNamedMDNodeRef LLVMGetNamedMetadata(LLVMModuleRef M,const char * Name,u
 # node exists.
 # 
 # @see llvm::Module::getOrInsertNamedMetadata()
-cdef LLVMNamedMDNodeRef LLVMGetOrInsertNamedMetadata(LLVMModuleRef M,const char * Name,unsigned long NameLen) nogil
+cdef LLVMNamedMDNodeRef LLVMGetOrInsertNamedMetadata(LLVMModuleRef M,const char * Name,unsigned long NameLen)
 
 
 # 
 # Retrieve the name of a NamedMDNode.
 # 
 # @see llvm::NamedMDNode::getName()
-cdef const char * LLVMGetNamedMetadataName(LLVMNamedMDNodeRef NamedMD,unsigned long * NameLen) nogil
+cdef const char * LLVMGetNamedMetadataName(LLVMNamedMDNodeRef NamedMD,unsigned long * NameLen)
 
 
 # 
 # Obtain the number of operands for named metadata in a module.
 # 
 # @see llvm::Module::getNamedMetadata()
-cdef unsigned int LLVMGetNamedMetadataNumOperands(LLVMModuleRef M,const char * Name) nogil
+cdef unsigned int LLVMGetNamedMetadataNumOperands(LLVMModuleRef M,const char * Name)
 
 
 # 
@@ -809,7 +809,7 @@ cdef unsigned int LLVMGetNamedMetadataNumOperands(LLVMModuleRef M,const char * N
 # 
 # @see llvm::Module::getNamedMetadata()
 # @see llvm::MDNode::getOperand()
-cdef void LLVMGetNamedMetadataOperands(LLVMModuleRef M,const char * Name,LLVMValueRef* Dest) nogil
+cdef void LLVMGetNamedMetadataOperands(LLVMModuleRef M,const char * Name,LLVMValueRef* Dest)
 
 
 # 
@@ -817,7 +817,7 @@ cdef void LLVMGetNamedMetadataOperands(LLVMModuleRef M,const char * Name,LLVMVal
 # 
 # @see llvm::Module::getNamedMetadata()
 # @see llvm::MDNode::addOperand()
-cdef void LLVMAddNamedMetadataOperand(LLVMModuleRef M,const char * Name,LLVMValueRef Val) nogil
+cdef void LLVMAddNamedMetadataOperand(LLVMModuleRef M,const char * Name,LLVMValueRef Val)
 
 
 # 
@@ -827,7 +827,7 @@ cdef void LLVMAddNamedMetadataOperand(LLVMModuleRef M,const char * Name,LLVMValu
 # @see llvm::Instruction::getDebugLoc()
 # @see llvm::GlobalVariable::getDebugInfo()
 # @see llvm::Function::getSubprogram()
-cdef const char * LLVMGetDebugLocDirectory(LLVMValueRef Val,unsigned int * Length) nogil
+cdef const char * LLVMGetDebugLocDirectory(LLVMValueRef Val,unsigned int * Length)
 
 
 # 
@@ -837,7 +837,7 @@ cdef const char * LLVMGetDebugLocDirectory(LLVMValueRef Val,unsigned int * Lengt
 # @see llvm::Instruction::getDebugLoc()
 # @see llvm::GlobalVariable::getDebugInfo()
 # @see llvm::Function::getSubprogram()
-cdef const char * LLVMGetDebugLocFilename(LLVMValueRef Val,unsigned int * Length) nogil
+cdef const char * LLVMGetDebugLocFilename(LLVMValueRef Val,unsigned int * Length)
 
 
 # 
@@ -847,7 +847,7 @@ cdef const char * LLVMGetDebugLocFilename(LLVMValueRef Val,unsigned int * Length
 # @see llvm::Instruction::getDebugLoc()
 # @see llvm::GlobalVariable::getDebugInfo()
 # @see llvm::Function::getSubprogram()
-cdef unsigned int LLVMGetDebugLocLine(LLVMValueRef Val) nogil
+cdef unsigned int LLVMGetDebugLocLine(LLVMValueRef Val)
 
 
 # 
@@ -855,14 +855,14 @@ cdef unsigned int LLVMGetDebugLocLine(LLVMValueRef Val) nogil
 # an llvm::Instruction.
 # 
 # @see llvm::Instruction::getDebugLoc()
-cdef unsigned int LLVMGetDebugLocColumn(LLVMValueRef Val) nogil
+cdef unsigned int LLVMGetDebugLocColumn(LLVMValueRef Val)
 
 
 # 
 # Add a function to a module under a specified name.
 # 
 # @see llvm::Function::Create()
-cdef LLVMValueRef LLVMAddFunction(LLVMModuleRef M,const char * Name,LLVMTypeRef FunctionTy) nogil
+cdef LLVMValueRef LLVMAddFunction(LLVMModuleRef M,const char * Name,LLVMTypeRef FunctionTy)
 
 
 # 
@@ -871,21 +871,21 @@ cdef LLVMValueRef LLVMAddFunction(LLVMModuleRef M,const char * Name,LLVMTypeRef 
 # The returned value corresponds to a llvm::Function value.
 # 
 # @see llvm::Module::getFunction()
-cdef LLVMValueRef LLVMGetNamedFunction(LLVMModuleRef M,const char * Name) nogil
+cdef LLVMValueRef LLVMGetNamedFunction(LLVMModuleRef M,const char * Name)
 
 
 # 
 # Obtain an iterator to the first Function in a Module.
 # 
 # @see llvm::Module::begin()
-cdef LLVMValueRef LLVMGetFirstFunction(LLVMModuleRef M) nogil
+cdef LLVMValueRef LLVMGetFirstFunction(LLVMModuleRef M)
 
 
 # 
 # Obtain an iterator to the last Function in a Module.
 # 
 # @see llvm::Module::end()
-cdef LLVMValueRef LLVMGetLastFunction(LLVMModuleRef M) nogil
+cdef LLVMValueRef LLVMGetLastFunction(LLVMModuleRef M)
 
 
 # 
@@ -893,7 +893,7 @@ cdef LLVMValueRef LLVMGetLastFunction(LLVMModuleRef M) nogil
 # 
 # Returns NULL if the iterator was already at the end and there are no more
 # functions.
-cdef LLVMValueRef LLVMGetNextFunction(LLVMValueRef Fn) nogil
+cdef LLVMValueRef LLVMGetNextFunction(LLVMValueRef Fn)
 
 
 # 
@@ -901,18 +901,18 @@ cdef LLVMValueRef LLVMGetNextFunction(LLVMValueRef Fn) nogil
 # 
 # Returns NULL if the iterator was already at the beginning and there are
 # no previous functions.
-cdef LLVMValueRef LLVMGetPreviousFunction(LLVMValueRef Fn) nogil
+cdef LLVMValueRef LLVMGetPreviousFunction(LLVMValueRef Fn)
 
 
 # Deprecated: Use LLVMSetModuleInlineAsm2 instead. */
-cdef void LLVMSetModuleInlineAsm(LLVMModuleRef M,const char * Asm) nogil
+cdef void LLVMSetModuleInlineAsm(LLVMModuleRef M,const char * Asm)
 
 
 # 
 # Obtain the enumerated type of a Type instance.
 # 
 # @see llvm::Type:getTypeID()
-cdef LLVMTypeKind LLVMGetTypeKind(LLVMTypeRef Ty) nogil
+cdef LLVMTypeKind LLVMGetTypeKind(LLVMTypeRef Ty)
 
 
 # 
@@ -921,21 +921,21 @@ cdef LLVMTypeKind LLVMGetTypeKind(LLVMTypeRef Ty) nogil
 # Things that don't have a size are abstract types, labels, and void.a
 # 
 # @see llvm::Type::isSized()
-cdef int LLVMTypeIsSized(LLVMTypeRef Ty) nogil
+cdef int LLVMTypeIsSized(LLVMTypeRef Ty)
 
 
 # 
 # Obtain the context to which this type instance is associated.
 # 
 # @see llvm::Type::getContext()
-cdef LLVMContextRef LLVMGetTypeContext(LLVMTypeRef Ty) nogil
+cdef LLVMContextRef LLVMGetTypeContext(LLVMTypeRef Ty)
 
 
 # 
 # Dump a representation of a type to stderr.
 # 
 # @see llvm::Type::dump()
-cdef void LLVMDumpType(LLVMTypeRef Val) nogil
+cdef void LLVMDumpType(LLVMTypeRef Val)
 
 
 # 
@@ -943,137 +943,137 @@ cdef void LLVMDumpType(LLVMTypeRef Val) nogil
 # LLVMDisposeMessage to free the string.
 # 
 # @see llvm::Type::print()
-cdef char * LLVMPrintTypeToString(LLVMTypeRef Val) nogil
+cdef char * LLVMPrintTypeToString(LLVMTypeRef Val)
 
 
 # 
 # Obtain an integer type from a context with specified bit width.
-cdef LLVMTypeRef LLVMInt1TypeInContext(LLVMContextRef C) nogil
+cdef LLVMTypeRef LLVMInt1TypeInContext(LLVMContextRef C)
 
 
 
-cdef LLVMTypeRef LLVMInt8TypeInContext(LLVMContextRef C) nogil
+cdef LLVMTypeRef LLVMInt8TypeInContext(LLVMContextRef C)
 
 
 
-cdef LLVMTypeRef LLVMInt16TypeInContext(LLVMContextRef C) nogil
+cdef LLVMTypeRef LLVMInt16TypeInContext(LLVMContextRef C)
 
 
 
-cdef LLVMTypeRef LLVMInt32TypeInContext(LLVMContextRef C) nogil
+cdef LLVMTypeRef LLVMInt32TypeInContext(LLVMContextRef C)
 
 
 
-cdef LLVMTypeRef LLVMInt64TypeInContext(LLVMContextRef C) nogil
+cdef LLVMTypeRef LLVMInt64TypeInContext(LLVMContextRef C)
 
 
 
-cdef LLVMTypeRef LLVMInt128TypeInContext(LLVMContextRef C) nogil
+cdef LLVMTypeRef LLVMInt128TypeInContext(LLVMContextRef C)
 
 
 
-cdef LLVMTypeRef LLVMIntTypeInContext(LLVMContextRef C,unsigned int NumBits) nogil
+cdef LLVMTypeRef LLVMIntTypeInContext(LLVMContextRef C,unsigned int NumBits)
 
 
 # 
 # Obtain an integer type from the global context with a specified bit
 # width.
-cdef LLVMTypeRef LLVMInt1Type() nogil
+cdef LLVMTypeRef LLVMInt1Type()
 
 
 
-cdef LLVMTypeRef LLVMInt8Type() nogil
+cdef LLVMTypeRef LLVMInt8Type()
 
 
 
-cdef LLVMTypeRef LLVMInt16Type() nogil
+cdef LLVMTypeRef LLVMInt16Type()
 
 
 
-cdef LLVMTypeRef LLVMInt32Type() nogil
+cdef LLVMTypeRef LLVMInt32Type()
 
 
 
-cdef LLVMTypeRef LLVMInt64Type() nogil
+cdef LLVMTypeRef LLVMInt64Type()
 
 
 
-cdef LLVMTypeRef LLVMInt128Type() nogil
+cdef LLVMTypeRef LLVMInt128Type()
 
 
 
-cdef LLVMTypeRef LLVMIntType(unsigned int NumBits) nogil
+cdef LLVMTypeRef LLVMIntType(unsigned int NumBits)
 
 
 
-cdef unsigned int LLVMGetIntTypeWidth(LLVMTypeRef IntegerTy) nogil
+cdef unsigned int LLVMGetIntTypeWidth(LLVMTypeRef IntegerTy)
 
 
 # 
 # Obtain a 16-bit floating point type from a context.
-cdef LLVMTypeRef LLVMHalfTypeInContext(LLVMContextRef C) nogil
+cdef LLVMTypeRef LLVMHalfTypeInContext(LLVMContextRef C)
 
 
 # 
 # Obtain a 16-bit brain floating point type from a context.
-cdef LLVMTypeRef LLVMBFloatTypeInContext(LLVMContextRef C) nogil
+cdef LLVMTypeRef LLVMBFloatTypeInContext(LLVMContextRef C)
 
 
 # 
 # Obtain a 32-bit floating point type from a context.
-cdef LLVMTypeRef LLVMFloatTypeInContext(LLVMContextRef C) nogil
+cdef LLVMTypeRef LLVMFloatTypeInContext(LLVMContextRef C)
 
 
 # 
 # Obtain a 64-bit floating point type from a context.
-cdef LLVMTypeRef LLVMDoubleTypeInContext(LLVMContextRef C) nogil
+cdef LLVMTypeRef LLVMDoubleTypeInContext(LLVMContextRef C)
 
 
 # 
 # Obtain a 80-bit floating point type (X87) from a context.
-cdef LLVMTypeRef LLVMX86FP80TypeInContext(LLVMContextRef C) nogil
+cdef LLVMTypeRef LLVMX86FP80TypeInContext(LLVMContextRef C)
 
 
 # 
 # Obtain a 128-bit floating point type (112-bit mantissa) from a
 # context.
-cdef LLVMTypeRef LLVMFP128TypeInContext(LLVMContextRef C) nogil
+cdef LLVMTypeRef LLVMFP128TypeInContext(LLVMContextRef C)
 
 
 # 
 # Obtain a 128-bit floating point type (two 64-bits) from a context.
-cdef LLVMTypeRef LLVMPPCFP128TypeInContext(LLVMContextRef C) nogil
+cdef LLVMTypeRef LLVMPPCFP128TypeInContext(LLVMContextRef C)
 
 
 # 
 # Obtain a floating point type from the global context.
 # 
 # These map to the functions in this group of the same name.
-cdef LLVMTypeRef LLVMHalfType() nogil
+cdef LLVMTypeRef LLVMHalfType()
 
 
 
-cdef LLVMTypeRef LLVMBFloatType() nogil
+cdef LLVMTypeRef LLVMBFloatType()
 
 
 
-cdef LLVMTypeRef LLVMFloatType() nogil
+cdef LLVMTypeRef LLVMFloatType()
 
 
 
-cdef LLVMTypeRef LLVMDoubleType() nogil
+cdef LLVMTypeRef LLVMDoubleType()
 
 
 
-cdef LLVMTypeRef LLVMX86FP80Type() nogil
+cdef LLVMTypeRef LLVMX86FP80Type()
 
 
 
-cdef LLVMTypeRef LLVMFP128Type() nogil
+cdef LLVMTypeRef LLVMFP128Type()
 
 
 
-cdef LLVMTypeRef LLVMPPCFP128Type() nogil
+cdef LLVMTypeRef LLVMPPCFP128Type()
 
 
 # 
@@ -1081,22 +1081,22 @@ cdef LLVMTypeRef LLVMPPCFP128Type() nogil
 # 
 # The function is defined as a tuple of a return Type, a list of
 # parameter types, and whether the function is variadic.
-cdef LLVMTypeRef LLVMFunctionType(LLVMTypeRef ReturnType,LLVMTypeRef* ParamTypes,unsigned int ParamCount,int IsVarArg) nogil
+cdef LLVMTypeRef LLVMFunctionType(LLVMTypeRef ReturnType,LLVMTypeRef* ParamTypes,unsigned int ParamCount,int IsVarArg)
 
 
 # 
 # Returns whether a function type is variadic.
-cdef int LLVMIsFunctionVarArg(LLVMTypeRef FunctionTy) nogil
+cdef int LLVMIsFunctionVarArg(LLVMTypeRef FunctionTy)
 
 
 # 
 # Obtain the Type this function Type returns.
-cdef LLVMTypeRef LLVMGetReturnType(LLVMTypeRef FunctionTy) nogil
+cdef LLVMTypeRef LLVMGetReturnType(LLVMTypeRef FunctionTy)
 
 
 # 
 # Obtain the number of parameters this function accepts.
-cdef unsigned int LLVMCountParamTypes(LLVMTypeRef FunctionTy) nogil
+cdef unsigned int LLVMCountParamTypes(LLVMTypeRef FunctionTy)
 
 
 # 
@@ -1109,7 +1109,7 @@ cdef unsigned int LLVMCountParamTypes(LLVMTypeRef FunctionTy) nogil
 # 
 # @param FunctionTy The function type to operate on.
 # @param Dest Memory address of an array to be filled with result.
-cdef void LLVMGetParamTypes(LLVMTypeRef FunctionTy,LLVMTypeRef* Dest) nogil
+cdef void LLVMGetParamTypes(LLVMTypeRef FunctionTy,LLVMTypeRef* Dest)
 
 
 # 
@@ -1119,42 +1119,42 @@ cdef void LLVMGetParamTypes(LLVMTypeRef FunctionTy,LLVMTypeRef* Dest) nogil
 # whether these can be packed together.
 # 
 # @see llvm::StructType::create()
-cdef LLVMTypeRef LLVMStructTypeInContext(LLVMContextRef C,LLVMTypeRef* ElementTypes,unsigned int ElementCount,int Packed) nogil
+cdef LLVMTypeRef LLVMStructTypeInContext(LLVMContextRef C,LLVMTypeRef* ElementTypes,unsigned int ElementCount,int Packed)
 
 
 # 
 # Create a new structure type in the global context.
 # 
 # @see llvm::StructType::create()
-cdef LLVMTypeRef LLVMStructType(LLVMTypeRef* ElementTypes,unsigned int ElementCount,int Packed) nogil
+cdef LLVMTypeRef LLVMStructType(LLVMTypeRef* ElementTypes,unsigned int ElementCount,int Packed)
 
 
 # 
 # Create an empty structure in a context having a specified name.
 # 
 # @see llvm::StructType::create()
-cdef LLVMTypeRef LLVMStructCreateNamed(LLVMContextRef C,const char * Name) nogil
+cdef LLVMTypeRef LLVMStructCreateNamed(LLVMContextRef C,const char * Name)
 
 
 # 
 # Obtain the name of a structure.
 # 
 # @see llvm::StructType::getName()
-cdef const char * LLVMGetStructName(LLVMTypeRef Ty) nogil
+cdef const char * LLVMGetStructName(LLVMTypeRef Ty)
 
 
 # 
 # Set the contents of a structure type.
 # 
 # @see llvm::StructType::setBody()
-cdef void LLVMStructSetBody(LLVMTypeRef StructTy,LLVMTypeRef* ElementTypes,unsigned int ElementCount,int Packed) nogil
+cdef void LLVMStructSetBody(LLVMTypeRef StructTy,LLVMTypeRef* ElementTypes,unsigned int ElementCount,int Packed)
 
 
 # 
 # Get the number of elements defined inside the structure.
 # 
 # @see llvm::StructType::getNumElements()
-cdef unsigned int LLVMCountStructElementTypes(LLVMTypeRef StructTy) nogil
+cdef unsigned int LLVMCountStructElementTypes(LLVMTypeRef StructTy)
 
 
 # 
@@ -1166,35 +1166,35 @@ cdef unsigned int LLVMCountStructElementTypes(LLVMTypeRef StructTy) nogil
 # elements. The objects in the destination array will have a lifetime
 # of the structure type itself, which is the lifetime of the context it
 # is contained in.
-cdef void LLVMGetStructElementTypes(LLVMTypeRef StructTy,LLVMTypeRef* Dest) nogil
+cdef void LLVMGetStructElementTypes(LLVMTypeRef StructTy,LLVMTypeRef* Dest)
 
 
 # 
 # Get the type of the element at a given index in the structure.
 # 
 # @see llvm::StructType::getTypeAtIndex()
-cdef LLVMTypeRef LLVMStructGetTypeAtIndex(LLVMTypeRef StructTy,unsigned int i) nogil
+cdef LLVMTypeRef LLVMStructGetTypeAtIndex(LLVMTypeRef StructTy,unsigned int i)
 
 
 # 
 # Determine whether a structure is packed.
 # 
 # @see llvm::StructType::isPacked()
-cdef int LLVMIsPackedStruct(LLVMTypeRef StructTy) nogil
+cdef int LLVMIsPackedStruct(LLVMTypeRef StructTy)
 
 
 # 
 # Determine whether a structure is opaque.
 # 
 # @see llvm::StructType::isOpaque()
-cdef int LLVMIsOpaqueStruct(LLVMTypeRef StructTy) nogil
+cdef int LLVMIsOpaqueStruct(LLVMTypeRef StructTy)
 
 
 # 
 # Determine whether a structure is literal.
 # 
 # @see llvm::StructType::isLiteral()
-cdef int LLVMIsLiteralStruct(LLVMTypeRef StructTy) nogil
+cdef int LLVMIsLiteralStruct(LLVMTypeRef StructTy)
 
 
 # 
@@ -1203,21 +1203,21 @@ cdef int LLVMIsLiteralStruct(LLVMTypeRef StructTy) nogil
 # This currently also works for pointer types, but this usage is deprecated.
 # 
 # @see llvm::SequentialType::getElementType()
-cdef LLVMTypeRef LLVMGetElementType(LLVMTypeRef Ty) nogil
+cdef LLVMTypeRef LLVMGetElementType(LLVMTypeRef Ty)
 
 
 # 
 # Returns type's subtypes
 # 
 # @see llvm::Type::subtypes()
-cdef void LLVMGetSubtypes(LLVMTypeRef Tp,LLVMTypeRef* Arr) nogil
+cdef void LLVMGetSubtypes(LLVMTypeRef Tp,LLVMTypeRef* Arr)
 
 
 # 
 #  Return the number of types in the derived type.
 # 
 # @see llvm::Type::getNumContainedTypes()
-cdef unsigned int LLVMGetNumContainedTypes(LLVMTypeRef Tp) nogil
+cdef unsigned int LLVMGetNumContainedTypes(LLVMTypeRef Tp)
 
 
 # 
@@ -1227,7 +1227,7 @@ cdef unsigned int LLVMGetNumContainedTypes(LLVMTypeRef Tp) nogil
 # exists in.
 # 
 # @see llvm::ArrayType::get()
-cdef LLVMTypeRef LLVMArrayType(LLVMTypeRef ElementType,unsigned int ElementCount) nogil
+cdef LLVMTypeRef LLVMArrayType(LLVMTypeRef ElementType,unsigned int ElementCount)
 
 
 # 
@@ -1236,7 +1236,7 @@ cdef LLVMTypeRef LLVMArrayType(LLVMTypeRef ElementType,unsigned int ElementCount
 # This only works on types that represent arrays.
 # 
 # @see llvm::ArrayType::getNumElements()
-cdef unsigned int LLVMGetArrayLength(LLVMTypeRef ArrayTy) nogil
+cdef unsigned int LLVMGetArrayLength(LLVMTypeRef ArrayTy)
 
 
 # 
@@ -1246,7 +1246,7 @@ cdef unsigned int LLVMGetArrayLength(LLVMTypeRef ArrayTy) nogil
 # exists in.
 # 
 # @see llvm::PointerType::get()
-cdef LLVMTypeRef LLVMPointerType(LLVMTypeRef ElementType,unsigned int AddressSpace) nogil
+cdef LLVMTypeRef LLVMPointerType(LLVMTypeRef ElementType,unsigned int AddressSpace)
 
 
 # 
@@ -1255,14 +1255,14 @@ cdef LLVMTypeRef LLVMPointerType(LLVMTypeRef ElementType,unsigned int AddressSpa
 # True if this is an instance of an opaque PointerType.
 # 
 # @see llvm::Type::isOpaquePointerTy()
-cdef int LLVMPointerTypeIsOpaque(LLVMTypeRef Ty) nogil
+cdef int LLVMPointerTypeIsOpaque(LLVMTypeRef Ty)
 
 
 # 
 # Create an opaque pointer type in a context.
 # 
 # @see llvm::PointerType::get()
-cdef LLVMTypeRef LLVMPointerTypeInContext(LLVMContextRef C,unsigned int AddressSpace) nogil
+cdef LLVMTypeRef LLVMPointerTypeInContext(LLVMContextRef C,unsigned int AddressSpace)
 
 
 # 
@@ -1271,7 +1271,7 @@ cdef LLVMTypeRef LLVMPointerTypeInContext(LLVMContextRef C,unsigned int AddressS
 # This only works on types that represent pointers.
 # 
 # @see llvm::PointerType::getAddressSpace()
-cdef unsigned int LLVMGetPointerAddressSpace(LLVMTypeRef PointerTy) nogil
+cdef unsigned int LLVMGetPointerAddressSpace(LLVMTypeRef PointerTy)
 
 
 # 
@@ -1282,7 +1282,7 @@ cdef unsigned int LLVMGetPointerAddressSpace(LLVMTypeRef PointerTy) nogil
 # exists in.
 # 
 # @see llvm::VectorType::get()
-cdef LLVMTypeRef LLVMVectorType(LLVMTypeRef ElementType,unsigned int ElementCount) nogil
+cdef LLVMTypeRef LLVMVectorType(LLVMTypeRef ElementType,unsigned int ElementCount)
 
 
 # 
@@ -1293,7 +1293,7 @@ cdef LLVMTypeRef LLVMVectorType(LLVMTypeRef ElementType,unsigned int ElementCoun
 # exists in.
 # 
 # @see llvm::ScalableVectorType::get()
-cdef LLVMTypeRef LLVMScalableVectorType(LLVMTypeRef ElementType,unsigned int ElementCount) nogil
+cdef LLVMTypeRef LLVMScalableVectorType(LLVMTypeRef ElementType,unsigned int ElementCount)
 
 
 # 
@@ -1302,95 +1302,95 @@ cdef LLVMTypeRef LLVMScalableVectorType(LLVMTypeRef ElementType,unsigned int Ele
 # This only works on types that represent vectors (fixed or scalable).
 # 
 # @see llvm::VectorType::getNumElements()
-cdef unsigned int LLVMGetVectorSize(LLVMTypeRef VectorTy) nogil
+cdef unsigned int LLVMGetVectorSize(LLVMTypeRef VectorTy)
 
 
 # 
 # Create a void type in a context.
-cdef LLVMTypeRef LLVMVoidTypeInContext(LLVMContextRef C) nogil
+cdef LLVMTypeRef LLVMVoidTypeInContext(LLVMContextRef C)
 
 
 # 
 # Create a label type in a context.
-cdef LLVMTypeRef LLVMLabelTypeInContext(LLVMContextRef C) nogil
+cdef LLVMTypeRef LLVMLabelTypeInContext(LLVMContextRef C)
 
 
 # 
 # Create a X86 MMX type in a context.
-cdef LLVMTypeRef LLVMX86MMXTypeInContext(LLVMContextRef C) nogil
+cdef LLVMTypeRef LLVMX86MMXTypeInContext(LLVMContextRef C)
 
 
 # 
 # Create a X86 AMX type in a context.
-cdef LLVMTypeRef LLVMX86AMXTypeInContext(LLVMContextRef C) nogil
+cdef LLVMTypeRef LLVMX86AMXTypeInContext(LLVMContextRef C)
 
 
 # 
 # Create a token type in a context.
-cdef LLVMTypeRef LLVMTokenTypeInContext(LLVMContextRef C) nogil
+cdef LLVMTypeRef LLVMTokenTypeInContext(LLVMContextRef C)
 
 
 # 
 # Create a metadata type in a context.
-cdef LLVMTypeRef LLVMMetadataTypeInContext(LLVMContextRef C) nogil
+cdef LLVMTypeRef LLVMMetadataTypeInContext(LLVMContextRef C)
 
 
 # 
 # These are similar to the above functions except they operate on the
 # global context.
-cdef LLVMTypeRef LLVMVoidType() nogil
+cdef LLVMTypeRef LLVMVoidType()
 
 
 
-cdef LLVMTypeRef LLVMLabelType() nogil
+cdef LLVMTypeRef LLVMLabelType()
 
 
 
-cdef LLVMTypeRef LLVMX86MMXType() nogil
+cdef LLVMTypeRef LLVMX86MMXType()
 
 
 
-cdef LLVMTypeRef LLVMX86AMXType() nogil
+cdef LLVMTypeRef LLVMX86AMXType()
 
 
 # 
 # Create a target extension type in LLVM context.
-cdef LLVMTypeRef LLVMTargetExtTypeInContext(LLVMContextRef C,const char * Name,LLVMTypeRef* TypeParams,unsigned int TypeParamCount,unsigned int * IntParams,unsigned int IntParamCount) nogil
+cdef LLVMTypeRef LLVMTargetExtTypeInContext(LLVMContextRef C,const char * Name,LLVMTypeRef* TypeParams,unsigned int TypeParamCount,unsigned int * IntParams,unsigned int IntParamCount)
 
 
 # 
 # Obtain the type of a value.
 # 
 # @see llvm::Value::getType()
-cdef LLVMTypeRef LLVMTypeOf(LLVMValueRef Val) nogil
+cdef LLVMTypeRef LLVMTypeOf(LLVMValueRef Val)
 
 
 # 
 # Obtain the enumerated type of a Value instance.
 # 
 # @see llvm::Value::getValueID()
-cdef LLVMValueKind LLVMGetValueKind(LLVMValueRef Val) nogil
+cdef LLVMValueKind LLVMGetValueKind(LLVMValueRef Val)
 
 
 # 
 # Obtain the string name of a value.
 # 
 # @see llvm::Value::getName()
-cdef const char * LLVMGetValueName2(LLVMValueRef Val,unsigned long * Length) nogil
+cdef const char * LLVMGetValueName2(LLVMValueRef Val,unsigned long * Length)
 
 
 # 
 # Set the string name of a value.
 # 
 # @see llvm::Value::setName()
-cdef void LLVMSetValueName2(LLVMValueRef Val,const char * Name,unsigned long NameLen) nogil
+cdef void LLVMSetValueName2(LLVMValueRef Val,const char * Name,unsigned long NameLen)
 
 
 # 
 # Dump a representation of a value to stderr.
 # 
 # @see llvm::Value::dump()
-cdef void LLVMDumpValue(LLVMValueRef Val) nogil
+cdef void LLVMDumpValue(LLVMValueRef Val)
 
 
 # 
@@ -1398,397 +1398,397 @@ cdef void LLVMDumpValue(LLVMValueRef Val) nogil
 # LLVMDisposeMessage to free the string.
 # 
 # @see llvm::Value::print()
-cdef char * LLVMPrintValueToString(LLVMValueRef Val) nogil
+cdef char * LLVMPrintValueToString(LLVMValueRef Val)
 
 
 # 
 # Replace all uses of a value with another one.
 # 
 # @see llvm::Value::replaceAllUsesWith()
-cdef void LLVMReplaceAllUsesWith(LLVMValueRef OldVal,LLVMValueRef NewVal) nogil
+cdef void LLVMReplaceAllUsesWith(LLVMValueRef OldVal,LLVMValueRef NewVal)
 
 
 # 
 # Determine whether the specified value instance is constant.
-cdef int LLVMIsConstant(LLVMValueRef Val) nogil
+cdef int LLVMIsConstant(LLVMValueRef Val)
 
 
 # 
 # Determine whether a value instance is undefined.
-cdef int LLVMIsUndef(LLVMValueRef Val) nogil
+cdef int LLVMIsUndef(LLVMValueRef Val)
 
 
 # 
 # Determine whether a value instance is poisonous.
-cdef int LLVMIsPoison(LLVMValueRef Val) nogil
+cdef int LLVMIsPoison(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAArgument(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAArgument(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsABasicBlock(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsABasicBlock(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAInlineAsm(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAInlineAsm(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAUser(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAUser(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAConstant(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAConstant(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsABlockAddress(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsABlockAddress(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAConstantAggregateZero(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAConstantAggregateZero(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAConstantArray(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAConstantArray(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAConstantDataSequential(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAConstantDataSequential(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAConstantDataArray(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAConstantDataArray(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAConstantDataVector(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAConstantDataVector(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAConstantExpr(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAConstantExpr(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAConstantFP(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAConstantFP(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAConstantInt(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAConstantInt(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAConstantPointerNull(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAConstantPointerNull(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAConstantStruct(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAConstantStruct(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAConstantTokenNone(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAConstantTokenNone(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAConstantVector(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAConstantVector(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAGlobalValue(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAGlobalValue(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAGlobalAlias(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAGlobalAlias(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAGlobalObject(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAGlobalObject(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAFunction(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAFunction(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAGlobalVariable(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAGlobalVariable(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAGlobalIFunc(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAGlobalIFunc(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAUndefValue(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAUndefValue(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAPoisonValue(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAPoisonValue(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAInstruction(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAInstruction(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAUnaryOperator(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAUnaryOperator(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsABinaryOperator(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsABinaryOperator(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsACallInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsACallInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAIntrinsicInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAIntrinsicInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsADbgInfoIntrinsic(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsADbgInfoIntrinsic(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsADbgVariableIntrinsic(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsADbgVariableIntrinsic(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsADbgDeclareInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsADbgDeclareInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsADbgLabelInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsADbgLabelInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAMemIntrinsic(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAMemIntrinsic(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAMemCpyInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAMemCpyInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAMemMoveInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAMemMoveInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAMemSetInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAMemSetInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsACmpInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsACmpInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAFCmpInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAFCmpInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAICmpInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAICmpInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAExtractElementInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAExtractElementInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAGetElementPtrInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAGetElementPtrInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAInsertElementInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAInsertElementInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAInsertValueInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAInsertValueInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsALandingPadInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsALandingPadInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAPHINode(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAPHINode(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsASelectInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsASelectInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAShuffleVectorInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAShuffleVectorInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAStoreInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAStoreInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsABranchInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsABranchInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAIndirectBrInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAIndirectBrInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAInvokeInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAInvokeInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAReturnInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAReturnInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsASwitchInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsASwitchInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAUnreachableInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAUnreachableInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAResumeInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAResumeInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsACleanupReturnInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsACleanupReturnInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsACatchReturnInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsACatchReturnInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsACatchSwitchInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsACatchSwitchInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsACallBrInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsACallBrInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAFuncletPadInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAFuncletPadInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsACatchPadInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsACatchPadInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsACleanupPadInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsACleanupPadInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAUnaryInstruction(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAUnaryInstruction(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAAllocaInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAAllocaInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsACastInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsACastInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAAddrSpaceCastInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAAddrSpaceCastInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsABitCastInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsABitCastInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAFPExtInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAFPExtInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAFPToSIInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAFPToSIInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAFPToUIInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAFPToUIInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAFPTruncInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAFPTruncInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAIntToPtrInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAIntToPtrInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAPtrToIntInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAPtrToIntInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsASExtInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsASExtInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsASIToFPInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsASIToFPInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsATruncInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsATruncInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAUIToFPInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAUIToFPInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAZExtInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAZExtInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAExtractValueInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAExtractValueInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsALoadInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsALoadInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAVAArgInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAVAArgInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAFreezeInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAFreezeInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAAtomicCmpXchgInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAAtomicCmpXchgInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAAtomicRMWInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAAtomicRMWInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAFenceInst(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAFenceInst(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAMDNode(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAMDNode(LLVMValueRef Val)
 
 
 
-cdef LLVMValueRef LLVMIsAMDString(LLVMValueRef Val) nogil
+cdef LLVMValueRef LLVMIsAMDString(LLVMValueRef Val)
 
 
 # Deprecated: Use LLVMGetValueName2 instead. */
-cdef const char * LLVMGetValueName(LLVMValueRef Val) nogil
+cdef const char * LLVMGetValueName(LLVMValueRef Val)
 
 
 # Deprecated: Use LLVMSetValueName2 instead. */
-cdef void LLVMSetValueName(LLVMValueRef Val,const char * Name) nogil
+cdef void LLVMSetValueName(LLVMValueRef Val,const char * Name)
 
 
 # 
@@ -1800,7 +1800,7 @@ cdef void LLVMSetValueName(LLVMValueRef Val,const char * Name) nogil
 # LLVMGetNextUse() returns NULL.
 # 
 # @see llvm::Value::use_begin()
-cdef LLVMUseRef LLVMGetFirstUse(LLVMValueRef Val) nogil
+cdef LLVMUseRef LLVMGetFirstUse(LLVMValueRef Val)
 
 
 # 
@@ -1808,7 +1808,7 @@ cdef LLVMUseRef LLVMGetFirstUse(LLVMValueRef Val) nogil
 # 
 # This effectively advances the iterator. It returns NULL if you are on
 # the final use and no more are available.
-cdef LLVMUseRef LLVMGetNextUse(LLVMUseRef U) nogil
+cdef LLVMUseRef LLVMGetNextUse(LLVMUseRef U)
 
 
 # 
@@ -1817,49 +1817,49 @@ cdef LLVMUseRef LLVMGetNextUse(LLVMUseRef U) nogil
 # The returned value corresponds to a llvm::User type.
 # 
 # @see llvm::Use::getUser()
-cdef LLVMValueRef LLVMGetUser(LLVMUseRef U) nogil
+cdef LLVMValueRef LLVMGetUser(LLVMUseRef U)
 
 
 # 
 # Obtain the value this use corresponds to.
 # 
 # @see llvm::Use::get().
-cdef LLVMValueRef LLVMGetUsedValue(LLVMUseRef U) nogil
+cdef LLVMValueRef LLVMGetUsedValue(LLVMUseRef U)
 
 
 # 
 # Obtain an operand at a specific index in a llvm::User value.
 # 
 # @see llvm::User::getOperand()
-cdef LLVMValueRef LLVMGetOperand(LLVMValueRef Val,unsigned int Index) nogil
+cdef LLVMValueRef LLVMGetOperand(LLVMValueRef Val,unsigned int Index)
 
 
 # 
 # Obtain the use of an operand at a specific index in a llvm::User value.
 # 
 # @see llvm::User::getOperandUse()
-cdef LLVMUseRef LLVMGetOperandUse(LLVMValueRef Val,unsigned int Index) nogil
+cdef LLVMUseRef LLVMGetOperandUse(LLVMValueRef Val,unsigned int Index)
 
 
 # 
 # Set an operand at a specific index in a llvm::User value.
 # 
 # @see llvm::User::setOperand()
-cdef void LLVMSetOperand(LLVMValueRef User,unsigned int Index,LLVMValueRef Val) nogil
+cdef void LLVMSetOperand(LLVMValueRef User,unsigned int Index,LLVMValueRef Val)
 
 
 # 
 # Obtain the number of operands in a llvm::User value.
 # 
 # @see llvm::User::getNumOperands()
-cdef int LLVMGetNumOperands(LLVMValueRef Val) nogil
+cdef int LLVMGetNumOperands(LLVMValueRef Val)
 
 
 # 
 # Obtain a constant value referring to the null instance of a type.
 # 
 # @see llvm::Constant::getNullValue()
-cdef LLVMValueRef LLVMConstNull(LLVMTypeRef Ty) nogil
+cdef LLVMValueRef LLVMConstNull(LLVMTypeRef Ty)
 
 
 # 
@@ -1869,34 +1869,34 @@ cdef LLVMValueRef LLVMConstNull(LLVMTypeRef Ty) nogil
 # This is only valid for integer types.
 # 
 # @see llvm::Constant::getAllOnesValue()
-cdef LLVMValueRef LLVMConstAllOnes(LLVMTypeRef Ty) nogil
+cdef LLVMValueRef LLVMConstAllOnes(LLVMTypeRef Ty)
 
 
 # 
 # Obtain a constant value referring to an undefined value of a type.
 # 
 # @see llvm::UndefValue::get()
-cdef LLVMValueRef LLVMGetUndef(LLVMTypeRef Ty) nogil
+cdef LLVMValueRef LLVMGetUndef(LLVMTypeRef Ty)
 
 
 # 
 # Obtain a constant value referring to a poison value of a type.
 # 
 # @see llvm::PoisonValue::get()
-cdef LLVMValueRef LLVMGetPoison(LLVMTypeRef Ty) nogil
+cdef LLVMValueRef LLVMGetPoison(LLVMTypeRef Ty)
 
 
 # 
 # Determine whether a value instance is null.
 # 
 # @see llvm::Constant::isNullValue()
-cdef int LLVMIsNull(LLVMValueRef Val) nogil
+cdef int LLVMIsNull(LLVMValueRef Val)
 
 
 # 
 # Obtain a constant that is a constant pointer pointing to NULL for a
 # specified type.
-cdef LLVMValueRef LLVMConstPointerNull(LLVMTypeRef Ty) nogil
+cdef LLVMValueRef LLVMConstPointerNull(LLVMTypeRef Ty)
 
 
 # 
@@ -1909,14 +1909,14 @@ cdef LLVMValueRef LLVMConstPointerNull(LLVMTypeRef Ty) nogil
 # @param IntTy Integer type to obtain value of.
 # @param N The value the returned instance should refer to.
 # @param SignExtend Whether to sign extend the produced value.
-cdef LLVMValueRef LLVMConstInt(LLVMTypeRef IntTy,unsigned long long N,int SignExtend) nogil
+cdef LLVMValueRef LLVMConstInt(LLVMTypeRef IntTy,unsigned long long N,int SignExtend)
 
 
 # 
 # Obtain a constant value for an integer of arbitrary precision.
 # 
 # @see llvm::ConstantInt::get()
-cdef LLVMValueRef LLVMConstIntOfArbitraryPrecision(LLVMTypeRef IntTy,unsigned int NumWords,const unsigned long* Words) nogil
+cdef LLVMValueRef LLVMConstIntOfArbitraryPrecision(LLVMTypeRef IntTy,unsigned int NumWords,const unsigned long* Words)
 
 
 # 
@@ -1927,7 +1927,7 @@ cdef LLVMValueRef LLVMConstIntOfArbitraryPrecision(LLVMTypeRef IntTy,unsigned in
 # instead.
 # 
 # @see llvm::ConstantInt::get()
-cdef LLVMValueRef LLVMConstIntOfString(LLVMTypeRef IntTy,const char * Text,unsigned char Radix) nogil
+cdef LLVMValueRef LLVMConstIntOfString(LLVMTypeRef IntTy,const char * Text,unsigned char Radix)
 
 
 # 
@@ -1935,12 +1935,12 @@ cdef LLVMValueRef LLVMConstIntOfString(LLVMTypeRef IntTy,const char * Text,unsig
 # specified length.
 # 
 # @see llvm::ConstantInt::get()
-cdef LLVMValueRef LLVMConstIntOfStringAndSize(LLVMTypeRef IntTy,const char * Text,unsigned int SLen,unsigned char Radix) nogil
+cdef LLVMValueRef LLVMConstIntOfStringAndSize(LLVMTypeRef IntTy,const char * Text,unsigned int SLen,unsigned char Radix)
 
 
 # 
 # Obtain a constant value referring to a double floating point value.
-cdef LLVMValueRef LLVMConstReal(LLVMTypeRef RealTy,double N) nogil
+cdef LLVMValueRef LLVMConstReal(LLVMTypeRef RealTy,double N)
 
 
 # 
@@ -1948,26 +1948,26 @@ cdef LLVMValueRef LLVMConstReal(LLVMTypeRef RealTy,double N) nogil
 # 
 # A similar API, LLVMConstRealOfStringAndSize is also available. It
 # should be used if the input string's length is known.
-cdef LLVMValueRef LLVMConstRealOfString(LLVMTypeRef RealTy,const char * Text) nogil
+cdef LLVMValueRef LLVMConstRealOfString(LLVMTypeRef RealTy,const char * Text)
 
 
 # 
 # Obtain a constant for a floating point value parsed from a string.
-cdef LLVMValueRef LLVMConstRealOfStringAndSize(LLVMTypeRef RealTy,const char * Text,unsigned int SLen) nogil
+cdef LLVMValueRef LLVMConstRealOfStringAndSize(LLVMTypeRef RealTy,const char * Text,unsigned int SLen)
 
 
 # 
 # Obtain the zero extended value for an integer constant value.
 # 
 # @see llvm::ConstantInt::getZExtValue()
-cdef unsigned long long LLVMConstIntGetZExtValue(LLVMValueRef ConstantVal) nogil
+cdef unsigned long long LLVMConstIntGetZExtValue(LLVMValueRef ConstantVal)
 
 
 # 
 # Obtain the sign extended value for an integer constant value.
 # 
 # @see llvm::ConstantInt::getSExtValue()
-cdef long long LLVMConstIntGetSExtValue(LLVMValueRef ConstantVal) nogil
+cdef long long LLVMConstIntGetSExtValue(LLVMValueRef ConstantVal)
 
 
 # 
@@ -1975,14 +1975,14 @@ cdef long long LLVMConstIntGetSExtValue(LLVMValueRef ConstantVal) nogil
 # losesInfo indicates if some precision was lost in the conversion.
 # 
 # @see llvm::ConstantFP::getDoubleValue
-cdef double LLVMConstRealGetDouble(LLVMValueRef ConstantVal,int * losesInfo) nogil
+cdef double LLVMConstRealGetDouble(LLVMValueRef ConstantVal,int * losesInfo)
 
 
 # 
 # Create a ConstantDataSequential and initialize it with a string.
 # 
 # @see llvm::ConstantDataArray::getString()
-cdef LLVMValueRef LLVMConstStringInContext(LLVMContextRef C,const char * Str,unsigned int Length,int DontNullTerminate) nogil
+cdef LLVMValueRef LLVMConstStringInContext(LLVMContextRef C,const char * Str,unsigned int Length,int DontNullTerminate)
 
 
 # 
@@ -1993,28 +1993,28 @@ cdef LLVMValueRef LLVMConstStringInContext(LLVMContextRef C,const char * Str,uns
 # 
 # @see LLVMConstStringInContext()
 # @see llvm::ConstantDataArray::getString()
-cdef LLVMValueRef LLVMConstString(const char * Str,unsigned int Length,int DontNullTerminate) nogil
+cdef LLVMValueRef LLVMConstString(const char * Str,unsigned int Length,int DontNullTerminate)
 
 
 # 
 # Returns true if the specified constant is an array of i8.
 # 
 # @see ConstantDataSequential::getAsString()
-cdef int LLVMIsConstantString(LLVMValueRef c) nogil
+cdef int LLVMIsConstantString(LLVMValueRef c)
 
 
 # 
 # Get the given constant data sequential as a string.
 # 
 # @see ConstantDataSequential::getAsString()
-cdef const char * LLVMGetAsString(LLVMValueRef c,unsigned long * Length) nogil
+cdef const char * LLVMGetAsString(LLVMValueRef c,unsigned long * Length)
 
 
 # 
 # Create an anonymous ConstantStruct with the specified values.
 # 
 # @see llvm::ConstantStruct::getAnon()
-cdef LLVMValueRef LLVMConstStructInContext(LLVMContextRef C,LLVMValueRef* ConstantVals,unsigned int Count,int Packed) nogil
+cdef LLVMValueRef LLVMConstStructInContext(LLVMContextRef C,LLVMValueRef* ConstantVals,unsigned int Count,int Packed)
 
 
 # 
@@ -2024,21 +2024,21 @@ cdef LLVMValueRef LLVMConstStructInContext(LLVMContextRef C,LLVMValueRef* Consta
 # global Context.
 # 
 # @see LLVMConstStructInContext()
-cdef LLVMValueRef LLVMConstStruct(LLVMValueRef* ConstantVals,unsigned int Count,int Packed) nogil
+cdef LLVMValueRef LLVMConstStruct(LLVMValueRef* ConstantVals,unsigned int Count,int Packed)
 
 
 # 
 # Create a ConstantArray from values.
 # 
 # @see llvm::ConstantArray::get()
-cdef LLVMValueRef LLVMConstArray(LLVMTypeRef ElementTy,LLVMValueRef* ConstantVals,unsigned int Length) nogil
+cdef LLVMValueRef LLVMConstArray(LLVMTypeRef ElementTy,LLVMValueRef* ConstantVals,unsigned int Length)
 
 
 # 
 # Create a non-anonymous ConstantStruct from values.
 # 
 # @see llvm::ConstantStruct::get()
-cdef LLVMValueRef LLVMConstNamedStruct(LLVMTypeRef StructTy,LLVMValueRef* ConstantVals,unsigned int Count) nogil
+cdef LLVMValueRef LLVMConstNamedStruct(LLVMTypeRef StructTy,LLVMValueRef* ConstantVals,unsigned int Count)
 
 
 # 
@@ -2048,18 +2048,18 @@ cdef LLVMValueRef LLVMConstNamedStruct(LLVMTypeRef StructTy,LLVMValueRef* Consta
 # constant expression.)
 # 
 # @see llvm::Constant::getAggregateElement()
-cdef LLVMValueRef LLVMGetAggregateElement(LLVMValueRef C,unsigned int Idx) nogil
+cdef LLVMValueRef LLVMGetAggregateElement(LLVMValueRef C,unsigned int Idx)
 
 
 
-cdef LLVMValueRef LLVMGetElementAsConstant(LLVMValueRef C,unsigned int idx) nogil
+cdef LLVMValueRef LLVMGetElementAsConstant(LLVMValueRef C,unsigned int idx)
 
 
 # 
 # Create a ConstantVector from values.
 # 
 # @see llvm::ConstantVector::get()
-cdef LLVMValueRef LLVMConstVector(LLVMValueRef* ScalarConstantVals,unsigned int Size) nogil
+cdef LLVMValueRef LLVMConstVector(LLVMValueRef* ScalarConstantVals,unsigned int Size)
 
 
 # 
@@ -2070,207 +2070,207 @@ cdef LLVMValueRef LLVMConstVector(LLVMValueRef* ScalarConstantVals,unsigned int 
 # @see llvm::ConstantExpr.
 # 
 # @{
-cdef LLVMOpcode LLVMGetConstOpcode(LLVMValueRef ConstantVal) nogil
+cdef LLVMOpcode LLVMGetConstOpcode(LLVMValueRef ConstantVal)
 
 
 
-cdef LLVMValueRef LLVMAlignOf(LLVMTypeRef Ty) nogil
+cdef LLVMValueRef LLVMAlignOf(LLVMTypeRef Ty)
 
 
 
-cdef LLVMValueRef LLVMSizeOf(LLVMTypeRef Ty) nogil
+cdef LLVMValueRef LLVMSizeOf(LLVMTypeRef Ty)
 
 
 
-cdef LLVMValueRef LLVMConstNeg(LLVMValueRef ConstantVal) nogil
+cdef LLVMValueRef LLVMConstNeg(LLVMValueRef ConstantVal)
 
 
 
-cdef LLVMValueRef LLVMConstNSWNeg(LLVMValueRef ConstantVal) nogil
+cdef LLVMValueRef LLVMConstNSWNeg(LLVMValueRef ConstantVal)
 
 
 
-cdef LLVMValueRef LLVMConstNUWNeg(LLVMValueRef ConstantVal) nogil
+cdef LLVMValueRef LLVMConstNUWNeg(LLVMValueRef ConstantVal)
 
 
 
-cdef LLVMValueRef LLVMConstNot(LLVMValueRef ConstantVal) nogil
+cdef LLVMValueRef LLVMConstNot(LLVMValueRef ConstantVal)
 
 
 
-cdef LLVMValueRef LLVMConstAdd(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil
+cdef LLVMValueRef LLVMConstAdd(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant)
 
 
 
-cdef LLVMValueRef LLVMConstNSWAdd(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil
+cdef LLVMValueRef LLVMConstNSWAdd(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant)
 
 
 
-cdef LLVMValueRef LLVMConstNUWAdd(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil
+cdef LLVMValueRef LLVMConstNUWAdd(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant)
 
 
 
-cdef LLVMValueRef LLVMConstSub(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil
+cdef LLVMValueRef LLVMConstSub(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant)
 
 
 
-cdef LLVMValueRef LLVMConstNSWSub(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil
+cdef LLVMValueRef LLVMConstNSWSub(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant)
 
 
 
-cdef LLVMValueRef LLVMConstNUWSub(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil
+cdef LLVMValueRef LLVMConstNUWSub(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant)
 
 
 
-cdef LLVMValueRef LLVMConstMul(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil
+cdef LLVMValueRef LLVMConstMul(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant)
 
 
 
-cdef LLVMValueRef LLVMConstNSWMul(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil
+cdef LLVMValueRef LLVMConstNSWMul(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant)
 
 
 
-cdef LLVMValueRef LLVMConstNUWMul(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil
+cdef LLVMValueRef LLVMConstNUWMul(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant)
 
 
 
-cdef LLVMValueRef LLVMConstAnd(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil
+cdef LLVMValueRef LLVMConstAnd(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant)
 
 
 
-cdef LLVMValueRef LLVMConstOr(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil
+cdef LLVMValueRef LLVMConstOr(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant)
 
 
 
-cdef LLVMValueRef LLVMConstXor(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil
+cdef LLVMValueRef LLVMConstXor(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant)
 
 
 
-cdef LLVMValueRef LLVMConstICmp(LLVMIntPredicate Predicate,LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil
+cdef LLVMValueRef LLVMConstICmp(LLVMIntPredicate Predicate,LLVMValueRef LHSConstant,LLVMValueRef RHSConstant)
 
 
 
-cdef LLVMValueRef LLVMConstFCmp(LLVMRealPredicate Predicate,LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil
+cdef LLVMValueRef LLVMConstFCmp(LLVMRealPredicate Predicate,LLVMValueRef LHSConstant,LLVMValueRef RHSConstant)
 
 
 
-cdef LLVMValueRef LLVMConstShl(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil
+cdef LLVMValueRef LLVMConstShl(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant)
 
 
 
-cdef LLVMValueRef LLVMConstLShr(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil
+cdef LLVMValueRef LLVMConstLShr(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant)
 
 
 
-cdef LLVMValueRef LLVMConstAShr(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil
+cdef LLVMValueRef LLVMConstAShr(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant)
 
 
 
-cdef LLVMValueRef LLVMConstGEP2(LLVMTypeRef Ty,LLVMValueRef ConstantVal,LLVMValueRef* ConstantIndices,unsigned int NumIndices) nogil
+cdef LLVMValueRef LLVMConstGEP2(LLVMTypeRef Ty,LLVMValueRef ConstantVal,LLVMValueRef* ConstantIndices,unsigned int NumIndices)
 
 
 
-cdef LLVMValueRef LLVMConstInBoundsGEP2(LLVMTypeRef Ty,LLVMValueRef ConstantVal,LLVMValueRef* ConstantIndices,unsigned int NumIndices) nogil
+cdef LLVMValueRef LLVMConstInBoundsGEP2(LLVMTypeRef Ty,LLVMValueRef ConstantVal,LLVMValueRef* ConstantIndices,unsigned int NumIndices)
 
 
 
-cdef LLVMValueRef LLVMConstTrunc(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil
+cdef LLVMValueRef LLVMConstTrunc(LLVMValueRef ConstantVal,LLVMTypeRef ToType)
 
 
 
-cdef LLVMValueRef LLVMConstSExt(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil
+cdef LLVMValueRef LLVMConstSExt(LLVMValueRef ConstantVal,LLVMTypeRef ToType)
 
 
 
-cdef LLVMValueRef LLVMConstZExt(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil
+cdef LLVMValueRef LLVMConstZExt(LLVMValueRef ConstantVal,LLVMTypeRef ToType)
 
 
 
-cdef LLVMValueRef LLVMConstFPTrunc(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil
+cdef LLVMValueRef LLVMConstFPTrunc(LLVMValueRef ConstantVal,LLVMTypeRef ToType)
 
 
 
-cdef LLVMValueRef LLVMConstFPExt(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil
+cdef LLVMValueRef LLVMConstFPExt(LLVMValueRef ConstantVal,LLVMTypeRef ToType)
 
 
 
-cdef LLVMValueRef LLVMConstUIToFP(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil
+cdef LLVMValueRef LLVMConstUIToFP(LLVMValueRef ConstantVal,LLVMTypeRef ToType)
 
 
 
-cdef LLVMValueRef LLVMConstSIToFP(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil
+cdef LLVMValueRef LLVMConstSIToFP(LLVMValueRef ConstantVal,LLVMTypeRef ToType)
 
 
 
-cdef LLVMValueRef LLVMConstFPToUI(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil
+cdef LLVMValueRef LLVMConstFPToUI(LLVMValueRef ConstantVal,LLVMTypeRef ToType)
 
 
 
-cdef LLVMValueRef LLVMConstFPToSI(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil
+cdef LLVMValueRef LLVMConstFPToSI(LLVMValueRef ConstantVal,LLVMTypeRef ToType)
 
 
 
-cdef LLVMValueRef LLVMConstPtrToInt(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil
+cdef LLVMValueRef LLVMConstPtrToInt(LLVMValueRef ConstantVal,LLVMTypeRef ToType)
 
 
 
-cdef LLVMValueRef LLVMConstIntToPtr(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil
+cdef LLVMValueRef LLVMConstIntToPtr(LLVMValueRef ConstantVal,LLVMTypeRef ToType)
 
 
 
-cdef LLVMValueRef LLVMConstBitCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil
+cdef LLVMValueRef LLVMConstBitCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType)
 
 
 
-cdef LLVMValueRef LLVMConstAddrSpaceCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil
+cdef LLVMValueRef LLVMConstAddrSpaceCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType)
 
 
 
-cdef LLVMValueRef LLVMConstZExtOrBitCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil
+cdef LLVMValueRef LLVMConstZExtOrBitCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType)
 
 
 
-cdef LLVMValueRef LLVMConstSExtOrBitCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil
+cdef LLVMValueRef LLVMConstSExtOrBitCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType)
 
 
 
-cdef LLVMValueRef LLVMConstTruncOrBitCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil
+cdef LLVMValueRef LLVMConstTruncOrBitCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType)
 
 
 
-cdef LLVMValueRef LLVMConstPointerCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil
+cdef LLVMValueRef LLVMConstPointerCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType)
 
 
 
-cdef LLVMValueRef LLVMConstIntCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType,int isSigned) nogil
+cdef LLVMValueRef LLVMConstIntCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType,int isSigned)
 
 
 
-cdef LLVMValueRef LLVMConstFPCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil
+cdef LLVMValueRef LLVMConstFPCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType)
 
 
 
-cdef LLVMValueRef LLVMConstSelect(LLVMValueRef ConstantCondition,LLVMValueRef ConstantIfTrue,LLVMValueRef ConstantIfFalse) nogil
+cdef LLVMValueRef LLVMConstSelect(LLVMValueRef ConstantCondition,LLVMValueRef ConstantIfTrue,LLVMValueRef ConstantIfFalse)
 
 
 
-cdef LLVMValueRef LLVMConstExtractElement(LLVMValueRef VectorConstant,LLVMValueRef IndexConstant) nogil
+cdef LLVMValueRef LLVMConstExtractElement(LLVMValueRef VectorConstant,LLVMValueRef IndexConstant)
 
 
 
-cdef LLVMValueRef LLVMConstInsertElement(LLVMValueRef VectorConstant,LLVMValueRef ElementValueConstant,LLVMValueRef IndexConstant) nogil
+cdef LLVMValueRef LLVMConstInsertElement(LLVMValueRef VectorConstant,LLVMValueRef ElementValueConstant,LLVMValueRef IndexConstant)
 
 
 
-cdef LLVMValueRef LLVMConstShuffleVector(LLVMValueRef VectorAConstant,LLVMValueRef VectorBConstant,LLVMValueRef MaskConstant) nogil
+cdef LLVMValueRef LLVMConstShuffleVector(LLVMValueRef VectorAConstant,LLVMValueRef VectorBConstant,LLVMValueRef MaskConstant)
 
 
 
-cdef LLVMValueRef LLVMBlockAddress(LLVMValueRef F,LLVMBasicBlockRef BB) nogil
+cdef LLVMValueRef LLVMBlockAddress(LLVMValueRef F,LLVMBasicBlockRef BB)
 
 
 # Deprecated: Use LLVMGetInlineAsm instead. */
-cdef LLVMValueRef LLVMConstInlineAsm(LLVMTypeRef Ty,const char * AsmString,const char * Constraints,int HasSideEffects,int IsAlignStack) nogil
+cdef LLVMValueRef LLVMConstInlineAsm(LLVMTypeRef Ty,const char * AsmString,const char * Constraints,int HasSideEffects,int IsAlignStack)
 
 
 # 
@@ -2282,51 +2282,51 @@ cdef LLVMValueRef LLVMConstInlineAsm(LLVMTypeRef Ty,const char * AsmString,const
 # @see llvm::GlobalValue
 # 
 # @{
-cdef LLVMModuleRef LLVMGetGlobalParent(LLVMValueRef Global) nogil
+cdef LLVMModuleRef LLVMGetGlobalParent(LLVMValueRef Global)
 
 
 
-cdef int LLVMIsDeclaration(LLVMValueRef Global) nogil
+cdef int LLVMIsDeclaration(LLVMValueRef Global)
 
 
 
-cdef LLVMLinkage LLVMGetLinkage(LLVMValueRef Global) nogil
+cdef LLVMLinkage LLVMGetLinkage(LLVMValueRef Global)
 
 
 
-cdef void LLVMSetLinkage(LLVMValueRef Global,LLVMLinkage Linkage) nogil
+cdef void LLVMSetLinkage(LLVMValueRef Global,LLVMLinkage Linkage)
 
 
 
-cdef const char * LLVMGetSection(LLVMValueRef Global) nogil
+cdef const char * LLVMGetSection(LLVMValueRef Global)
 
 
 
-cdef void LLVMSetSection(LLVMValueRef Global,const char * Section) nogil
+cdef void LLVMSetSection(LLVMValueRef Global,const char * Section)
 
 
 
-cdef LLVMVisibility LLVMGetVisibility(LLVMValueRef Global) nogil
+cdef LLVMVisibility LLVMGetVisibility(LLVMValueRef Global)
 
 
 
-cdef void LLVMSetVisibility(LLVMValueRef Global,LLVMVisibility Viz) nogil
+cdef void LLVMSetVisibility(LLVMValueRef Global,LLVMVisibility Viz)
 
 
 
-cdef LLVMDLLStorageClass LLVMGetDLLStorageClass(LLVMValueRef Global) nogil
+cdef LLVMDLLStorageClass LLVMGetDLLStorageClass(LLVMValueRef Global)
 
 
 
-cdef void LLVMSetDLLStorageClass(LLVMValueRef Global,LLVMDLLStorageClass Class) nogil
+cdef void LLVMSetDLLStorageClass(LLVMValueRef Global,LLVMDLLStorageClass Class)
 
 
 
-cdef LLVMUnnamedAddr LLVMGetUnnamedAddress(LLVMValueRef Global) nogil
+cdef LLVMUnnamedAddr LLVMGetUnnamedAddress(LLVMValueRef Global)
 
 
 
-cdef void LLVMSetUnnamedAddress(LLVMValueRef Global,LLVMUnnamedAddr UnnamedAddr) nogil
+cdef void LLVMSetUnnamedAddress(LLVMValueRef Global,LLVMUnnamedAddr UnnamedAddr)
 
 
 # 
@@ -2334,15 +2334,15 @@ cdef void LLVMSetUnnamedAddress(LLVMValueRef Global,LLVMUnnamedAddr UnnamedAddr)
 # type of a global value which is always a pointer type.
 # 
 # @see llvm::GlobalValue::getValueType()
-cdef LLVMTypeRef LLVMGlobalGetValueType(LLVMValueRef Global) nogil
+cdef LLVMTypeRef LLVMGlobalGetValueType(LLVMValueRef Global)
 
 
 # Deprecated: Use LLVMGetUnnamedAddress instead. */
-cdef int LLVMHasUnnamedAddr(LLVMValueRef Global) nogil
+cdef int LLVMHasUnnamedAddr(LLVMValueRef Global)
 
 
 # Deprecated: Use LLVMSetUnnamedAddress instead. */
-cdef void LLVMSetUnnamedAddr(LLVMValueRef Global,int HasUnnamedAddr) nogil
+cdef void LLVMSetUnnamedAddr(LLVMValueRef Global,int HasUnnamedAddr)
 
 
 # 
@@ -2353,7 +2353,7 @@ cdef void LLVMSetUnnamedAddr(LLVMValueRef Global,int HasUnnamedAddr) nogil
 # @see llvm::AtomicRMWInst::setAlignment()
 # @see llvm::AtomicCmpXchgInst::setAlignment()
 # @see llvm::GlobalValue::getAlignment()
-cdef unsigned int LLVMGetAlignment(LLVMValueRef V) nogil
+cdef unsigned int LLVMGetAlignment(LLVMValueRef V)
 
 
 # 
@@ -2364,7 +2364,7 @@ cdef unsigned int LLVMGetAlignment(LLVMValueRef V) nogil
 # @see llvm::AtomicRMWInst::setAlignment()
 # @see llvm::AtomicCmpXchgInst::setAlignment()
 # @see llvm::GlobalValue::setAlignment()
-cdef void LLVMSetAlignment(LLVMValueRef V,unsigned int Bytes) nogil
+cdef void LLVMSetAlignment(LLVMValueRef V,unsigned int Bytes)
 
 
 # 
@@ -2372,21 +2372,21 @@ cdef void LLVMSetAlignment(LLVMValueRef V,unsigned int Bytes) nogil
 # it already exists for the given kind.
 # 
 # @see llvm::GlobalObject::setMetadata()
-cdef void LLVMGlobalSetMetadata(LLVMValueRef Global,unsigned int Kind,LLVMMetadataRef MD) nogil
+cdef void LLVMGlobalSetMetadata(LLVMValueRef Global,unsigned int Kind,LLVMMetadataRef MD)
 
 
 # 
 # Erases a metadata attachment of the given kind if it exists.
 # 
 # @see llvm::GlobalObject::eraseMetadata()
-cdef void LLVMGlobalEraseMetadata(LLVMValueRef Global,unsigned int Kind) nogil
+cdef void LLVMGlobalEraseMetadata(LLVMValueRef Global,unsigned int Kind)
 
 
 # 
 # Removes all metadata attachments from this value.
 # 
 # @see llvm::GlobalObject::clearMetadata()
-cdef void LLVMGlobalClearMetadata(LLVMValueRef Global) nogil
+cdef void LLVMGlobalClearMetadata(LLVMValueRef Global)
 
 
 # 
@@ -2395,23 +2395,23 @@ cdef void LLVMGlobalClearMetadata(LLVMValueRef Global) nogil
 # \c LLVMDisposeValueMetadataEntries.
 # 
 # @see llvm::GlobalObject::getAllMetadata()
-cdef LLVMOpaqueValueMetadataEntry * LLVMGlobalCopyAllMetadata(LLVMValueRef Value,unsigned long * NumEntries) nogil
+cdef LLVMOpaqueValueMetadataEntry * LLVMGlobalCopyAllMetadata(LLVMValueRef Value,unsigned long * NumEntries)
 
 
 # 
 # Destroys value metadata entries.
-cdef void LLVMDisposeValueMetadataEntries(LLVMOpaqueValueMetadataEntry * Entries) nogil
+cdef void LLVMDisposeValueMetadataEntries(LLVMOpaqueValueMetadataEntry * Entries)
 
 
 # 
 # Returns the kind of a value metadata entry at a specific index.
-cdef unsigned int LLVMValueMetadataEntriesGetKind(LLVMOpaqueValueMetadataEntry * Entries,unsigned int Index) nogil
+cdef unsigned int LLVMValueMetadataEntriesGetKind(LLVMOpaqueValueMetadataEntry * Entries,unsigned int Index)
 
 
 # 
 # Returns the underlying metadata node of a value metadata entry at a
 # specific index.
-cdef LLVMMetadataRef LLVMValueMetadataEntriesGetMetadata(LLVMOpaqueValueMetadataEntry * Entries,unsigned int Index) nogil
+cdef LLVMMetadataRef LLVMValueMetadataEntriesGetMetadata(LLVMOpaqueValueMetadataEntry * Entries,unsigned int Index)
 
 
 # 
@@ -2422,82 +2422,82 @@ cdef LLVMMetadataRef LLVMValueMetadataEntriesGetMetadata(LLVMOpaqueValueMetadata
 # @see llvm::GlobalVariable
 # 
 # @{
-cdef LLVMValueRef LLVMAddGlobal(LLVMModuleRef M,LLVMTypeRef Ty,const char * Name) nogil
+cdef LLVMValueRef LLVMAddGlobal(LLVMModuleRef M,LLVMTypeRef Ty,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMAddGlobalInAddressSpace(LLVMModuleRef M,LLVMTypeRef Ty,const char * Name,unsigned int AddressSpace) nogil
+cdef LLVMValueRef LLVMAddGlobalInAddressSpace(LLVMModuleRef M,LLVMTypeRef Ty,const char * Name,unsigned int AddressSpace)
 
 
 
-cdef LLVMValueRef LLVMGetNamedGlobal(LLVMModuleRef M,const char * Name) nogil
+cdef LLVMValueRef LLVMGetNamedGlobal(LLVMModuleRef M,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMGetFirstGlobal(LLVMModuleRef M) nogil
+cdef LLVMValueRef LLVMGetFirstGlobal(LLVMModuleRef M)
 
 
 
-cdef LLVMValueRef LLVMGetLastGlobal(LLVMModuleRef M) nogil
+cdef LLVMValueRef LLVMGetLastGlobal(LLVMModuleRef M)
 
 
 
-cdef LLVMValueRef LLVMGetNextGlobal(LLVMValueRef GlobalVar) nogil
+cdef LLVMValueRef LLVMGetNextGlobal(LLVMValueRef GlobalVar)
 
 
 
-cdef LLVMValueRef LLVMGetPreviousGlobal(LLVMValueRef GlobalVar) nogil
+cdef LLVMValueRef LLVMGetPreviousGlobal(LLVMValueRef GlobalVar)
 
 
 
-cdef void LLVMDeleteGlobal(LLVMValueRef GlobalVar) nogil
+cdef void LLVMDeleteGlobal(LLVMValueRef GlobalVar)
 
 
 
-cdef LLVMValueRef LLVMGetInitializer(LLVMValueRef GlobalVar) nogil
+cdef LLVMValueRef LLVMGetInitializer(LLVMValueRef GlobalVar)
 
 
 
-cdef void LLVMSetInitializer(LLVMValueRef GlobalVar,LLVMValueRef ConstantVal) nogil
+cdef void LLVMSetInitializer(LLVMValueRef GlobalVar,LLVMValueRef ConstantVal)
 
 
 
-cdef int LLVMIsThreadLocal(LLVMValueRef GlobalVar) nogil
+cdef int LLVMIsThreadLocal(LLVMValueRef GlobalVar)
 
 
 
-cdef void LLVMSetThreadLocal(LLVMValueRef GlobalVar,int IsThreadLocal) nogil
+cdef void LLVMSetThreadLocal(LLVMValueRef GlobalVar,int IsThreadLocal)
 
 
 
-cdef int LLVMIsGlobalConstant(LLVMValueRef GlobalVar) nogil
+cdef int LLVMIsGlobalConstant(LLVMValueRef GlobalVar)
 
 
 
-cdef void LLVMSetGlobalConstant(LLVMValueRef GlobalVar,int IsConstant) nogil
+cdef void LLVMSetGlobalConstant(LLVMValueRef GlobalVar,int IsConstant)
 
 
 
-cdef LLVMThreadLocalMode LLVMGetThreadLocalMode(LLVMValueRef GlobalVar) nogil
+cdef LLVMThreadLocalMode LLVMGetThreadLocalMode(LLVMValueRef GlobalVar)
 
 
 
-cdef void LLVMSetThreadLocalMode(LLVMValueRef GlobalVar,LLVMThreadLocalMode Mode) nogil
+cdef void LLVMSetThreadLocalMode(LLVMValueRef GlobalVar,LLVMThreadLocalMode Mode)
 
 
 
-cdef int LLVMIsExternallyInitialized(LLVMValueRef GlobalVar) nogil
+cdef int LLVMIsExternallyInitialized(LLVMValueRef GlobalVar)
 
 
 
-cdef void LLVMSetExternallyInitialized(LLVMValueRef GlobalVar,int IsExtInit) nogil
+cdef void LLVMSetExternallyInitialized(LLVMValueRef GlobalVar,int IsExtInit)
 
 
 # 
 # Add a GlobalAlias with the given value type, address space and aliasee.
 # 
 # @see llvm::GlobalAlias::create()
-cdef LLVMValueRef LLVMAddAlias2(LLVMModuleRef M,LLVMTypeRef ValueTy,unsigned int AddrSpace,LLVMValueRef Aliasee,const char * Name) nogil
+cdef LLVMValueRef LLVMAddAlias2(LLVMModuleRef M,LLVMTypeRef ValueTy,unsigned int AddrSpace,LLVMValueRef Aliasee,const char * Name)
 
 
 # 
@@ -2506,21 +2506,21 @@ cdef LLVMValueRef LLVMAddAlias2(LLVMModuleRef M,LLVMTypeRef ValueTy,unsigned int
 # The returned value corresponds to a llvm::GlobalAlias value.
 # 
 # @see llvm::Module::getNamedAlias()
-cdef LLVMValueRef LLVMGetNamedGlobalAlias(LLVMModuleRef M,const char * Name,unsigned long NameLen) nogil
+cdef LLVMValueRef LLVMGetNamedGlobalAlias(LLVMModuleRef M,const char * Name,unsigned long NameLen)
 
 
 # 
 # Obtain an iterator to the first GlobalAlias in a Module.
 # 
 # @see llvm::Module::alias_begin()
-cdef LLVMValueRef LLVMGetFirstGlobalAlias(LLVMModuleRef M) nogil
+cdef LLVMValueRef LLVMGetFirstGlobalAlias(LLVMModuleRef M)
 
 
 # 
 # Obtain an iterator to the last GlobalAlias in a Module.
 # 
 # @see llvm::Module::alias_end()
-cdef LLVMValueRef LLVMGetLastGlobalAlias(LLVMModuleRef M) nogil
+cdef LLVMValueRef LLVMGetLastGlobalAlias(LLVMModuleRef M)
 
 
 # 
@@ -2528,7 +2528,7 @@ cdef LLVMValueRef LLVMGetLastGlobalAlias(LLVMModuleRef M) nogil
 # 
 # Returns NULL if the iterator was already at the end and there are no more
 # global aliases.
-cdef LLVMValueRef LLVMGetNextGlobalAlias(LLVMValueRef GA) nogil
+cdef LLVMValueRef LLVMGetNextGlobalAlias(LLVMValueRef GA)
 
 
 # 
@@ -2536,59 +2536,59 @@ cdef LLVMValueRef LLVMGetNextGlobalAlias(LLVMValueRef GA) nogil
 # 
 # Returns NULL if the iterator was already at the beginning and there are
 # no previous global aliases.
-cdef LLVMValueRef LLVMGetPreviousGlobalAlias(LLVMValueRef GA) nogil
+cdef LLVMValueRef LLVMGetPreviousGlobalAlias(LLVMValueRef GA)
 
 
 # 
 # Retrieve the target value of an alias.
-cdef LLVMValueRef LLVMAliasGetAliasee(LLVMValueRef Alias) nogil
+cdef LLVMValueRef LLVMAliasGetAliasee(LLVMValueRef Alias)
 
 
 # 
 # Set the target value of an alias.
-cdef void LLVMAliasSetAliasee(LLVMValueRef Alias,LLVMValueRef Aliasee) nogil
+cdef void LLVMAliasSetAliasee(LLVMValueRef Alias,LLVMValueRef Aliasee)
 
 
 # 
 # Remove a function from its containing module and deletes it.
 # 
 # @see llvm::Function::eraseFromParent()
-cdef void LLVMDeleteFunction(LLVMValueRef Fn) nogil
+cdef void LLVMDeleteFunction(LLVMValueRef Fn)
 
 
 # 
 # Check whether the given function has a personality function.
 # 
 # @see llvm::Function::hasPersonalityFn()
-cdef int LLVMHasPersonalityFn(LLVMValueRef Fn) nogil
+cdef int LLVMHasPersonalityFn(LLVMValueRef Fn)
 
 
 # 
 # Obtain the personality function attached to the function.
 # 
 # @see llvm::Function::getPersonalityFn()
-cdef LLVMValueRef LLVMGetPersonalityFn(LLVMValueRef Fn) nogil
+cdef LLVMValueRef LLVMGetPersonalityFn(LLVMValueRef Fn)
 
 
 # 
 # Set the personality function attached to the function.
 # 
 # @see llvm::Function::setPersonalityFn()
-cdef void LLVMSetPersonalityFn(LLVMValueRef Fn,LLVMValueRef PersonalityFn) nogil
+cdef void LLVMSetPersonalityFn(LLVMValueRef Fn,LLVMValueRef PersonalityFn)
 
 
 # 
 # Obtain the intrinsic ID number which matches the given function name.
 # 
 # @see llvm::Function::lookupIntrinsicID()
-cdef unsigned int LLVMLookupIntrinsicID(const char * Name,unsigned long NameLen) nogil
+cdef unsigned int LLVMLookupIntrinsicID(const char * Name,unsigned long NameLen)
 
 
 # 
 # Obtain the ID number from a function instance.
 # 
 # @see llvm::Function::getIntrinsicID()
-cdef unsigned int LLVMGetIntrinsicID(LLVMValueRef Fn) nogil
+cdef unsigned int LLVMGetIntrinsicID(LLVMValueRef Fn)
 
 
 # 
@@ -2596,7 +2596,7 @@ cdef unsigned int LLVMGetIntrinsicID(LLVMValueRef Fn) nogil
 # parameter types must be provided to uniquely identify an overload.
 # 
 # @see llvm::Intrinsic::getDeclaration()
-cdef LLVMValueRef LLVMGetIntrinsicDeclaration(LLVMModuleRef Mod,unsigned int ID,LLVMTypeRef* ParamTypes,unsigned long ParamCount) nogil
+cdef LLVMValueRef LLVMGetIntrinsicDeclaration(LLVMModuleRef Mod,unsigned int ID,LLVMTypeRef* ParamTypes,unsigned long ParamCount)
 
 
 # 
@@ -2604,18 +2604,18 @@ cdef LLVMValueRef LLVMGetIntrinsicDeclaration(LLVMModuleRef Mod,unsigned int ID,
 # types must be provided to uniquely identify an overload.
 # 
 # @see llvm::Intrinsic::getType()
-cdef LLVMTypeRef LLVMIntrinsicGetType(LLVMContextRef Ctx,unsigned int ID,LLVMTypeRef* ParamTypes,unsigned long ParamCount) nogil
+cdef LLVMTypeRef LLVMIntrinsicGetType(LLVMContextRef Ctx,unsigned int ID,LLVMTypeRef* ParamTypes,unsigned long ParamCount)
 
 
 # 
 # Retrieves the name of an intrinsic.
 # 
 # @see llvm::Intrinsic::getName()
-cdef const char * LLVMIntrinsicGetName(unsigned int ID,unsigned long * NameLength) nogil
+cdef const char * LLVMIntrinsicGetName(unsigned int ID,unsigned long * NameLength)
 
 
 # Deprecated: Use LLVMIntrinsicCopyOverloadedName2 instead. */
-cdef const char * LLVMIntrinsicCopyOverloadedName(unsigned int ID,LLVMTypeRef* ParamTypes,unsigned long ParamCount,unsigned long * NameLength) nogil
+cdef const char * LLVMIntrinsicCopyOverloadedName(unsigned int ID,LLVMTypeRef* ParamTypes,unsigned long ParamCount,unsigned long * NameLength)
 
 
 # 
@@ -2628,14 +2628,14 @@ cdef const char * LLVMIntrinsicCopyOverloadedName(unsigned int ID,LLVMTypeRef* P
 # This version also supports unnamed types.
 # 
 # @see llvm::Intrinsic::getName()
-cdef const char * LLVMIntrinsicCopyOverloadedName2(LLVMModuleRef Mod,unsigned int ID,LLVMTypeRef* ParamTypes,unsigned long ParamCount,unsigned long * NameLength) nogil
+cdef const char * LLVMIntrinsicCopyOverloadedName2(LLVMModuleRef Mod,unsigned int ID,LLVMTypeRef* ParamTypes,unsigned long ParamCount,unsigned long * NameLength)
 
 
 # 
 # Obtain if the intrinsic identified by the given ID is overloaded.
 # 
 # @see llvm::Intrinsic::isOverloaded()
-cdef int LLVMIntrinsicIsOverloaded(unsigned int ID) nogil
+cdef int LLVMIntrinsicIsOverloaded(unsigned int ID)
 
 
 # 
@@ -2644,7 +2644,7 @@ cdef int LLVMIntrinsicIsOverloaded(unsigned int ID) nogil
 # The returned value corresponds to the LLVMCallConv enumeration.
 # 
 # @see llvm::Function::getCallingConv()
-cdef unsigned int LLVMGetFunctionCallConv(LLVMValueRef Fn) nogil
+cdef unsigned int LLVMGetFunctionCallConv(LLVMValueRef Fn)
 
 
 # 
@@ -2654,7 +2654,7 @@ cdef unsigned int LLVMGetFunctionCallConv(LLVMValueRef Fn) nogil
 # 
 # @param Fn Function to operate on
 # @param CC LLVMCallConv to set calling convention to
-cdef void LLVMSetFunctionCallConv(LLVMValueRef Fn,unsigned int CC) nogil
+cdef void LLVMSetFunctionCallConv(LLVMValueRef Fn,unsigned int CC)
 
 
 # 
@@ -2662,58 +2662,58 @@ cdef void LLVMSetFunctionCallConv(LLVMValueRef Fn,unsigned int CC) nogil
 # generation.
 # 
 # @see llvm::Function::getGC()
-cdef const char * LLVMGetGC(LLVMValueRef Fn) nogil
+cdef const char * LLVMGetGC(LLVMValueRef Fn)
 
 
 # 
 # Define the garbage collector to use during code generation.
 # 
 # @see llvm::Function::setGC()
-cdef void LLVMSetGC(LLVMValueRef Fn,const char * Name) nogil
+cdef void LLVMSetGC(LLVMValueRef Fn,const char * Name)
 
 
 # 
 # Add an attribute to a function.
 # 
 # @see llvm::Function::addAttribute()
-cdef void LLVMAddAttributeAtIndex(LLVMValueRef F,unsigned int Idx,LLVMAttributeRef A) nogil
+cdef void LLVMAddAttributeAtIndex(LLVMValueRef F,unsigned int Idx,LLVMAttributeRef A)
 
 
 
-cdef unsigned int LLVMGetAttributeCountAtIndex(LLVMValueRef F,unsigned int Idx) nogil
+cdef unsigned int LLVMGetAttributeCountAtIndex(LLVMValueRef F,unsigned int Idx)
 
 
 
-cdef void LLVMGetAttributesAtIndex(LLVMValueRef F,unsigned int Idx,LLVMAttributeRef* Attrs) nogil
+cdef void LLVMGetAttributesAtIndex(LLVMValueRef F,unsigned int Idx,LLVMAttributeRef* Attrs)
 
 
 
-cdef LLVMAttributeRef LLVMGetEnumAttributeAtIndex(LLVMValueRef F,unsigned int Idx,unsigned int KindID) nogil
+cdef LLVMAttributeRef LLVMGetEnumAttributeAtIndex(LLVMValueRef F,unsigned int Idx,unsigned int KindID)
 
 
 
-cdef LLVMAttributeRef LLVMGetStringAttributeAtIndex(LLVMValueRef F,unsigned int Idx,const char * K,unsigned int KLen) nogil
+cdef LLVMAttributeRef LLVMGetStringAttributeAtIndex(LLVMValueRef F,unsigned int Idx,const char * K,unsigned int KLen)
 
 
 
-cdef void LLVMRemoveEnumAttributeAtIndex(LLVMValueRef F,unsigned int Idx,unsigned int KindID) nogil
+cdef void LLVMRemoveEnumAttributeAtIndex(LLVMValueRef F,unsigned int Idx,unsigned int KindID)
 
 
 
-cdef void LLVMRemoveStringAttributeAtIndex(LLVMValueRef F,unsigned int Idx,const char * K,unsigned int KLen) nogil
+cdef void LLVMRemoveStringAttributeAtIndex(LLVMValueRef F,unsigned int Idx,const char * K,unsigned int KLen)
 
 
 # 
 # Add a target-dependent attribute to a function
 # @see llvm::AttrBuilder::addAttribute()
-cdef void LLVMAddTargetDependentFunctionAttr(LLVMValueRef Fn,const char * A,const char * V) nogil
+cdef void LLVMAddTargetDependentFunctionAttr(LLVMValueRef Fn,const char * A,const char * V)
 
 
 # 
 # Obtain the number of parameters in a function.
 # 
 # @see llvm::Function::arg_size()
-cdef unsigned int LLVMCountParams(LLVMValueRef Fn) nogil
+cdef unsigned int LLVMCountParams(LLVMValueRef Fn)
 
 
 # 
@@ -2726,7 +2726,7 @@ cdef unsigned int LLVMCountParams(LLVMValueRef Fn) nogil
 # instance.
 # 
 # @see llvm::Function::arg_begin()
-cdef void LLVMGetParams(LLVMValueRef Fn,LLVMValueRef* Params) nogil
+cdef void LLVMGetParams(LLVMValueRef Fn,LLVMValueRef* Params)
 
 
 # 
@@ -2735,7 +2735,7 @@ cdef void LLVMGetParams(LLVMValueRef Fn,LLVMValueRef* Params) nogil
 # Parameters are indexed from 0.
 # 
 # @see llvm::Function::arg_begin()
-cdef LLVMValueRef LLVMGetParam(LLVMValueRef Fn,unsigned int Index) nogil
+cdef LLVMValueRef LLVMGetParam(LLVMValueRef Fn,unsigned int Index)
 
 
 # 
@@ -2746,21 +2746,21 @@ cdef LLVMValueRef LLVMGetParam(LLVMValueRef Fn,unsigned int Index) nogil
 # 
 # The returned LLVMValueRef is the llvm::Function to which this
 # argument belongs.
-cdef LLVMValueRef LLVMGetParamParent(LLVMValueRef Inst) nogil
+cdef LLVMValueRef LLVMGetParamParent(LLVMValueRef Inst)
 
 
 # 
 # Obtain the first parameter to a function.
 # 
 # @see llvm::Function::arg_begin()
-cdef LLVMValueRef LLVMGetFirstParam(LLVMValueRef Fn) nogil
+cdef LLVMValueRef LLVMGetFirstParam(LLVMValueRef Fn)
 
 
 # 
 # Obtain the last parameter to a function.
 # 
 # @see llvm::Function::arg_end()
-cdef LLVMValueRef LLVMGetLastParam(LLVMValueRef Fn) nogil
+cdef LLVMValueRef LLVMGetLastParam(LLVMValueRef Fn)
 
 
 # 
@@ -2769,14 +2769,14 @@ cdef LLVMValueRef LLVMGetLastParam(LLVMValueRef Fn) nogil
 # This takes an LLVMValueRef obtained from LLVMGetFirstParam() (which is
 # actually a wrapped iterator) and obtains the next parameter from the
 # underlying iterator.
-cdef LLVMValueRef LLVMGetNextParam(LLVMValueRef Arg) nogil
+cdef LLVMValueRef LLVMGetNextParam(LLVMValueRef Arg)
 
 
 # 
 # Obtain the previous parameter to a function.
 # 
 # This is the opposite of LLVMGetNextParam().
-cdef LLVMValueRef LLVMGetPreviousParam(LLVMValueRef Arg) nogil
+cdef LLVMValueRef LLVMGetPreviousParam(LLVMValueRef Arg)
 
 
 # 
@@ -2784,14 +2784,14 @@ cdef LLVMValueRef LLVMGetPreviousParam(LLVMValueRef Arg) nogil
 # 
 # @see llvm::Argument::addAttr()
 # @see llvm::AttrBuilder::addAlignmentAttr()
-cdef void LLVMSetParamAlignment(LLVMValueRef Arg,unsigned int Align) nogil
+cdef void LLVMSetParamAlignment(LLVMValueRef Arg,unsigned int Align)
 
 
 # 
 # Add a global indirect function to a module under a specified name.
 # 
 # @see llvm::GlobalIFunc::create()
-cdef LLVMValueRef LLVMAddGlobalIFunc(LLVMModuleRef M,const char * Name,unsigned long NameLen,LLVMTypeRef Ty,unsigned int AddrSpace,LLVMValueRef Resolver) nogil
+cdef LLVMValueRef LLVMAddGlobalIFunc(LLVMModuleRef M,const char * Name,unsigned long NameLen,LLVMTypeRef Ty,unsigned int AddrSpace,LLVMValueRef Resolver)
 
 
 # 
@@ -2800,21 +2800,21 @@ cdef LLVMValueRef LLVMAddGlobalIFunc(LLVMModuleRef M,const char * Name,unsigned 
 # The returned value corresponds to a llvm::GlobalIFunc value.
 # 
 # @see llvm::Module::getNamedIFunc()
-cdef LLVMValueRef LLVMGetNamedGlobalIFunc(LLVMModuleRef M,const char * Name,unsigned long NameLen) nogil
+cdef LLVMValueRef LLVMGetNamedGlobalIFunc(LLVMModuleRef M,const char * Name,unsigned long NameLen)
 
 
 # 
 # Obtain an iterator to the first GlobalIFunc in a Module.
 # 
 # @see llvm::Module::ifunc_begin()
-cdef LLVMValueRef LLVMGetFirstGlobalIFunc(LLVMModuleRef M) nogil
+cdef LLVMValueRef LLVMGetFirstGlobalIFunc(LLVMModuleRef M)
 
 
 # 
 # Obtain an iterator to the last GlobalIFunc in a Module.
 # 
 # @see llvm::Module::ifunc_end()
-cdef LLVMValueRef LLVMGetLastGlobalIFunc(LLVMModuleRef M) nogil
+cdef LLVMValueRef LLVMGetLastGlobalIFunc(LLVMModuleRef M)
 
 
 # 
@@ -2822,7 +2822,7 @@ cdef LLVMValueRef LLVMGetLastGlobalIFunc(LLVMModuleRef M) nogil
 # 
 # Returns NULL if the iterator was already at the end and there are no more
 # global aliases.
-cdef LLVMValueRef LLVMGetNextGlobalIFunc(LLVMValueRef IFunc) nogil
+cdef LLVMValueRef LLVMGetNextGlobalIFunc(LLVMValueRef IFunc)
 
 
 # 
@@ -2830,7 +2830,7 @@ cdef LLVMValueRef LLVMGetNextGlobalIFunc(LLVMValueRef IFunc) nogil
 # 
 # Returns NULL if the iterator was already at the beginning and there are
 # no previous global aliases.
-cdef LLVMValueRef LLVMGetPreviousGlobalIFunc(LLVMValueRef IFunc) nogil
+cdef LLVMValueRef LLVMGetPreviousGlobalIFunc(LLVMValueRef IFunc)
 
 
 # 
@@ -2838,21 +2838,21 @@ cdef LLVMValueRef LLVMGetPreviousGlobalIFunc(LLVMValueRef IFunc) nogil
 # NULL if it doesn't not exist.
 # 
 # @see llvm::GlobalIFunc::getResolver()
-cdef LLVMValueRef LLVMGetGlobalIFuncResolver(LLVMValueRef IFunc) nogil
+cdef LLVMValueRef LLVMGetGlobalIFuncResolver(LLVMValueRef IFunc)
 
 
 # 
 # Sets the resolver function associated with this indirect function.
 # 
 # @see llvm::GlobalIFunc::setResolver()
-cdef void LLVMSetGlobalIFuncResolver(LLVMValueRef IFunc,LLVMValueRef Resolver) nogil
+cdef void LLVMSetGlobalIFuncResolver(LLVMValueRef IFunc,LLVMValueRef Resolver)
 
 
 # 
 # Remove a global indirect function from its parent module and delete it.
 # 
 # @see llvm::GlobalIFunc::eraseFromParent()
-cdef void LLVMEraseGlobalIFunc(LLVMValueRef IFunc) nogil
+cdef void LLVMEraseGlobalIFunc(LLVMValueRef IFunc)
 
 
 # 
@@ -2862,7 +2862,7 @@ cdef void LLVMEraseGlobalIFunc(LLVMValueRef IFunc) nogil
 # keeps it alive.
 # 
 # @see llvm::GlobalIFunc::removeFromParent()
-cdef void LLVMRemoveGlobalIFunc(LLVMValueRef IFunc) nogil
+cdef void LLVMRemoveGlobalIFunc(LLVMValueRef IFunc)
 
 
 # 
@@ -2872,24 +2872,24 @@ cdef void LLVMRemoveGlobalIFunc(LLVMValueRef IFunc) nogil
 # the responsibility of the caller to free it.
 # 
 # @see llvm::MDString::get()
-cdef LLVMMetadataRef LLVMMDStringInContext2(LLVMContextRef C,const char * Str,unsigned long SLen) nogil
+cdef LLVMMetadataRef LLVMMDStringInContext2(LLVMContextRef C,const char * Str,unsigned long SLen)
 
 
 # 
 # Create an MDNode value with the given array of operands.
 # 
 # @see llvm::MDNode::get()
-cdef LLVMMetadataRef LLVMMDNodeInContext2(LLVMContextRef C,LLVMMetadataRef* MDs,unsigned long Count) nogil
+cdef LLVMMetadataRef LLVMMDNodeInContext2(LLVMContextRef C,LLVMMetadataRef* MDs,unsigned long Count)
 
 
 # 
 # Obtain a Metadata as a Value.
-cdef LLVMValueRef LLVMMetadataAsValue(LLVMContextRef C,LLVMMetadataRef MD) nogil
+cdef LLVMValueRef LLVMMetadataAsValue(LLVMContextRef C,LLVMMetadataRef MD)
 
 
 # 
 # Obtain a Value as a Metadata.
-cdef LLVMMetadataRef LLVMValueAsMetadata(LLVMValueRef Val) nogil
+cdef LLVMMetadataRef LLVMValueAsMetadata(LLVMValueRef Val)
 
 
 # 
@@ -2898,7 +2898,7 @@ cdef LLVMMetadataRef LLVMValueAsMetadata(LLVMValueRef Val) nogil
 # @param V Instance to obtain string from.
 # @param Length Memory address which will hold length of returned string.
 # @return String data in MDString.
-cdef const char * LLVMGetMDString(LLVMValueRef V,unsigned int * Length) nogil
+cdef const char * LLVMGetMDString(LLVMValueRef V,unsigned int * Length)
 
 
 # 
@@ -2906,7 +2906,7 @@ cdef const char * LLVMGetMDString(LLVMValueRef V,unsigned int * Length) nogil
 # 
 # @param V MDNode to get number of operands from.
 # @return Number of operands of the MDNode.
-cdef unsigned int LLVMGetMDNodeNumOperands(LLVMValueRef V) nogil
+cdef unsigned int LLVMGetMDNodeNumOperands(LLVMValueRef V)
 
 
 # 
@@ -2919,50 +2919,50 @@ cdef unsigned int LLVMGetMDNodeNumOperands(LLVMValueRef V) nogil
 # 
 # @param V MDNode to get the operands from.
 # @param Dest Destination array for operands.
-cdef void LLVMGetMDNodeOperands(LLVMValueRef V,LLVMValueRef* Dest) nogil
+cdef void LLVMGetMDNodeOperands(LLVMValueRef V,LLVMValueRef* Dest)
 
 
 # Deprecated: Use LLVMMDStringInContext2 instead. */
-cdef LLVMValueRef LLVMMDStringInContext(LLVMContextRef C,const char * Str,unsigned int SLen) nogil
+cdef LLVMValueRef LLVMMDStringInContext(LLVMContextRef C,const char * Str,unsigned int SLen)
 
 
 # Deprecated: Use LLVMMDStringInContext2 instead. */
-cdef LLVMValueRef LLVMMDString(const char * Str,unsigned int SLen) nogil
+cdef LLVMValueRef LLVMMDString(const char * Str,unsigned int SLen)
 
 
 # Deprecated: Use LLVMMDNodeInContext2 instead. */
-cdef LLVMValueRef LLVMMDNodeInContext(LLVMContextRef C,LLVMValueRef* Vals,unsigned int Count) nogil
+cdef LLVMValueRef LLVMMDNodeInContext(LLVMContextRef C,LLVMValueRef* Vals,unsigned int Count)
 
 
 # Deprecated: Use LLVMMDNodeInContext2 instead. */
-cdef LLVMValueRef LLVMMDNode(LLVMValueRef* Vals,unsigned int Count) nogil
+cdef LLVMValueRef LLVMMDNode(LLVMValueRef* Vals,unsigned int Count)
 
 
 # 
 # Convert a basic block instance to a value type.
-cdef LLVMValueRef LLVMBasicBlockAsValue(LLVMBasicBlockRef BB) nogil
+cdef LLVMValueRef LLVMBasicBlockAsValue(LLVMBasicBlockRef BB)
 
 
 # 
 # Determine whether an LLVMValueRef is itself a basic block.
-cdef int LLVMValueIsBasicBlock(LLVMValueRef Val) nogil
+cdef int LLVMValueIsBasicBlock(LLVMValueRef Val)
 
 
 # 
 # Convert an LLVMValueRef to an LLVMBasicBlockRef instance.
-cdef LLVMBasicBlockRef LLVMValueAsBasicBlock(LLVMValueRef Val) nogil
+cdef LLVMBasicBlockRef LLVMValueAsBasicBlock(LLVMValueRef Val)
 
 
 # 
 # Obtain the string name of a basic block.
-cdef const char * LLVMGetBasicBlockName(LLVMBasicBlockRef BB) nogil
+cdef const char * LLVMGetBasicBlockName(LLVMBasicBlockRef BB)
 
 
 # 
 # Obtain the function to which a basic block belongs.
 # 
 # @see llvm::BasicBlock::getParent()
-cdef LLVMValueRef LLVMGetBasicBlockParent(LLVMBasicBlockRef BB) nogil
+cdef LLVMValueRef LLVMGetBasicBlockParent(LLVMBasicBlockRef BB)
 
 
 # 
@@ -2974,14 +2974,14 @@ cdef LLVMValueRef LLVMGetBasicBlockParent(LLVMBasicBlockRef BB) nogil
 # The returned LLVMValueRef corresponds to an llvm::Instruction.
 # 
 # @see llvm::BasicBlock::getTerminator()
-cdef LLVMValueRef LLVMGetBasicBlockTerminator(LLVMBasicBlockRef BB) nogil
+cdef LLVMValueRef LLVMGetBasicBlockTerminator(LLVMBasicBlockRef BB)
 
 
 # 
 # Obtain the number of basic blocks in a function.
 # 
 # @param Fn Function value to operate on.
-cdef unsigned int LLVMCountBasicBlocks(LLVMValueRef Fn) nogil
+cdef unsigned int LLVMCountBasicBlocks(LLVMValueRef Fn)
 
 
 # 
@@ -2991,7 +2991,7 @@ cdef unsigned int LLVMCountBasicBlocks(LLVMValueRef Fn) nogil
 # pointer to a pre-allocated array of LLVMBasicBlockRef of at least
 # LLVMCountBasicBlocks() in length. This array is populated with
 # LLVMBasicBlockRef instances.
-cdef void LLVMGetBasicBlocks(LLVMValueRef Fn,LLVMBasicBlockRef* BasicBlocks) nogil
+cdef void LLVMGetBasicBlocks(LLVMValueRef Fn,LLVMBasicBlockRef* BasicBlocks)
 
 
 # 
@@ -3001,24 +3001,24 @@ cdef void LLVMGetBasicBlocks(LLVMValueRef Fn,LLVMBasicBlockRef* BasicBlocks) nog
 # eventually call into LLVMGetNextBasicBlock() with it.
 # 
 # @see llvm::Function::begin()
-cdef LLVMBasicBlockRef LLVMGetFirstBasicBlock(LLVMValueRef Fn) nogil
+cdef LLVMBasicBlockRef LLVMGetFirstBasicBlock(LLVMValueRef Fn)
 
 
 # 
 # Obtain the last basic block in a function.
 # 
 # @see llvm::Function::end()
-cdef LLVMBasicBlockRef LLVMGetLastBasicBlock(LLVMValueRef Fn) nogil
+cdef LLVMBasicBlockRef LLVMGetLastBasicBlock(LLVMValueRef Fn)
 
 
 # 
 # Advance a basic block iterator.
-cdef LLVMBasicBlockRef LLVMGetNextBasicBlock(LLVMBasicBlockRef BB) nogil
+cdef LLVMBasicBlockRef LLVMGetNextBasicBlock(LLVMBasicBlockRef BB)
 
 
 # 
 # Go backwards in a basic block iterator.
-cdef LLVMBasicBlockRef LLVMGetPreviousBasicBlock(LLVMBasicBlockRef BB) nogil
+cdef LLVMBasicBlockRef LLVMGetPreviousBasicBlock(LLVMBasicBlockRef BB)
 
 
 # 
@@ -3026,7 +3026,7 @@ cdef LLVMBasicBlockRef LLVMGetPreviousBasicBlock(LLVMBasicBlockRef BB) nogil
 # function.
 # 
 # @see llvm::Function::getEntryBlock()
-cdef LLVMBasicBlockRef LLVMGetEntryBasicBlock(LLVMValueRef Fn) nogil
+cdef LLVMBasicBlockRef LLVMGetEntryBasicBlock(LLVMValueRef Fn)
 
 
 # 
@@ -3035,28 +3035,28 @@ cdef LLVMBasicBlockRef LLVMGetEntryBasicBlock(LLVMValueRef Fn) nogil
 # The insertion point must be valid.
 # 
 # @see llvm::Function::BasicBlockListType::insertAfter()
-cdef void LLVMInsertExistingBasicBlockAfterInsertBlock(LLVMBuilderRef Builder,LLVMBasicBlockRef BB) nogil
+cdef void LLVMInsertExistingBasicBlockAfterInsertBlock(LLVMBuilderRef Builder,LLVMBasicBlockRef BB)
 
 
 # 
 # Append the given basic block to the basic block list of the given function.
 # 
 # @see llvm::Function::BasicBlockListType::push_back()
-cdef void LLVMAppendExistingBasicBlock(LLVMValueRef Fn,LLVMBasicBlockRef BB) nogil
+cdef void LLVMAppendExistingBasicBlock(LLVMValueRef Fn,LLVMBasicBlockRef BB)
 
 
 # 
 # Create a new basic block without inserting it into a function.
 # 
 # @see llvm::BasicBlock::Create()
-cdef LLVMBasicBlockRef LLVMCreateBasicBlockInContext(LLVMContextRef C,const char * Name) nogil
+cdef LLVMBasicBlockRef LLVMCreateBasicBlockInContext(LLVMContextRef C,const char * Name)
 
 
 # 
 # Append a basic block to the end of a function.
 # 
 # @see llvm::BasicBlock::Create()
-cdef LLVMBasicBlockRef LLVMAppendBasicBlockInContext(LLVMContextRef C,LLVMValueRef Fn,const char * Name) nogil
+cdef LLVMBasicBlockRef LLVMAppendBasicBlockInContext(LLVMContextRef C,LLVMValueRef Fn,const char * Name)
 
 
 # 
@@ -3064,7 +3064,7 @@ cdef LLVMBasicBlockRef LLVMAppendBasicBlockInContext(LLVMContextRef C,LLVMValueR
 # context.
 # 
 # @see llvm::BasicBlock::Create()
-cdef LLVMBasicBlockRef LLVMAppendBasicBlock(LLVMValueRef Fn,const char * Name) nogil
+cdef LLVMBasicBlockRef LLVMAppendBasicBlock(LLVMValueRef Fn,const char * Name)
 
 
 # 
@@ -3074,14 +3074,14 @@ cdef LLVMBasicBlockRef LLVMAppendBasicBlock(LLVMValueRef Fn,const char * Name) n
 # passed basic block.
 # 
 # @see llvm::BasicBlock::Create()
-cdef LLVMBasicBlockRef LLVMInsertBasicBlockInContext(LLVMContextRef C,LLVMBasicBlockRef BB,const char * Name) nogil
+cdef LLVMBasicBlockRef LLVMInsertBasicBlockInContext(LLVMContextRef C,LLVMBasicBlockRef BB,const char * Name)
 
 
 # 
 # Insert a basic block in a function using the global context.
 # 
 # @see llvm::BasicBlock::Create()
-cdef LLVMBasicBlockRef LLVMInsertBasicBlock(LLVMBasicBlockRef InsertBeforeBB,const char * Name) nogil
+cdef LLVMBasicBlockRef LLVMInsertBasicBlock(LLVMBasicBlockRef InsertBeforeBB,const char * Name)
 
 
 # 
@@ -3091,7 +3091,7 @@ cdef LLVMBasicBlockRef LLVMInsertBasicBlock(LLVMBasicBlockRef InsertBeforeBB,con
 # the basic block itself.
 # 
 # @see llvm::BasicBlock::eraseFromParent()
-cdef void LLVMDeleteBasicBlock(LLVMBasicBlockRef BB) nogil
+cdef void LLVMDeleteBasicBlock(LLVMBasicBlockRef BB)
 
 
 # 
@@ -3101,21 +3101,21 @@ cdef void LLVMDeleteBasicBlock(LLVMBasicBlockRef BB) nogil
 # the basic block alive.
 # 
 # @see llvm::BasicBlock::removeFromParent()
-cdef void LLVMRemoveBasicBlockFromParent(LLVMBasicBlockRef BB) nogil
+cdef void LLVMRemoveBasicBlockFromParent(LLVMBasicBlockRef BB)
 
 
 # 
 # Move a basic block to before another one.
 # 
 # @see llvm::BasicBlock::moveBefore()
-cdef void LLVMMoveBasicBlockBefore(LLVMBasicBlockRef BB,LLVMBasicBlockRef MovePos) nogil
+cdef void LLVMMoveBasicBlockBefore(LLVMBasicBlockRef BB,LLVMBasicBlockRef MovePos)
 
 
 # 
 # Move a basic block to after another one.
 # 
 # @see llvm::BasicBlock::moveAfter()
-cdef void LLVMMoveBasicBlockAfter(LLVMBasicBlockRef BB,LLVMBasicBlockRef MovePos) nogil
+cdef void LLVMMoveBasicBlockAfter(LLVMBasicBlockRef BB,LLVMBasicBlockRef MovePos)
 
 
 # 
@@ -3123,29 +3123,29 @@ cdef void LLVMMoveBasicBlockAfter(LLVMBasicBlockRef BB,LLVMBasicBlockRef MovePos
 # 
 # The returned LLVMValueRef corresponds to a llvm::Instruction
 # instance.
-cdef LLVMValueRef LLVMGetFirstInstruction(LLVMBasicBlockRef BB) nogil
+cdef LLVMValueRef LLVMGetFirstInstruction(LLVMBasicBlockRef BB)
 
 
 # 
 # Obtain the last instruction in a basic block.
 # 
 # The returned LLVMValueRef corresponds to an LLVM:Instruction.
-cdef LLVMValueRef LLVMGetLastInstruction(LLVMBasicBlockRef BB) nogil
+cdef LLVMValueRef LLVMGetLastInstruction(LLVMBasicBlockRef BB)
 
 
 # 
 # Determine whether an instruction has any metadata attached.
-cdef int LLVMHasMetadata(LLVMValueRef Val) nogil
+cdef int LLVMHasMetadata(LLVMValueRef Val)
 
 
 # 
 # Return metadata associated with an instruction value.
-cdef LLVMValueRef LLVMGetMetadata(LLVMValueRef Val,unsigned int KindID) nogil
+cdef LLVMValueRef LLVMGetMetadata(LLVMValueRef Val,unsigned int KindID)
 
 
 # 
 # Set metadata associated with an instruction value.
-cdef void LLVMSetMetadata(LLVMValueRef Val,unsigned int KindID,LLVMValueRef Node) nogil
+cdef void LLVMSetMetadata(LLVMValueRef Val,unsigned int KindID,LLVMValueRef Node)
 
 
 # 
@@ -3153,14 +3153,14 @@ cdef void LLVMSetMetadata(LLVMValueRef Val,unsigned int KindID,LLVMValueRef Node
 # all the debug locations.
 # 
 # @see llvm::Instruction::getAllMetadataOtherThanDebugLoc()
-cdef LLVMOpaqueValueMetadataEntry * LLVMInstructionGetAllMetadataOtherThanDebugLoc(LLVMValueRef Instr,unsigned long * NumEntries) nogil
+cdef LLVMOpaqueValueMetadataEntry * LLVMInstructionGetAllMetadataOtherThanDebugLoc(LLVMValueRef Instr,unsigned long * NumEntries)
 
 
 # 
 # Obtain the basic block to which an instruction belongs.
 # 
 # @see llvm::Instruction::getParent()
-cdef LLVMBasicBlockRef LLVMGetInstructionParent(LLVMValueRef Inst) nogil
+cdef LLVMBasicBlockRef LLVMGetInstructionParent(LLVMValueRef Inst)
 
 
 # 
@@ -3170,7 +3170,7 @@ cdef LLVMBasicBlockRef LLVMGetInstructionParent(LLVMValueRef Inst) nogil
 # 
 # If this is the last instruction in a basic block, NULL will be
 # returned.
-cdef LLVMValueRef LLVMGetNextInstruction(LLVMValueRef Inst) nogil
+cdef LLVMValueRef LLVMGetNextInstruction(LLVMValueRef Inst)
 
 
 # 
@@ -3178,7 +3178,7 @@ cdef LLVMValueRef LLVMGetNextInstruction(LLVMValueRef Inst) nogil
 # 
 # If the instruction is the first instruction in a basic block, NULL
 # will be returned.
-cdef LLVMValueRef LLVMGetPreviousInstruction(LLVMValueRef Inst) nogil
+cdef LLVMValueRef LLVMGetPreviousInstruction(LLVMValueRef Inst)
 
 
 # 
@@ -3188,7 +3188,7 @@ cdef LLVMValueRef LLVMGetPreviousInstruction(LLVMValueRef Inst) nogil
 # block but is kept alive.
 # 
 # @see llvm::Instruction::removeFromParent()
-cdef void LLVMInstructionRemoveFromParent(LLVMValueRef Inst) nogil
+cdef void LLVMInstructionRemoveFromParent(LLVMValueRef Inst)
 
 
 # 
@@ -3198,7 +3198,7 @@ cdef void LLVMInstructionRemoveFromParent(LLVMValueRef Inst) nogil
 # block and then deleted.
 # 
 # @see llvm::Instruction::eraseFromParent()
-cdef void LLVMInstructionEraseFromParent(LLVMValueRef Inst) nogil
+cdef void LLVMInstructionEraseFromParent(LLVMValueRef Inst)
 
 
 # 
@@ -3208,14 +3208,14 @@ cdef void LLVMInstructionEraseFromParent(LLVMValueRef Inst) nogil
 # removed from its containing building block.
 # 
 # @see llvm::Value::deleteValue()
-cdef void LLVMDeleteInstruction(LLVMValueRef Inst) nogil
+cdef void LLVMDeleteInstruction(LLVMValueRef Inst)
 
 
 # 
 # Obtain the code opcode for an individual instruction.
 # 
 # @see llvm::Instruction::getOpCode()
-cdef LLVMOpcode LLVMGetInstructionOpcode(LLVMValueRef Inst) nogil
+cdef LLVMOpcode LLVMGetInstructionOpcode(LLVMValueRef Inst)
 
 
 # 
@@ -3225,7 +3225,7 @@ cdef LLVMOpcode LLVMGetInstructionOpcode(LLVMValueRef Inst) nogil
 # or llvm::ConstantExpr whose opcode is llvm::Instruction::ICmp.
 # 
 # @see llvm::ICmpInst::getPredicate()
-cdef LLVMIntPredicate LLVMGetICmpPredicate(LLVMValueRef Inst) nogil
+cdef LLVMIntPredicate LLVMGetICmpPredicate(LLVMValueRef Inst)
 
 
 # 
@@ -3235,7 +3235,7 @@ cdef LLVMIntPredicate LLVMGetICmpPredicate(LLVMValueRef Inst) nogil
 # or llvm::ConstantExpr whose opcode is llvm::Instruction::FCmp.
 # 
 # @see llvm::FCmpInst::getPredicate()
-cdef LLVMRealPredicate LLVMGetFCmpPredicate(LLVMValueRef Inst) nogil
+cdef LLVMRealPredicate LLVMGetFCmpPredicate(LLVMValueRef Inst)
 
 
 # 
@@ -3245,7 +3245,7 @@ cdef LLVMRealPredicate LLVMGetFCmpPredicate(LLVMValueRef Inst) nogil
 #   * The instruction has no name
 # 
 # @see llvm::Instruction::clone()
-cdef LLVMValueRef LLVMInstructionClone(LLVMValueRef Inst) nogil
+cdef LLVMValueRef LLVMInstructionClone(LLVMValueRef Inst)
 
 
 # 
@@ -3254,7 +3254,7 @@ cdef LLVMValueRef LLVMInstructionClone(LLVMValueRef Inst) nogil
 # underlying C++ type.
 # 
 # @see llvm::Instruction::isTerminator()
-cdef LLVMValueRef LLVMIsATerminatorInst(LLVMValueRef Inst) nogil
+cdef LLVMValueRef LLVMIsATerminatorInst(LLVMValueRef Inst)
 
 
 # 
@@ -3266,7 +3266,7 @@ cdef LLVMValueRef LLVMIsATerminatorInst(LLVMValueRef Inst) nogil
 # @see llvm::CallInst::getNumArgOperands()
 # @see llvm::InvokeInst::getNumArgOperands()
 # @see llvm::FuncletPadInst::getNumArgOperands()
-cdef unsigned int LLVMGetNumArgOperands(LLVMValueRef Instr) nogil
+cdef unsigned int LLVMGetNumArgOperands(LLVMValueRef Instr)
 
 
 # 
@@ -3277,7 +3277,7 @@ cdef unsigned int LLVMGetNumArgOperands(LLVMValueRef Instr) nogil
 # 
 # @see llvm::CallInst::setCallingConv()
 # @see llvm::InvokeInst::setCallingConv()
-cdef void LLVMSetInstructionCallConv(LLVMValueRef Instr,unsigned int CC) nogil
+cdef void LLVMSetInstructionCallConv(LLVMValueRef Instr,unsigned int CC)
 
 
 # 
@@ -3287,46 +3287,46 @@ cdef void LLVMSetInstructionCallConv(LLVMValueRef Instr,unsigned int CC) nogil
 # usage.
 # 
 # @see LLVMSetInstructionCallConv()
-cdef unsigned int LLVMGetInstructionCallConv(LLVMValueRef Instr) nogil
+cdef unsigned int LLVMGetInstructionCallConv(LLVMValueRef Instr)
 
 
 
-cdef void LLVMSetInstrParamAlignment(LLVMValueRef Instr,unsigned int Idx,unsigned int Align) nogil
+cdef void LLVMSetInstrParamAlignment(LLVMValueRef Instr,unsigned int Idx,unsigned int Align)
 
 
 
-cdef void LLVMAddCallSiteAttribute(LLVMValueRef C,unsigned int Idx,LLVMAttributeRef A) nogil
+cdef void LLVMAddCallSiteAttribute(LLVMValueRef C,unsigned int Idx,LLVMAttributeRef A)
 
 
 
-cdef unsigned int LLVMGetCallSiteAttributeCount(LLVMValueRef C,unsigned int Idx) nogil
+cdef unsigned int LLVMGetCallSiteAttributeCount(LLVMValueRef C,unsigned int Idx)
 
 
 
-cdef void LLVMGetCallSiteAttributes(LLVMValueRef C,unsigned int Idx,LLVMAttributeRef* Attrs) nogil
+cdef void LLVMGetCallSiteAttributes(LLVMValueRef C,unsigned int Idx,LLVMAttributeRef* Attrs)
 
 
 
-cdef LLVMAttributeRef LLVMGetCallSiteEnumAttribute(LLVMValueRef C,unsigned int Idx,unsigned int KindID) nogil
+cdef LLVMAttributeRef LLVMGetCallSiteEnumAttribute(LLVMValueRef C,unsigned int Idx,unsigned int KindID)
 
 
 
-cdef LLVMAttributeRef LLVMGetCallSiteStringAttribute(LLVMValueRef C,unsigned int Idx,const char * K,unsigned int KLen) nogil
+cdef LLVMAttributeRef LLVMGetCallSiteStringAttribute(LLVMValueRef C,unsigned int Idx,const char * K,unsigned int KLen)
 
 
 
-cdef void LLVMRemoveCallSiteEnumAttribute(LLVMValueRef C,unsigned int Idx,unsigned int KindID) nogil
+cdef void LLVMRemoveCallSiteEnumAttribute(LLVMValueRef C,unsigned int Idx,unsigned int KindID)
 
 
 
-cdef void LLVMRemoveCallSiteStringAttribute(LLVMValueRef C,unsigned int Idx,const char * K,unsigned int KLen) nogil
+cdef void LLVMRemoveCallSiteStringAttribute(LLVMValueRef C,unsigned int Idx,const char * K,unsigned int KLen)
 
 
 # 
 # Obtain the function type called by this instruction.
 # 
 # @see llvm::CallBase::getFunctionType()
-cdef LLVMTypeRef LLVMGetCalledFunctionType(LLVMValueRef C) nogil
+cdef LLVMTypeRef LLVMGetCalledFunctionType(LLVMValueRef C)
 
 
 # 
@@ -3337,7 +3337,7 @@ cdef LLVMTypeRef LLVMGetCalledFunctionType(LLVMValueRef C) nogil
 # 
 # @see llvm::CallInst::getCalledOperand()
 # @see llvm::InvokeInst::getCalledOperand()
-cdef LLVMValueRef LLVMGetCalledValue(LLVMValueRef Instr) nogil
+cdef LLVMValueRef LLVMGetCalledValue(LLVMValueRef Instr)
 
 
 # 
@@ -3346,7 +3346,7 @@ cdef LLVMValueRef LLVMGetCalledValue(LLVMValueRef Instr) nogil
 # This only works on llvm::CallInst instructions.
 # 
 # @see llvm::CallInst::isTailCall()
-cdef int LLVMIsTailCall(LLVMValueRef CallInst) nogil
+cdef int LLVMIsTailCall(LLVMValueRef CallInst)
 
 
 # 
@@ -3355,7 +3355,7 @@ cdef int LLVMIsTailCall(LLVMValueRef CallInst) nogil
 # This only works on llvm::CallInst instructions.
 # 
 # @see llvm::CallInst::setTailCall()
-cdef void LLVMSetTailCall(LLVMValueRef CallInst,int IsTailCall) nogil
+cdef void LLVMSetTailCall(LLVMValueRef CallInst,int IsTailCall)
 
 
 # 
@@ -3364,7 +3364,7 @@ cdef void LLVMSetTailCall(LLVMValueRef CallInst,int IsTailCall) nogil
 # This only works on llvm::InvokeInst instructions.
 # 
 # @see llvm::InvokeInst::getNormalDest()
-cdef LLVMBasicBlockRef LLVMGetNormalDest(LLVMValueRef InvokeInst) nogil
+cdef LLVMBasicBlockRef LLVMGetNormalDest(LLVMValueRef InvokeInst)
 
 
 # 
@@ -3376,7 +3376,7 @@ cdef LLVMBasicBlockRef LLVMGetNormalDest(LLVMValueRef InvokeInst) nogil
 # @see llvm::InvokeInst::getUnwindDest()
 # @see llvm::CleanupReturnInst::getUnwindDest()
 # @see llvm::CatchSwitchInst::getUnwindDest()
-cdef LLVMBasicBlockRef LLVMGetUnwindDest(LLVMValueRef InvokeInst) nogil
+cdef LLVMBasicBlockRef LLVMGetUnwindDest(LLVMValueRef InvokeInst)
 
 
 # 
@@ -3385,7 +3385,7 @@ cdef LLVMBasicBlockRef LLVMGetUnwindDest(LLVMValueRef InvokeInst) nogil
 # This only works on llvm::InvokeInst instructions.
 # 
 # @see llvm::InvokeInst::setNormalDest()
-cdef void LLVMSetNormalDest(LLVMValueRef InvokeInst,LLVMBasicBlockRef B) nogil
+cdef void LLVMSetNormalDest(LLVMValueRef InvokeInst,LLVMBasicBlockRef B)
 
 
 # 
@@ -3397,28 +3397,28 @@ cdef void LLVMSetNormalDest(LLVMValueRef InvokeInst,LLVMBasicBlockRef B) nogil
 # @see llvm::InvokeInst::setUnwindDest()
 # @see llvm::CleanupReturnInst::setUnwindDest()
 # @see llvm::CatchSwitchInst::setUnwindDest()
-cdef void LLVMSetUnwindDest(LLVMValueRef InvokeInst,LLVMBasicBlockRef B) nogil
+cdef void LLVMSetUnwindDest(LLVMValueRef InvokeInst,LLVMBasicBlockRef B)
 
 
 # 
 # Return the number of successors that this terminator has.
 # 
 # @see llvm::Instruction::getNumSuccessors
-cdef unsigned int LLVMGetNumSuccessors(LLVMValueRef Term) nogil
+cdef unsigned int LLVMGetNumSuccessors(LLVMValueRef Term)
 
 
 # 
 # Return the specified successor.
 # 
 # @see llvm::Instruction::getSuccessor
-cdef LLVMBasicBlockRef LLVMGetSuccessor(LLVMValueRef Term,unsigned int i) nogil
+cdef LLVMBasicBlockRef LLVMGetSuccessor(LLVMValueRef Term,unsigned int i)
 
 
 # 
 # Update the specified successor to point at the provided block.
 # 
 # @see llvm::Instruction::setSuccessor
-cdef void LLVMSetSuccessor(LLVMValueRef Term,unsigned int i,LLVMBasicBlockRef block) nogil
+cdef void LLVMSetSuccessor(LLVMValueRef Term,unsigned int i,LLVMBasicBlockRef block)
 
 
 # 
@@ -3427,7 +3427,7 @@ cdef void LLVMSetSuccessor(LLVMValueRef Term,unsigned int i,LLVMBasicBlockRef bl
 # This only works on llvm::BranchInst instructions.
 # 
 # @see llvm::BranchInst::isConditional
-cdef int LLVMIsConditional(LLVMValueRef Branch) nogil
+cdef int LLVMIsConditional(LLVMValueRef Branch)
 
 
 # 
@@ -3436,7 +3436,7 @@ cdef int LLVMIsConditional(LLVMValueRef Branch) nogil
 # This only works on llvm::BranchInst instructions.
 # 
 # @see llvm::BranchInst::getCondition
-cdef LLVMValueRef LLVMGetCondition(LLVMValueRef Branch) nogil
+cdef LLVMValueRef LLVMGetCondition(LLVMValueRef Branch)
 
 
 # 
@@ -3445,7 +3445,7 @@ cdef LLVMValueRef LLVMGetCondition(LLVMValueRef Branch) nogil
 # This only works on llvm::BranchInst instructions.
 # 
 # @see llvm::BranchInst::setCondition
-cdef void LLVMSetCondition(LLVMValueRef Branch,LLVMValueRef Cond) nogil
+cdef void LLVMSetCondition(LLVMValueRef Branch,LLVMValueRef Cond)
 
 
 # 
@@ -3454,58 +3454,58 @@ cdef void LLVMSetCondition(LLVMValueRef Branch,LLVMValueRef Cond) nogil
 # This only works on llvm::SwitchInst instructions.
 # 
 # @see llvm::SwitchInst::getDefaultDest()
-cdef LLVMBasicBlockRef LLVMGetSwitchDefaultDest(LLVMValueRef SwitchInstr) nogil
+cdef LLVMBasicBlockRef LLVMGetSwitchDefaultDest(LLVMValueRef SwitchInstr)
 
 
 # 
 # Obtain the type that is being allocated by the alloca instruction.
-cdef LLVMTypeRef LLVMGetAllocatedType(LLVMValueRef Alloca) nogil
+cdef LLVMTypeRef LLVMGetAllocatedType(LLVMValueRef Alloca)
 
 
 # 
 # Check whether the given GEP operator is inbounds.
-cdef int LLVMIsInBounds(LLVMValueRef GEP) nogil
+cdef int LLVMIsInBounds(LLVMValueRef GEP)
 
 
 # 
 # Set the given GEP instruction to be inbounds or not.
-cdef void LLVMSetIsInBounds(LLVMValueRef GEP,int InBounds) nogil
+cdef void LLVMSetIsInBounds(LLVMValueRef GEP,int InBounds)
 
 
 # 
 # Get the source element type of the given GEP operator.
-cdef LLVMTypeRef LLVMGetGEPSourceElementType(LLVMValueRef GEP) nogil
+cdef LLVMTypeRef LLVMGetGEPSourceElementType(LLVMValueRef GEP)
 
 
 # 
 # Add an incoming value to the end of a PHI list.
-cdef void LLVMAddIncoming(LLVMValueRef PhiNode,LLVMValueRef* IncomingValues,LLVMBasicBlockRef* IncomingBlocks,unsigned int Count) nogil
+cdef void LLVMAddIncoming(LLVMValueRef PhiNode,LLVMValueRef* IncomingValues,LLVMBasicBlockRef* IncomingBlocks,unsigned int Count)
 
 
 # 
 # Obtain the number of incoming basic blocks to a PHI node.
-cdef unsigned int LLVMCountIncoming(LLVMValueRef PhiNode) nogil
+cdef unsigned int LLVMCountIncoming(LLVMValueRef PhiNode)
 
 
 # 
 # Obtain an incoming value to a PHI node as an LLVMValueRef.
-cdef LLVMValueRef LLVMGetIncomingValue(LLVMValueRef PhiNode,unsigned int Index) nogil
+cdef LLVMValueRef LLVMGetIncomingValue(LLVMValueRef PhiNode,unsigned int Index)
 
 
 # 
 # Obtain an incoming value to a PHI node as an LLVMBasicBlockRef.
-cdef LLVMBasicBlockRef LLVMGetIncomingBlock(LLVMValueRef PhiNode,unsigned int Index) nogil
+cdef LLVMBasicBlockRef LLVMGetIncomingBlock(LLVMValueRef PhiNode,unsigned int Index)
 
 
 # 
 # Obtain the number of indices.
 # NB: This also works on GEP operators.
-cdef unsigned int LLVMGetNumIndices(LLVMValueRef Inst) nogil
+cdef unsigned int LLVMGetNumIndices(LLVMValueRef Inst)
 
 
 # 
 # Obtain the indices as an array.
-cdef const unsigned int * LLVMGetIndices(LLVMValueRef Inst) nogil
+cdef const unsigned int * LLVMGetIndices(LLVMValueRef Inst)
 
 
 # 
@@ -3515,50 +3515,50 @@ cdef const unsigned int * LLVMGetIndices(LLVMValueRef Inst) nogil
 # the exclusive means of building instructions using the C interface.
 # 
 # @{
-cdef LLVMBuilderRef LLVMCreateBuilderInContext(LLVMContextRef C) nogil
+cdef LLVMBuilderRef LLVMCreateBuilderInContext(LLVMContextRef C)
 
 
 
-cdef LLVMBuilderRef LLVMCreateBuilder() nogil
+cdef LLVMBuilderRef LLVMCreateBuilder()
 
 
 
-cdef void LLVMPositionBuilder(LLVMBuilderRef Builder,LLVMBasicBlockRef Block,LLVMValueRef Instr) nogil
+cdef void LLVMPositionBuilder(LLVMBuilderRef Builder,LLVMBasicBlockRef Block,LLVMValueRef Instr)
 
 
 
-cdef void LLVMPositionBuilderBefore(LLVMBuilderRef Builder,LLVMValueRef Instr) nogil
+cdef void LLVMPositionBuilderBefore(LLVMBuilderRef Builder,LLVMValueRef Instr)
 
 
 
-cdef void LLVMPositionBuilderAtEnd(LLVMBuilderRef Builder,LLVMBasicBlockRef Block) nogil
+cdef void LLVMPositionBuilderAtEnd(LLVMBuilderRef Builder,LLVMBasicBlockRef Block)
 
 
 
-cdef LLVMBasicBlockRef LLVMGetInsertBlock(LLVMBuilderRef Builder) nogil
+cdef LLVMBasicBlockRef LLVMGetInsertBlock(LLVMBuilderRef Builder)
 
 
 
-cdef void LLVMClearInsertionPosition(LLVMBuilderRef Builder) nogil
+cdef void LLVMClearInsertionPosition(LLVMBuilderRef Builder)
 
 
 
-cdef void LLVMInsertIntoBuilder(LLVMBuilderRef Builder,LLVMValueRef Instr) nogil
+cdef void LLVMInsertIntoBuilder(LLVMBuilderRef Builder,LLVMValueRef Instr)
 
 
 
-cdef void LLVMInsertIntoBuilderWithName(LLVMBuilderRef Builder,LLVMValueRef Instr,const char * Name) nogil
+cdef void LLVMInsertIntoBuilderWithName(LLVMBuilderRef Builder,LLVMValueRef Instr,const char * Name)
 
 
 
-cdef void LLVMDisposeBuilder(LLVMBuilderRef Builder) nogil
+cdef void LLVMDisposeBuilder(LLVMBuilderRef Builder)
 
 
 # 
 # Get location information used by debugging information.
 # 
 # @see llvm::IRBuilder::getCurrentDebugLocation()
-cdef LLVMMetadataRef LLVMGetCurrentDebugLocation2(LLVMBuilderRef Builder) nogil
+cdef LLVMMetadataRef LLVMGetCurrentDebugLocation2(LLVMBuilderRef Builder)
 
 
 # 
@@ -3567,7 +3567,7 @@ cdef LLVMMetadataRef LLVMGetCurrentDebugLocation2(LLVMBuilderRef Builder) nogil
 # To clear the location metadata of the given instruction, pass NULL to \p Loc.
 # 
 # @see llvm::IRBuilder::SetCurrentDebugLocation()
-cdef void LLVMSetCurrentDebugLocation2(LLVMBuilderRef Builder,LLVMMetadataRef Loc) nogil
+cdef void LLVMSetCurrentDebugLocation2(LLVMBuilderRef Builder,LLVMMetadataRef Loc)
 
 
 # 
@@ -3579,21 +3579,21 @@ cdef void LLVMSetCurrentDebugLocation2(LLVMBuilderRef Builder,LLVMMetadataRef Lo
 #             LLVMAddMetadataToInst.
 # 
 # @see llvm::IRBuilder::SetInstDebugLocation()
-cdef void LLVMSetInstDebugLocation(LLVMBuilderRef Builder,LLVMValueRef Inst) nogil
+cdef void LLVMSetInstDebugLocation(LLVMBuilderRef Builder,LLVMValueRef Inst)
 
 
 # 
 # Adds the metadata registered with the given builder to the given instruction.
 # 
 # @see llvm::IRBuilder::AddMetadataToInst()
-cdef void LLVMAddMetadataToInst(LLVMBuilderRef Builder,LLVMValueRef Inst) nogil
+cdef void LLVMAddMetadataToInst(LLVMBuilderRef Builder,LLVMValueRef Inst)
 
 
 # 
 # Get the dafult floating-point math metadata for a given builder.
 # 
 # @see llvm::IRBuilder::getDefaultFPMathTag()
-cdef LLVMMetadataRef LLVMBuilderGetDefaultFPMathTag(LLVMBuilderRef Builder) nogil
+cdef LLVMMetadataRef LLVMBuilderGetDefaultFPMathTag(LLVMBuilderRef Builder)
 
 
 # 
@@ -3602,119 +3602,119 @@ cdef LLVMMetadataRef LLVMBuilderGetDefaultFPMathTag(LLVMBuilderRef Builder) nogi
 # To clear the metadata, pass NULL to \p FPMathTag.
 # 
 # @see llvm::IRBuilder::setDefaultFPMathTag()
-cdef void LLVMBuilderSetDefaultFPMathTag(LLVMBuilderRef Builder,LLVMMetadataRef FPMathTag) nogil
+cdef void LLVMBuilderSetDefaultFPMathTag(LLVMBuilderRef Builder,LLVMMetadataRef FPMathTag)
 
 
 # 
 # Deprecated: Passing the NULL location will crash.
 # Use LLVMGetCurrentDebugLocation2 instead.
-cdef void LLVMSetCurrentDebugLocation(LLVMBuilderRef Builder,LLVMValueRef L) nogil
+cdef void LLVMSetCurrentDebugLocation(LLVMBuilderRef Builder,LLVMValueRef L)
 
 
 # 
 # Deprecated: Returning the NULL location will crash.
 # Use LLVMGetCurrentDebugLocation2 instead.
-cdef LLVMValueRef LLVMGetCurrentDebugLocation(LLVMBuilderRef Builder) nogil
+cdef LLVMValueRef LLVMGetCurrentDebugLocation(LLVMBuilderRef Builder)
 
 
 
-cdef LLVMValueRef LLVMBuildRetVoid(LLVMBuilderRef arg0) nogil
+cdef LLVMValueRef LLVMBuildRetVoid(LLVMBuilderRef arg0)
 
 
 
-cdef LLVMValueRef LLVMBuildRet(LLVMBuilderRef arg0,LLVMValueRef V) nogil
+cdef LLVMValueRef LLVMBuildRet(LLVMBuilderRef arg0,LLVMValueRef V)
 
 
 
-cdef LLVMValueRef LLVMBuildAggregateRet(LLVMBuilderRef arg0,LLVMValueRef* RetVals,unsigned int N) nogil
+cdef LLVMValueRef LLVMBuildAggregateRet(LLVMBuilderRef arg0,LLVMValueRef* RetVals,unsigned int N)
 
 
 
-cdef LLVMValueRef LLVMBuildBr(LLVMBuilderRef arg0,LLVMBasicBlockRef Dest) nogil
+cdef LLVMValueRef LLVMBuildBr(LLVMBuilderRef arg0,LLVMBasicBlockRef Dest)
 
 
 
-cdef LLVMValueRef LLVMBuildCondBr(LLVMBuilderRef arg0,LLVMValueRef If,LLVMBasicBlockRef Then,LLVMBasicBlockRef Else) nogil
+cdef LLVMValueRef LLVMBuildCondBr(LLVMBuilderRef arg0,LLVMValueRef If,LLVMBasicBlockRef Then,LLVMBasicBlockRef Else)
 
 
 
-cdef LLVMValueRef LLVMBuildSwitch(LLVMBuilderRef arg0,LLVMValueRef V,LLVMBasicBlockRef Else,unsigned int NumCases) nogil
+cdef LLVMValueRef LLVMBuildSwitch(LLVMBuilderRef arg0,LLVMValueRef V,LLVMBasicBlockRef Else,unsigned int NumCases)
 
 
 
-cdef LLVMValueRef LLVMBuildIndirectBr(LLVMBuilderRef B,LLVMValueRef Addr,unsigned int NumDests) nogil
+cdef LLVMValueRef LLVMBuildIndirectBr(LLVMBuilderRef B,LLVMValueRef Addr,unsigned int NumDests)
 
 
 
-cdef LLVMValueRef LLVMBuildInvoke2(LLVMBuilderRef arg0,LLVMTypeRef Ty,LLVMValueRef Fn,LLVMValueRef* Args,unsigned int NumArgs,LLVMBasicBlockRef Then,LLVMBasicBlockRef Catch,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildInvoke2(LLVMBuilderRef arg0,LLVMTypeRef Ty,LLVMValueRef Fn,LLVMValueRef* Args,unsigned int NumArgs,LLVMBasicBlockRef Then,LLVMBasicBlockRef Catch,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildUnreachable(LLVMBuilderRef arg0) nogil
+cdef LLVMValueRef LLVMBuildUnreachable(LLVMBuilderRef arg0)
 
 
 
-cdef LLVMValueRef LLVMBuildResume(LLVMBuilderRef B,LLVMValueRef Exn) nogil
+cdef LLVMValueRef LLVMBuildResume(LLVMBuilderRef B,LLVMValueRef Exn)
 
 
 
-cdef LLVMValueRef LLVMBuildLandingPad(LLVMBuilderRef B,LLVMTypeRef Ty,LLVMValueRef PersFn,unsigned int NumClauses,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildLandingPad(LLVMBuilderRef B,LLVMTypeRef Ty,LLVMValueRef PersFn,unsigned int NumClauses,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildCleanupRet(LLVMBuilderRef B,LLVMValueRef CatchPad,LLVMBasicBlockRef BB) nogil
+cdef LLVMValueRef LLVMBuildCleanupRet(LLVMBuilderRef B,LLVMValueRef CatchPad,LLVMBasicBlockRef BB)
 
 
 
-cdef LLVMValueRef LLVMBuildCatchRet(LLVMBuilderRef B,LLVMValueRef CatchPad,LLVMBasicBlockRef BB) nogil
+cdef LLVMValueRef LLVMBuildCatchRet(LLVMBuilderRef B,LLVMValueRef CatchPad,LLVMBasicBlockRef BB)
 
 
 
-cdef LLVMValueRef LLVMBuildCatchPad(LLVMBuilderRef B,LLVMValueRef ParentPad,LLVMValueRef* Args,unsigned int NumArgs,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildCatchPad(LLVMBuilderRef B,LLVMValueRef ParentPad,LLVMValueRef* Args,unsigned int NumArgs,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildCleanupPad(LLVMBuilderRef B,LLVMValueRef ParentPad,LLVMValueRef* Args,unsigned int NumArgs,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildCleanupPad(LLVMBuilderRef B,LLVMValueRef ParentPad,LLVMValueRef* Args,unsigned int NumArgs,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildCatchSwitch(LLVMBuilderRef B,LLVMValueRef ParentPad,LLVMBasicBlockRef UnwindBB,unsigned int NumHandlers,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildCatchSwitch(LLVMBuilderRef B,LLVMValueRef ParentPad,LLVMBasicBlockRef UnwindBB,unsigned int NumHandlers,const char * Name)
 
 
 
-cdef void LLVMAddCase(LLVMValueRef Switch,LLVMValueRef OnVal,LLVMBasicBlockRef Dest) nogil
+cdef void LLVMAddCase(LLVMValueRef Switch,LLVMValueRef OnVal,LLVMBasicBlockRef Dest)
 
 
 
-cdef void LLVMAddDestination(LLVMValueRef IndirectBr,LLVMBasicBlockRef Dest) nogil
+cdef void LLVMAddDestination(LLVMValueRef IndirectBr,LLVMBasicBlockRef Dest)
 
 
 
-cdef unsigned int LLVMGetNumClauses(LLVMValueRef LandingPad) nogil
+cdef unsigned int LLVMGetNumClauses(LLVMValueRef LandingPad)
 
 
 
-cdef LLVMValueRef LLVMGetClause(LLVMValueRef LandingPad,unsigned int Idx) nogil
+cdef LLVMValueRef LLVMGetClause(LLVMValueRef LandingPad,unsigned int Idx)
 
 
 
-cdef void LLVMAddClause(LLVMValueRef LandingPad,LLVMValueRef ClauseVal) nogil
+cdef void LLVMAddClause(LLVMValueRef LandingPad,LLVMValueRef ClauseVal)
 
 
 
-cdef int LLVMIsCleanup(LLVMValueRef LandingPad) nogil
+cdef int LLVMIsCleanup(LLVMValueRef LandingPad)
 
 
 
-cdef void LLVMSetCleanup(LLVMValueRef LandingPad,int Val) nogil
+cdef void LLVMSetCleanup(LLVMValueRef LandingPad,int Val)
 
 
 
-cdef void LLVMAddHandler(LLVMValueRef CatchSwitch,LLVMBasicBlockRef Dest) nogil
+cdef void LLVMAddHandler(LLVMValueRef CatchSwitch,LLVMBasicBlockRef Dest)
 
 
 
-cdef unsigned int LLVMGetNumHandlers(LLVMValueRef CatchSwitch) nogil
+cdef unsigned int LLVMGetNumHandlers(LLVMValueRef CatchSwitch)
 
 
 # 
@@ -3727,15 +3727,15 @@ cdef unsigned int LLVMGetNumHandlers(LLVMValueRef CatchSwitch) nogil
 # 
 # @param CatchSwitch The catchswitch instruction to operate on.
 # @param Handlers Memory address of an array to be filled with basic blocks.
-cdef void LLVMGetHandlers(LLVMValueRef CatchSwitch,LLVMBasicBlockRef* Handlers) nogil
+cdef void LLVMGetHandlers(LLVMValueRef CatchSwitch,LLVMBasicBlockRef* Handlers)
 
 
 
-cdef LLVMValueRef LLVMGetArgOperand(LLVMValueRef Funclet,unsigned int i) nogil
+cdef LLVMValueRef LLVMGetArgOperand(LLVMValueRef Funclet,unsigned int i)
 
 
 
-cdef void LLVMSetArgOperand(LLVMValueRef Funclet,unsigned int i,LLVMValueRef value) nogil
+cdef void LLVMSetArgOperand(LLVMValueRef Funclet,unsigned int i,LLVMValueRef value)
 
 
 # 
@@ -3744,7 +3744,7 @@ cdef void LLVMSetArgOperand(LLVMValueRef Funclet,unsigned int i,LLVMValueRef val
 # This only works on llvm::CatchPadInst instructions.
 # 
 # @see llvm::CatchPadInst::getCatchSwitch()
-cdef LLVMValueRef LLVMGetParentCatchSwitch(LLVMValueRef CatchPad) nogil
+cdef LLVMValueRef LLVMGetParentCatchSwitch(LLVMValueRef CatchPad)
 
 
 # 
@@ -3753,143 +3753,143 @@ cdef LLVMValueRef LLVMGetParentCatchSwitch(LLVMValueRef CatchPad) nogil
 # This only works on llvm::CatchPadInst instructions.
 # 
 # @see llvm::CatchPadInst::setCatchSwitch()
-cdef void LLVMSetParentCatchSwitch(LLVMValueRef CatchPad,LLVMValueRef CatchSwitch) nogil
+cdef void LLVMSetParentCatchSwitch(LLVMValueRef CatchPad,LLVMValueRef CatchSwitch)
 
 
 
-cdef LLVMValueRef LLVMBuildAdd(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildAdd(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildNSWAdd(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildNSWAdd(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildNUWAdd(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildNUWAdd(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildFAdd(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildFAdd(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildSub(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildSub(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildNSWSub(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildNSWSub(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildNUWSub(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildNUWSub(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildFSub(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildFSub(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildMul(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildMul(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildNSWMul(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildNSWMul(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildNUWMul(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildNUWMul(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildFMul(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildFMul(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildUDiv(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildUDiv(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildExactUDiv(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildExactUDiv(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildSDiv(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildSDiv(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildExactSDiv(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildExactSDiv(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildFDiv(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildFDiv(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildURem(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildURem(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildSRem(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildSRem(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildFRem(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildFRem(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildShl(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildShl(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildLShr(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildLShr(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildAShr(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildAShr(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildAnd(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildAnd(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildOr(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildOr(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildXor(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildXor(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildBinOp(LLVMBuilderRef B,LLVMOpcode Op,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildBinOp(LLVMBuilderRef B,LLVMOpcode Op,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildNeg(LLVMBuilderRef arg0,LLVMValueRef V,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildNeg(LLVMBuilderRef arg0,LLVMValueRef V,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildNSWNeg(LLVMBuilderRef B,LLVMValueRef V,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildNSWNeg(LLVMBuilderRef B,LLVMValueRef V,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildNUWNeg(LLVMBuilderRef B,LLVMValueRef V,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildNUWNeg(LLVMBuilderRef B,LLVMValueRef V,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildFNeg(LLVMBuilderRef arg0,LLVMValueRef V,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildFNeg(LLVMBuilderRef arg0,LLVMValueRef V,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildNot(LLVMBuilderRef arg0,LLVMValueRef V,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildNot(LLVMBuilderRef arg0,LLVMValueRef V,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildMalloc(LLVMBuilderRef arg0,LLVMTypeRef Ty,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildMalloc(LLVMBuilderRef arg0,LLVMTypeRef Ty,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildArrayMalloc(LLVMBuilderRef arg0,LLVMTypeRef Ty,LLVMValueRef Val,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildArrayMalloc(LLVMBuilderRef arg0,LLVMTypeRef Ty,LLVMValueRef Val,const char * Name)
 
 
 # 
@@ -3897,264 +3897,264 @@ cdef LLVMValueRef LLVMBuildArrayMalloc(LLVMBuilderRef arg0,LLVMTypeRef Ty,LLVMVa
 # specified value.
 # 
 # @see llvm::IRRBuilder::CreateMemSet()
-cdef LLVMValueRef LLVMBuildMemSet(LLVMBuilderRef B,LLVMValueRef Ptr,LLVMValueRef Val,LLVMValueRef Len,unsigned int Align) nogil
+cdef LLVMValueRef LLVMBuildMemSet(LLVMBuilderRef B,LLVMValueRef Ptr,LLVMValueRef Val,LLVMValueRef Len,unsigned int Align)
 
 
 # 
 # Creates and inserts a memcpy between the specified pointers.
 # 
 # @see llvm::IRRBuilder::CreateMemCpy()
-cdef LLVMValueRef LLVMBuildMemCpy(LLVMBuilderRef B,LLVMValueRef Dst,unsigned int DstAlign,LLVMValueRef Src,unsigned int SrcAlign,LLVMValueRef Size) nogil
+cdef LLVMValueRef LLVMBuildMemCpy(LLVMBuilderRef B,LLVMValueRef Dst,unsigned int DstAlign,LLVMValueRef Src,unsigned int SrcAlign,LLVMValueRef Size)
 
 
 # 
 # Creates and inserts a memmove between the specified pointers.
 # 
 # @see llvm::IRRBuilder::CreateMemMove()
-cdef LLVMValueRef LLVMBuildMemMove(LLVMBuilderRef B,LLVMValueRef Dst,unsigned int DstAlign,LLVMValueRef Src,unsigned int SrcAlign,LLVMValueRef Size) nogil
+cdef LLVMValueRef LLVMBuildMemMove(LLVMBuilderRef B,LLVMValueRef Dst,unsigned int DstAlign,LLVMValueRef Src,unsigned int SrcAlign,LLVMValueRef Size)
 
 
 
-cdef LLVMValueRef LLVMBuildAlloca(LLVMBuilderRef arg0,LLVMTypeRef Ty,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildAlloca(LLVMBuilderRef arg0,LLVMTypeRef Ty,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildArrayAlloca(LLVMBuilderRef arg0,LLVMTypeRef Ty,LLVMValueRef Val,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildArrayAlloca(LLVMBuilderRef arg0,LLVMTypeRef Ty,LLVMValueRef Val,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildFree(LLVMBuilderRef arg0,LLVMValueRef PointerVal) nogil
+cdef LLVMValueRef LLVMBuildFree(LLVMBuilderRef arg0,LLVMValueRef PointerVal)
 
 
 
-cdef LLVMValueRef LLVMBuildLoad2(LLVMBuilderRef arg0,LLVMTypeRef Ty,LLVMValueRef PointerVal,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildLoad2(LLVMBuilderRef arg0,LLVMTypeRef Ty,LLVMValueRef PointerVal,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildStore(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMValueRef Ptr) nogil
+cdef LLVMValueRef LLVMBuildStore(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMValueRef Ptr)
 
 
 
-cdef LLVMValueRef LLVMBuildGEP2(LLVMBuilderRef B,LLVMTypeRef Ty,LLVMValueRef Pointer,LLVMValueRef* Indices,unsigned int NumIndices,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildGEP2(LLVMBuilderRef B,LLVMTypeRef Ty,LLVMValueRef Pointer,LLVMValueRef* Indices,unsigned int NumIndices,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildInBoundsGEP2(LLVMBuilderRef B,LLVMTypeRef Ty,LLVMValueRef Pointer,LLVMValueRef* Indices,unsigned int NumIndices,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildInBoundsGEP2(LLVMBuilderRef B,LLVMTypeRef Ty,LLVMValueRef Pointer,LLVMValueRef* Indices,unsigned int NumIndices,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildStructGEP2(LLVMBuilderRef B,LLVMTypeRef Ty,LLVMValueRef Pointer,unsigned int Idx,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildStructGEP2(LLVMBuilderRef B,LLVMTypeRef Ty,LLVMValueRef Pointer,unsigned int Idx,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildGlobalString(LLVMBuilderRef B,const char * Str,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildGlobalString(LLVMBuilderRef B,const char * Str,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildGlobalStringPtr(LLVMBuilderRef B,const char * Str,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildGlobalStringPtr(LLVMBuilderRef B,const char * Str,const char * Name)
 
 
 
-cdef int LLVMGetVolatile(LLVMValueRef MemoryAccessInst) nogil
+cdef int LLVMGetVolatile(LLVMValueRef MemoryAccessInst)
 
 
 
-cdef void LLVMSetVolatile(LLVMValueRef MemoryAccessInst,int IsVolatile) nogil
+cdef void LLVMSetVolatile(LLVMValueRef MemoryAccessInst,int IsVolatile)
 
 
 
-cdef int LLVMGetWeak(LLVMValueRef CmpXchgInst) nogil
+cdef int LLVMGetWeak(LLVMValueRef CmpXchgInst)
 
 
 
-cdef void LLVMSetWeak(LLVMValueRef CmpXchgInst,int IsWeak) nogil
+cdef void LLVMSetWeak(LLVMValueRef CmpXchgInst,int IsWeak)
 
 
 
-cdef LLVMAtomicOrdering LLVMGetOrdering(LLVMValueRef MemoryAccessInst) nogil
+cdef LLVMAtomicOrdering LLVMGetOrdering(LLVMValueRef MemoryAccessInst)
 
 
 
-cdef void LLVMSetOrdering(LLVMValueRef MemoryAccessInst,LLVMAtomicOrdering Ordering) nogil
+cdef void LLVMSetOrdering(LLVMValueRef MemoryAccessInst,LLVMAtomicOrdering Ordering)
 
 
 
-cdef LLVMAtomicRMWBinOp LLVMGetAtomicRMWBinOp(LLVMValueRef AtomicRMWInst) nogil
+cdef LLVMAtomicRMWBinOp LLVMGetAtomicRMWBinOp(LLVMValueRef AtomicRMWInst)
 
 
 
-cdef void LLVMSetAtomicRMWBinOp(LLVMValueRef AtomicRMWInst,LLVMAtomicRMWBinOp BinOp) nogil
+cdef void LLVMSetAtomicRMWBinOp(LLVMValueRef AtomicRMWInst,LLVMAtomicRMWBinOp BinOp)
 
 
 
-cdef LLVMValueRef LLVMBuildTrunc(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildTrunc(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildZExt(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildZExt(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildSExt(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildSExt(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildFPToUI(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildFPToUI(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildFPToSI(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildFPToSI(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildUIToFP(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildUIToFP(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildSIToFP(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildSIToFP(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildFPTrunc(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildFPTrunc(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildFPExt(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildFPExt(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildPtrToInt(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildPtrToInt(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildIntToPtr(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildIntToPtr(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildBitCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildBitCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildAddrSpaceCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildAddrSpaceCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildZExtOrBitCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildZExtOrBitCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildSExtOrBitCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildSExtOrBitCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildTruncOrBitCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildTruncOrBitCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildCast(LLVMBuilderRef B,LLVMOpcode Op,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildCast(LLVMBuilderRef B,LLVMOpcode Op,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildPointerCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildPointerCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildIntCast2(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,int IsSigned,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildIntCast2(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,int IsSigned,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildFPCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildFPCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name)
 
 
 # Deprecated: This cast is always signed. Use LLVMBuildIntCast2 instead. */
-cdef LLVMValueRef LLVMBuildIntCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildIntCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name)
 
 
 
-cdef LLVMOpcode LLVMGetCastOpcode(LLVMValueRef Src,int SrcIsSigned,LLVMTypeRef DestTy,int DestIsSigned) nogil
+cdef LLVMOpcode LLVMGetCastOpcode(LLVMValueRef Src,int SrcIsSigned,LLVMTypeRef DestTy,int DestIsSigned)
 
 
 
-cdef LLVMValueRef LLVMBuildICmp(LLVMBuilderRef arg0,LLVMIntPredicate Op,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildICmp(LLVMBuilderRef arg0,LLVMIntPredicate Op,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildFCmp(LLVMBuilderRef arg0,LLVMRealPredicate Op,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildFCmp(LLVMBuilderRef arg0,LLVMRealPredicate Op,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildPhi(LLVMBuilderRef arg0,LLVMTypeRef Ty,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildPhi(LLVMBuilderRef arg0,LLVMTypeRef Ty,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildCall2(LLVMBuilderRef arg0,LLVMTypeRef arg1,LLVMValueRef Fn,LLVMValueRef* Args,unsigned int NumArgs,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildCall2(LLVMBuilderRef arg0,LLVMTypeRef arg1,LLVMValueRef Fn,LLVMValueRef* Args,unsigned int NumArgs,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildSelect(LLVMBuilderRef arg0,LLVMValueRef If,LLVMValueRef Then,LLVMValueRef Else,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildSelect(LLVMBuilderRef arg0,LLVMValueRef If,LLVMValueRef Then,LLVMValueRef Else,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildVAArg(LLVMBuilderRef arg0,LLVMValueRef List,LLVMTypeRef Ty,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildVAArg(LLVMBuilderRef arg0,LLVMValueRef List,LLVMTypeRef Ty,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildExtractElement(LLVMBuilderRef arg0,LLVMValueRef VecVal,LLVMValueRef Index,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildExtractElement(LLVMBuilderRef arg0,LLVMValueRef VecVal,LLVMValueRef Index,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildInsertElement(LLVMBuilderRef arg0,LLVMValueRef VecVal,LLVMValueRef EltVal,LLVMValueRef Index,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildInsertElement(LLVMBuilderRef arg0,LLVMValueRef VecVal,LLVMValueRef EltVal,LLVMValueRef Index,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildShuffleVector(LLVMBuilderRef arg0,LLVMValueRef V1,LLVMValueRef V2,LLVMValueRef Mask,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildShuffleVector(LLVMBuilderRef arg0,LLVMValueRef V1,LLVMValueRef V2,LLVMValueRef Mask,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildExtractValue(LLVMBuilderRef arg0,LLVMValueRef AggVal,unsigned int Index,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildExtractValue(LLVMBuilderRef arg0,LLVMValueRef AggVal,unsigned int Index,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildInsertValue(LLVMBuilderRef arg0,LLVMValueRef AggVal,LLVMValueRef EltVal,unsigned int Index,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildInsertValue(LLVMBuilderRef arg0,LLVMValueRef AggVal,LLVMValueRef EltVal,unsigned int Index,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildFreeze(LLVMBuilderRef arg0,LLVMValueRef Val,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildFreeze(LLVMBuilderRef arg0,LLVMValueRef Val,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildIsNull(LLVMBuilderRef arg0,LLVMValueRef Val,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildIsNull(LLVMBuilderRef arg0,LLVMValueRef Val,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildIsNotNull(LLVMBuilderRef arg0,LLVMValueRef Val,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildIsNotNull(LLVMBuilderRef arg0,LLVMValueRef Val,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildPtrDiff2(LLVMBuilderRef arg0,LLVMTypeRef ElemTy,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildPtrDiff2(LLVMBuilderRef arg0,LLVMTypeRef ElemTy,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildFence(LLVMBuilderRef B,LLVMAtomicOrdering ordering,int singleThread,const char * Name) nogil
+cdef LLVMValueRef LLVMBuildFence(LLVMBuilderRef B,LLVMAtomicOrdering ordering,int singleThread,const char * Name)
 
 
 
-cdef LLVMValueRef LLVMBuildAtomicRMW(LLVMBuilderRef B,LLVMAtomicRMWBinOp op,LLVMValueRef PTR,LLVMValueRef Val,LLVMAtomicOrdering ordering,int singleThread) nogil
+cdef LLVMValueRef LLVMBuildAtomicRMW(LLVMBuilderRef B,LLVMAtomicRMWBinOp op,LLVMValueRef PTR,LLVMValueRef Val,LLVMAtomicOrdering ordering,int singleThread)
 
 
 
-cdef LLVMValueRef LLVMBuildAtomicCmpXchg(LLVMBuilderRef B,LLVMValueRef Ptr,LLVMValueRef Cmp,LLVMValueRef New,LLVMAtomicOrdering SuccessOrdering,LLVMAtomicOrdering FailureOrdering,int SingleThread) nogil
+cdef LLVMValueRef LLVMBuildAtomicCmpXchg(LLVMBuilderRef B,LLVMValueRef Ptr,LLVMValueRef Cmp,LLVMValueRef New,LLVMAtomicOrdering SuccessOrdering,LLVMAtomicOrdering FailureOrdering,int SingleThread)
 
 
 # 
 # Get the number of elements in the mask of a ShuffleVector instruction.
-cdef unsigned int LLVMGetNumMaskElements(LLVMValueRef ShuffleVectorInst) nogil
+cdef unsigned int LLVMGetNumMaskElements(LLVMValueRef ShuffleVectorInst)
 
 
 # 
 # \returns a constant that specifies that the result of a \c ShuffleVectorInst
 # is undefined.
-cdef int LLVMGetUndefMaskElem() nogil
+cdef int LLVMGetUndefMaskElem()
 
 
 # 
@@ -4163,140 +4163,140 @@ cdef int LLVMGetUndefMaskElem() nogil
 # 
 # \Returns the result of \c LLVMGetUndefMaskElem() if the mask value is undef
 # at that position.
-cdef int LLVMGetMaskValue(LLVMValueRef ShuffleVectorInst,unsigned int Elt) nogil
+cdef int LLVMGetMaskValue(LLVMValueRef ShuffleVectorInst,unsigned int Elt)
 
 
 
-cdef int LLVMIsAtomicSingleThread(LLVMValueRef AtomicInst) nogil
+cdef int LLVMIsAtomicSingleThread(LLVMValueRef AtomicInst)
 
 
 
-cdef void LLVMSetAtomicSingleThread(LLVMValueRef AtomicInst,int SingleThread) nogil
+cdef void LLVMSetAtomicSingleThread(LLVMValueRef AtomicInst,int SingleThread)
 
 
 
-cdef LLVMAtomicOrdering LLVMGetCmpXchgSuccessOrdering(LLVMValueRef CmpXchgInst) nogil
+cdef LLVMAtomicOrdering LLVMGetCmpXchgSuccessOrdering(LLVMValueRef CmpXchgInst)
 
 
 
-cdef void LLVMSetCmpXchgSuccessOrdering(LLVMValueRef CmpXchgInst,LLVMAtomicOrdering Ordering) nogil
+cdef void LLVMSetCmpXchgSuccessOrdering(LLVMValueRef CmpXchgInst,LLVMAtomicOrdering Ordering)
 
 
 
-cdef LLVMAtomicOrdering LLVMGetCmpXchgFailureOrdering(LLVMValueRef CmpXchgInst) nogil
+cdef LLVMAtomicOrdering LLVMGetCmpXchgFailureOrdering(LLVMValueRef CmpXchgInst)
 
 
 
-cdef void LLVMSetCmpXchgFailureOrdering(LLVMValueRef CmpXchgInst,LLVMAtomicOrdering Ordering) nogil
+cdef void LLVMSetCmpXchgFailureOrdering(LLVMValueRef CmpXchgInst,LLVMAtomicOrdering Ordering)
 
 
 # 
 # Changes the type of M so it can be passed to FunctionPassManagers and the
 # JIT.  They take ModuleProviders for historical reasons.
-cdef LLVMModuleProviderRef LLVMCreateModuleProviderForExistingModule(LLVMModuleRef M) nogil
+cdef LLVMModuleProviderRef LLVMCreateModuleProviderForExistingModule(LLVMModuleRef M)
 
 
 # 
 # Destroys the module M.
-cdef void LLVMDisposeModuleProvider(LLVMModuleProviderRef M) nogil
+cdef void LLVMDisposeModuleProvider(LLVMModuleProviderRef M)
 
 
 # 
 # @defgroup LLVMCCoreMemoryBuffers Memory Buffers
 # 
 # @{
-cdef int LLVMCreateMemoryBufferWithContentsOfFile(const char * Path,LLVMMemoryBufferRef* OutMemBuf,char ** OutMessage) nogil
+cdef int LLVMCreateMemoryBufferWithContentsOfFile(const char * Path,LLVMMemoryBufferRef* OutMemBuf,char ** OutMessage)
 
 
 
-cdef int LLVMCreateMemoryBufferWithSTDIN(LLVMMemoryBufferRef* OutMemBuf,char ** OutMessage) nogil
+cdef int LLVMCreateMemoryBufferWithSTDIN(LLVMMemoryBufferRef* OutMemBuf,char ** OutMessage)
 
 
 
-cdef LLVMMemoryBufferRef LLVMCreateMemoryBufferWithMemoryRange(const char * InputData,unsigned long InputDataLength,const char * BufferName,int RequiresNullTerminator) nogil
+cdef LLVMMemoryBufferRef LLVMCreateMemoryBufferWithMemoryRange(const char * InputData,unsigned long InputDataLength,const char * BufferName,int RequiresNullTerminator)
 
 
 
-cdef LLVMMemoryBufferRef LLVMCreateMemoryBufferWithMemoryRangeCopy(const char * InputData,unsigned long InputDataLength,const char * BufferName) nogil
+cdef LLVMMemoryBufferRef LLVMCreateMemoryBufferWithMemoryRangeCopy(const char * InputData,unsigned long InputDataLength,const char * BufferName)
 
 
 
-cdef const char * LLVMGetBufferStart(LLVMMemoryBufferRef MemBuf) nogil
+cdef const char * LLVMGetBufferStart(LLVMMemoryBufferRef MemBuf)
 
 
 
-cdef unsigned long LLVMGetBufferSize(LLVMMemoryBufferRef MemBuf) nogil
+cdef unsigned long LLVMGetBufferSize(LLVMMemoryBufferRef MemBuf)
 
 
 
-cdef void LLVMDisposeMemoryBuffer(LLVMMemoryBufferRef MemBuf) nogil
+cdef void LLVMDisposeMemoryBuffer(LLVMMemoryBufferRef MemBuf)
 
 
 # Return the global pass registry, for use with initialization functions.
 # @see llvm::PassRegistry::getPassRegistry
-cdef LLVMPassRegistryRef LLVMGetGlobalPassRegistry() nogil
+cdef LLVMPassRegistryRef LLVMGetGlobalPassRegistry()
 
 
 # Constructs a new whole-module pass pipeline. This type of pipeline is
 # suitable for link-time optimization and whole-module transformations.
 # @see llvm::PassManager::PassManager
-cdef LLVMPassManagerRef LLVMCreatePassManager() nogil
+cdef LLVMPassManagerRef LLVMCreatePassManager()
 
 
 # Constructs a new function-by-function pass pipeline over the module
 # provider. It does not take ownership of the module provider. This type of
 # pipeline is suitable for code generation and JIT compilation tasks.
 # @see llvm::FunctionPassManager::FunctionPassManager
-cdef LLVMPassManagerRef LLVMCreateFunctionPassManagerForModule(LLVMModuleRef M) nogil
+cdef LLVMPassManagerRef LLVMCreateFunctionPassManagerForModule(LLVMModuleRef M)
 
 
 # Deprecated: Use LLVMCreateFunctionPassManagerForModule instead. */
-cdef LLVMPassManagerRef LLVMCreateFunctionPassManager(LLVMModuleProviderRef MP) nogil
+cdef LLVMPassManagerRef LLVMCreateFunctionPassManager(LLVMModuleProviderRef MP)
 
 
 # Initializes, executes on the provided module, and finalizes all of the
 # passes scheduled in the pass manager. Returns 1 if any of the passes
 # modified the module, 0 otherwise.
 # @see llvm::PassManager::run(Module&)
-cdef int LLVMRunPassManager(LLVMPassManagerRef PM,LLVMModuleRef M) nogil
+cdef int LLVMRunPassManager(LLVMPassManagerRef PM,LLVMModuleRef M)
 
 
 # Initializes all of the function passes scheduled in the function pass
 # manager. Returns 1 if any of the passes modified the module, 0 otherwise.
 # @see llvm::FunctionPassManager::doInitialization
-cdef int LLVMInitializeFunctionPassManager(LLVMPassManagerRef FPM) nogil
+cdef int LLVMInitializeFunctionPassManager(LLVMPassManagerRef FPM)
 
 
 # Executes all of the function passes scheduled in the function pass manager
 # on the provided function. Returns 1 if any of the passes modified the
 # function, false otherwise.
 # @see llvm::FunctionPassManager::run(Function&)
-cdef int LLVMRunFunctionPassManager(LLVMPassManagerRef FPM,LLVMValueRef F) nogil
+cdef int LLVMRunFunctionPassManager(LLVMPassManagerRef FPM,LLVMValueRef F)
 
 
 # Finalizes all of the function passes scheduled in the function pass
 # manager. Returns 1 if any of the passes modified the module, 0 otherwise.
 # @see llvm::FunctionPassManager::doFinalization
-cdef int LLVMFinalizeFunctionPassManager(LLVMPassManagerRef FPM) nogil
+cdef int LLVMFinalizeFunctionPassManager(LLVMPassManagerRef FPM)
 
 
 # Frees the memory of a pass pipeline. For function pipelines, does not free
 # the module provider.
 # @see llvm::PassManagerBase::~PassManagerBase.
-cdef void LLVMDisposePassManager(LLVMPassManagerRef PM) nogil
+cdef void LLVMDisposePassManager(LLVMPassManagerRef PM)
 
 
 # Deprecated: Multi-threading can only be enabled/disabled with the compile
 # time define LLVM_ENABLE_THREADS.  This function always returns
 # LLVMIsMultithreaded().
-cdef int LLVMStartMultithreaded() nogil
+cdef int LLVMStartMultithreaded()
 
 
 # Deprecated: Multi-threading can only be enabled/disabled with the compile
 # time define LLVM_ENABLE_THREADS.
-cdef void LLVMStopMultithreaded() nogil
+cdef void LLVMStopMultithreaded()
 
 
 # Check whether LLVM is executing in thread-safe mode or not.
 # @see llvm::llvm_is_multithreaded
-cdef int LLVMIsMultithreaded() nogil
+cdef int LLVMIsMultithreaded()

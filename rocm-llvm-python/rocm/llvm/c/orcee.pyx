@@ -34,7 +34,6 @@ import ctypes
 import enum
 
 from rocm.llvm.c.error import LLVMErrorRef
-from rocm.llvm.c.error import LLVMErrorTypeId
 from rocm.llvm.c.error import LLVMGetErrorTypeId
 from rocm.llvm.c.error import LLVMConsumeError
 from rocm.llvm.c.error import LLVMGetErrorMessage
@@ -86,10 +85,7 @@ from rocm.llvm.c.executionengine import LLVMCreateOProfileJITEventListener
 from rocm.llvm.c.executionengine import LLVMCreatePerfJITEventListener
 
 
-from rocm.llvm.c.orc import LLVMOrcJITTargetAddress
-from rocm.llvm.c.orc import LLVMOrcExecutorAddress
 from rocm.llvm.c.orc import LLVMJITSymbolGenericFlags
-from rocm.llvm.c.orc import LLVMJITSymbolTargetFlags
 from rocm.llvm.c.orc import LLVMOrcExecutionSessionRef
 from rocm.llvm.c.orc import LLVMOrcSymbolStringPoolRef
 from rocm.llvm.c.orc import LLVMOrcSymbolStringPoolEntryRef
@@ -222,7 +218,6 @@ from rocm.llvm.c.targetmachine import LLVMGetHostCPUFeatures
 from rocm.llvm.c.targetmachine import LLVMAddAnalysisPasses
 
 
-from rocm.llvm.c.types import LLVMBool
 from rocm.llvm.c.types import LLVMMemoryBufferRef
 from rocm.llvm.c.types import LLVMContextRef
 from rocm.llvm.c.types import LLVMModuleRef

@@ -26,12 +26,12 @@ from libc.stdint cimport *
 ctypedef bint _Bool # bool is not a reserved keyword in C, _Bool is
 from rocm.llvm.c.ctypes cimport *
 # See llvm::createLowerSwitchPass function. */
-cdef void LLVMAddLowerSwitchPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddLowerSwitchPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createPromoteMemoryToRegisterPass function. */
-cdef void LLVMAddPromoteMemoryToRegisterPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddPromoteMemoryToRegisterPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createAddDiscriminatorsPass function. */
-cdef void LLVMAddAddDiscriminatorsPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddAddDiscriminatorsPass(LLVMPassManagerRef PM)

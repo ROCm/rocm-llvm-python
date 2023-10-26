@@ -45,178 +45,178 @@ cdef extern from "llvm-c/Target.h":
 # LLVMInitializeAllTargetInfos - The main program should call this function if
 # it wants access to all available targets that LLVM is configured to
 # support.
-cdef void LLVMInitializeAllTargetInfos() nogil
+cdef void LLVMInitializeAllTargetInfos()
 
 
 # LLVMInitializeAllTargets - The main program should call this function if it
 # wants to link in all available targets that LLVM is configured to
 # support.
-cdef void LLVMInitializeAllTargets() nogil
+cdef void LLVMInitializeAllTargets()
 
 
 # LLVMInitializeAllTargetMCs - The main program should call this function if
 # it wants access to all available target MC that LLVM is configured to
 # support.
-cdef void LLVMInitializeAllTargetMCs() nogil
+cdef void LLVMInitializeAllTargetMCs()
 
 
 # LLVMInitializeAllAsmPrinters - The main program should call this function if
 # it wants all asm printers that LLVM is configured to support, to make them
 # available via the TargetRegistry.
-cdef void LLVMInitializeAllAsmPrinters() nogil
+cdef void LLVMInitializeAllAsmPrinters()
 
 
 # LLVMInitializeAllAsmParsers - The main program should call this function if
 # it wants all asm parsers that LLVM is configured to support, to make them
 # available via the TargetRegistry.
-cdef void LLVMInitializeAllAsmParsers() nogil
+cdef void LLVMInitializeAllAsmParsers()
 
 
 # LLVMInitializeAllDisassemblers - The main program should call this function
 # if it wants all disassemblers that LLVM is configured to support, to make
 # them available via the TargetRegistry.
-cdef void LLVMInitializeAllDisassemblers() nogil
+cdef void LLVMInitializeAllDisassemblers()
 
 
 # LLVMInitializeNativeTarget - The main program should call this function to
 # initialize the native target corresponding to the host.  This is useful
 # for JIT applications to ensure that the target gets linked in correctly.
-cdef int LLVMInitializeNativeTarget() nogil
+cdef int LLVMInitializeNativeTarget()
 
 
 # LLVMInitializeNativeTargetAsmParser - The main program should call this
 # function to initialize the parser for the native target corresponding to the
 # host.
-cdef int LLVMInitializeNativeAsmParser() nogil
+cdef int LLVMInitializeNativeAsmParser()
 
 
 # LLVMInitializeNativeTargetAsmPrinter - The main program should call this
 # function to initialize the printer for the native target corresponding to
 # the host.
-cdef int LLVMInitializeNativeAsmPrinter() nogil
+cdef int LLVMInitializeNativeAsmPrinter()
 
 
 # LLVMInitializeNativeTargetDisassembler - The main program should call this
 # function to initialize the disassembler for the native target corresponding
 # to the host.
-cdef int LLVMInitializeNativeDisassembler() nogil
+cdef int LLVMInitializeNativeDisassembler()
 
 
 # 
 # Obtain the data layout for a module.
 # 
 # @see Module::getDataLayout()
-cdef LLVMTargetDataRef LLVMGetModuleDataLayout(LLVMModuleRef M) nogil
+cdef LLVMTargetDataRef LLVMGetModuleDataLayout(LLVMModuleRef M)
 
 
 # 
 # Set the data layout for a module.
 # 
 # @see Module::setDataLayout()
-cdef void LLVMSetModuleDataLayout(LLVMModuleRef M,LLVMTargetDataRef DL) nogil
+cdef void LLVMSetModuleDataLayout(LLVMModuleRef M,LLVMTargetDataRef DL)
 
 
 # Creates target data from a target layout string.
 # See the constructor llvm::DataLayout::DataLayout.
-cdef LLVMTargetDataRef LLVMCreateTargetData(const char * StringRep) nogil
+cdef LLVMTargetDataRef LLVMCreateTargetData(const char * StringRep)
 
 
 # Deallocates a TargetData.
 # See the destructor llvm::DataLayout::~DataLayout.
-cdef void LLVMDisposeTargetData(LLVMTargetDataRef TD) nogil
+cdef void LLVMDisposeTargetData(LLVMTargetDataRef TD)
 
 
 # Adds target library information to a pass manager. This does not take
 # ownership of the target library info.
 # See the method llvm::PassManagerBase::add.
-cdef void LLVMAddTargetLibraryInfo(LLVMTargetLibraryInfoRef TLI,LLVMPassManagerRef PM) nogil
+cdef void LLVMAddTargetLibraryInfo(LLVMTargetLibraryInfoRef TLI,LLVMPassManagerRef PM)
 
 
 # Converts target data to a target layout string. The string must be disposed
 # with LLVMDisposeMessage.
 # See the constructor llvm::DataLayout::DataLayout.
-cdef char * LLVMCopyStringRepOfTargetData(LLVMTargetDataRef TD) nogil
+cdef char * LLVMCopyStringRepOfTargetData(LLVMTargetDataRef TD)
 
 
 # Returns the byte order of a target, either LLVMBigEndian or
 # LLVMLittleEndian.
 # See the method llvm::DataLayout::isLittleEndian.
-cdef LLVMByteOrdering LLVMByteOrder(LLVMTargetDataRef TD) nogil
+cdef LLVMByteOrdering LLVMByteOrder(LLVMTargetDataRef TD)
 
 
 # Returns the pointer size in bytes for a target.
 # See the method llvm::DataLayout::getPointerSize.
-cdef unsigned int LLVMPointerSize(LLVMTargetDataRef TD) nogil
+cdef unsigned int LLVMPointerSize(LLVMTargetDataRef TD)
 
 
 # Returns the pointer size in bytes for a target for a specified
 # address space.
 # See the method llvm::DataLayout::getPointerSize.
-cdef unsigned int LLVMPointerSizeForAS(LLVMTargetDataRef TD,unsigned int AS) nogil
+cdef unsigned int LLVMPointerSizeForAS(LLVMTargetDataRef TD,unsigned int AS)
 
 
 # Returns the integer type that is the same size as a pointer on a target.
 # See the method llvm::DataLayout::getIntPtrType.
-cdef LLVMTypeRef LLVMIntPtrType(LLVMTargetDataRef TD) nogil
-
-
-# Returns the integer type that is the same size as a pointer on a target.
-# This version allows the address space to be specified.
-# See the method llvm::DataLayout::getIntPtrType.
-cdef LLVMTypeRef LLVMIntPtrTypeForAS(LLVMTargetDataRef TD,unsigned int AS) nogil
-
-
-# Returns the integer type that is the same size as a pointer on a target.
-# See the method llvm::DataLayout::getIntPtrType.
-cdef LLVMTypeRef LLVMIntPtrTypeInContext(LLVMContextRef C,LLVMTargetDataRef TD) nogil
+cdef LLVMTypeRef LLVMIntPtrType(LLVMTargetDataRef TD)
 
 
 # Returns the integer type that is the same size as a pointer on a target.
 # This version allows the address space to be specified.
 # See the method llvm::DataLayout::getIntPtrType.
-cdef LLVMTypeRef LLVMIntPtrTypeForASInContext(LLVMContextRef C,LLVMTargetDataRef TD,unsigned int AS) nogil
+cdef LLVMTypeRef LLVMIntPtrTypeForAS(LLVMTargetDataRef TD,unsigned int AS)
+
+
+# Returns the integer type that is the same size as a pointer on a target.
+# See the method llvm::DataLayout::getIntPtrType.
+cdef LLVMTypeRef LLVMIntPtrTypeInContext(LLVMContextRef C,LLVMTargetDataRef TD)
+
+
+# Returns the integer type that is the same size as a pointer on a target.
+# This version allows the address space to be specified.
+# See the method llvm::DataLayout::getIntPtrType.
+cdef LLVMTypeRef LLVMIntPtrTypeForASInContext(LLVMContextRef C,LLVMTargetDataRef TD,unsigned int AS)
 
 
 # Computes the size of a type in bytes for a target.
 # See the method llvm::DataLayout::getTypeSizeInBits.
-cdef unsigned long long LLVMSizeOfTypeInBits(LLVMTargetDataRef TD,LLVMTypeRef Ty) nogil
+cdef unsigned long long LLVMSizeOfTypeInBits(LLVMTargetDataRef TD,LLVMTypeRef Ty)
 
 
 # Computes the storage size of a type in bytes for a target.
 # See the method llvm::DataLayout::getTypeStoreSize.
-cdef unsigned long long LLVMStoreSizeOfType(LLVMTargetDataRef TD,LLVMTypeRef Ty) nogil
+cdef unsigned long long LLVMStoreSizeOfType(LLVMTargetDataRef TD,LLVMTypeRef Ty)
 
 
 # Computes the ABI size of a type in bytes for a target.
 # See the method llvm::DataLayout::getTypeAllocSize.
-cdef unsigned long long LLVMABISizeOfType(LLVMTargetDataRef TD,LLVMTypeRef Ty) nogil
+cdef unsigned long long LLVMABISizeOfType(LLVMTargetDataRef TD,LLVMTypeRef Ty)
 
 
 # Computes the ABI alignment of a type in bytes for a target.
 # See the method llvm::DataLayout::getTypeABISize.
-cdef unsigned int LLVMABIAlignmentOfType(LLVMTargetDataRef TD,LLVMTypeRef Ty) nogil
+cdef unsigned int LLVMABIAlignmentOfType(LLVMTargetDataRef TD,LLVMTypeRef Ty)
 
 
 # Computes the call frame alignment of a type in bytes for a target.
 # See the method llvm::DataLayout::getTypeABISize.
-cdef unsigned int LLVMCallFrameAlignmentOfType(LLVMTargetDataRef TD,LLVMTypeRef Ty) nogil
+cdef unsigned int LLVMCallFrameAlignmentOfType(LLVMTargetDataRef TD,LLVMTypeRef Ty)
 
 
 # Computes the preferred alignment of a type in bytes for a target.
 # See the method llvm::DataLayout::getTypeABISize.
-cdef unsigned int LLVMPreferredAlignmentOfType(LLVMTargetDataRef TD,LLVMTypeRef Ty) nogil
+cdef unsigned int LLVMPreferredAlignmentOfType(LLVMTargetDataRef TD,LLVMTypeRef Ty)
 
 
 # Computes the preferred alignment of a global variable in bytes for a target.
 # See the method llvm::DataLayout::getPreferredAlignment.
-cdef unsigned int LLVMPreferredAlignmentOfGlobal(LLVMTargetDataRef TD,LLVMValueRef GlobalVar) nogil
+cdef unsigned int LLVMPreferredAlignmentOfGlobal(LLVMTargetDataRef TD,LLVMValueRef GlobalVar)
 
 
 # Computes the structure element that contains the byte offset for a target.
 # See the method llvm::StructLayout::getElementContainingOffset.
-cdef unsigned int LLVMElementAtOffset(LLVMTargetDataRef TD,LLVMTypeRef StructTy,unsigned long long Offset) nogil
+cdef unsigned int LLVMElementAtOffset(LLVMTargetDataRef TD,LLVMTypeRef StructTy,unsigned long long Offset)
 
 
 # Computes the byte offset of the indexed struct element for a target.
 # See the method llvm::StructLayout::getElementContainingOffset.
-cdef unsigned long long LLVMOffsetOfElement(LLVMTargetDataRef TD,LLVMTypeRef StructTy,unsigned int Element) nogil
+cdef unsigned long long LLVMOffsetOfElement(LLVMTargetDataRef TD,LLVMTypeRef StructTy,unsigned int Element)

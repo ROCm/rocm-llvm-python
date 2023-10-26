@@ -25,19 +25,22 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMOrcExecutionSessionSetErrorReporter__funptr = NULL
@@ -52,7 +55,8 @@ cdef void* _LLVMOrcExecutionSessionSetErrorReporter__funptr = NULL
 cdef void LLVMOrcExecutionSessionSetErrorReporter(LLVMOrcExecutionSessionRef ES,LLVMOrcErrorReporterFunction ReportError,void * Ctx):
     global _LLVMOrcExecutionSessionSetErrorReporter__funptr
     __init_symbol(&_LLVMOrcExecutionSessionSetErrorReporter__funptr,"LLVMOrcExecutionSessionSetErrorReporter")
-    (<void (*)(LLVMOrcExecutionSessionRef,LLVMOrcErrorReporterFunction,void *)> _LLVMOrcExecutionSessionSetErrorReporter__funptr)(ES,ReportError,Ctx)
+    with nogil:
+        (<void (*)(LLVMOrcExecutionSessionRef,LLVMOrcErrorReporterFunction,void *) noexcept nogil> _LLVMOrcExecutionSessionSetErrorReporter__funptr)(ES,ReportError,Ctx)
 
 
 cdef void* _LLVMOrcExecutionSessionGetSymbolStringPool__funptr = NULL
@@ -61,10 +65,11 @@ cdef void* _LLVMOrcExecutionSessionGetSymbolStringPool__funptr = NULL
 # 
 # Ownership of the pool remains with the ExecutionSession: The caller is
 # not required to free the pool.
-cdef LLVMOrcSymbolStringPoolRef LLVMOrcExecutionSessionGetSymbolStringPool(LLVMOrcExecutionSessionRef ES) nogil:
+cdef LLVMOrcSymbolStringPoolRef LLVMOrcExecutionSessionGetSymbolStringPool(LLVMOrcExecutionSessionRef ES):
     global _LLVMOrcExecutionSessionGetSymbolStringPool__funptr
     __init_symbol(&_LLVMOrcExecutionSessionGetSymbolStringPool__funptr,"LLVMOrcExecutionSessionGetSymbolStringPool")
-    return (<LLVMOrcSymbolStringPoolRef (*)(LLVMOrcExecutionSessionRef) nogil> _LLVMOrcExecutionSessionGetSymbolStringPool__funptr)(ES)
+    with nogil:
+        return (<LLVMOrcSymbolStringPoolRef (*)(LLVMOrcExecutionSessionRef) noexcept nogil> _LLVMOrcExecutionSessionGetSymbolStringPool__funptr)(ES)
 
 
 cdef void* _LLVMOrcSymbolStringPoolClearDeadEntries__funptr = NULL
@@ -77,10 +82,11 @@ cdef void* _LLVMOrcSymbolStringPoolClearDeadEntries__funptr = NULL
 # infrequently, ideally when the caller has reason to believe that some
 # entries will have become unreferenced, e.g. after removing a module or
 # closing a JITDylib.
-cdef void LLVMOrcSymbolStringPoolClearDeadEntries(LLVMOrcSymbolStringPoolRef SSP) nogil:
+cdef void LLVMOrcSymbolStringPoolClearDeadEntries(LLVMOrcSymbolStringPoolRef SSP):
     global _LLVMOrcSymbolStringPoolClearDeadEntries__funptr
     __init_symbol(&_LLVMOrcSymbolStringPoolClearDeadEntries__funptr,"LLVMOrcSymbolStringPoolClearDeadEntries")
-    (<void (*)(LLVMOrcSymbolStringPoolRef) nogil> _LLVMOrcSymbolStringPoolClearDeadEntries__funptr)(SSP)
+    with nogil:
+        (<void (*)(LLVMOrcSymbolStringPoolRef) noexcept nogil> _LLVMOrcSymbolStringPoolClearDeadEntries__funptr)(SSP)
 
 
 cdef void* _LLVMOrcExecutionSessionIntern__funptr = NULL
@@ -95,10 +101,11 @@ cdef void* _LLVMOrcExecutionSessionIntern__funptr = NULL
 # equality.
 # 
 # Note that this function does not perform linker-mangling on the string.
-cdef LLVMOrcSymbolStringPoolEntryRef LLVMOrcExecutionSessionIntern(LLVMOrcExecutionSessionRef ES,const char * Name) nogil:
+cdef LLVMOrcSymbolStringPoolEntryRef LLVMOrcExecutionSessionIntern(LLVMOrcExecutionSessionRef ES,const char * Name):
     global _LLVMOrcExecutionSessionIntern__funptr
     __init_symbol(&_LLVMOrcExecutionSessionIntern__funptr,"LLVMOrcExecutionSessionIntern")
-    return (<LLVMOrcSymbolStringPoolEntryRef (*)(LLVMOrcExecutionSessionRef,const char *) nogil> _LLVMOrcExecutionSessionIntern__funptr)(ES,Name)
+    with nogil:
+        return (<LLVMOrcSymbolStringPoolEntryRef (*)(LLVMOrcExecutionSessionRef,const char *) noexcept nogil> _LLVMOrcExecutionSessionIntern__funptr)(ES,Name)
 
 
 cdef void* _LLVMOrcExecutionSessionLookup__funptr = NULL
@@ -132,25 +139,28 @@ cdef void* _LLVMOrcExecutionSessionLookup__funptr = NULL
 cdef void LLVMOrcExecutionSessionLookup(LLVMOrcExecutionSessionRef ES,LLVMOrcLookupKind K,LLVMOrcCJITDylibSearchOrder SearchOrder,unsigned long SearchOrderSize,LLVMOrcCLookupSet Symbols,unsigned long SymbolsSize,LLVMOrcExecutionSessionLookupHandleResultFunction HandleResult,void * Ctx):
     global _LLVMOrcExecutionSessionLookup__funptr
     __init_symbol(&_LLVMOrcExecutionSessionLookup__funptr,"LLVMOrcExecutionSessionLookup")
-    (<void (*)(LLVMOrcExecutionSessionRef,LLVMOrcLookupKind,LLVMOrcCJITDylibSearchOrder,unsigned long,LLVMOrcCLookupSet,unsigned long,LLVMOrcExecutionSessionLookupHandleResultFunction,void *)> _LLVMOrcExecutionSessionLookup__funptr)(ES,K,SearchOrder,SearchOrderSize,Symbols,SymbolsSize,HandleResult,Ctx)
+    with nogil:
+        (<void (*)(LLVMOrcExecutionSessionRef,LLVMOrcLookupKind,LLVMOrcCJITDylibSearchOrder,unsigned long,LLVMOrcCLookupSet,unsigned long,LLVMOrcExecutionSessionLookupHandleResultFunction,void *) noexcept nogil> _LLVMOrcExecutionSessionLookup__funptr)(ES,K,SearchOrder,SearchOrderSize,Symbols,SymbolsSize,HandleResult,Ctx)
 
 
 cdef void* _LLVMOrcRetainSymbolStringPoolEntry__funptr = NULL
 # 
 # Increments the ref-count for a SymbolStringPool entry.
-cdef void LLVMOrcRetainSymbolStringPoolEntry(LLVMOrcSymbolStringPoolEntryRef S) nogil:
+cdef void LLVMOrcRetainSymbolStringPoolEntry(LLVMOrcSymbolStringPoolEntryRef S):
     global _LLVMOrcRetainSymbolStringPoolEntry__funptr
     __init_symbol(&_LLVMOrcRetainSymbolStringPoolEntry__funptr,"LLVMOrcRetainSymbolStringPoolEntry")
-    (<void (*)(LLVMOrcSymbolStringPoolEntryRef) nogil> _LLVMOrcRetainSymbolStringPoolEntry__funptr)(S)
+    with nogil:
+        (<void (*)(LLVMOrcSymbolStringPoolEntryRef) noexcept nogil> _LLVMOrcRetainSymbolStringPoolEntry__funptr)(S)
 
 
 cdef void* _LLVMOrcReleaseSymbolStringPoolEntry__funptr = NULL
 # 
 # Reduces the ref-count for of a SymbolStringPool entry.
-cdef void LLVMOrcReleaseSymbolStringPoolEntry(LLVMOrcSymbolStringPoolEntryRef S) nogil:
+cdef void LLVMOrcReleaseSymbolStringPoolEntry(LLVMOrcSymbolStringPoolEntryRef S):
     global _LLVMOrcReleaseSymbolStringPoolEntry__funptr
     __init_symbol(&_LLVMOrcReleaseSymbolStringPoolEntry__funptr,"LLVMOrcReleaseSymbolStringPoolEntry")
-    (<void (*)(LLVMOrcSymbolStringPoolEntryRef) nogil> _LLVMOrcReleaseSymbolStringPoolEntry__funptr)(S)
+    with nogil:
+        (<void (*)(LLVMOrcSymbolStringPoolEntryRef) noexcept nogil> _LLVMOrcReleaseSymbolStringPoolEntry__funptr)(S)
 
 
 cdef void* _LLVMOrcSymbolStringPoolEntryStr__funptr = NULL
@@ -158,39 +168,43 @@ cdef void* _LLVMOrcSymbolStringPoolEntryStr__funptr = NULL
 # Return the c-string for the given symbol. This string will remain valid until
 # the entry is freed (once all LLVMOrcSymbolStringPoolEntryRefs have been
 # released).
-cdef const char * LLVMOrcSymbolStringPoolEntryStr(LLVMOrcSymbolStringPoolEntryRef S) nogil:
+cdef const char * LLVMOrcSymbolStringPoolEntryStr(LLVMOrcSymbolStringPoolEntryRef S):
     global _LLVMOrcSymbolStringPoolEntryStr__funptr
     __init_symbol(&_LLVMOrcSymbolStringPoolEntryStr__funptr,"LLVMOrcSymbolStringPoolEntryStr")
-    return (<const char * (*)(LLVMOrcSymbolStringPoolEntryRef) nogil> _LLVMOrcSymbolStringPoolEntryStr__funptr)(S)
+    with nogil:
+        return (<const char * (*)(LLVMOrcSymbolStringPoolEntryRef) noexcept nogil> _LLVMOrcSymbolStringPoolEntryStr__funptr)(S)
 
 
 cdef void* _LLVMOrcReleaseResourceTracker__funptr = NULL
 # 
 # Reduces the ref-count of a ResourceTracker.
-cdef void LLVMOrcReleaseResourceTracker(LLVMOrcResourceTrackerRef RT) nogil:
+cdef void LLVMOrcReleaseResourceTracker(LLVMOrcResourceTrackerRef RT):
     global _LLVMOrcReleaseResourceTracker__funptr
     __init_symbol(&_LLVMOrcReleaseResourceTracker__funptr,"LLVMOrcReleaseResourceTracker")
-    (<void (*)(LLVMOrcResourceTrackerRef) nogil> _LLVMOrcReleaseResourceTracker__funptr)(RT)
+    with nogil:
+        (<void (*)(LLVMOrcResourceTrackerRef) noexcept nogil> _LLVMOrcReleaseResourceTracker__funptr)(RT)
 
 
 cdef void* _LLVMOrcResourceTrackerTransferTo__funptr = NULL
 # 
 # Transfers tracking of all resources associated with resource tracker SrcRT
 # to resource tracker DstRT.
-cdef void LLVMOrcResourceTrackerTransferTo(LLVMOrcResourceTrackerRef SrcRT,LLVMOrcResourceTrackerRef DstRT) nogil:
+cdef void LLVMOrcResourceTrackerTransferTo(LLVMOrcResourceTrackerRef SrcRT,LLVMOrcResourceTrackerRef DstRT):
     global _LLVMOrcResourceTrackerTransferTo__funptr
     __init_symbol(&_LLVMOrcResourceTrackerTransferTo__funptr,"LLVMOrcResourceTrackerTransferTo")
-    (<void (*)(LLVMOrcResourceTrackerRef,LLVMOrcResourceTrackerRef) nogil> _LLVMOrcResourceTrackerTransferTo__funptr)(SrcRT,DstRT)
+    with nogil:
+        (<void (*)(LLVMOrcResourceTrackerRef,LLVMOrcResourceTrackerRef) noexcept nogil> _LLVMOrcResourceTrackerTransferTo__funptr)(SrcRT,DstRT)
 
 
 cdef void* _LLVMOrcResourceTrackerRemove__funptr = NULL
 # 
 # Remove all resources associated with the given tracker. See
 # ResourceTracker::remove().
-cdef LLVMErrorRef LLVMOrcResourceTrackerRemove(LLVMOrcResourceTrackerRef RT) nogil:
+cdef LLVMErrorRef LLVMOrcResourceTrackerRemove(LLVMOrcResourceTrackerRef RT):
     global _LLVMOrcResourceTrackerRemove__funptr
     __init_symbol(&_LLVMOrcResourceTrackerRemove__funptr,"LLVMOrcResourceTrackerRemove")
-    return (<LLVMErrorRef (*)(LLVMOrcResourceTrackerRef) nogil> _LLVMOrcResourceTrackerRemove__funptr)(RT)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcResourceTrackerRef) noexcept nogil> _LLVMOrcResourceTrackerRemove__funptr)(RT)
 
 
 cdef void* _LLVMOrcDisposeDefinitionGenerator__funptr = NULL
@@ -198,19 +212,21 @@ cdef void* _LLVMOrcDisposeDefinitionGenerator__funptr = NULL
 # Dispose of a JITDylib::DefinitionGenerator. This should only be called if
 # ownership has not been passed to a JITDylib (e.g. because some error
 # prevented the client from calling LLVMOrcJITDylibAddGenerator).
-cdef void LLVMOrcDisposeDefinitionGenerator(LLVMOrcDefinitionGeneratorRef DG) nogil:
+cdef void LLVMOrcDisposeDefinitionGenerator(LLVMOrcDefinitionGeneratorRef DG):
     global _LLVMOrcDisposeDefinitionGenerator__funptr
     __init_symbol(&_LLVMOrcDisposeDefinitionGenerator__funptr,"LLVMOrcDisposeDefinitionGenerator")
-    (<void (*)(LLVMOrcDefinitionGeneratorRef) nogil> _LLVMOrcDisposeDefinitionGenerator__funptr)(DG)
+    with nogil:
+        (<void (*)(LLVMOrcDefinitionGeneratorRef) noexcept nogil> _LLVMOrcDisposeDefinitionGenerator__funptr)(DG)
 
 
 cdef void* _LLVMOrcDisposeMaterializationUnit__funptr = NULL
 # 
 # Dispose of a MaterializationUnit.
-cdef void LLVMOrcDisposeMaterializationUnit(LLVMOrcMaterializationUnitRef MU) nogil:
+cdef void LLVMOrcDisposeMaterializationUnit(LLVMOrcMaterializationUnitRef MU):
     global _LLVMOrcDisposeMaterializationUnit__funptr
     __init_symbol(&_LLVMOrcDisposeMaterializationUnit__funptr,"LLVMOrcDisposeMaterializationUnit")
-    (<void (*)(LLVMOrcMaterializationUnitRef) nogil> _LLVMOrcDisposeMaterializationUnit__funptr)(MU)
+    with nogil:
+        (<void (*)(LLVMOrcMaterializationUnitRef) noexcept nogil> _LLVMOrcDisposeMaterializationUnit__funptr)(MU)
 
 
 cdef void* _LLVMOrcCreateCustomMaterializationUnit__funptr = NULL
@@ -249,7 +265,8 @@ cdef void* _LLVMOrcCreateCustomMaterializationUnit__funptr = NULL
 cdef LLVMOrcMaterializationUnitRef LLVMOrcCreateCustomMaterializationUnit(const char * Name,void * Ctx,LLVMOrcCSymbolFlagsMapPairs Syms,unsigned long NumSyms,LLVMOrcSymbolStringPoolEntryRef InitSym,LLVMOrcMaterializationUnitMaterializeFunction Materialize,LLVMOrcMaterializationUnitDiscardFunction Discard,LLVMOrcMaterializationUnitDestroyFunction Destroy):
     global _LLVMOrcCreateCustomMaterializationUnit__funptr
     __init_symbol(&_LLVMOrcCreateCustomMaterializationUnit__funptr,"LLVMOrcCreateCustomMaterializationUnit")
-    return (<LLVMOrcMaterializationUnitRef (*)(const char *,void *,LLVMOrcCSymbolFlagsMapPairs,unsigned long,LLVMOrcSymbolStringPoolEntryRef,LLVMOrcMaterializationUnitMaterializeFunction,LLVMOrcMaterializationUnitDiscardFunction,LLVMOrcMaterializationUnitDestroyFunction)> _LLVMOrcCreateCustomMaterializationUnit__funptr)(Name,Ctx,Syms,NumSyms,InitSym,Materialize,Discard,Destroy)
+    with nogil:
+        return (<LLVMOrcMaterializationUnitRef (*)(const char *,void *,LLVMOrcCSymbolFlagsMapPairs,unsigned long,LLVMOrcSymbolStringPoolEntryRef,LLVMOrcMaterializationUnitMaterializeFunction,LLVMOrcMaterializationUnitDiscardFunction,LLVMOrcMaterializationUnitDestroyFunction) noexcept nogil> _LLVMOrcCreateCustomMaterializationUnit__funptr)(Name,Ctx,Syms,NumSyms,InitSym,Materialize,Discard,Destroy)
 
 
 cdef void* _LLVMOrcAbsoluteSymbols__funptr = NULL
@@ -273,10 +290,11 @@ cdef void* _LLVMOrcAbsoluteSymbols__funptr = NULL
 # 
 # If a client wishes to reuse elements of the Sym array after this call they
 # must explicitly retain each of the elements for themselves.
-cdef LLVMOrcMaterializationUnitRef LLVMOrcAbsoluteSymbols(LLVMOrcCSymbolMapPairs Syms,unsigned long NumPairs) nogil:
+cdef LLVMOrcMaterializationUnitRef LLVMOrcAbsoluteSymbols(LLVMOrcCSymbolMapPairs Syms,unsigned long NumPairs):
     global _LLVMOrcAbsoluteSymbols__funptr
     __init_symbol(&_LLVMOrcAbsoluteSymbols__funptr,"LLVMOrcAbsoluteSymbols")
-    return (<LLVMOrcMaterializationUnitRef (*)(LLVMOrcCSymbolMapPairs,unsigned long) nogil> _LLVMOrcAbsoluteSymbols__funptr)(Syms,NumPairs)
+    with nogil:
+        return (<LLVMOrcMaterializationUnitRef (*)(LLVMOrcCSymbolMapPairs,unsigned long) noexcept nogil> _LLVMOrcAbsoluteSymbols__funptr)(Syms,NumPairs)
 
 
 cdef void* _LLVMOrcLazyReexports__funptr = NULL
@@ -300,10 +318,11 @@ cdef void* _LLVMOrcLazyReexports__funptr = NULL
 # 
 # If a client wishes to reuse elements of the CallableAliases array after this call they
 # must explicitly retain each of the elements for themselves.
-cdef LLVMOrcMaterializationUnitRef LLVMOrcLazyReexports(LLVMOrcLazyCallThroughManagerRef LCTM,LLVMOrcIndirectStubsManagerRef ISM,LLVMOrcJITDylibRef SourceRef,LLVMOrcCSymbolAliasMapPairs CallableAliases,unsigned long NumPairs) nogil:
+cdef LLVMOrcMaterializationUnitRef LLVMOrcLazyReexports(LLVMOrcLazyCallThroughManagerRef LCTM,LLVMOrcIndirectStubsManagerRef ISM,LLVMOrcJITDylibRef SourceRef,LLVMOrcCSymbolAliasMapPairs CallableAliases,unsigned long NumPairs):
     global _LLVMOrcLazyReexports__funptr
     __init_symbol(&_LLVMOrcLazyReexports__funptr,"LLVMOrcLazyReexports")
-    return (<LLVMOrcMaterializationUnitRef (*)(LLVMOrcLazyCallThroughManagerRef,LLVMOrcIndirectStubsManagerRef,LLVMOrcJITDylibRef,LLVMOrcCSymbolAliasMapPairs,unsigned long) nogil> _LLVMOrcLazyReexports__funptr)(LCTM,ISM,SourceRef,CallableAliases,NumPairs)
+    with nogil:
+        return (<LLVMOrcMaterializationUnitRef (*)(LLVMOrcLazyCallThroughManagerRef,LLVMOrcIndirectStubsManagerRef,LLVMOrcJITDylibRef,LLVMOrcCSymbolAliasMapPairs,unsigned long) noexcept nogil> _LLVMOrcLazyReexports__funptr)(LCTM,ISM,SourceRef,CallableAliases,NumPairs)
 
 
 cdef void* _LLVMOrcDisposeMaterializationResponsibility__funptr = NULL
@@ -315,28 +334,31 @@ cdef void* _LLVMOrcDisposeMaterializationResponsibility__funptr = NULL
 # LLVMOrcMaterializationResponsibilityNotifyResolved and
 # LLVMOrcMaterializationResponsibilityNotifyEmitted) or failed (via
 # LLVMOrcMaterializationResponsibilityFailMaterialization).
-cdef void LLVMOrcDisposeMaterializationResponsibility(LLVMOrcMaterializationResponsibilityRef MR) nogil:
+cdef void LLVMOrcDisposeMaterializationResponsibility(LLVMOrcMaterializationResponsibilityRef MR):
     global _LLVMOrcDisposeMaterializationResponsibility__funptr
     __init_symbol(&_LLVMOrcDisposeMaterializationResponsibility__funptr,"LLVMOrcDisposeMaterializationResponsibility")
-    (<void (*)(LLVMOrcMaterializationResponsibilityRef) nogil> _LLVMOrcDisposeMaterializationResponsibility__funptr)(MR)
+    with nogil:
+        (<void (*)(LLVMOrcMaterializationResponsibilityRef) noexcept nogil> _LLVMOrcDisposeMaterializationResponsibility__funptr)(MR)
 
 
 cdef void* _LLVMOrcMaterializationResponsibilityGetTargetDylib__funptr = NULL
 # 
 # Returns the target JITDylib that these symbols are being materialized into.
-cdef LLVMOrcJITDylibRef LLVMOrcMaterializationResponsibilityGetTargetDylib(LLVMOrcMaterializationResponsibilityRef MR) nogil:
+cdef LLVMOrcJITDylibRef LLVMOrcMaterializationResponsibilityGetTargetDylib(LLVMOrcMaterializationResponsibilityRef MR):
     global _LLVMOrcMaterializationResponsibilityGetTargetDylib__funptr
     __init_symbol(&_LLVMOrcMaterializationResponsibilityGetTargetDylib__funptr,"LLVMOrcMaterializationResponsibilityGetTargetDylib")
-    return (<LLVMOrcJITDylibRef (*)(LLVMOrcMaterializationResponsibilityRef) nogil> _LLVMOrcMaterializationResponsibilityGetTargetDylib__funptr)(MR)
+    with nogil:
+        return (<LLVMOrcJITDylibRef (*)(LLVMOrcMaterializationResponsibilityRef) noexcept nogil> _LLVMOrcMaterializationResponsibilityGetTargetDylib__funptr)(MR)
 
 
 cdef void* _LLVMOrcMaterializationResponsibilityGetExecutionSession__funptr = NULL
 # 
 # Returns the ExecutionSession for this MaterializationResponsibility.
-cdef LLVMOrcExecutionSessionRef LLVMOrcMaterializationResponsibilityGetExecutionSession(LLVMOrcMaterializationResponsibilityRef MR) nogil:
+cdef LLVMOrcExecutionSessionRef LLVMOrcMaterializationResponsibilityGetExecutionSession(LLVMOrcMaterializationResponsibilityRef MR):
     global _LLVMOrcMaterializationResponsibilityGetExecutionSession__funptr
     __init_symbol(&_LLVMOrcMaterializationResponsibilityGetExecutionSession__funptr,"LLVMOrcMaterializationResponsibilityGetExecutionSession")
-    return (<LLVMOrcExecutionSessionRef (*)(LLVMOrcMaterializationResponsibilityRef) nogil> _LLVMOrcMaterializationResponsibilityGetExecutionSession__funptr)(MR)
+    with nogil:
+        return (<LLVMOrcExecutionSessionRef (*)(LLVMOrcMaterializationResponsibilityRef) noexcept nogil> _LLVMOrcMaterializationResponsibilityGetExecutionSession__funptr)(MR)
 
 
 cdef void* _LLVMOrcMaterializationResponsibilityGetSymbols__funptr = NULL
@@ -349,10 +371,11 @@ cdef void* _LLVMOrcMaterializationResponsibilityGetSymbols__funptr = NULL
 # To use the returned symbols beyond the livetime of the
 # MaterializationResponsibility requires the caller to retain the symbols
 # explicitly.
-cdef LLVMOrcCSymbolFlagsMapPairs LLVMOrcMaterializationResponsibilityGetSymbols(LLVMOrcMaterializationResponsibilityRef MR,unsigned long * NumPairs) nogil:
+cdef LLVMOrcCSymbolFlagsMapPairs LLVMOrcMaterializationResponsibilityGetSymbols(LLVMOrcMaterializationResponsibilityRef MR,unsigned long * NumPairs):
     global _LLVMOrcMaterializationResponsibilityGetSymbols__funptr
     __init_symbol(&_LLVMOrcMaterializationResponsibilityGetSymbols__funptr,"LLVMOrcMaterializationResponsibilityGetSymbols")
-    return (<LLVMOrcCSymbolFlagsMapPairs (*)(LLVMOrcMaterializationResponsibilityRef,unsigned long *) nogil> _LLVMOrcMaterializationResponsibilityGetSymbols__funptr)(MR,NumPairs)
+    with nogil:
+        return (<LLVMOrcCSymbolFlagsMapPairs (*)(LLVMOrcMaterializationResponsibilityRef,unsigned long *) noexcept nogil> _LLVMOrcMaterializationResponsibilityGetSymbols__funptr)(MR,NumPairs)
 
 
 cdef void* _LLVMOrcDisposeCSymbolFlagsMap__funptr = NULL
@@ -360,10 +383,11 @@ cdef void* _LLVMOrcDisposeCSymbolFlagsMap__funptr = NULL
 # Disposes of the passed LLVMOrcCSymbolFlagsMap.
 # 
 # Does not release the entries themselves.
-cdef void LLVMOrcDisposeCSymbolFlagsMap(LLVMOrcCSymbolFlagsMapPairs Pairs) nogil:
+cdef void LLVMOrcDisposeCSymbolFlagsMap(LLVMOrcCSymbolFlagsMapPairs Pairs):
     global _LLVMOrcDisposeCSymbolFlagsMap__funptr
     __init_symbol(&_LLVMOrcDisposeCSymbolFlagsMap__funptr,"LLVMOrcDisposeCSymbolFlagsMap")
-    (<void (*)(LLVMOrcCSymbolFlagsMapPairs) nogil> _LLVMOrcDisposeCSymbolFlagsMap__funptr)(Pairs)
+    with nogil:
+        (<void (*)(LLVMOrcCSymbolFlagsMapPairs) noexcept nogil> _LLVMOrcDisposeCSymbolFlagsMap__funptr)(Pairs)
 
 
 cdef void* _LLVMOrcMaterializationResponsibilityGetInitializerSymbol__funptr = NULL
@@ -374,10 +398,11 @@ cdef void* _LLVMOrcMaterializationResponsibilityGetInitializerSymbol__funptr = N
 # 
 # The returned symbol is not retained over any mutating operation of the
 # MaterializationResponsbility or beyond the lifetime thereof.
-cdef LLVMOrcSymbolStringPoolEntryRef LLVMOrcMaterializationResponsibilityGetInitializerSymbol(LLVMOrcMaterializationResponsibilityRef MR) nogil:
+cdef LLVMOrcSymbolStringPoolEntryRef LLVMOrcMaterializationResponsibilityGetInitializerSymbol(LLVMOrcMaterializationResponsibilityRef MR):
     global _LLVMOrcMaterializationResponsibilityGetInitializerSymbol__funptr
     __init_symbol(&_LLVMOrcMaterializationResponsibilityGetInitializerSymbol__funptr,"LLVMOrcMaterializationResponsibilityGetInitializerSymbol")
-    return (<LLVMOrcSymbolStringPoolEntryRef (*)(LLVMOrcMaterializationResponsibilityRef) nogil> _LLVMOrcMaterializationResponsibilityGetInitializerSymbol__funptr)(MR)
+    with nogil:
+        return (<LLVMOrcSymbolStringPoolEntryRef (*)(LLVMOrcMaterializationResponsibilityRef) noexcept nogil> _LLVMOrcMaterializationResponsibilityGetInitializerSymbol__funptr)(MR)
 
 
 cdef void* _LLVMOrcMaterializationResponsibilityGetRequestedSymbols__funptr = NULL
@@ -386,10 +411,11 @@ cdef void* _LLVMOrcMaterializationResponsibilityGetRequestedSymbols__funptr = NU
 # MaterializationResponsibility object that have queries pending. This
 # information can be used to return responsibility for unrequested symbols
 # back to the JITDylib via the delegate method.
-cdef LLVMOrcSymbolStringPoolEntryRef* LLVMOrcMaterializationResponsibilityGetRequestedSymbols(LLVMOrcMaterializationResponsibilityRef MR,unsigned long * NumSymbols) nogil:
+cdef LLVMOrcSymbolStringPoolEntryRef* LLVMOrcMaterializationResponsibilityGetRequestedSymbols(LLVMOrcMaterializationResponsibilityRef MR,unsigned long * NumSymbols):
     global _LLVMOrcMaterializationResponsibilityGetRequestedSymbols__funptr
     __init_symbol(&_LLVMOrcMaterializationResponsibilityGetRequestedSymbols__funptr,"LLVMOrcMaterializationResponsibilityGetRequestedSymbols")
-    return (<LLVMOrcSymbolStringPoolEntryRef* (*)(LLVMOrcMaterializationResponsibilityRef,unsigned long *) nogil> _LLVMOrcMaterializationResponsibilityGetRequestedSymbols__funptr)(MR,NumSymbols)
+    with nogil:
+        return (<LLVMOrcSymbolStringPoolEntryRef* (*)(LLVMOrcMaterializationResponsibilityRef,unsigned long *) noexcept nogil> _LLVMOrcMaterializationResponsibilityGetRequestedSymbols__funptr)(MR,NumSymbols)
 
 
 cdef void* _LLVMOrcDisposeSymbols__funptr = NULL
@@ -397,10 +423,11 @@ cdef void* _LLVMOrcDisposeSymbols__funptr = NULL
 # Disposes of the passed LLVMOrcSymbolStringPoolEntryRef* .
 # 
 # Does not release the symbols themselves.
-cdef void LLVMOrcDisposeSymbols(LLVMOrcSymbolStringPoolEntryRef* Symbols) nogil:
+cdef void LLVMOrcDisposeSymbols(LLVMOrcSymbolStringPoolEntryRef* Symbols):
     global _LLVMOrcDisposeSymbols__funptr
     __init_symbol(&_LLVMOrcDisposeSymbols__funptr,"LLVMOrcDisposeSymbols")
-    (<void (*)(LLVMOrcSymbolStringPoolEntryRef*) nogil> _LLVMOrcDisposeSymbols__funptr)(Symbols)
+    with nogil:
+        (<void (*)(LLVMOrcSymbolStringPoolEntryRef*) noexcept nogil> _LLVMOrcDisposeSymbols__funptr)(Symbols)
 
 
 cdef void* _LLVMOrcMaterializationResponsibilityNotifyResolved__funptr = NULL
@@ -419,10 +446,11 @@ cdef void* _LLVMOrcMaterializationResponsibilityNotifyResolved__funptr = NULL
 # have been registered for the symbols covered by this
 # MaterializationResponsibiility then this method is guaranteed to return
 # LLVMErrorSuccess.
-cdef LLVMErrorRef LLVMOrcMaterializationResponsibilityNotifyResolved(LLVMOrcMaterializationResponsibilityRef MR,LLVMOrcCSymbolMapPairs Symbols,unsigned long NumPairs) nogil:
+cdef LLVMErrorRef LLVMOrcMaterializationResponsibilityNotifyResolved(LLVMOrcMaterializationResponsibilityRef MR,LLVMOrcCSymbolMapPairs Symbols,unsigned long NumPairs):
     global _LLVMOrcMaterializationResponsibilityNotifyResolved__funptr
     __init_symbol(&_LLVMOrcMaterializationResponsibilityNotifyResolved__funptr,"LLVMOrcMaterializationResponsibilityNotifyResolved")
-    return (<LLVMErrorRef (*)(LLVMOrcMaterializationResponsibilityRef,LLVMOrcCSymbolMapPairs,unsigned long) nogil> _LLVMOrcMaterializationResponsibilityNotifyResolved__funptr)(MR,Symbols,NumPairs)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcMaterializationResponsibilityRef,LLVMOrcCSymbolMapPairs,unsigned long) noexcept nogil> _LLVMOrcMaterializationResponsibilityNotifyResolved__funptr)(MR,Symbols,NumPairs)
 
 
 cdef void* _LLVMOrcMaterializationResponsibilityNotifyEmitted__funptr = NULL
@@ -438,10 +466,11 @@ cdef void* _LLVMOrcMaterializationResponsibilityNotifyEmitted__funptr = NULL
 # If no dependencies have been registered for the symbols covered by this
 # MaterializationResponsibiility then this method is guaranteed to return
 # LLVMErrorSuccess.
-cdef LLVMErrorRef LLVMOrcMaterializationResponsibilityNotifyEmitted(LLVMOrcMaterializationResponsibilityRef MR) nogil:
+cdef LLVMErrorRef LLVMOrcMaterializationResponsibilityNotifyEmitted(LLVMOrcMaterializationResponsibilityRef MR):
     global _LLVMOrcMaterializationResponsibilityNotifyEmitted__funptr
     __init_symbol(&_LLVMOrcMaterializationResponsibilityNotifyEmitted__funptr,"LLVMOrcMaterializationResponsibilityNotifyEmitted")
-    return (<LLVMErrorRef (*)(LLVMOrcMaterializationResponsibilityRef) nogil> _LLVMOrcMaterializationResponsibilityNotifyEmitted__funptr)(MR)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcMaterializationResponsibilityRef) noexcept nogil> _LLVMOrcMaterializationResponsibilityNotifyEmitted__funptr)(MR)
 
 
 cdef void* _LLVMOrcMaterializationResponsibilityDefineMaterializing__funptr = NULL
@@ -457,10 +486,11 @@ cdef void* _LLVMOrcMaterializationResponsibilityDefineMaterializing__funptr = NU
 # This method can be used by materialization units that want to add
 # additional symbols at materialization time (e.g. stubs, compile
 # callbacks, metadata)
-cdef LLVMErrorRef LLVMOrcMaterializationResponsibilityDefineMaterializing(LLVMOrcMaterializationResponsibilityRef MR,LLVMOrcCSymbolFlagsMapPairs Pairs,unsigned long NumPairs) nogil:
+cdef LLVMErrorRef LLVMOrcMaterializationResponsibilityDefineMaterializing(LLVMOrcMaterializationResponsibilityRef MR,LLVMOrcCSymbolFlagsMapPairs Pairs,unsigned long NumPairs):
     global _LLVMOrcMaterializationResponsibilityDefineMaterializing__funptr
     __init_symbol(&_LLVMOrcMaterializationResponsibilityDefineMaterializing__funptr,"LLVMOrcMaterializationResponsibilityDefineMaterializing")
-    return (<LLVMErrorRef (*)(LLVMOrcMaterializationResponsibilityRef,LLVMOrcCSymbolFlagsMapPairs,unsigned long) nogil> _LLVMOrcMaterializationResponsibilityDefineMaterializing__funptr)(MR,Pairs,NumPairs)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcMaterializationResponsibilityRef,LLVMOrcCSymbolFlagsMapPairs,unsigned long) noexcept nogil> _LLVMOrcMaterializationResponsibilityDefineMaterializing__funptr)(MR,Pairs,NumPairs)
 
 
 cdef void* _LLVMOrcMaterializationResponsibilityFailMaterialization__funptr = NULL
@@ -470,10 +500,11 @@ cdef void* _LLVMOrcMaterializationResponsibilityFailMaterialization__funptr = NU
 # This will remove all symbols covered by this MaterializationResponsibilty
 # from the target JITDylib, and send an error to any queries waiting on
 # these symbols.
-cdef void LLVMOrcMaterializationResponsibilityFailMaterialization(LLVMOrcMaterializationResponsibilityRef MR) nogil:
+cdef void LLVMOrcMaterializationResponsibilityFailMaterialization(LLVMOrcMaterializationResponsibilityRef MR):
     global _LLVMOrcMaterializationResponsibilityFailMaterialization__funptr
     __init_symbol(&_LLVMOrcMaterializationResponsibilityFailMaterialization__funptr,"LLVMOrcMaterializationResponsibilityFailMaterialization")
-    (<void (*)(LLVMOrcMaterializationResponsibilityRef) nogil> _LLVMOrcMaterializationResponsibilityFailMaterialization__funptr)(MR)
+    with nogil:
+        (<void (*)(LLVMOrcMaterializationResponsibilityRef) noexcept nogil> _LLVMOrcMaterializationResponsibilityFailMaterialization__funptr)(MR)
 
 
 cdef void* _LLVMOrcMaterializationResponsibilityReplace__funptr = NULL
@@ -483,10 +514,11 @@ cdef void* _LLVMOrcMaterializationResponsibilityReplace__funptr = NULL
 # materializers to break up work based on run-time information (e.g.
 # by introspecting which symbols have actually been looked up and
 # materializing only those).
-cdef LLVMErrorRef LLVMOrcMaterializationResponsibilityReplace(LLVMOrcMaterializationResponsibilityRef MR,LLVMOrcMaterializationUnitRef MU) nogil:
+cdef LLVMErrorRef LLVMOrcMaterializationResponsibilityReplace(LLVMOrcMaterializationResponsibilityRef MR,LLVMOrcMaterializationUnitRef MU):
     global _LLVMOrcMaterializationResponsibilityReplace__funptr
     __init_symbol(&_LLVMOrcMaterializationResponsibilityReplace__funptr,"LLVMOrcMaterializationResponsibilityReplace")
-    return (<LLVMErrorRef (*)(LLVMOrcMaterializationResponsibilityRef,LLVMOrcMaterializationUnitRef) nogil> _LLVMOrcMaterializationResponsibilityReplace__funptr)(MR,MU)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcMaterializationResponsibilityRef,LLVMOrcMaterializationUnitRef) noexcept nogil> _LLVMOrcMaterializationResponsibilityReplace__funptr)(MR,MU)
 
 
 cdef void* _LLVMOrcMaterializationResponsibilityDelegate__funptr = NULL
@@ -497,10 +529,11 @@ cdef void* _LLVMOrcMaterializationResponsibilityDelegate__funptr = NULL
 # 
 # The caller retains responsibility of the the passed
 # MaterializationResponsibility.
-cdef LLVMErrorRef LLVMOrcMaterializationResponsibilityDelegate(LLVMOrcMaterializationResponsibilityRef MR,LLVMOrcSymbolStringPoolEntryRef* Symbols,unsigned long NumSymbols,LLVMOrcMaterializationResponsibilityRef* Result) nogil:
+cdef LLVMErrorRef LLVMOrcMaterializationResponsibilityDelegate(LLVMOrcMaterializationResponsibilityRef MR,LLVMOrcSymbolStringPoolEntryRef* Symbols,unsigned long NumSymbols,LLVMOrcMaterializationResponsibilityRef* Result):
     global _LLVMOrcMaterializationResponsibilityDelegate__funptr
     __init_symbol(&_LLVMOrcMaterializationResponsibilityDelegate__funptr,"LLVMOrcMaterializationResponsibilityDelegate")
-    return (<LLVMErrorRef (*)(LLVMOrcMaterializationResponsibilityRef,LLVMOrcSymbolStringPoolEntryRef*,unsigned long,LLVMOrcMaterializationResponsibilityRef*) nogil> _LLVMOrcMaterializationResponsibilityDelegate__funptr)(MR,Symbols,NumSymbols,Result)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcMaterializationResponsibilityRef,LLVMOrcSymbolStringPoolEntryRef*,unsigned long,LLVMOrcMaterializationResponsibilityRef*) noexcept nogil> _LLVMOrcMaterializationResponsibilityDelegate__funptr)(MR,Symbols,NumSymbols,Result)
 
 
 cdef void* _LLVMOrcMaterializationResponsibilityAddDependencies__funptr = NULL
@@ -521,10 +554,11 @@ cdef void* _LLVMOrcMaterializationResponsibilityAddDependencies__funptr = NULL
 # 
 # The client is still responsible for deleting the Dependencies.Names array
 # itself.
-cdef void LLVMOrcMaterializationResponsibilityAddDependencies(LLVMOrcMaterializationResponsibilityRef MR,LLVMOrcSymbolStringPoolEntryRef Name,LLVMOrcCDependenceMapPairs Dependencies,unsigned long NumPairs) nogil:
+cdef void LLVMOrcMaterializationResponsibilityAddDependencies(LLVMOrcMaterializationResponsibilityRef MR,LLVMOrcSymbolStringPoolEntryRef Name,LLVMOrcCDependenceMapPairs Dependencies,unsigned long NumPairs):
     global _LLVMOrcMaterializationResponsibilityAddDependencies__funptr
     __init_symbol(&_LLVMOrcMaterializationResponsibilityAddDependencies__funptr,"LLVMOrcMaterializationResponsibilityAddDependencies")
-    (<void (*)(LLVMOrcMaterializationResponsibilityRef,LLVMOrcSymbolStringPoolEntryRef,LLVMOrcCDependenceMapPairs,unsigned long) nogil> _LLVMOrcMaterializationResponsibilityAddDependencies__funptr)(MR,Name,Dependencies,NumPairs)
+    with nogil:
+        (<void (*)(LLVMOrcMaterializationResponsibilityRef,LLVMOrcSymbolStringPoolEntryRef,LLVMOrcCDependenceMapPairs,unsigned long) noexcept nogil> _LLVMOrcMaterializationResponsibilityAddDependencies__funptr)(MR,Name,Dependencies,NumPairs)
 
 
 cdef void* _LLVMOrcMaterializationResponsibilityAddDependenciesForAll__funptr = NULL
@@ -532,10 +566,11 @@ cdef void* _LLVMOrcMaterializationResponsibilityAddDependenciesForAll__funptr = 
 # Adds dependencies to all symbols that the MaterializationResponsibility is
 # responsible for. See LLVMOrcMaterializationResponsibilityAddDependencies for
 # notes about memory responsibility.
-cdef void LLVMOrcMaterializationResponsibilityAddDependenciesForAll(LLVMOrcMaterializationResponsibilityRef MR,LLVMOrcCDependenceMapPairs Dependencies,unsigned long NumPairs) nogil:
+cdef void LLVMOrcMaterializationResponsibilityAddDependenciesForAll(LLVMOrcMaterializationResponsibilityRef MR,LLVMOrcCDependenceMapPairs Dependencies,unsigned long NumPairs):
     global _LLVMOrcMaterializationResponsibilityAddDependenciesForAll__funptr
     __init_symbol(&_LLVMOrcMaterializationResponsibilityAddDependenciesForAll__funptr,"LLVMOrcMaterializationResponsibilityAddDependenciesForAll")
-    (<void (*)(LLVMOrcMaterializationResponsibilityRef,LLVMOrcCDependenceMapPairs,unsigned long) nogil> _LLVMOrcMaterializationResponsibilityAddDependenciesForAll__funptr)(MR,Dependencies,NumPairs)
+    with nogil:
+        (<void (*)(LLVMOrcMaterializationResponsibilityRef,LLVMOrcCDependenceMapPairs,unsigned long) noexcept nogil> _LLVMOrcMaterializationResponsibilityAddDependenciesForAll__funptr)(MR,Dependencies,NumPairs)
 
 
 cdef void* _LLVMOrcExecutionSessionCreateBareJITDylib__funptr = NULL
@@ -547,10 +582,11 @@ cdef void* _LLVMOrcExecutionSessionCreateBareJITDylib__funptr = NULL
 # 
 # This call does not install any library code or symbols into the newly
 # created JITDylib. The client is responsible for all configuration.
-cdef LLVMOrcJITDylibRef LLVMOrcExecutionSessionCreateBareJITDylib(LLVMOrcExecutionSessionRef ES,const char * Name) nogil:
+cdef LLVMOrcJITDylibRef LLVMOrcExecutionSessionCreateBareJITDylib(LLVMOrcExecutionSessionRef ES,const char * Name):
     global _LLVMOrcExecutionSessionCreateBareJITDylib__funptr
     __init_symbol(&_LLVMOrcExecutionSessionCreateBareJITDylib__funptr,"LLVMOrcExecutionSessionCreateBareJITDylib")
-    return (<LLVMOrcJITDylibRef (*)(LLVMOrcExecutionSessionRef,const char *) nogil> _LLVMOrcExecutionSessionCreateBareJITDylib__funptr)(ES,Name)
+    with nogil:
+        return (<LLVMOrcJITDylibRef (*)(LLVMOrcExecutionSessionRef,const char *) noexcept nogil> _LLVMOrcExecutionSessionCreateBareJITDylib__funptr)(ES,Name)
 
 
 cdef void* _LLVMOrcExecutionSessionCreateJITDylib__funptr = NULL
@@ -565,20 +601,22 @@ cdef void* _LLVMOrcExecutionSessionCreateJITDylib__funptr = NULL
 # (e.g. standard library interposes). If no Platform is installed then this
 # call is equivalent to LLVMExecutionSessionRefCreateBareJITDylib and will
 # always return success.
-cdef LLVMErrorRef LLVMOrcExecutionSessionCreateJITDylib(LLVMOrcExecutionSessionRef ES,LLVMOrcJITDylibRef* Result,const char * Name) nogil:
+cdef LLVMErrorRef LLVMOrcExecutionSessionCreateJITDylib(LLVMOrcExecutionSessionRef ES,LLVMOrcJITDylibRef* Result,const char * Name):
     global _LLVMOrcExecutionSessionCreateJITDylib__funptr
     __init_symbol(&_LLVMOrcExecutionSessionCreateJITDylib__funptr,"LLVMOrcExecutionSessionCreateJITDylib")
-    return (<LLVMErrorRef (*)(LLVMOrcExecutionSessionRef,LLVMOrcJITDylibRef*,const char *) nogil> _LLVMOrcExecutionSessionCreateJITDylib__funptr)(ES,Result,Name)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcExecutionSessionRef,LLVMOrcJITDylibRef*,const char *) noexcept nogil> _LLVMOrcExecutionSessionCreateJITDylib__funptr)(ES,Result,Name)
 
 
 cdef void* _LLVMOrcExecutionSessionGetJITDylibByName__funptr = NULL
 # 
 # Returns the JITDylib with the given name, or NULL if no such JITDylib
 # exists.
-cdef LLVMOrcJITDylibRef LLVMOrcExecutionSessionGetJITDylibByName(LLVMOrcExecutionSessionRef ES,const char * Name) nogil:
+cdef LLVMOrcJITDylibRef LLVMOrcExecutionSessionGetJITDylibByName(LLVMOrcExecutionSessionRef ES,const char * Name):
     global _LLVMOrcExecutionSessionGetJITDylibByName__funptr
     __init_symbol(&_LLVMOrcExecutionSessionGetJITDylibByName__funptr,"LLVMOrcExecutionSessionGetJITDylibByName")
-    return (<LLVMOrcJITDylibRef (*)(LLVMOrcExecutionSessionRef,const char *) nogil> _LLVMOrcExecutionSessionGetJITDylibByName__funptr)(ES,Name)
+    with nogil:
+        return (<LLVMOrcJITDylibRef (*)(LLVMOrcExecutionSessionRef,const char *) noexcept nogil> _LLVMOrcExecutionSessionGetJITDylibByName__funptr)(ES,Name)
 
 
 cdef void* _LLVMOrcJITDylibCreateResourceTracker__funptr = NULL
@@ -586,10 +624,11 @@ cdef void* _LLVMOrcJITDylibCreateResourceTracker__funptr = NULL
 # Return a reference to a newly created resource tracker associated with JD.
 # The tracker is returned with an initial ref-count of 1, and must be released
 # with LLVMOrcReleaseResourceTracker when no longer needed.
-cdef LLVMOrcResourceTrackerRef LLVMOrcJITDylibCreateResourceTracker(LLVMOrcJITDylibRef JD) nogil:
+cdef LLVMOrcResourceTrackerRef LLVMOrcJITDylibCreateResourceTracker(LLVMOrcJITDylibRef JD):
     global _LLVMOrcJITDylibCreateResourceTracker__funptr
     __init_symbol(&_LLVMOrcJITDylibCreateResourceTracker__funptr,"LLVMOrcJITDylibCreateResourceTracker")
-    return (<LLVMOrcResourceTrackerRef (*)(LLVMOrcJITDylibRef) nogil> _LLVMOrcJITDylibCreateResourceTracker__funptr)(JD)
+    with nogil:
+        return (<LLVMOrcResourceTrackerRef (*)(LLVMOrcJITDylibRef) noexcept nogil> _LLVMOrcJITDylibCreateResourceTracker__funptr)(JD)
 
 
 cdef void* _LLVMOrcJITDylibGetDefaultResourceTracker__funptr = NULL
@@ -597,10 +636,11 @@ cdef void* _LLVMOrcJITDylibGetDefaultResourceTracker__funptr = NULL
 # Return a reference to the default resource tracker for the given JITDylib.
 # This operation will increase the retain count of the tracker: Clients should
 # call LLVMOrcReleaseResourceTracker when the result is no longer needed.
-cdef LLVMOrcResourceTrackerRef LLVMOrcJITDylibGetDefaultResourceTracker(LLVMOrcJITDylibRef JD) nogil:
+cdef LLVMOrcResourceTrackerRef LLVMOrcJITDylibGetDefaultResourceTracker(LLVMOrcJITDylibRef JD):
     global _LLVMOrcJITDylibGetDefaultResourceTracker__funptr
     __init_symbol(&_LLVMOrcJITDylibGetDefaultResourceTracker__funptr,"LLVMOrcJITDylibGetDefaultResourceTracker")
-    return (<LLVMOrcResourceTrackerRef (*)(LLVMOrcJITDylibRef) nogil> _LLVMOrcJITDylibGetDefaultResourceTracker__funptr)(JD)
+    with nogil:
+        return (<LLVMOrcResourceTrackerRef (*)(LLVMOrcJITDylibRef) noexcept nogil> _LLVMOrcJITDylibGetDefaultResourceTracker__funptr)(JD)
 
 
 cdef void* _LLVMOrcJITDylibDefine__funptr = NULL
@@ -610,20 +650,22 @@ cdef void* _LLVMOrcJITDylibDefine__funptr = NULL
 # If this operation succeeds then JITDylib JD will take ownership of MU.
 # If the operation fails then ownership remains with the caller who should
 # call LLVMOrcDisposeMaterializationUnit to destroy it.
-cdef LLVMErrorRef LLVMOrcJITDylibDefine(LLVMOrcJITDylibRef JD,LLVMOrcMaterializationUnitRef MU) nogil:
+cdef LLVMErrorRef LLVMOrcJITDylibDefine(LLVMOrcJITDylibRef JD,LLVMOrcMaterializationUnitRef MU):
     global _LLVMOrcJITDylibDefine__funptr
     __init_symbol(&_LLVMOrcJITDylibDefine__funptr,"LLVMOrcJITDylibDefine")
-    return (<LLVMErrorRef (*)(LLVMOrcJITDylibRef,LLVMOrcMaterializationUnitRef) nogil> _LLVMOrcJITDylibDefine__funptr)(JD,MU)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcJITDylibRef,LLVMOrcMaterializationUnitRef) noexcept nogil> _LLVMOrcJITDylibDefine__funptr)(JD,MU)
 
 
 cdef void* _LLVMOrcJITDylibClear__funptr = NULL
 # 
 # Calls remove on all trackers associated with this JITDylib, see
 # JITDylib::clear().
-cdef LLVMErrorRef LLVMOrcJITDylibClear(LLVMOrcJITDylibRef JD) nogil:
+cdef LLVMErrorRef LLVMOrcJITDylibClear(LLVMOrcJITDylibRef JD):
     global _LLVMOrcJITDylibClear__funptr
     __init_symbol(&_LLVMOrcJITDylibClear__funptr,"LLVMOrcJITDylibClear")
-    return (<LLVMErrorRef (*)(LLVMOrcJITDylibRef) nogil> _LLVMOrcJITDylibClear__funptr)(JD)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcJITDylibRef) noexcept nogil> _LLVMOrcJITDylibClear__funptr)(JD)
 
 
 cdef void* _LLVMOrcJITDylibAddGenerator__funptr = NULL
@@ -632,10 +674,11 @@ cdef void* _LLVMOrcJITDylibAddGenerator__funptr = NULL
 # 
 # The JITDylib will take ownership of the given generator: The client is no
 # longer responsible for managing its memory.
-cdef void LLVMOrcJITDylibAddGenerator(LLVMOrcJITDylibRef JD,LLVMOrcDefinitionGeneratorRef DG) nogil:
+cdef void LLVMOrcJITDylibAddGenerator(LLVMOrcJITDylibRef JD,LLVMOrcDefinitionGeneratorRef DG):
     global _LLVMOrcJITDylibAddGenerator__funptr
     __init_symbol(&_LLVMOrcJITDylibAddGenerator__funptr,"LLVMOrcJITDylibAddGenerator")
-    (<void (*)(LLVMOrcJITDylibRef,LLVMOrcDefinitionGeneratorRef) nogil> _LLVMOrcJITDylibAddGenerator__funptr)(JD,DG)
+    with nogil:
+        (<void (*)(LLVMOrcJITDylibRef,LLVMOrcDefinitionGeneratorRef) noexcept nogil> _LLVMOrcJITDylibAddGenerator__funptr)(JD,DG)
 
 
 cdef void* _LLVMOrcCreateCustomCAPIDefinitionGenerator__funptr = NULL
@@ -654,17 +697,19 @@ cdef void* _LLVMOrcCreateCustomCAPIDefinitionGenerator__funptr = NULL
 cdef LLVMOrcDefinitionGeneratorRef LLVMOrcCreateCustomCAPIDefinitionGenerator(LLVMOrcCAPIDefinitionGeneratorTryToGenerateFunction F,void * Ctx,LLVMOrcDisposeCAPIDefinitionGeneratorFunction Dispose):
     global _LLVMOrcCreateCustomCAPIDefinitionGenerator__funptr
     __init_symbol(&_LLVMOrcCreateCustomCAPIDefinitionGenerator__funptr,"LLVMOrcCreateCustomCAPIDefinitionGenerator")
-    return (<LLVMOrcDefinitionGeneratorRef (*)(LLVMOrcCAPIDefinitionGeneratorTryToGenerateFunction,void *,LLVMOrcDisposeCAPIDefinitionGeneratorFunction)> _LLVMOrcCreateCustomCAPIDefinitionGenerator__funptr)(F,Ctx,Dispose)
+    with nogil:
+        return (<LLVMOrcDefinitionGeneratorRef (*)(LLVMOrcCAPIDefinitionGeneratorTryToGenerateFunction,void *,LLVMOrcDisposeCAPIDefinitionGeneratorFunction) noexcept nogil> _LLVMOrcCreateCustomCAPIDefinitionGenerator__funptr)(F,Ctx,Dispose)
 
 
 cdef void* _LLVMOrcLookupStateContinueLookup__funptr = NULL
 # 
 # Continue a lookup that was suspended in a generator (see
 # LLVMOrcCAPIDefinitionGeneratorTryToGenerateFunction).
-cdef void LLVMOrcLookupStateContinueLookup(LLVMOrcLookupStateRef S,LLVMErrorRef Err) nogil:
+cdef void LLVMOrcLookupStateContinueLookup(LLVMOrcLookupStateRef S,LLVMErrorRef Err):
     global _LLVMOrcLookupStateContinueLookup__funptr
     __init_symbol(&_LLVMOrcLookupStateContinueLookup__funptr,"LLVMOrcLookupStateContinueLookup")
-    (<void (*)(LLVMOrcLookupStateRef,LLVMErrorRef) nogil> _LLVMOrcLookupStateContinueLookup__funptr)(S,Err)
+    with nogil:
+        (<void (*)(LLVMOrcLookupStateRef,LLVMErrorRef) noexcept nogil> _LLVMOrcLookupStateContinueLookup__funptr)(S,Err)
 
 
 cdef void* _LLVMOrcCreateDynamicLibrarySearchGeneratorForProcess__funptr = NULL
@@ -688,7 +733,8 @@ cdef void* _LLVMOrcCreateDynamicLibrarySearchGeneratorForProcess__funptr = NULL
 cdef LLVMErrorRef LLVMOrcCreateDynamicLibrarySearchGeneratorForProcess(LLVMOrcDefinitionGeneratorRef* Result,char GlobalPrefx,LLVMOrcSymbolPredicate Filter,void * FilterCtx):
     global _LLVMOrcCreateDynamicLibrarySearchGeneratorForProcess__funptr
     __init_symbol(&_LLVMOrcCreateDynamicLibrarySearchGeneratorForProcess__funptr,"LLVMOrcCreateDynamicLibrarySearchGeneratorForProcess")
-    return (<LLVMErrorRef (*)(LLVMOrcDefinitionGeneratorRef*,char,LLVMOrcSymbolPredicate,void *)> _LLVMOrcCreateDynamicLibrarySearchGeneratorForProcess__funptr)(Result,GlobalPrefx,Filter,FilterCtx)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcDefinitionGeneratorRef*,char,LLVMOrcSymbolPredicate,void *) noexcept nogil> _LLVMOrcCreateDynamicLibrarySearchGeneratorForProcess__funptr)(Result,GlobalPrefx,Filter,FilterCtx)
 
 
 cdef void* _LLVMOrcCreateDynamicLibrarySearchGeneratorForPath__funptr = NULL
@@ -715,7 +761,8 @@ cdef void* _LLVMOrcCreateDynamicLibrarySearchGeneratorForPath__funptr = NULL
 cdef LLVMErrorRef LLVMOrcCreateDynamicLibrarySearchGeneratorForPath(LLVMOrcDefinitionGeneratorRef* Result,const char * FileName,char GlobalPrefix,LLVMOrcSymbolPredicate Filter,void * FilterCtx):
     global _LLVMOrcCreateDynamicLibrarySearchGeneratorForPath__funptr
     __init_symbol(&_LLVMOrcCreateDynamicLibrarySearchGeneratorForPath__funptr,"LLVMOrcCreateDynamicLibrarySearchGeneratorForPath")
-    return (<LLVMErrorRef (*)(LLVMOrcDefinitionGeneratorRef*,const char *,char,LLVMOrcSymbolPredicate,void *)> _LLVMOrcCreateDynamicLibrarySearchGeneratorForPath__funptr)(Result,FileName,GlobalPrefix,Filter,FilterCtx)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcDefinitionGeneratorRef*,const char *,char,LLVMOrcSymbolPredicate,void *) noexcept nogil> _LLVMOrcCreateDynamicLibrarySearchGeneratorForPath__funptr)(Result,FileName,GlobalPrefix,Filter,FilterCtx)
 
 
 cdef void* _LLVMOrcCreateStaticLibrarySearchGeneratorForPath__funptr = NULL
@@ -732,10 +779,11 @@ cdef void* _LLVMOrcCreateStaticLibrarySearchGeneratorForPath__funptr = NULL
 # 
 # THIS API IS EXPERIMENTAL AND LIKELY TO CHANGE IN THE NEAR FUTURE!
 #
-cdef LLVMErrorRef LLVMOrcCreateStaticLibrarySearchGeneratorForPath(LLVMOrcDefinitionGeneratorRef* Result,LLVMOrcObjectLayerRef ObjLayer,const char * FileName,const char * TargetTriple) nogil:
+cdef LLVMErrorRef LLVMOrcCreateStaticLibrarySearchGeneratorForPath(LLVMOrcDefinitionGeneratorRef* Result,LLVMOrcObjectLayerRef ObjLayer,const char * FileName,const char * TargetTriple):
     global _LLVMOrcCreateStaticLibrarySearchGeneratorForPath__funptr
     __init_symbol(&_LLVMOrcCreateStaticLibrarySearchGeneratorForPath__funptr,"LLVMOrcCreateStaticLibrarySearchGeneratorForPath")
-    return (<LLVMErrorRef (*)(LLVMOrcDefinitionGeneratorRef*,LLVMOrcObjectLayerRef,const char *,const char *) nogil> _LLVMOrcCreateStaticLibrarySearchGeneratorForPath__funptr)(Result,ObjLayer,FileName,TargetTriple)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcDefinitionGeneratorRef*,LLVMOrcObjectLayerRef,const char *,const char *) noexcept nogil> _LLVMOrcCreateStaticLibrarySearchGeneratorForPath__funptr)(Result,ObjLayer,FileName,TargetTriple)
 
 
 cdef void* _LLVMOrcCreateNewThreadSafeContext__funptr = NULL
@@ -746,28 +794,31 @@ cdef void* _LLVMOrcCreateNewThreadSafeContext__funptr = NULL
 # can and should dispose of their ThreadSafeContext as soon as they no longer
 # need to refer to it directly. Other references (e.g. from ThreadSafeModules)
 # will keep the data alive as long as it is needed.
-cdef LLVMOrcThreadSafeContextRef LLVMOrcCreateNewThreadSafeContext() nogil:
+cdef LLVMOrcThreadSafeContextRef LLVMOrcCreateNewThreadSafeContext():
     global _LLVMOrcCreateNewThreadSafeContext__funptr
     __init_symbol(&_LLVMOrcCreateNewThreadSafeContext__funptr,"LLVMOrcCreateNewThreadSafeContext")
-    return (<LLVMOrcThreadSafeContextRef (*)() nogil> _LLVMOrcCreateNewThreadSafeContext__funptr)()
+    with nogil:
+        return (<LLVMOrcThreadSafeContextRef (*)() noexcept nogil> _LLVMOrcCreateNewThreadSafeContext__funptr)()
 
 
 cdef void* _LLVMOrcThreadSafeContextGetContext__funptr = NULL
 # 
 # Get a reference to the wrapped LLVMContext.
-cdef LLVMContextRef LLVMOrcThreadSafeContextGetContext(LLVMOrcThreadSafeContextRef TSCtx) nogil:
+cdef LLVMContextRef LLVMOrcThreadSafeContextGetContext(LLVMOrcThreadSafeContextRef TSCtx):
     global _LLVMOrcThreadSafeContextGetContext__funptr
     __init_symbol(&_LLVMOrcThreadSafeContextGetContext__funptr,"LLVMOrcThreadSafeContextGetContext")
-    return (<LLVMContextRef (*)(LLVMOrcThreadSafeContextRef) nogil> _LLVMOrcThreadSafeContextGetContext__funptr)(TSCtx)
+    with nogil:
+        return (<LLVMContextRef (*)(LLVMOrcThreadSafeContextRef) noexcept nogil> _LLVMOrcThreadSafeContextGetContext__funptr)(TSCtx)
 
 
 cdef void* _LLVMOrcDisposeThreadSafeContext__funptr = NULL
 # 
 # Dispose of a ThreadSafeContext.
-cdef void LLVMOrcDisposeThreadSafeContext(LLVMOrcThreadSafeContextRef TSCtx) nogil:
+cdef void LLVMOrcDisposeThreadSafeContext(LLVMOrcThreadSafeContextRef TSCtx):
     global _LLVMOrcDisposeThreadSafeContext__funptr
     __init_symbol(&_LLVMOrcDisposeThreadSafeContext__funptr,"LLVMOrcDisposeThreadSafeContext")
-    (<void (*)(LLVMOrcThreadSafeContextRef) nogil> _LLVMOrcDisposeThreadSafeContext__funptr)(TSCtx)
+    with nogil:
+        (<void (*)(LLVMOrcThreadSafeContextRef) noexcept nogil> _LLVMOrcDisposeThreadSafeContext__funptr)(TSCtx)
 
 
 cdef void* _LLVMOrcCreateNewThreadSafeModule__funptr = NULL
@@ -780,10 +831,11 @@ cdef void* _LLVMOrcCreateNewThreadSafeModule__funptr = NULL
 # (e.g. by LLVMOrcLLJITAddLLVMIRModule) then the client is no longer
 # responsible for it. If it is not transferred to the JIT then the client
 # should call LLVMOrcDisposeThreadSafeModule to dispose of it.
-cdef LLVMOrcThreadSafeModuleRef LLVMOrcCreateNewThreadSafeModule(LLVMModuleRef M,LLVMOrcThreadSafeContextRef TSCtx) nogil:
+cdef LLVMOrcThreadSafeModuleRef LLVMOrcCreateNewThreadSafeModule(LLVMModuleRef M,LLVMOrcThreadSafeContextRef TSCtx):
     global _LLVMOrcCreateNewThreadSafeModule__funptr
     __init_symbol(&_LLVMOrcCreateNewThreadSafeModule__funptr,"LLVMOrcCreateNewThreadSafeModule")
-    return (<LLVMOrcThreadSafeModuleRef (*)(LLVMModuleRef,LLVMOrcThreadSafeContextRef) nogil> _LLVMOrcCreateNewThreadSafeModule__funptr)(M,TSCtx)
+    with nogil:
+        return (<LLVMOrcThreadSafeModuleRef (*)(LLVMModuleRef,LLVMOrcThreadSafeContextRef) noexcept nogil> _LLVMOrcCreateNewThreadSafeModule__funptr)(M,TSCtx)
 
 
 cdef void* _LLVMOrcDisposeThreadSafeModule__funptr = NULL
@@ -791,10 +843,11 @@ cdef void* _LLVMOrcDisposeThreadSafeModule__funptr = NULL
 # Dispose of a ThreadSafeModule. This should only be called if ownership has
 # not been passed to LLJIT (e.g. because some error prevented the client from
 # adding this to the JIT).
-cdef void LLVMOrcDisposeThreadSafeModule(LLVMOrcThreadSafeModuleRef TSM) nogil:
+cdef void LLVMOrcDisposeThreadSafeModule(LLVMOrcThreadSafeModuleRef TSM):
     global _LLVMOrcDisposeThreadSafeModule__funptr
     __init_symbol(&_LLVMOrcDisposeThreadSafeModule__funptr,"LLVMOrcDisposeThreadSafeModule")
-    (<void (*)(LLVMOrcThreadSafeModuleRef) nogil> _LLVMOrcDisposeThreadSafeModule__funptr)(TSM)
+    with nogil:
+        (<void (*)(LLVMOrcThreadSafeModuleRef) noexcept nogil> _LLVMOrcDisposeThreadSafeModule__funptr)(TSM)
 
 
 cdef void* _LLVMOrcThreadSafeModuleWithModuleDo__funptr = NULL
@@ -803,7 +856,8 @@ cdef void* _LLVMOrcThreadSafeModuleWithModuleDo__funptr = NULL
 cdef LLVMErrorRef LLVMOrcThreadSafeModuleWithModuleDo(LLVMOrcThreadSafeModuleRef TSM,LLVMOrcGenericIRModuleOperationFunction F,void * Ctx):
     global _LLVMOrcThreadSafeModuleWithModuleDo__funptr
     __init_symbol(&_LLVMOrcThreadSafeModuleWithModuleDo__funptr,"LLVMOrcThreadSafeModuleWithModuleDo")
-    return (<LLVMErrorRef (*)(LLVMOrcThreadSafeModuleRef,LLVMOrcGenericIRModuleOperationFunction,void *)> _LLVMOrcThreadSafeModuleWithModuleDo__funptr)(TSM,F,Ctx)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcThreadSafeModuleRef,LLVMOrcGenericIRModuleOperationFunction,void *) noexcept nogil> _LLVMOrcThreadSafeModuleWithModuleDo__funptr)(TSM,F,Ctx)
 
 
 cdef void* _LLVMOrcJITTargetMachineBuilderDetectHost__funptr = NULL
@@ -814,10 +868,11 @@ cdef void* _LLVMOrcJITTargetMachineBuilderDetectHost__funptr = NULL
 # passed to a consuming operation (e.g.
 # LLVMOrcLLJITBuilderSetJITTargetMachineBuilder) or disposed of by calling
 # LLVMOrcDisposeJITTargetMachineBuilder.
-cdef LLVMErrorRef LLVMOrcJITTargetMachineBuilderDetectHost(LLVMOrcJITTargetMachineBuilderRef* Result) nogil:
+cdef LLVMErrorRef LLVMOrcJITTargetMachineBuilderDetectHost(LLVMOrcJITTargetMachineBuilderRef* Result):
     global _LLVMOrcJITTargetMachineBuilderDetectHost__funptr
     __init_symbol(&_LLVMOrcJITTargetMachineBuilderDetectHost__funptr,"LLVMOrcJITTargetMachineBuilderDetectHost")
-    return (<LLVMErrorRef (*)(LLVMOrcJITTargetMachineBuilderRef*) nogil> _LLVMOrcJITTargetMachineBuilderDetectHost__funptr)(Result)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcJITTargetMachineBuilderRef*) noexcept nogil> _LLVMOrcJITTargetMachineBuilderDetectHost__funptr)(Result)
 
 
 cdef void* _LLVMOrcJITTargetMachineBuilderCreateFromTargetMachine__funptr = NULL
@@ -829,19 +884,21 @@ cdef void* _LLVMOrcJITTargetMachineBuilderCreateFromTargetMachine__funptr = NULL
 # and must be passed to a consuming operation (e.g.
 # LLVMOrcLLJITBuilderSetJITTargetMachineBuilder) or disposed of by calling
 # LLVMOrcDisposeJITTargetMachineBuilder.
-cdef LLVMOrcJITTargetMachineBuilderRef LLVMOrcJITTargetMachineBuilderCreateFromTargetMachine(LLVMTargetMachineRef TM) nogil:
+cdef LLVMOrcJITTargetMachineBuilderRef LLVMOrcJITTargetMachineBuilderCreateFromTargetMachine(LLVMTargetMachineRef TM):
     global _LLVMOrcJITTargetMachineBuilderCreateFromTargetMachine__funptr
     __init_symbol(&_LLVMOrcJITTargetMachineBuilderCreateFromTargetMachine__funptr,"LLVMOrcJITTargetMachineBuilderCreateFromTargetMachine")
-    return (<LLVMOrcJITTargetMachineBuilderRef (*)(LLVMTargetMachineRef) nogil> _LLVMOrcJITTargetMachineBuilderCreateFromTargetMachine__funptr)(TM)
+    with nogil:
+        return (<LLVMOrcJITTargetMachineBuilderRef (*)(LLVMTargetMachineRef) noexcept nogil> _LLVMOrcJITTargetMachineBuilderCreateFromTargetMachine__funptr)(TM)
 
 
 cdef void* _LLVMOrcDisposeJITTargetMachineBuilder__funptr = NULL
 # 
 # Dispose of a JITTargetMachineBuilder.
-cdef void LLVMOrcDisposeJITTargetMachineBuilder(LLVMOrcJITTargetMachineBuilderRef JTMB) nogil:
+cdef void LLVMOrcDisposeJITTargetMachineBuilder(LLVMOrcJITTargetMachineBuilderRef JTMB):
     global _LLVMOrcDisposeJITTargetMachineBuilder__funptr
     __init_symbol(&_LLVMOrcDisposeJITTargetMachineBuilder__funptr,"LLVMOrcDisposeJITTargetMachineBuilder")
-    (<void (*)(LLVMOrcJITTargetMachineBuilderRef) nogil> _LLVMOrcDisposeJITTargetMachineBuilder__funptr)(JTMB)
+    with nogil:
+        (<void (*)(LLVMOrcJITTargetMachineBuilderRef) noexcept nogil> _LLVMOrcDisposeJITTargetMachineBuilder__funptr)(JTMB)
 
 
 cdef void* _LLVMOrcJITTargetMachineBuilderGetTargetTriple__funptr = NULL
@@ -850,20 +907,22 @@ cdef void* _LLVMOrcJITTargetMachineBuilderGetTargetTriple__funptr = NULL
 # 
 # The caller owns the resulting string as must dispose of it by calling
 # LLVMDisposeMessage
-cdef char * LLVMOrcJITTargetMachineBuilderGetTargetTriple(LLVMOrcJITTargetMachineBuilderRef JTMB) nogil:
+cdef char * LLVMOrcJITTargetMachineBuilderGetTargetTriple(LLVMOrcJITTargetMachineBuilderRef JTMB):
     global _LLVMOrcJITTargetMachineBuilderGetTargetTriple__funptr
     __init_symbol(&_LLVMOrcJITTargetMachineBuilderGetTargetTriple__funptr,"LLVMOrcJITTargetMachineBuilderGetTargetTriple")
-    return (<char * (*)(LLVMOrcJITTargetMachineBuilderRef) nogil> _LLVMOrcJITTargetMachineBuilderGetTargetTriple__funptr)(JTMB)
+    with nogil:
+        return (<char * (*)(LLVMOrcJITTargetMachineBuilderRef) noexcept nogil> _LLVMOrcJITTargetMachineBuilderGetTargetTriple__funptr)(JTMB)
 
 
 cdef void* _LLVMOrcJITTargetMachineBuilderSetTargetTriple__funptr = NULL
 # 
 # Sets the target triple for the given JITTargetMachineBuilder to the given
 # string.
-cdef void LLVMOrcJITTargetMachineBuilderSetTargetTriple(LLVMOrcJITTargetMachineBuilderRef JTMB,const char * TargetTriple) nogil:
+cdef void LLVMOrcJITTargetMachineBuilderSetTargetTriple(LLVMOrcJITTargetMachineBuilderRef JTMB,const char * TargetTriple):
     global _LLVMOrcJITTargetMachineBuilderSetTargetTriple__funptr
     __init_symbol(&_LLVMOrcJITTargetMachineBuilderSetTargetTriple__funptr,"LLVMOrcJITTargetMachineBuilderSetTargetTriple")
-    (<void (*)(LLVMOrcJITTargetMachineBuilderRef,const char *) nogil> _LLVMOrcJITTargetMachineBuilderSetTargetTriple__funptr)(JTMB,TargetTriple)
+    with nogil:
+        (<void (*)(LLVMOrcJITTargetMachineBuilderRef,const char *) noexcept nogil> _LLVMOrcJITTargetMachineBuilderSetTargetTriple__funptr)(JTMB,TargetTriple)
 
 
 cdef void* _LLVMOrcObjectLayerAddObjectFile__funptr = NULL
@@ -877,10 +936,11 @@ cdef void* _LLVMOrcObjectLayerAddObjectFile__funptr = NULL
 # 
 # Resources associated with the given object will be tracked by the given
 # JITDylib's default ResourceTracker.
-cdef LLVMErrorRef LLVMOrcObjectLayerAddObjectFile(LLVMOrcObjectLayerRef ObjLayer,LLVMOrcJITDylibRef JD,LLVMMemoryBufferRef ObjBuffer) nogil:
+cdef LLVMErrorRef LLVMOrcObjectLayerAddObjectFile(LLVMOrcObjectLayerRef ObjLayer,LLVMOrcJITDylibRef JD,LLVMMemoryBufferRef ObjBuffer):
     global _LLVMOrcObjectLayerAddObjectFile__funptr
     __init_symbol(&_LLVMOrcObjectLayerAddObjectFile__funptr,"LLVMOrcObjectLayerAddObjectFile")
-    return (<LLVMErrorRef (*)(LLVMOrcObjectLayerRef,LLVMOrcJITDylibRef,LLVMMemoryBufferRef) nogil> _LLVMOrcObjectLayerAddObjectFile__funptr)(ObjLayer,JD,ObjBuffer)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcObjectLayerRef,LLVMOrcJITDylibRef,LLVMMemoryBufferRef) noexcept nogil> _LLVMOrcObjectLayerAddObjectFile__funptr)(ObjLayer,JD,ObjBuffer)
 
 
 cdef void* _LLVMOrcObjectLayerAddObjectFileWithRT__funptr = NULL
@@ -894,10 +954,11 @@ cdef void* _LLVMOrcObjectLayerAddObjectFileWithRT__funptr = NULL
 # 
 # Resources associated with the given object will be tracked by
 # ResourceTracker RT.
-cdef LLVMErrorRef LLVMOrcObjectLayerAddObjectFileWithRT(LLVMOrcObjectLayerRef ObjLayer,LLVMOrcResourceTrackerRef RT,LLVMMemoryBufferRef ObjBuffer) nogil:
+cdef LLVMErrorRef LLVMOrcObjectLayerAddObjectFileWithRT(LLVMOrcObjectLayerRef ObjLayer,LLVMOrcResourceTrackerRef RT,LLVMMemoryBufferRef ObjBuffer):
     global _LLVMOrcObjectLayerAddObjectFileWithRT__funptr
     __init_symbol(&_LLVMOrcObjectLayerAddObjectFileWithRT__funptr,"LLVMOrcObjectLayerAddObjectFileWithRT")
-    return (<LLVMErrorRef (*)(LLVMOrcObjectLayerRef,LLVMOrcResourceTrackerRef,LLVMMemoryBufferRef) nogil> _LLVMOrcObjectLayerAddObjectFileWithRT__funptr)(ObjLayer,RT,ObjBuffer)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcObjectLayerRef,LLVMOrcResourceTrackerRef,LLVMMemoryBufferRef) noexcept nogil> _LLVMOrcObjectLayerAddObjectFileWithRT__funptr)(ObjLayer,RT,ObjBuffer)
 
 
 cdef void* _LLVMOrcObjectLayerEmit__funptr = NULL
@@ -906,26 +967,29 @@ cdef void* _LLVMOrcObjectLayerEmit__funptr = NULL
 # 
 # Ownership of the responsibility object and object buffer pass to this
 # function. The client is not responsible for cleanup.
-cdef void LLVMOrcObjectLayerEmit(LLVMOrcObjectLayerRef ObjLayer,LLVMOrcMaterializationResponsibilityRef R,LLVMMemoryBufferRef ObjBuffer) nogil:
+cdef void LLVMOrcObjectLayerEmit(LLVMOrcObjectLayerRef ObjLayer,LLVMOrcMaterializationResponsibilityRef R,LLVMMemoryBufferRef ObjBuffer):
     global _LLVMOrcObjectLayerEmit__funptr
     __init_symbol(&_LLVMOrcObjectLayerEmit__funptr,"LLVMOrcObjectLayerEmit")
-    (<void (*)(LLVMOrcObjectLayerRef,LLVMOrcMaterializationResponsibilityRef,LLVMMemoryBufferRef) nogil> _LLVMOrcObjectLayerEmit__funptr)(ObjLayer,R,ObjBuffer)
+    with nogil:
+        (<void (*)(LLVMOrcObjectLayerRef,LLVMOrcMaterializationResponsibilityRef,LLVMMemoryBufferRef) noexcept nogil> _LLVMOrcObjectLayerEmit__funptr)(ObjLayer,R,ObjBuffer)
 
 
 cdef void* _LLVMOrcDisposeObjectLayer__funptr = NULL
 # 
 # Dispose of an ObjectLayer.
-cdef void LLVMOrcDisposeObjectLayer(LLVMOrcObjectLayerRef ObjLayer) nogil:
+cdef void LLVMOrcDisposeObjectLayer(LLVMOrcObjectLayerRef ObjLayer):
     global _LLVMOrcDisposeObjectLayer__funptr
     __init_symbol(&_LLVMOrcDisposeObjectLayer__funptr,"LLVMOrcDisposeObjectLayer")
-    (<void (*)(LLVMOrcObjectLayerRef) nogil> _LLVMOrcDisposeObjectLayer__funptr)(ObjLayer)
+    with nogil:
+        (<void (*)(LLVMOrcObjectLayerRef) noexcept nogil> _LLVMOrcDisposeObjectLayer__funptr)(ObjLayer)
 
 
 cdef void* _LLVMOrcIRTransformLayerEmit__funptr = NULL
-cdef void LLVMOrcIRTransformLayerEmit(LLVMOrcIRTransformLayerRef IRTransformLayer,LLVMOrcMaterializationResponsibilityRef MR,LLVMOrcThreadSafeModuleRef TSM) nogil:
+cdef void LLVMOrcIRTransformLayerEmit(LLVMOrcIRTransformLayerRef IRTransformLayer,LLVMOrcMaterializationResponsibilityRef MR,LLVMOrcThreadSafeModuleRef TSM):
     global _LLVMOrcIRTransformLayerEmit__funptr
     __init_symbol(&_LLVMOrcIRTransformLayerEmit__funptr,"LLVMOrcIRTransformLayerEmit")
-    (<void (*)(LLVMOrcIRTransformLayerRef,LLVMOrcMaterializationResponsibilityRef,LLVMOrcThreadSafeModuleRef) nogil> _LLVMOrcIRTransformLayerEmit__funptr)(IRTransformLayer,MR,TSM)
+    with nogil:
+        (<void (*)(LLVMOrcIRTransformLayerRef,LLVMOrcMaterializationResponsibilityRef,LLVMOrcThreadSafeModuleRef) noexcept nogil> _LLVMOrcIRTransformLayerEmit__funptr)(IRTransformLayer,MR,TSM)
 
 
 cdef void* _LLVMOrcIRTransformLayerSetTransform__funptr = NULL
@@ -935,7 +999,8 @@ cdef void* _LLVMOrcIRTransformLayerSetTransform__funptr = NULL
 cdef void LLVMOrcIRTransformLayerSetTransform(LLVMOrcIRTransformLayerRef IRTransformLayer,LLVMOrcIRTransformLayerTransformFunction TransformFunction,void * Ctx):
     global _LLVMOrcIRTransformLayerSetTransform__funptr
     __init_symbol(&_LLVMOrcIRTransformLayerSetTransform__funptr,"LLVMOrcIRTransformLayerSetTransform")
-    (<void (*)(LLVMOrcIRTransformLayerRef,LLVMOrcIRTransformLayerTransformFunction,void *)> _LLVMOrcIRTransformLayerSetTransform__funptr)(IRTransformLayer,TransformFunction,Ctx)
+    with nogil:
+        (<void (*)(LLVMOrcIRTransformLayerRef,LLVMOrcIRTransformLayerTransformFunction,void *) noexcept nogil> _LLVMOrcIRTransformLayerSetTransform__funptr)(IRTransformLayer,TransformFunction,Ctx)
 
 
 cdef void* _LLVMOrcObjectTransformLayerSetTransform__funptr = NULL
@@ -944,7 +1009,8 @@ cdef void* _LLVMOrcObjectTransformLayerSetTransform__funptr = NULL
 cdef void LLVMOrcObjectTransformLayerSetTransform(LLVMOrcObjectTransformLayerRef ObjTransformLayer,LLVMOrcObjectTransformLayerTransformFunction TransformFunction,void * Ctx):
     global _LLVMOrcObjectTransformLayerSetTransform__funptr
     __init_symbol(&_LLVMOrcObjectTransformLayerSetTransform__funptr,"LLVMOrcObjectTransformLayerSetTransform")
-    (<void (*)(LLVMOrcObjectTransformLayerRef,LLVMOrcObjectTransformLayerTransformFunction,void *)> _LLVMOrcObjectTransformLayerSetTransform__funptr)(ObjTransformLayer,TransformFunction,Ctx)
+    with nogil:
+        (<void (*)(LLVMOrcObjectTransformLayerRef,LLVMOrcObjectTransformLayerTransformFunction,void *) noexcept nogil> _LLVMOrcObjectTransformLayerSetTransform__funptr)(ObjTransformLayer,TransformFunction,Ctx)
 
 
 cdef void* _LLVMOrcCreateLocalIndirectStubsManager__funptr = NULL
@@ -953,35 +1019,39 @@ cdef void* _LLVMOrcCreateLocalIndirectStubsManager__funptr = NULL
 # 
 # The resulting IndirectStubsManager is owned by the client
 # and must be disposed of by calling LLVMOrcDisposeDisposeIndirectStubsManager.
-cdef LLVMOrcIndirectStubsManagerRef LLVMOrcCreateLocalIndirectStubsManager(const char * TargetTriple) nogil:
+cdef LLVMOrcIndirectStubsManagerRef LLVMOrcCreateLocalIndirectStubsManager(const char * TargetTriple):
     global _LLVMOrcCreateLocalIndirectStubsManager__funptr
     __init_symbol(&_LLVMOrcCreateLocalIndirectStubsManager__funptr,"LLVMOrcCreateLocalIndirectStubsManager")
-    return (<LLVMOrcIndirectStubsManagerRef (*)(const char *) nogil> _LLVMOrcCreateLocalIndirectStubsManager__funptr)(TargetTriple)
+    with nogil:
+        return (<LLVMOrcIndirectStubsManagerRef (*)(const char *) noexcept nogil> _LLVMOrcCreateLocalIndirectStubsManager__funptr)(TargetTriple)
 
 
 cdef void* _LLVMOrcDisposeIndirectStubsManager__funptr = NULL
 # 
 # Dispose of an IndirectStubsManager.
-cdef void LLVMOrcDisposeIndirectStubsManager(LLVMOrcIndirectStubsManagerRef ISM) nogil:
+cdef void LLVMOrcDisposeIndirectStubsManager(LLVMOrcIndirectStubsManagerRef ISM):
     global _LLVMOrcDisposeIndirectStubsManager__funptr
     __init_symbol(&_LLVMOrcDisposeIndirectStubsManager__funptr,"LLVMOrcDisposeIndirectStubsManager")
-    (<void (*)(LLVMOrcIndirectStubsManagerRef) nogil> _LLVMOrcDisposeIndirectStubsManager__funptr)(ISM)
+    with nogil:
+        (<void (*)(LLVMOrcIndirectStubsManagerRef) noexcept nogil> _LLVMOrcDisposeIndirectStubsManager__funptr)(ISM)
 
 
 cdef void* _LLVMOrcCreateLocalLazyCallThroughManager__funptr = NULL
-cdef LLVMErrorRef LLVMOrcCreateLocalLazyCallThroughManager(const char * TargetTriple,LLVMOrcExecutionSessionRef ES,unsigned long ErrorHandlerAddr,LLVMOrcLazyCallThroughManagerRef* LCTM) nogil:
+cdef LLVMErrorRef LLVMOrcCreateLocalLazyCallThroughManager(const char * TargetTriple,LLVMOrcExecutionSessionRef ES,unsigned long ErrorHandlerAddr,LLVMOrcLazyCallThroughManagerRef* LCTM):
     global _LLVMOrcCreateLocalLazyCallThroughManager__funptr
     __init_symbol(&_LLVMOrcCreateLocalLazyCallThroughManager__funptr,"LLVMOrcCreateLocalLazyCallThroughManager")
-    return (<LLVMErrorRef (*)(const char *,LLVMOrcExecutionSessionRef,unsigned long,LLVMOrcLazyCallThroughManagerRef*) nogil> _LLVMOrcCreateLocalLazyCallThroughManager__funptr)(TargetTriple,ES,ErrorHandlerAddr,LCTM)
+    with nogil:
+        return (<LLVMErrorRef (*)(const char *,LLVMOrcExecutionSessionRef,unsigned long,LLVMOrcLazyCallThroughManagerRef*) noexcept nogil> _LLVMOrcCreateLocalLazyCallThroughManager__funptr)(TargetTriple,ES,ErrorHandlerAddr,LCTM)
 
 
 cdef void* _LLVMOrcDisposeLazyCallThroughManager__funptr = NULL
 # 
 # Dispose of an LazyCallThroughManager.
-cdef void LLVMOrcDisposeLazyCallThroughManager(LLVMOrcLazyCallThroughManagerRef LCTM) nogil:
+cdef void LLVMOrcDisposeLazyCallThroughManager(LLVMOrcLazyCallThroughManagerRef LCTM):
     global _LLVMOrcDisposeLazyCallThroughManager__funptr
     __init_symbol(&_LLVMOrcDisposeLazyCallThroughManager__funptr,"LLVMOrcDisposeLazyCallThroughManager")
-    (<void (*)(LLVMOrcLazyCallThroughManagerRef) nogil> _LLVMOrcDisposeLazyCallThroughManager__funptr)(LCTM)
+    with nogil:
+        (<void (*)(LLVMOrcLazyCallThroughManagerRef) noexcept nogil> _LLVMOrcDisposeLazyCallThroughManager__funptr)(LCTM)
 
 
 cdef void* _LLVMOrcCreateDumpObjects__funptr = NULL
@@ -998,25 +1068,28 @@ cdef void* _LLVMOrcCreateDumpObjects__funptr = NULL
 # use the same identifier, the resulting files will be named <ident>.o,
 # <ident>.2.o, <ident>.3.o, and so on). IdentifierOverride should not contain
 # an extension, as a .o suffix will be added by DumpObjects.
-cdef LLVMOrcDumpObjectsRef LLVMOrcCreateDumpObjects(const char * DumpDir,const char * IdentifierOverride) nogil:
+cdef LLVMOrcDumpObjectsRef LLVMOrcCreateDumpObjects(const char * DumpDir,const char * IdentifierOverride):
     global _LLVMOrcCreateDumpObjects__funptr
     __init_symbol(&_LLVMOrcCreateDumpObjects__funptr,"LLVMOrcCreateDumpObjects")
-    return (<LLVMOrcDumpObjectsRef (*)(const char *,const char *) nogil> _LLVMOrcCreateDumpObjects__funptr)(DumpDir,IdentifierOverride)
+    with nogil:
+        return (<LLVMOrcDumpObjectsRef (*)(const char *,const char *) noexcept nogil> _LLVMOrcCreateDumpObjects__funptr)(DumpDir,IdentifierOverride)
 
 
 cdef void* _LLVMOrcDisposeDumpObjects__funptr = NULL
 # 
 # Dispose of a DumpObjects instance.
-cdef void LLVMOrcDisposeDumpObjects(LLVMOrcDumpObjectsRef DumpObjects) nogil:
+cdef void LLVMOrcDisposeDumpObjects(LLVMOrcDumpObjectsRef DumpObjects):
     global _LLVMOrcDisposeDumpObjects__funptr
     __init_symbol(&_LLVMOrcDisposeDumpObjects__funptr,"LLVMOrcDisposeDumpObjects")
-    (<void (*)(LLVMOrcDumpObjectsRef) nogil> _LLVMOrcDisposeDumpObjects__funptr)(DumpObjects)
+    with nogil:
+        (<void (*)(LLVMOrcDumpObjectsRef) noexcept nogil> _LLVMOrcDisposeDumpObjects__funptr)(DumpObjects)
 
 
 cdef void* _LLVMOrcDumpObjects_CallOperator__funptr = NULL
 # 
 # Dump the contents of the given MemoryBuffer.
-cdef LLVMErrorRef LLVMOrcDumpObjects_CallOperator(LLVMOrcDumpObjectsRef DumpObjects,LLVMMemoryBufferRef* ObjBuffer) nogil:
+cdef LLVMErrorRef LLVMOrcDumpObjects_CallOperator(LLVMOrcDumpObjectsRef DumpObjects,LLVMMemoryBufferRef* ObjBuffer):
     global _LLVMOrcDumpObjects_CallOperator__funptr
     __init_symbol(&_LLVMOrcDumpObjects_CallOperator__funptr,"LLVMOrcDumpObjects_CallOperator")
-    return (<LLVMErrorRef (*)(LLVMOrcDumpObjectsRef,LLVMMemoryBufferRef*) nogil> _LLVMOrcDumpObjects_CallOperator__funptr)(DumpObjects,ObjBuffer)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcDumpObjectsRef,LLVMMemoryBufferRef*) noexcept nogil> _LLVMOrcDumpObjects_CallOperator__funptr)(DumpObjects,ObjBuffer)

@@ -46,7 +46,6 @@ from rocm.llvm.c.errorhandling import LLVMResetFatalErrorHandler
 from rocm.llvm.c.errorhandling import LLVMEnablePrettyStackTrace
 
 
-from rocm.llvm.c.types import LLVMBool
 from rocm.llvm.c.types import LLVMMemoryBufferRef
 from rocm.llvm.c.types import LLVMContextRef
 from rocm.llvm.c.types import LLVMModuleRef
@@ -1107,7 +1106,7 @@ def LLVMShutdown():
 
 
 @cython.embedsignature(True)
-def LLVMGetVersion(object Major, object Minor, object Patch):
+def LLVMGetVersion():
     r"""(No short description, might be part of a group.)
 
     Return the major, minor, and patch version of LLVM
@@ -1116,19 +1115,12 @@ def LLVMGetVersion(object Major, object Minor, object Patch):
     parameters or skipped if a NULL pointer was supplied.
 
     Args:
-        Major (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
-            (undocumented)
-
-        Minor (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
-            (undocumented)
-
-        Patch (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
-            (undocumented)
     """
-    ccore.LLVMGetVersion(
-        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(Major)._ptr,
-        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(Minor)._ptr,
-        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(Patch)._ptr)    # fully specified
+    cdef unsigned int Major
+    cdef unsigned int Minor
+    cdef unsigned int Patch
+    ccore.LLVMGetVersion(&Major,&Minor,&Patch)    # fully specified
+    return (Major,Minor,Patch)
 
 
 @cython.embedsignature(True)
@@ -1826,7 +1818,7 @@ def LLVMGetStringAttributeKind(object A, object Length):
         A (`~.LLVMOpaqueAttributeRef`/`~.object`):
             (undocumented)
 
-        Length (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
+        Length (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -1836,7 +1828,7 @@ def LLVMGetStringAttributeKind(object A, object Length):
     """
     cdef const char * _LLVMGetStringAttributeKind__retval = ccore.LLVMGetStringAttributeKind(
         LLVMOpaqueAttributeRef.from_pyobj(A)._ptr,
-        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
     return (_LLVMGetStringAttributeKind__retval,)
 
 
@@ -1850,7 +1842,7 @@ def LLVMGetStringAttributeValue(object A, object Length):
         A (`~.LLVMOpaqueAttributeRef`/`~.object`):
             (undocumented)
 
-        Length (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
+        Length (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -1860,7 +1852,7 @@ def LLVMGetStringAttributeValue(object A, object Length):
     """
     cdef const char * _LLVMGetStringAttributeValue__retval = ccore.LLVMGetStringAttributeValue(
         LLVMOpaqueAttributeRef.from_pyobj(A)._ptr,
-        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
     return (_LLVMGetStringAttributeValue__retval,)
 
 
@@ -2024,7 +2016,7 @@ def LLVMGetModuleIdentifier(object M, object Len):
         M (`~.LLVMOpaqueModule`/`~.object`):
             Module to obtain identifier of
 
-        Len (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
+        Len (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             Out parameter which holds the length of the returned string.
 
     Returns:
@@ -2034,7 +2026,7 @@ def LLVMGetModuleIdentifier(object M, object Len):
     """
     cdef const char * _LLVMGetModuleIdentifier__retval = ccore.LLVMGetModuleIdentifier(
         LLVMOpaqueModule.from_pyobj(M)._ptr,
-        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(Len)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr)    # fully specified
     return (_LLVMGetModuleIdentifier__retval,)
 
 
@@ -2074,7 +2066,7 @@ def LLVMGetSourceFileName(object M, object Len):
         M (`~.LLVMOpaqueModule`/`~.object`):
             Module to obtain the name of
 
-        Len (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
+        Len (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             Out parameter which holds the length of the returned string
 
     Returns:
@@ -2084,7 +2076,7 @@ def LLVMGetSourceFileName(object M, object Len):
     """
     cdef const char * _LLVMGetSourceFileName__retval = ccore.LLVMGetSourceFileName(
         LLVMOpaqueModule.from_pyobj(M)._ptr,
-        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(Len)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr)    # fully specified
     return (_LLVMGetSourceFileName__retval,)
 
 
@@ -2235,12 +2227,12 @@ def LLVMCopyModuleFlagsMetadata(object M, object Len):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Len (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
+        Len (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     _LLVMCopyModuleFlagsMetadata__retval = LLVMOpaqueModuleFlagEntry.from_ptr(ccore.LLVMCopyModuleFlagsMetadata(
         LLVMOpaqueModule.from_pyobj(M)._ptr,
-        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(Len)._ptr))    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr))    # fully specified
     return (_LLVMCopyModuleFlagsMetadata__retval,)
 
 
@@ -2300,7 +2292,7 @@ def LLVMModuleFlagEntriesGetKey(object Entries, unsigned int Index, object Len):
         Index (`~.int`):
             (undocumented)
 
-        Len (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
+        Len (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -2310,7 +2302,7 @@ def LLVMModuleFlagEntriesGetKey(object Entries, unsigned int Index, object Len):
     """
     cdef const char * _LLVMModuleFlagEntriesGetKey__retval = ccore.LLVMModuleFlagEntriesGetKey(
         LLVMOpaqueModuleFlagEntry.from_pyobj(Entries)._ptr,Index,
-        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(Len)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr)    # fully specified
     return (_LLVMModuleFlagEntriesGetKey__retval,)
 
 
@@ -2478,7 +2470,7 @@ def LLVMGetModuleInlineAsm(object M, object Len):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Len (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
+        Len (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -2488,7 +2480,7 @@ def LLVMGetModuleInlineAsm(object M, object Len):
     """
     cdef const char * _LLVMGetModuleInlineAsm__retval = ccore.LLVMGetModuleInlineAsm(
         LLVMOpaqueModule.from_pyobj(M)._ptr,
-        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(Len)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr)    # fully specified
     return (_LLVMGetModuleInlineAsm__retval,)
 
 
@@ -2753,7 +2745,7 @@ def LLVMGetNamedMetadataName(object NamedMD, object NameLen):
         NamedMD (`~.LLVMOpaqueNamedMDNode`/`~.object`):
             (undocumented)
 
-        NameLen (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
+        NameLen (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -2763,7 +2755,7 @@ def LLVMGetNamedMetadataName(object NamedMD, object NameLen):
     """
     cdef const char * _LLVMGetNamedMetadataName__retval = ccore.LLVMGetNamedMetadataName(
         LLVMOpaqueNamedMDNode.from_pyobj(NamedMD)._ptr,
-        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(NameLen)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NameLen)._ptr)    # fully specified
     return (_LLVMGetNamedMetadataName__retval,)
 
 
@@ -2872,7 +2864,7 @@ def LLVMGetDebugLocDirectory(object Val, object Length):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Length (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
+        Length (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -2882,7 +2874,7 @@ def LLVMGetDebugLocDirectory(object Val, object Length):
     """
     cdef const char * _LLVMGetDebugLocDirectory__retval = ccore.LLVMGetDebugLocDirectory(
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
     return (_LLVMGetDebugLocDirectory__retval,)
 
 
@@ -2906,7 +2898,7 @@ def LLVMGetDebugLocFilename(object Val, object Length):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Length (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
+        Length (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -2916,7 +2908,7 @@ def LLVMGetDebugLocFilename(object Val, object Length):
     """
     cdef const char * _LLVMGetDebugLocFilename__retval = ccore.LLVMGetDebugLocFilename(
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
     return (_LLVMGetDebugLocFilename__retval,)
 
 
@@ -4358,7 +4350,7 @@ def LLVMTargetExtTypeInContext(object C, const char * Name, object TypeParams, u
         TypeParamCount (`~.int`):
             (undocumented)
 
-        IntParams (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
+        IntParams (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         IntParamCount (`~.int`):
@@ -4367,7 +4359,7 @@ def LLVMTargetExtTypeInContext(object C, const char * Name, object TypeParams, u
     _LLVMTargetExtTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMTargetExtTypeInContext(
         LLVMOpaqueContext.from_pyobj(C)._ptr,Name,
         <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(TypeParams)._ptr,TypeParamCount,
-        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(IntParams)._ptr,IntParamCount))    # fully specified
+        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(IntParams)._ptr,IntParamCount))    # fully specified
     return (_LLVMTargetExtTypeInContext__retval,)
 
 
@@ -4425,7 +4417,7 @@ def LLVMGetValueName2(object Val, object Length):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Length (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
+        Length (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -4435,7 +4427,7 @@ def LLVMGetValueName2(object Val, object Length):
     """
     cdef const char * _LLVMGetValueName2__retval = ccore.LLVMGetValueName2(
         LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
     return (_LLVMGetValueName2__retval,)
 
 
@@ -6115,12 +6107,12 @@ def LLVMConstIntOfArbitraryPrecision(object IntTy, unsigned int NumWords, object
         NumWords (`~.int`):
             (undocumented)
 
-        Words (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
+        Words (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     _LLVMConstIntOfArbitraryPrecision__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstIntOfArbitraryPrecision(
         LLVMOpaqueType.from_pyobj(IntTy)._ptr,NumWords,
-        <const unsigned long*>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(Words)._ptr))    # fully specified
+        <const unsigned long*>rocm.llvm._util.types.Pointer.from_pyobj(Words)._ptr))    # fully specified
     return (_LLVMConstIntOfArbitraryPrecision__retval,)
 
 
@@ -6300,7 +6292,7 @@ def LLVMConstRealGetDouble(object ConstantVal, object losesInfo):
         ConstantVal (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        losesInfo (`~.rocm.llvm._util.types.ListOfInt`/`~.object`):
+        losesInfo (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -6310,7 +6302,7 @@ def LLVMConstRealGetDouble(object ConstantVal, object losesInfo):
     """
     cdef double _LLVMConstRealGetDouble__retval = ccore.LLVMConstRealGetDouble(
         LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        <int *>rocm.llvm._util.types.ListOfInt.from_pyobj(losesInfo)._ptr)    # fully specified
+        <int *>rocm.llvm._util.types.Pointer.from_pyobj(losesInfo)._ptr)    # fully specified
     return (_LLVMConstRealGetDouble__retval,)
 
 
@@ -6406,7 +6398,7 @@ def LLVMGetAsString(object c, object Length):
         c (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Length (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
+        Length (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -6416,7 +6408,7 @@ def LLVMGetAsString(object c, object Length):
     """
     cdef const char * _LLVMGetAsString__retval = ccore.LLVMGetAsString(
         LLVMOpaqueValue.from_pyobj(c)._ptr,
-        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
     return (_LLVMGetAsString__retval,)
 
 
@@ -7904,12 +7896,12 @@ def LLVMGlobalCopyAllMetadata(object Value, object NumEntries):
         Value (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        NumEntries (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
+        NumEntries (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     _LLVMGlobalCopyAllMetadata__retval = LLVMOpaqueValueMetadataEntry.from_ptr(ccore.LLVMGlobalCopyAllMetadata(
         LLVMOpaqueValue.from_pyobj(Value)._ptr,
-        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(NumEntries)._ptr))    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NumEntries)._ptr))    # fully specified
     return (_LLVMGlobalCopyAllMetadata__retval,)
 
 
@@ -8623,7 +8615,7 @@ def LLVMIntrinsicGetName(unsigned int ID, object NameLength):
         ID (`~.int`):
             (undocumented)
 
-        NameLength (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
+        NameLength (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -8632,7 +8624,7 @@ def LLVMIntrinsicGetName(unsigned int ID, object NameLength):
         * `~.bytes`
     """
     cdef const char * _LLVMIntrinsicGetName__retval = ccore.LLVMIntrinsicGetName(ID,
-        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(NameLength)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NameLength)._ptr)    # fully specified
     return (_LLVMIntrinsicGetName__retval,)
 
 
@@ -8652,7 +8644,7 @@ def LLVMIntrinsicCopyOverloadedName(unsigned int ID, object ParamTypes, unsigned
         ParamCount (`~.int`):
             (undocumented)
 
-        NameLength (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
+        NameLength (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -8662,7 +8654,7 @@ def LLVMIntrinsicCopyOverloadedName(unsigned int ID, object ParamTypes, unsigned
     """
     cdef const char * _LLVMIntrinsicCopyOverloadedName__retval = ccore.LLVMIntrinsicCopyOverloadedName(ID,
         <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(ParamTypes)._ptr,ParamCount,
-        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(NameLength)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NameLength)._ptr)    # fully specified
     return (_LLVMIntrinsicCopyOverloadedName__retval,)
 
 
@@ -8694,7 +8686,7 @@ def LLVMIntrinsicCopyOverloadedName2(object Mod, unsigned int ID, object ParamTy
         ParamCount (`~.int`):
             (undocumented)
 
-        NameLength (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
+        NameLength (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
@@ -8705,7 +8697,7 @@ def LLVMIntrinsicCopyOverloadedName2(object Mod, unsigned int ID, object ParamTy
     cdef const char * _LLVMIntrinsicCopyOverloadedName2__retval = ccore.LLVMIntrinsicCopyOverloadedName2(
         LLVMOpaqueModule.from_pyobj(Mod)._ptr,ID,
         <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(ParamTypes)._ptr,ParamCount,
-        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(NameLength)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NameLength)._ptr)    # fully specified
     return (_LLVMIntrinsicCopyOverloadedName2__retval,)
 
 
@@ -9482,7 +9474,7 @@ def LLVMGetMDString(object V, object Length):
         V (`~.LLVMOpaqueValue`/`~.object`):
             Instance to obtain string from.
 
-        Length (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
+        Length (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             Memory address which will hold length of returned string.
 
     Returns:
@@ -9492,7 +9484,7 @@ def LLVMGetMDString(object V, object Length):
     """
     cdef const char * _LLVMGetMDString__retval = ccore.LLVMGetMDString(
         LLVMOpaqueValue.from_pyobj(V)._ptr,
-        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
     return (_LLVMGetMDString__retval,)
 
 
@@ -10210,12 +10202,12 @@ def LLVMInstructionGetAllMetadataOtherThanDebugLoc(object Instr, object NumEntri
         Instr (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        NumEntries (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
+        NumEntries (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     _LLVMInstructionGetAllMetadataOtherThanDebugLoc__retval = LLVMOpaqueValueMetadataEntry.from_ptr(ccore.LLVMInstructionGetAllMetadataOtherThanDebugLoc(
         LLVMOpaqueValue.from_pyobj(Instr)._ptr,
-        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(NumEntries)._ptr))    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NumEntries)._ptr))    # fully specified
     return (_LLVMInstructionGetAllMetadataOtherThanDebugLoc__retval,)
 
 

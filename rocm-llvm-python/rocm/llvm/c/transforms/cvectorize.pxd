@@ -26,8 +26,8 @@ from libc.stdint cimport *
 ctypedef bint _Bool # bool is not a reserved keyword in C, _Bool is
 from rocm.llvm.c.ctypes cimport *
 # See llvm::createLoopVectorizePass function. */
-cdef void LLVMAddLoopVectorizePass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddLoopVectorizePass(LLVMPassManagerRef PM)
 
 
 # See llvm::createSLPVectorizerPass function. */
-cdef void LLVMAddSLPVectorizePass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddSLPVectorizePass(LLVMPassManagerRef PM)

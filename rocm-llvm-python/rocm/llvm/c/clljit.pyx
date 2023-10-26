@@ -25,19 +25,22 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMOrcCreateLLJITBuilder__funptr = NULL
@@ -46,10 +49,11 @@ cdef void* _LLVMOrcCreateLLJITBuilder__funptr = NULL
 # 
 # The client owns the resulting LLJITBuilder and should dispose of it using
 # LLVMOrcDisposeLLJITBuilder once they are done with it.
-cdef LLVMOrcLLJITBuilderRef LLVMOrcCreateLLJITBuilder() nogil:
+cdef LLVMOrcLLJITBuilderRef LLVMOrcCreateLLJITBuilder():
     global _LLVMOrcCreateLLJITBuilder__funptr
     __init_symbol(&_LLVMOrcCreateLLJITBuilder__funptr,"LLVMOrcCreateLLJITBuilder")
-    return (<LLVMOrcLLJITBuilderRef (*)() nogil> _LLVMOrcCreateLLJITBuilder__funptr)()
+    with nogil:
+        return (<LLVMOrcLLJITBuilderRef (*)() noexcept nogil> _LLVMOrcCreateLLJITBuilder__funptr)()
 
 
 cdef void* _LLVMOrcDisposeLLJITBuilder__funptr = NULL
@@ -57,10 +61,11 @@ cdef void* _LLVMOrcDisposeLLJITBuilder__funptr = NULL
 # Dispose of an LLVMOrcLLJITBuilderRef. This should only be called if ownership
 # has not been passed to LLVMOrcCreateLLJIT (e.g. because some error prevented
 # that function from being called).
-cdef void LLVMOrcDisposeLLJITBuilder(LLVMOrcLLJITBuilderRef Builder) nogil:
+cdef void LLVMOrcDisposeLLJITBuilder(LLVMOrcLLJITBuilderRef Builder):
     global _LLVMOrcDisposeLLJITBuilder__funptr
     __init_symbol(&_LLVMOrcDisposeLLJITBuilder__funptr,"LLVMOrcDisposeLLJITBuilder")
-    (<void (*)(LLVMOrcLLJITBuilderRef) nogil> _LLVMOrcDisposeLLJITBuilder__funptr)(Builder)
+    with nogil:
+        (<void (*)(LLVMOrcLLJITBuilderRef) noexcept nogil> _LLVMOrcDisposeLLJITBuilder__funptr)(Builder)
 
 
 cdef void* _LLVMOrcLLJITBuilderSetJITTargetMachineBuilder__funptr = NULL
@@ -72,10 +77,11 @@ cdef void* _LLVMOrcLLJITBuilderSetJITTargetMachineBuilder__funptr = NULL
 # 
 # This function takes ownership of the JTMB argument: clients should not
 # dispose of the JITTargetMachineBuilder after calling this function.
-cdef void LLVMOrcLLJITBuilderSetJITTargetMachineBuilder(LLVMOrcLLJITBuilderRef Builder,LLVMOrcJITTargetMachineBuilderRef JTMB) nogil:
+cdef void LLVMOrcLLJITBuilderSetJITTargetMachineBuilder(LLVMOrcLLJITBuilderRef Builder,LLVMOrcJITTargetMachineBuilderRef JTMB):
     global _LLVMOrcLLJITBuilderSetJITTargetMachineBuilder__funptr
     __init_symbol(&_LLVMOrcLLJITBuilderSetJITTargetMachineBuilder__funptr,"LLVMOrcLLJITBuilderSetJITTargetMachineBuilder")
-    (<void (*)(LLVMOrcLLJITBuilderRef,LLVMOrcJITTargetMachineBuilderRef) nogil> _LLVMOrcLLJITBuilderSetJITTargetMachineBuilder__funptr)(Builder,JTMB)
+    with nogil:
+        (<void (*)(LLVMOrcLLJITBuilderRef,LLVMOrcJITTargetMachineBuilderRef) noexcept nogil> _LLVMOrcLLJITBuilderSetJITTargetMachineBuilder__funptr)(Builder,JTMB)
 
 
 cdef void* _LLVMOrcLLJITBuilderSetObjectLinkingLayerCreator__funptr = NULL
@@ -84,7 +90,8 @@ cdef void* _LLVMOrcLLJITBuilderSetObjectLinkingLayerCreator__funptr = NULL
 cdef void LLVMOrcLLJITBuilderSetObjectLinkingLayerCreator(LLVMOrcLLJITBuilderRef Builder,LLVMOrcLLJITBuilderObjectLinkingLayerCreatorFunction F,void * Ctx):
     global _LLVMOrcLLJITBuilderSetObjectLinkingLayerCreator__funptr
     __init_symbol(&_LLVMOrcLLJITBuilderSetObjectLinkingLayerCreator__funptr,"LLVMOrcLLJITBuilderSetObjectLinkingLayerCreator")
-    (<void (*)(LLVMOrcLLJITBuilderRef,LLVMOrcLLJITBuilderObjectLinkingLayerCreatorFunction,void *)> _LLVMOrcLLJITBuilderSetObjectLinkingLayerCreator__funptr)(Builder,F,Ctx)
+    with nogil:
+        (<void (*)(LLVMOrcLLJITBuilderRef,LLVMOrcLLJITBuilderObjectLinkingLayerCreatorFunction,void *) noexcept nogil> _LLVMOrcLLJITBuilderSetObjectLinkingLayerCreator__funptr)(Builder,F,Ctx)
 
 
 cdef void* _LLVMOrcCreateLLJIT__funptr = NULL
@@ -101,19 +108,21 @@ cdef void* _LLVMOrcCreateLLJIT__funptr = NULL
 # transferred to it (e.g. via LLVMOrcLLJITAddLLVMIRModule). Disposing of the
 # LLJIT instance will free all memory managed by the JIT, including JIT'd code
 # and not-yet compiled modules.
-cdef LLVMErrorRef LLVMOrcCreateLLJIT(LLVMOrcLLJITRef* Result,LLVMOrcLLJITBuilderRef Builder) nogil:
+cdef LLVMErrorRef LLVMOrcCreateLLJIT(LLVMOrcLLJITRef* Result,LLVMOrcLLJITBuilderRef Builder):
     global _LLVMOrcCreateLLJIT__funptr
     __init_symbol(&_LLVMOrcCreateLLJIT__funptr,"LLVMOrcCreateLLJIT")
-    return (<LLVMErrorRef (*)(LLVMOrcLLJITRef*,LLVMOrcLLJITBuilderRef) nogil> _LLVMOrcCreateLLJIT__funptr)(Result,Builder)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcLLJITRef*,LLVMOrcLLJITBuilderRef) noexcept nogil> _LLVMOrcCreateLLJIT__funptr)(Result,Builder)
 
 
 cdef void* _LLVMOrcDisposeLLJIT__funptr = NULL
 # 
 # Dispose of an LLJIT instance.
-cdef LLVMErrorRef LLVMOrcDisposeLLJIT(LLVMOrcLLJITRef J) nogil:
+cdef LLVMErrorRef LLVMOrcDisposeLLJIT(LLVMOrcLLJITRef J):
     global _LLVMOrcDisposeLLJIT__funptr
     __init_symbol(&_LLVMOrcDisposeLLJIT__funptr,"LLVMOrcDisposeLLJIT")
-    return (<LLVMErrorRef (*)(LLVMOrcLLJITRef) nogil> _LLVMOrcDisposeLLJIT__funptr)(J)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcLLJITRef) noexcept nogil> _LLVMOrcDisposeLLJIT__funptr)(J)
 
 
 cdef void* _LLVMOrcLLJITGetExecutionSession__funptr = NULL
@@ -122,10 +131,11 @@ cdef void* _LLVMOrcLLJITGetExecutionSession__funptr = NULL
 # 
 # The ExecutionSession is owned by the LLJIT instance. The client is not
 # responsible for managing its memory.
-cdef LLVMOrcExecutionSessionRef LLVMOrcLLJITGetExecutionSession(LLVMOrcLLJITRef J) nogil:
+cdef LLVMOrcExecutionSessionRef LLVMOrcLLJITGetExecutionSession(LLVMOrcLLJITRef J):
     global _LLVMOrcLLJITGetExecutionSession__funptr
     __init_symbol(&_LLVMOrcLLJITGetExecutionSession__funptr,"LLVMOrcLLJITGetExecutionSession")
-    return (<LLVMOrcExecutionSessionRef (*)(LLVMOrcLLJITRef) nogil> _LLVMOrcLLJITGetExecutionSession__funptr)(J)
+    with nogil:
+        return (<LLVMOrcExecutionSessionRef (*)(LLVMOrcLLJITRef) noexcept nogil> _LLVMOrcLLJITGetExecutionSession__funptr)(J)
 
 
 cdef void* _LLVMOrcLLJITGetMainJITDylib__funptr = NULL
@@ -134,29 +144,32 @@ cdef void* _LLVMOrcLLJITGetMainJITDylib__funptr = NULL
 # 
 # The JITDylib is owned by the LLJIT instance. The client is not responsible
 # for managing its memory.
-cdef LLVMOrcJITDylibRef LLVMOrcLLJITGetMainJITDylib(LLVMOrcLLJITRef J) nogil:
+cdef LLVMOrcJITDylibRef LLVMOrcLLJITGetMainJITDylib(LLVMOrcLLJITRef J):
     global _LLVMOrcLLJITGetMainJITDylib__funptr
     __init_symbol(&_LLVMOrcLLJITGetMainJITDylib__funptr,"LLVMOrcLLJITGetMainJITDylib")
-    return (<LLVMOrcJITDylibRef (*)(LLVMOrcLLJITRef) nogil> _LLVMOrcLLJITGetMainJITDylib__funptr)(J)
+    with nogil:
+        return (<LLVMOrcJITDylibRef (*)(LLVMOrcLLJITRef) noexcept nogil> _LLVMOrcLLJITGetMainJITDylib__funptr)(J)
 
 
 cdef void* _LLVMOrcLLJITGetTripleString__funptr = NULL
 # 
 # Return the target triple for this LLJIT instance. This string is owned by
 # the LLJIT instance and should not be freed by the client.
-cdef const char * LLVMOrcLLJITGetTripleString(LLVMOrcLLJITRef J) nogil:
+cdef const char * LLVMOrcLLJITGetTripleString(LLVMOrcLLJITRef J):
     global _LLVMOrcLLJITGetTripleString__funptr
     __init_symbol(&_LLVMOrcLLJITGetTripleString__funptr,"LLVMOrcLLJITGetTripleString")
-    return (<const char * (*)(LLVMOrcLLJITRef) nogil> _LLVMOrcLLJITGetTripleString__funptr)(J)
+    with nogil:
+        return (<const char * (*)(LLVMOrcLLJITRef) noexcept nogil> _LLVMOrcLLJITGetTripleString__funptr)(J)
 
 
 cdef void* _LLVMOrcLLJITGetGlobalPrefix__funptr = NULL
 # 
 # Returns the global prefix character according to the LLJIT's DataLayout.
-cdef char LLVMOrcLLJITGetGlobalPrefix(LLVMOrcLLJITRef J) nogil:
+cdef char LLVMOrcLLJITGetGlobalPrefix(LLVMOrcLLJITRef J):
     global _LLVMOrcLLJITGetGlobalPrefix__funptr
     __init_symbol(&_LLVMOrcLLJITGetGlobalPrefix__funptr,"LLVMOrcLLJITGetGlobalPrefix")
-    return (<char (*)(LLVMOrcLLJITRef) nogil> _LLVMOrcLLJITGetGlobalPrefix__funptr)(J)
+    with nogil:
+        return (<char (*)(LLVMOrcLLJITRef) noexcept nogil> _LLVMOrcLLJITGetGlobalPrefix__funptr)(J)
 
 
 cdef void* _LLVMOrcLLJITMangleAndIntern__funptr = NULL
@@ -166,10 +179,11 @@ cdef void* _LLVMOrcLLJITMangleAndIntern__funptr = NULL
 # pool entry. Clients should call LLVMOrcReleaseSymbolStringPoolEntry to
 # decrement the ref-count on the pool entry once they are finished with this
 # value.
-cdef LLVMOrcSymbolStringPoolEntryRef LLVMOrcLLJITMangleAndIntern(LLVMOrcLLJITRef J,const char * UnmangledName) nogil:
+cdef LLVMOrcSymbolStringPoolEntryRef LLVMOrcLLJITMangleAndIntern(LLVMOrcLLJITRef J,const char * UnmangledName):
     global _LLVMOrcLLJITMangleAndIntern__funptr
     __init_symbol(&_LLVMOrcLLJITMangleAndIntern__funptr,"LLVMOrcLLJITMangleAndIntern")
-    return (<LLVMOrcSymbolStringPoolEntryRef (*)(LLVMOrcLLJITRef,const char *) nogil> _LLVMOrcLLJITMangleAndIntern__funptr)(J,UnmangledName)
+    with nogil:
+        return (<LLVMOrcSymbolStringPoolEntryRef (*)(LLVMOrcLLJITRef,const char *) noexcept nogil> _LLVMOrcLLJITMangleAndIntern__funptr)(J,UnmangledName)
 
 
 cdef void* _LLVMOrcLLJITAddObjectFile__funptr = NULL
@@ -181,10 +195,11 @@ cdef void* _LLVMOrcLLJITAddObjectFile__funptr = NULL
 # 
 # Resources associated with the given object will be tracked by the given
 # JITDylib's default resource tracker.
-cdef LLVMErrorRef LLVMOrcLLJITAddObjectFile(LLVMOrcLLJITRef J,LLVMOrcJITDylibRef JD,LLVMMemoryBufferRef ObjBuffer) nogil:
+cdef LLVMErrorRef LLVMOrcLLJITAddObjectFile(LLVMOrcLLJITRef J,LLVMOrcJITDylibRef JD,LLVMMemoryBufferRef ObjBuffer):
     global _LLVMOrcLLJITAddObjectFile__funptr
     __init_symbol(&_LLVMOrcLLJITAddObjectFile__funptr,"LLVMOrcLLJITAddObjectFile")
-    return (<LLVMErrorRef (*)(LLVMOrcLLJITRef,LLVMOrcJITDylibRef,LLVMMemoryBufferRef) nogil> _LLVMOrcLLJITAddObjectFile__funptr)(J,JD,ObjBuffer)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcLLJITRef,LLVMOrcJITDylibRef,LLVMMemoryBufferRef) noexcept nogil> _LLVMOrcLLJITAddObjectFile__funptr)(J,JD,ObjBuffer)
 
 
 cdef void* _LLVMOrcLLJITAddObjectFileWithRT__funptr = NULL
@@ -196,10 +211,11 @@ cdef void* _LLVMOrcLLJITAddObjectFileWithRT__funptr = NULL
 # 
 # Resources associated with the given object will be tracked by ResourceTracker
 # RT.
-cdef LLVMErrorRef LLVMOrcLLJITAddObjectFileWithRT(LLVMOrcLLJITRef J,LLVMOrcResourceTrackerRef RT,LLVMMemoryBufferRef ObjBuffer) nogil:
+cdef LLVMErrorRef LLVMOrcLLJITAddObjectFileWithRT(LLVMOrcLLJITRef J,LLVMOrcResourceTrackerRef RT,LLVMMemoryBufferRef ObjBuffer):
     global _LLVMOrcLLJITAddObjectFileWithRT__funptr
     __init_symbol(&_LLVMOrcLLJITAddObjectFileWithRT__funptr,"LLVMOrcLLJITAddObjectFileWithRT")
-    return (<LLVMErrorRef (*)(LLVMOrcLLJITRef,LLVMOrcResourceTrackerRef,LLVMMemoryBufferRef) nogil> _LLVMOrcLLJITAddObjectFileWithRT__funptr)(J,RT,ObjBuffer)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcLLJITRef,LLVMOrcResourceTrackerRef,LLVMMemoryBufferRef) noexcept nogil> _LLVMOrcLLJITAddObjectFileWithRT__funptr)(J,RT,ObjBuffer)
 
 
 cdef void* _LLVMOrcLLJITAddLLVMIRModule__funptr = NULL
@@ -211,10 +227,11 @@ cdef void* _LLVMOrcLLJITAddLLVMIRModule__funptr = NULL
 # 
 # Resources associated with the given Module will be tracked by the given
 # JITDylib's default resource tracker.
-cdef LLVMErrorRef LLVMOrcLLJITAddLLVMIRModule(LLVMOrcLLJITRef J,LLVMOrcJITDylibRef JD,LLVMOrcThreadSafeModuleRef TSM) nogil:
+cdef LLVMErrorRef LLVMOrcLLJITAddLLVMIRModule(LLVMOrcLLJITRef J,LLVMOrcJITDylibRef JD,LLVMOrcThreadSafeModuleRef TSM):
     global _LLVMOrcLLJITAddLLVMIRModule__funptr
     __init_symbol(&_LLVMOrcLLJITAddLLVMIRModule__funptr,"LLVMOrcLLJITAddLLVMIRModule")
-    return (<LLVMErrorRef (*)(LLVMOrcLLJITRef,LLVMOrcJITDylibRef,LLVMOrcThreadSafeModuleRef) nogil> _LLVMOrcLLJITAddLLVMIRModule__funptr)(J,JD,TSM)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcLLJITRef,LLVMOrcJITDylibRef,LLVMOrcThreadSafeModuleRef) noexcept nogil> _LLVMOrcLLJITAddLLVMIRModule__funptr)(J,JD,TSM)
 
 
 cdef void* _LLVMOrcLLJITAddLLVMIRModuleWithRT__funptr = NULL
@@ -226,10 +243,11 @@ cdef void* _LLVMOrcLLJITAddLLVMIRModuleWithRT__funptr = NULL
 # 
 # Resources associated with the given Module will be tracked by ResourceTracker
 # RT.
-cdef LLVMErrorRef LLVMOrcLLJITAddLLVMIRModuleWithRT(LLVMOrcLLJITRef J,LLVMOrcResourceTrackerRef JD,LLVMOrcThreadSafeModuleRef TSM) nogil:
+cdef LLVMErrorRef LLVMOrcLLJITAddLLVMIRModuleWithRT(LLVMOrcLLJITRef J,LLVMOrcResourceTrackerRef JD,LLVMOrcThreadSafeModuleRef TSM):
     global _LLVMOrcLLJITAddLLVMIRModuleWithRT__funptr
     __init_symbol(&_LLVMOrcLLJITAddLLVMIRModuleWithRT__funptr,"LLVMOrcLLJITAddLLVMIRModuleWithRT")
-    return (<LLVMErrorRef (*)(LLVMOrcLLJITRef,LLVMOrcResourceTrackerRef,LLVMOrcThreadSafeModuleRef) nogil> _LLVMOrcLLJITAddLLVMIRModuleWithRT__funptr)(J,JD,TSM)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcLLJITRef,LLVMOrcResourceTrackerRef,LLVMOrcThreadSafeModuleRef) noexcept nogil> _LLVMOrcLLJITAddLLVMIRModuleWithRT__funptr)(J,JD,TSM)
 
 
 cdef void* _LLVMOrcLLJITLookup__funptr = NULL
@@ -237,37 +255,41 @@ cdef void* _LLVMOrcLLJITLookup__funptr = NULL
 # Look up the given symbol in the main JITDylib of the given LLJIT instance.
 # 
 # This operation does not take ownership of the Name argument.
-cdef LLVMErrorRef LLVMOrcLLJITLookup(LLVMOrcLLJITRef J,unsigned long * Result,const char * Name) nogil:
+cdef LLVMErrorRef LLVMOrcLLJITLookup(LLVMOrcLLJITRef J,unsigned long * Result,const char * Name):
     global _LLVMOrcLLJITLookup__funptr
     __init_symbol(&_LLVMOrcLLJITLookup__funptr,"LLVMOrcLLJITLookup")
-    return (<LLVMErrorRef (*)(LLVMOrcLLJITRef,unsigned long *,const char *) nogil> _LLVMOrcLLJITLookup__funptr)(J,Result,Name)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMOrcLLJITRef,unsigned long *,const char *) noexcept nogil> _LLVMOrcLLJITLookup__funptr)(J,Result,Name)
 
 
 cdef void* _LLVMOrcLLJITGetObjLinkingLayer__funptr = NULL
 # 
 # Returns a non-owning reference to the LLJIT instance's object linking layer.
-cdef LLVMOrcObjectLayerRef LLVMOrcLLJITGetObjLinkingLayer(LLVMOrcLLJITRef J) nogil:
+cdef LLVMOrcObjectLayerRef LLVMOrcLLJITGetObjLinkingLayer(LLVMOrcLLJITRef J):
     global _LLVMOrcLLJITGetObjLinkingLayer__funptr
     __init_symbol(&_LLVMOrcLLJITGetObjLinkingLayer__funptr,"LLVMOrcLLJITGetObjLinkingLayer")
-    return (<LLVMOrcObjectLayerRef (*)(LLVMOrcLLJITRef) nogil> _LLVMOrcLLJITGetObjLinkingLayer__funptr)(J)
+    with nogil:
+        return (<LLVMOrcObjectLayerRef (*)(LLVMOrcLLJITRef) noexcept nogil> _LLVMOrcLLJITGetObjLinkingLayer__funptr)(J)
 
 
 cdef void* _LLVMOrcLLJITGetObjTransformLayer__funptr = NULL
 # 
 # Returns a non-owning reference to the LLJIT instance's object linking layer.
-cdef LLVMOrcObjectTransformLayerRef LLVMOrcLLJITGetObjTransformLayer(LLVMOrcLLJITRef J) nogil:
+cdef LLVMOrcObjectTransformLayerRef LLVMOrcLLJITGetObjTransformLayer(LLVMOrcLLJITRef J):
     global _LLVMOrcLLJITGetObjTransformLayer__funptr
     __init_symbol(&_LLVMOrcLLJITGetObjTransformLayer__funptr,"LLVMOrcLLJITGetObjTransformLayer")
-    return (<LLVMOrcObjectTransformLayerRef (*)(LLVMOrcLLJITRef) nogil> _LLVMOrcLLJITGetObjTransformLayer__funptr)(J)
+    with nogil:
+        return (<LLVMOrcObjectTransformLayerRef (*)(LLVMOrcLLJITRef) noexcept nogil> _LLVMOrcLLJITGetObjTransformLayer__funptr)(J)
 
 
 cdef void* _LLVMOrcLLJITGetIRTransformLayer__funptr = NULL
 # 
 # Returns a non-owning reference to the LLJIT instance's IR transform layer.
-cdef LLVMOrcIRTransformLayerRef LLVMOrcLLJITGetIRTransformLayer(LLVMOrcLLJITRef J) nogil:
+cdef LLVMOrcIRTransformLayerRef LLVMOrcLLJITGetIRTransformLayer(LLVMOrcLLJITRef J):
     global _LLVMOrcLLJITGetIRTransformLayer__funptr
     __init_symbol(&_LLVMOrcLLJITGetIRTransformLayer__funptr,"LLVMOrcLLJITGetIRTransformLayer")
-    return (<LLVMOrcIRTransformLayerRef (*)(LLVMOrcLLJITRef) nogil> _LLVMOrcLLJITGetIRTransformLayer__funptr)(J)
+    with nogil:
+        return (<LLVMOrcIRTransformLayerRef (*)(LLVMOrcLLJITRef) noexcept nogil> _LLVMOrcLLJITGetIRTransformLayer__funptr)(J)
 
 
 cdef void* _LLVMOrcLLJITGetDataLayoutStr__funptr = NULL
@@ -276,7 +298,8 @@ cdef void* _LLVMOrcLLJITGetDataLayoutStr__funptr = NULL
 # 
 # This string is owned by the LLJIT instance and does not need to be freed
 # by the caller.
-cdef const char * LLVMOrcLLJITGetDataLayoutStr(LLVMOrcLLJITRef J) nogil:
+cdef const char * LLVMOrcLLJITGetDataLayoutStr(LLVMOrcLLJITRef J):
     global _LLVMOrcLLJITGetDataLayoutStr__funptr
     __init_symbol(&_LLVMOrcLLJITGetDataLayoutStr__funptr,"LLVMOrcLLJITGetDataLayoutStr")
-    return (<const char * (*)(LLVMOrcLLJITRef) nogil> _LLVMOrcLLJITGetDataLayoutStr__funptr)(J)
+    with nogil:
+        return (<const char * (*)(LLVMOrcLLJITRef) noexcept nogil> _LLVMOrcLLJITGetDataLayoutStr__funptr)(J)

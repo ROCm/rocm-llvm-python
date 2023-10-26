@@ -25,79 +25,91 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _llvm_blake3_version__funptr = NULL
-cdef const char * llvm_blake3_version() nogil:
+cdef const char * llvm_blake3_version():
     global _llvm_blake3_version__funptr
     __init_symbol(&_llvm_blake3_version__funptr,"llvm_blake3_version")
-    return (<const char * (*)() nogil> _llvm_blake3_version__funptr)()
+    with nogil:
+        return (<const char * (*)() noexcept nogil> _llvm_blake3_version__funptr)()
 
 
 cdef void* _llvm_blake3_hasher_init__funptr = NULL
-cdef void llvm_blake3_hasher_init(llvm_blake3_hasher * self) nogil:
+cdef void llvm_blake3_hasher_init(llvm_blake3_hasher * self):
     global _llvm_blake3_hasher_init__funptr
     __init_symbol(&_llvm_blake3_hasher_init__funptr,"llvm_blake3_hasher_init")
-    (<void (*)(llvm_blake3_hasher *) nogil> _llvm_blake3_hasher_init__funptr)(self)
+    with nogil:
+        (<void (*)(llvm_blake3_hasher *) noexcept nogil> _llvm_blake3_hasher_init__funptr)(self)
 
 
 cdef void* _llvm_blake3_hasher_init_keyed__funptr = NULL
-cdef void llvm_blake3_hasher_init_keyed(llvm_blake3_hasher * self,const unsigned char[32] key) nogil:
+cdef void llvm_blake3_hasher_init_keyed(llvm_blake3_hasher * self,const unsigned char[32] key):
     global _llvm_blake3_hasher_init_keyed__funptr
     __init_symbol(&_llvm_blake3_hasher_init_keyed__funptr,"llvm_blake3_hasher_init_keyed")
-    (<void (*)(llvm_blake3_hasher *,const unsigned char[32]) nogil> _llvm_blake3_hasher_init_keyed__funptr)(self,key)
+    with nogil:
+        (<void (*)(llvm_blake3_hasher *,const unsigned char[32]) noexcept nogil> _llvm_blake3_hasher_init_keyed__funptr)(self,key)
 
 
 cdef void* _llvm_blake3_hasher_init_derive_key__funptr = NULL
-cdef void llvm_blake3_hasher_init_derive_key(llvm_blake3_hasher * self,const char * context) nogil:
+cdef void llvm_blake3_hasher_init_derive_key(llvm_blake3_hasher * self,const char * context):
     global _llvm_blake3_hasher_init_derive_key__funptr
     __init_symbol(&_llvm_blake3_hasher_init_derive_key__funptr,"llvm_blake3_hasher_init_derive_key")
-    (<void (*)(llvm_blake3_hasher *,const char *) nogil> _llvm_blake3_hasher_init_derive_key__funptr)(self,context)
+    with nogil:
+        (<void (*)(llvm_blake3_hasher *,const char *) noexcept nogil> _llvm_blake3_hasher_init_derive_key__funptr)(self,context)
 
 
 cdef void* _llvm_blake3_hasher_init_derive_key_raw__funptr = NULL
-cdef void llvm_blake3_hasher_init_derive_key_raw(llvm_blake3_hasher * self,const void * context,unsigned long context_len) nogil:
+cdef void llvm_blake3_hasher_init_derive_key_raw(llvm_blake3_hasher * self,const void * context,unsigned long context_len):
     global _llvm_blake3_hasher_init_derive_key_raw__funptr
     __init_symbol(&_llvm_blake3_hasher_init_derive_key_raw__funptr,"llvm_blake3_hasher_init_derive_key_raw")
-    (<void (*)(llvm_blake3_hasher *,const void *,unsigned long) nogil> _llvm_blake3_hasher_init_derive_key_raw__funptr)(self,context,context_len)
+    with nogil:
+        (<void (*)(llvm_blake3_hasher *,const void *,unsigned long) noexcept nogil> _llvm_blake3_hasher_init_derive_key_raw__funptr)(self,context,context_len)
 
 
 cdef void* _llvm_blake3_hasher_update__funptr = NULL
-cdef void llvm_blake3_hasher_update(llvm_blake3_hasher * self,const void * input,unsigned long input_len) nogil:
+cdef void llvm_blake3_hasher_update(llvm_blake3_hasher * self,const void * input,unsigned long input_len):
     global _llvm_blake3_hasher_update__funptr
     __init_symbol(&_llvm_blake3_hasher_update__funptr,"llvm_blake3_hasher_update")
-    (<void (*)(llvm_blake3_hasher *,const void *,unsigned long) nogil> _llvm_blake3_hasher_update__funptr)(self,input,input_len)
+    with nogil:
+        (<void (*)(llvm_blake3_hasher *,const void *,unsigned long) noexcept nogil> _llvm_blake3_hasher_update__funptr)(self,input,input_len)
 
 
 cdef void* _llvm_blake3_hasher_finalize__funptr = NULL
-cdef void llvm_blake3_hasher_finalize(llvm_blake3_hasher * self,unsigned char * out,unsigned long out_len) nogil:
+cdef void llvm_blake3_hasher_finalize(llvm_blake3_hasher * self,unsigned char * out,unsigned long out_len):
     global _llvm_blake3_hasher_finalize__funptr
     __init_symbol(&_llvm_blake3_hasher_finalize__funptr,"llvm_blake3_hasher_finalize")
-    (<void (*)(llvm_blake3_hasher *,unsigned char *,unsigned long) nogil> _llvm_blake3_hasher_finalize__funptr)(self,out,out_len)
+    with nogil:
+        (<void (*)(llvm_blake3_hasher *,unsigned char *,unsigned long) noexcept nogil> _llvm_blake3_hasher_finalize__funptr)(self,out,out_len)
 
 
 cdef void* _llvm_blake3_hasher_finalize_seek__funptr = NULL
-cdef void llvm_blake3_hasher_finalize_seek(llvm_blake3_hasher * self,unsigned long seek,unsigned char * out,unsigned long out_len) nogil:
+cdef void llvm_blake3_hasher_finalize_seek(llvm_blake3_hasher * self,unsigned long seek,unsigned char * out,unsigned long out_len):
     global _llvm_blake3_hasher_finalize_seek__funptr
     __init_symbol(&_llvm_blake3_hasher_finalize_seek__funptr,"llvm_blake3_hasher_finalize_seek")
-    (<void (*)(llvm_blake3_hasher *,unsigned long,unsigned char *,unsigned long) nogil> _llvm_blake3_hasher_finalize_seek__funptr)(self,seek,out,out_len)
+    with nogil:
+        (<void (*)(llvm_blake3_hasher *,unsigned long,unsigned char *,unsigned long) noexcept nogil> _llvm_blake3_hasher_finalize_seek__funptr)(self,seek,out,out_len)
 
 
 cdef void* _llvm_blake3_hasher_reset__funptr = NULL
-cdef void llvm_blake3_hasher_reset(llvm_blake3_hasher * self) nogil:
+cdef void llvm_blake3_hasher_reset(llvm_blake3_hasher * self):
     global _llvm_blake3_hasher_reset__funptr
     __init_symbol(&_llvm_blake3_hasher_reset__funptr,"llvm_blake3_hasher_reset")
-    (<void (*)(llvm_blake3_hasher *) nogil> _llvm_blake3_hasher_reset__funptr)(self)
+    with nogil:
+        (<void (*)(llvm_blake3_hasher *) noexcept nogil> _llvm_blake3_hasher_reset__funptr)(self)

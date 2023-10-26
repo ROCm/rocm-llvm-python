@@ -31,7 +31,7 @@ from rocm.llvm.c.ctypes cimport *
 # It is safe to call this function multiple times for the same library.
 # 
 # @see sys::DynamicLibrary::LoadLibraryPermanently()
-cdef int LLVMLoadLibraryPermanently(const char * Filename) nogil
+cdef int LLVMLoadLibraryPermanently(const char * Filename)
 
 
 # 
@@ -41,7 +41,7 @@ cdef int LLVMLoadLibraryPermanently(const char * Filename) nogil
 # the same way across LLVM versions.
 # 
 # @see llvm::cl::ParseCommandLineOptions()
-cdef void LLVMParseCommandLineOptions(int argc,const char *const * argv,const char * Overview) nogil
+cdef void LLVMParseCommandLineOptions(int argc,const char *const * argv,const char * Overview)
 
 
 # 
@@ -50,7 +50,7 @@ cdef void LLVMParseCommandLineOptions(int argc,const char *const * argv,const ch
 # that symbol is returned. If not, null is returned.
 # 
 # @see sys::DynamicLibrary::SearchForAddressOfSymbol()
-cdef void * LLVMSearchForAddressOfSymbol(const char * symbolName) nogil
+cdef void * LLVMSearchForAddressOfSymbol(const char * symbolName)
 
 
 # 
@@ -59,4 +59,4 @@ cdef void * LLVMSearchForAddressOfSymbol(const char * symbolName) nogil
 # libraries.
 # 
 # @see sys::DynamicLibrary::AddSymbol()
-cdef void LLVMAddSymbol(const char * symbolName,void * symbolValue) nogil
+cdef void LLVMAddSymbol(const char * symbolName,void * symbolValue)

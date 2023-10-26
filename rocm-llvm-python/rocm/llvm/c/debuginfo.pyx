@@ -3075,7 +3075,6 @@ import cython
 import ctypes
 import enum
 
-from rocm.llvm.c.types import LLVMBool
 from rocm.llvm.c.types import LLVMMemoryBufferRef
 from rocm.llvm.c.types import LLVMContextRef
 from rocm.llvm.c.types import LLVMModuleRef
@@ -4214,7 +4213,7 @@ def LLVMDIFileGetDirectory(object File, object Len):
         File (`~.LLVMOpaqueMetadata`/`~.object`):
             The file object.
 
-        Len (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
+        Len (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             The length of the returned string.
 
     Returns:
@@ -4224,7 +4223,7 @@ def LLVMDIFileGetDirectory(object File, object Len):
     """
     cdef const char * _LLVMDIFileGetDirectory__retval = cdebuginfo.LLVMDIFileGetDirectory(
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,
-        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(Len)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr)    # fully specified
     return (_LLVMDIFileGetDirectory__retval,)
 
 
@@ -4241,7 +4240,7 @@ def LLVMDIFileGetFilename(object File, object Len):
         File (`~.LLVMOpaqueMetadata`/`~.object`):
             The file object.
 
-        Len (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
+        Len (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             The length of the returned string.
 
     Returns:
@@ -4251,7 +4250,7 @@ def LLVMDIFileGetFilename(object File, object Len):
     """
     cdef const char * _LLVMDIFileGetFilename__retval = cdebuginfo.LLVMDIFileGetFilename(
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,
-        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(Len)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr)    # fully specified
     return (_LLVMDIFileGetFilename__retval,)
 
 
@@ -4268,7 +4267,7 @@ def LLVMDIFileGetSource(object File, object Len):
         File (`~.LLVMOpaqueMetadata`/`~.object`):
             The file object.
 
-        Len (`~.rocm.llvm._util.types.ListOfUnsigned`/`~.object`):
+        Len (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             The length of the returned string.
 
     Returns:
@@ -4278,7 +4277,7 @@ def LLVMDIFileGetSource(object File, object Len):
     """
     cdef const char * _LLVMDIFileGetSource__retval = cdebuginfo.LLVMDIFileGetSource(
         LLVMOpaqueMetadata.from_pyobj(File)._ptr,
-        <unsigned int *>rocm.llvm._util.types.ListOfUnsigned.from_pyobj(Len)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr)    # fully specified
     return (_LLVMDIFileGetSource__retval,)
 
 
@@ -5406,7 +5405,7 @@ def LLVMDITypeGetName(object DType, object Length):
         DType (`~.LLVMOpaqueMetadata`/`~.object`):
             The DIType.
 
-        Length (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
+        Length (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             The length of the returned string.
 
     Returns:
@@ -5416,7 +5415,7 @@ def LLVMDITypeGetName(object DType, object Length):
     """
     cdef const char * _LLVMDITypeGetName__retval = cdebuginfo.LLVMDITypeGetName(
         LLVMOpaqueMetadata.from_pyobj(DType)._ptr,
-        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
     return (_LLVMDITypeGetName__retval,)
 
 
@@ -5589,7 +5588,7 @@ def LLVMDIBuilderCreateExpression(object Builder, object Addr, unsigned long Len
         Builder (`~.LLVMOpaqueDIBuilder`/`~.object`):
             The DIBuilder.
 
-        Addr (`~.rocm.llvm._util.types.ListOfUnsignedLong`/`~.object`):
+        Addr (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             An array of complex address operations.
 
         Length (`~.int`):
@@ -5597,7 +5596,7 @@ def LLVMDIBuilderCreateExpression(object Builder, object Addr, unsigned long Len
     """
     _LLVMDIBuilderCreateExpression__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateExpression(
         LLVMOpaqueDIBuilder.from_pyobj(Builder)._ptr,
-        <unsigned long *>rocm.llvm._util.types.ListOfUnsignedLong.from_pyobj(Addr)._ptr,Length))    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Addr)._ptr,Length))    # fully specified
     return (_LLVMDIBuilderCreateExpression__retval,)
 
 

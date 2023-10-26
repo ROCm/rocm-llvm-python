@@ -25,19 +25,22 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMInitializeCore__funptr = NULL
@@ -48,70 +51,80 @@ cdef void* _LLVMInitializeCore__funptr = NULL
 # This module contains routines used to initialize the LLVM system.
 # 
 # @{
-cdef void LLVMInitializeCore(LLVMPassRegistryRef R) nogil:
+cdef void LLVMInitializeCore(LLVMPassRegistryRef R):
     global _LLVMInitializeCore__funptr
     __init_symbol(&_LLVMInitializeCore__funptr,"LLVMInitializeCore")
-    (<void (*)(LLVMPassRegistryRef) nogil> _LLVMInitializeCore__funptr)(R)
+    with nogil:
+        (<void (*)(LLVMPassRegistryRef) noexcept nogil> _LLVMInitializeCore__funptr)(R)
 
 
 cdef void* _LLVMInitializeTransformUtils__funptr = NULL
-cdef void LLVMInitializeTransformUtils(LLVMPassRegistryRef R) nogil:
+cdef void LLVMInitializeTransformUtils(LLVMPassRegistryRef R):
     global _LLVMInitializeTransformUtils__funptr
     __init_symbol(&_LLVMInitializeTransformUtils__funptr,"LLVMInitializeTransformUtils")
-    (<void (*)(LLVMPassRegistryRef) nogil> _LLVMInitializeTransformUtils__funptr)(R)
+    with nogil:
+        (<void (*)(LLVMPassRegistryRef) noexcept nogil> _LLVMInitializeTransformUtils__funptr)(R)
 
 
 cdef void* _LLVMInitializeScalarOpts__funptr = NULL
-cdef void LLVMInitializeScalarOpts(LLVMPassRegistryRef R) nogil:
+cdef void LLVMInitializeScalarOpts(LLVMPassRegistryRef R):
     global _LLVMInitializeScalarOpts__funptr
     __init_symbol(&_LLVMInitializeScalarOpts__funptr,"LLVMInitializeScalarOpts")
-    (<void (*)(LLVMPassRegistryRef) nogil> _LLVMInitializeScalarOpts__funptr)(R)
+    with nogil:
+        (<void (*)(LLVMPassRegistryRef) noexcept nogil> _LLVMInitializeScalarOpts__funptr)(R)
 
 
 cdef void* _LLVMInitializeVectorization__funptr = NULL
-cdef void LLVMInitializeVectorization(LLVMPassRegistryRef R) nogil:
+cdef void LLVMInitializeVectorization(LLVMPassRegistryRef R):
     global _LLVMInitializeVectorization__funptr
     __init_symbol(&_LLVMInitializeVectorization__funptr,"LLVMInitializeVectorization")
-    (<void (*)(LLVMPassRegistryRef) nogil> _LLVMInitializeVectorization__funptr)(R)
+    with nogil:
+        (<void (*)(LLVMPassRegistryRef) noexcept nogil> _LLVMInitializeVectorization__funptr)(R)
 
 
 cdef void* _LLVMInitializeInstCombine__funptr = NULL
-cdef void LLVMInitializeInstCombine(LLVMPassRegistryRef R) nogil:
+cdef void LLVMInitializeInstCombine(LLVMPassRegistryRef R):
     global _LLVMInitializeInstCombine__funptr
     __init_symbol(&_LLVMInitializeInstCombine__funptr,"LLVMInitializeInstCombine")
-    (<void (*)(LLVMPassRegistryRef) nogil> _LLVMInitializeInstCombine__funptr)(R)
+    with nogil:
+        (<void (*)(LLVMPassRegistryRef) noexcept nogil> _LLVMInitializeInstCombine__funptr)(R)
 
 
 cdef void* _LLVMInitializeIPO__funptr = NULL
-cdef void LLVMInitializeIPO(LLVMPassRegistryRef R) nogil:
+cdef void LLVMInitializeIPO(LLVMPassRegistryRef R):
     global _LLVMInitializeIPO__funptr
     __init_symbol(&_LLVMInitializeIPO__funptr,"LLVMInitializeIPO")
-    (<void (*)(LLVMPassRegistryRef) nogil> _LLVMInitializeIPO__funptr)(R)
+    with nogil:
+        (<void (*)(LLVMPassRegistryRef) noexcept nogil> _LLVMInitializeIPO__funptr)(R)
 
 
 cdef void* _LLVMInitializeAnalysis__funptr = NULL
-cdef void LLVMInitializeAnalysis(LLVMPassRegistryRef R) nogil:
+cdef void LLVMInitializeAnalysis(LLVMPassRegistryRef R):
     global _LLVMInitializeAnalysis__funptr
     __init_symbol(&_LLVMInitializeAnalysis__funptr,"LLVMInitializeAnalysis")
-    (<void (*)(LLVMPassRegistryRef) nogil> _LLVMInitializeAnalysis__funptr)(R)
+    with nogil:
+        (<void (*)(LLVMPassRegistryRef) noexcept nogil> _LLVMInitializeAnalysis__funptr)(R)
 
 
 cdef void* _LLVMInitializeIPA__funptr = NULL
-cdef void LLVMInitializeIPA(LLVMPassRegistryRef R) nogil:
+cdef void LLVMInitializeIPA(LLVMPassRegistryRef R):
     global _LLVMInitializeIPA__funptr
     __init_symbol(&_LLVMInitializeIPA__funptr,"LLVMInitializeIPA")
-    (<void (*)(LLVMPassRegistryRef) nogil> _LLVMInitializeIPA__funptr)(R)
+    with nogil:
+        (<void (*)(LLVMPassRegistryRef) noexcept nogil> _LLVMInitializeIPA__funptr)(R)
 
 
 cdef void* _LLVMInitializeCodeGen__funptr = NULL
-cdef void LLVMInitializeCodeGen(LLVMPassRegistryRef R) nogil:
+cdef void LLVMInitializeCodeGen(LLVMPassRegistryRef R):
     global _LLVMInitializeCodeGen__funptr
     __init_symbol(&_LLVMInitializeCodeGen__funptr,"LLVMInitializeCodeGen")
-    (<void (*)(LLVMPassRegistryRef) nogil> _LLVMInitializeCodeGen__funptr)(R)
+    with nogil:
+        (<void (*)(LLVMPassRegistryRef) noexcept nogil> _LLVMInitializeCodeGen__funptr)(R)
 
 
 cdef void* _LLVMInitializeTarget__funptr = NULL
-cdef void LLVMInitializeTarget(LLVMPassRegistryRef R) nogil:
+cdef void LLVMInitializeTarget(LLVMPassRegistryRef R):
     global _LLVMInitializeTarget__funptr
     __init_symbol(&_LLVMInitializeTarget__funptr,"LLVMInitializeTarget")
-    (<void (*)(LLVMPassRegistryRef) nogil> _LLVMInitializeTarget__funptr)(R)
+    with nogil:
+        (<void (*)(LLVMPassRegistryRef) noexcept nogil> _LLVMInitializeTarget__funptr)(R)

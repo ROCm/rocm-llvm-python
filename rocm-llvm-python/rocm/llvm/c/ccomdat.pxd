@@ -39,26 +39,26 @@ cdef extern from "llvm-c/Comdat.h":
 # if it didn't already exist.
 # 
 # @see llvm::Module::getOrInsertComdat()
-cdef LLVMComdatRef LLVMGetOrInsertComdat(LLVMModuleRef M,const char * Name) nogil
+cdef LLVMComdatRef LLVMGetOrInsertComdat(LLVMModuleRef M,const char * Name)
 
 
 # 
 # Get the Comdat assigned to the given global object.
 # 
 # @see llvm::GlobalObject::getComdat()
-cdef LLVMComdatRef LLVMGetComdat(LLVMValueRef V) nogil
+cdef LLVMComdatRef LLVMGetComdat(LLVMValueRef V)
 
 
 # 
 # Assign the Comdat to the given global object.
 # 
 # @see llvm::GlobalObject::setComdat()
-cdef void LLVMSetComdat(LLVMValueRef V,LLVMComdatRef C) nogil
+cdef void LLVMSetComdat(LLVMValueRef V,LLVMComdatRef C)
 
 
 
-cdef LLVMComdatSelectionKind LLVMGetComdatSelectionKind(LLVMComdatRef C) nogil
+cdef LLVMComdatSelectionKind LLVMGetComdatSelectionKind(LLVMComdatRef C)
 
 
 
-cdef void LLVMSetComdatSelectionKind(LLVMComdatRef C,LLVMComdatSelectionKind Kind) nogil
+cdef void LLVMSetComdatSelectionKind(LLVMComdatRef C,LLVMComdatSelectionKind Kind)

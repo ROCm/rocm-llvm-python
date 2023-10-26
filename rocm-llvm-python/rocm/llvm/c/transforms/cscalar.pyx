@@ -25,352 +25,397 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMAddAggressiveDCEPass__funptr = NULL
 # See llvm::createAggressiveDCEPass function. */
-cdef void LLVMAddAggressiveDCEPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddAggressiveDCEPass(LLVMPassManagerRef PM):
     global _LLVMAddAggressiveDCEPass__funptr
     __init_symbol(&_LLVMAddAggressiveDCEPass__funptr,"LLVMAddAggressiveDCEPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddAggressiveDCEPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddAggressiveDCEPass__funptr)(PM)
 
 
 cdef void* _LLVMAddDCEPass__funptr = NULL
 # See llvm::createDeadCodeEliminationPass function. */
-cdef void LLVMAddDCEPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddDCEPass(LLVMPassManagerRef PM):
     global _LLVMAddDCEPass__funptr
     __init_symbol(&_LLVMAddDCEPass__funptr,"LLVMAddDCEPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddDCEPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddDCEPass__funptr)(PM)
 
 
 cdef void* _LLVMAddBitTrackingDCEPass__funptr = NULL
 # See llvm::createBitTrackingDCEPass function. */
-cdef void LLVMAddBitTrackingDCEPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddBitTrackingDCEPass(LLVMPassManagerRef PM):
     global _LLVMAddBitTrackingDCEPass__funptr
     __init_symbol(&_LLVMAddBitTrackingDCEPass__funptr,"LLVMAddBitTrackingDCEPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddBitTrackingDCEPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddBitTrackingDCEPass__funptr)(PM)
 
 
 cdef void* _LLVMAddAlignmentFromAssumptionsPass__funptr = NULL
 # See llvm::createAlignmentFromAssumptionsPass function. */
-cdef void LLVMAddAlignmentFromAssumptionsPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddAlignmentFromAssumptionsPass(LLVMPassManagerRef PM):
     global _LLVMAddAlignmentFromAssumptionsPass__funptr
     __init_symbol(&_LLVMAddAlignmentFromAssumptionsPass__funptr,"LLVMAddAlignmentFromAssumptionsPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddAlignmentFromAssumptionsPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddAlignmentFromAssumptionsPass__funptr)(PM)
 
 
 cdef void* _LLVMAddCFGSimplificationPass__funptr = NULL
 # See llvm::createCFGSimplificationPass function. */
-cdef void LLVMAddCFGSimplificationPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddCFGSimplificationPass(LLVMPassManagerRef PM):
     global _LLVMAddCFGSimplificationPass__funptr
     __init_symbol(&_LLVMAddCFGSimplificationPass__funptr,"LLVMAddCFGSimplificationPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddCFGSimplificationPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddCFGSimplificationPass__funptr)(PM)
 
 
 cdef void* _LLVMAddDeadStoreEliminationPass__funptr = NULL
 # See llvm::createDeadStoreEliminationPass function. */
-cdef void LLVMAddDeadStoreEliminationPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddDeadStoreEliminationPass(LLVMPassManagerRef PM):
     global _LLVMAddDeadStoreEliminationPass__funptr
     __init_symbol(&_LLVMAddDeadStoreEliminationPass__funptr,"LLVMAddDeadStoreEliminationPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddDeadStoreEliminationPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddDeadStoreEliminationPass__funptr)(PM)
 
 
 cdef void* _LLVMAddScalarizerPass__funptr = NULL
 # See llvm::createScalarizerPass function. */
-cdef void LLVMAddScalarizerPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddScalarizerPass(LLVMPassManagerRef PM):
     global _LLVMAddScalarizerPass__funptr
     __init_symbol(&_LLVMAddScalarizerPass__funptr,"LLVMAddScalarizerPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddScalarizerPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddScalarizerPass__funptr)(PM)
 
 
 cdef void* _LLVMAddMergedLoadStoreMotionPass__funptr = NULL
 # See llvm::createMergedLoadStoreMotionPass function. */
-cdef void LLVMAddMergedLoadStoreMotionPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddMergedLoadStoreMotionPass(LLVMPassManagerRef PM):
     global _LLVMAddMergedLoadStoreMotionPass__funptr
     __init_symbol(&_LLVMAddMergedLoadStoreMotionPass__funptr,"LLVMAddMergedLoadStoreMotionPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddMergedLoadStoreMotionPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddMergedLoadStoreMotionPass__funptr)(PM)
 
 
 cdef void* _LLVMAddGVNPass__funptr = NULL
 # See llvm::createGVNPass function. */
-cdef void LLVMAddGVNPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddGVNPass(LLVMPassManagerRef PM):
     global _LLVMAddGVNPass__funptr
     __init_symbol(&_LLVMAddGVNPass__funptr,"LLVMAddGVNPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddGVNPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddGVNPass__funptr)(PM)
 
 
 cdef void* _LLVMAddNewGVNPass__funptr = NULL
 # See llvm::createGVNPass function. */
-cdef void LLVMAddNewGVNPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddNewGVNPass(LLVMPassManagerRef PM):
     global _LLVMAddNewGVNPass__funptr
     __init_symbol(&_LLVMAddNewGVNPass__funptr,"LLVMAddNewGVNPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddNewGVNPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddNewGVNPass__funptr)(PM)
 
 
 cdef void* _LLVMAddIndVarSimplifyPass__funptr = NULL
 # See llvm::createIndVarSimplifyPass function. */
-cdef void LLVMAddIndVarSimplifyPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddIndVarSimplifyPass(LLVMPassManagerRef PM):
     global _LLVMAddIndVarSimplifyPass__funptr
     __init_symbol(&_LLVMAddIndVarSimplifyPass__funptr,"LLVMAddIndVarSimplifyPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddIndVarSimplifyPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddIndVarSimplifyPass__funptr)(PM)
 
 
 cdef void* _LLVMAddInstructionCombiningPass__funptr = NULL
 # See llvm::createInstructionCombiningPass function. */
-cdef void LLVMAddInstructionCombiningPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddInstructionCombiningPass(LLVMPassManagerRef PM):
     global _LLVMAddInstructionCombiningPass__funptr
     __init_symbol(&_LLVMAddInstructionCombiningPass__funptr,"LLVMAddInstructionCombiningPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddInstructionCombiningPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddInstructionCombiningPass__funptr)(PM)
 
 
 cdef void* _LLVMAddInstructionSimplifyPass__funptr = NULL
 # See llvm::createInstSimplifyLegacyPass function. */
-cdef void LLVMAddInstructionSimplifyPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddInstructionSimplifyPass(LLVMPassManagerRef PM):
     global _LLVMAddInstructionSimplifyPass__funptr
     __init_symbol(&_LLVMAddInstructionSimplifyPass__funptr,"LLVMAddInstructionSimplifyPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddInstructionSimplifyPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddInstructionSimplifyPass__funptr)(PM)
 
 
 cdef void* _LLVMAddJumpThreadingPass__funptr = NULL
 # See llvm::createJumpThreadingPass function. */
-cdef void LLVMAddJumpThreadingPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddJumpThreadingPass(LLVMPassManagerRef PM):
     global _LLVMAddJumpThreadingPass__funptr
     __init_symbol(&_LLVMAddJumpThreadingPass__funptr,"LLVMAddJumpThreadingPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddJumpThreadingPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddJumpThreadingPass__funptr)(PM)
 
 
 cdef void* _LLVMAddLICMPass__funptr = NULL
 # See llvm::createLICMPass function. */
-cdef void LLVMAddLICMPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddLICMPass(LLVMPassManagerRef PM):
     global _LLVMAddLICMPass__funptr
     __init_symbol(&_LLVMAddLICMPass__funptr,"LLVMAddLICMPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddLICMPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddLICMPass__funptr)(PM)
 
 
 cdef void* _LLVMAddLoopDeletionPass__funptr = NULL
 # See llvm::createLoopDeletionPass function. */
-cdef void LLVMAddLoopDeletionPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddLoopDeletionPass(LLVMPassManagerRef PM):
     global _LLVMAddLoopDeletionPass__funptr
     __init_symbol(&_LLVMAddLoopDeletionPass__funptr,"LLVMAddLoopDeletionPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddLoopDeletionPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddLoopDeletionPass__funptr)(PM)
 
 
 cdef void* _LLVMAddLoopIdiomPass__funptr = NULL
 # See llvm::createLoopIdiomPass function */
-cdef void LLVMAddLoopIdiomPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddLoopIdiomPass(LLVMPassManagerRef PM):
     global _LLVMAddLoopIdiomPass__funptr
     __init_symbol(&_LLVMAddLoopIdiomPass__funptr,"LLVMAddLoopIdiomPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddLoopIdiomPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddLoopIdiomPass__funptr)(PM)
 
 
 cdef void* _LLVMAddLoopRotatePass__funptr = NULL
 # See llvm::createLoopRotatePass function. */
-cdef void LLVMAddLoopRotatePass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddLoopRotatePass(LLVMPassManagerRef PM):
     global _LLVMAddLoopRotatePass__funptr
     __init_symbol(&_LLVMAddLoopRotatePass__funptr,"LLVMAddLoopRotatePass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddLoopRotatePass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddLoopRotatePass__funptr)(PM)
 
 
 cdef void* _LLVMAddLoopRerollPass__funptr = NULL
 # See llvm::createLoopRerollPass function. */
-cdef void LLVMAddLoopRerollPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddLoopRerollPass(LLVMPassManagerRef PM):
     global _LLVMAddLoopRerollPass__funptr
     __init_symbol(&_LLVMAddLoopRerollPass__funptr,"LLVMAddLoopRerollPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddLoopRerollPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddLoopRerollPass__funptr)(PM)
 
 
 cdef void* _LLVMAddLoopUnrollPass__funptr = NULL
 # See llvm::createLoopUnrollPass function. */
-cdef void LLVMAddLoopUnrollPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddLoopUnrollPass(LLVMPassManagerRef PM):
     global _LLVMAddLoopUnrollPass__funptr
     __init_symbol(&_LLVMAddLoopUnrollPass__funptr,"LLVMAddLoopUnrollPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddLoopUnrollPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddLoopUnrollPass__funptr)(PM)
 
 
 cdef void* _LLVMAddLoopUnrollAndJamPass__funptr = NULL
 # See llvm::createLoopUnrollAndJamPass function. */
-cdef void LLVMAddLoopUnrollAndJamPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddLoopUnrollAndJamPass(LLVMPassManagerRef PM):
     global _LLVMAddLoopUnrollAndJamPass__funptr
     __init_symbol(&_LLVMAddLoopUnrollAndJamPass__funptr,"LLVMAddLoopUnrollAndJamPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddLoopUnrollAndJamPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddLoopUnrollAndJamPass__funptr)(PM)
 
 
 cdef void* _LLVMAddLowerAtomicPass__funptr = NULL
 # See llvm::createLowerAtomicPass function. */
-cdef void LLVMAddLowerAtomicPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddLowerAtomicPass(LLVMPassManagerRef PM):
     global _LLVMAddLowerAtomicPass__funptr
     __init_symbol(&_LLVMAddLowerAtomicPass__funptr,"LLVMAddLowerAtomicPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddLowerAtomicPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddLowerAtomicPass__funptr)(PM)
 
 
 cdef void* _LLVMAddMemCpyOptPass__funptr = NULL
 # See llvm::createMemCpyOptPass function. */
-cdef void LLVMAddMemCpyOptPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddMemCpyOptPass(LLVMPassManagerRef PM):
     global _LLVMAddMemCpyOptPass__funptr
     __init_symbol(&_LLVMAddMemCpyOptPass__funptr,"LLVMAddMemCpyOptPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddMemCpyOptPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddMemCpyOptPass__funptr)(PM)
 
 
 cdef void* _LLVMAddPartiallyInlineLibCallsPass__funptr = NULL
 # See llvm::createPartiallyInlineLibCallsPass function. */
-cdef void LLVMAddPartiallyInlineLibCallsPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddPartiallyInlineLibCallsPass(LLVMPassManagerRef PM):
     global _LLVMAddPartiallyInlineLibCallsPass__funptr
     __init_symbol(&_LLVMAddPartiallyInlineLibCallsPass__funptr,"LLVMAddPartiallyInlineLibCallsPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddPartiallyInlineLibCallsPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddPartiallyInlineLibCallsPass__funptr)(PM)
 
 
 cdef void* _LLVMAddReassociatePass__funptr = NULL
 # See llvm::createReassociatePass function. */
-cdef void LLVMAddReassociatePass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddReassociatePass(LLVMPassManagerRef PM):
     global _LLVMAddReassociatePass__funptr
     __init_symbol(&_LLVMAddReassociatePass__funptr,"LLVMAddReassociatePass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddReassociatePass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddReassociatePass__funptr)(PM)
 
 
 cdef void* _LLVMAddSCCPPass__funptr = NULL
 # See llvm::createSCCPPass function. */
-cdef void LLVMAddSCCPPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddSCCPPass(LLVMPassManagerRef PM):
     global _LLVMAddSCCPPass__funptr
     __init_symbol(&_LLVMAddSCCPPass__funptr,"LLVMAddSCCPPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddSCCPPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddSCCPPass__funptr)(PM)
 
 
 cdef void* _LLVMAddScalarReplAggregatesPass__funptr = NULL
 # See llvm::createSROAPass function. */
-cdef void LLVMAddScalarReplAggregatesPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddScalarReplAggregatesPass(LLVMPassManagerRef PM):
     global _LLVMAddScalarReplAggregatesPass__funptr
     __init_symbol(&_LLVMAddScalarReplAggregatesPass__funptr,"LLVMAddScalarReplAggregatesPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddScalarReplAggregatesPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddScalarReplAggregatesPass__funptr)(PM)
 
 
 cdef void* _LLVMAddScalarReplAggregatesPassSSA__funptr = NULL
 # See llvm::createSROAPass function. */
-cdef void LLVMAddScalarReplAggregatesPassSSA(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddScalarReplAggregatesPassSSA(LLVMPassManagerRef PM):
     global _LLVMAddScalarReplAggregatesPassSSA__funptr
     __init_symbol(&_LLVMAddScalarReplAggregatesPassSSA__funptr,"LLVMAddScalarReplAggregatesPassSSA")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddScalarReplAggregatesPassSSA__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddScalarReplAggregatesPassSSA__funptr)(PM)
 
 
 cdef void* _LLVMAddScalarReplAggregatesPassWithThreshold__funptr = NULL
 # See llvm::createSROAPass function. */
-cdef void LLVMAddScalarReplAggregatesPassWithThreshold(LLVMPassManagerRef PM,int Threshold) nogil:
+cdef void LLVMAddScalarReplAggregatesPassWithThreshold(LLVMPassManagerRef PM,int Threshold):
     global _LLVMAddScalarReplAggregatesPassWithThreshold__funptr
     __init_symbol(&_LLVMAddScalarReplAggregatesPassWithThreshold__funptr,"LLVMAddScalarReplAggregatesPassWithThreshold")
-    (<void (*)(LLVMPassManagerRef,int) nogil> _LLVMAddScalarReplAggregatesPassWithThreshold__funptr)(PM,Threshold)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef,int) noexcept nogil> _LLVMAddScalarReplAggregatesPassWithThreshold__funptr)(PM,Threshold)
 
 
 cdef void* _LLVMAddSimplifyLibCallsPass__funptr = NULL
 # See llvm::createSimplifyLibCallsPass function. */
-cdef void LLVMAddSimplifyLibCallsPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddSimplifyLibCallsPass(LLVMPassManagerRef PM):
     global _LLVMAddSimplifyLibCallsPass__funptr
     __init_symbol(&_LLVMAddSimplifyLibCallsPass__funptr,"LLVMAddSimplifyLibCallsPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddSimplifyLibCallsPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddSimplifyLibCallsPass__funptr)(PM)
 
 
 cdef void* _LLVMAddTailCallEliminationPass__funptr = NULL
 # See llvm::createTailCallEliminationPass function. */
-cdef void LLVMAddTailCallEliminationPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddTailCallEliminationPass(LLVMPassManagerRef PM):
     global _LLVMAddTailCallEliminationPass__funptr
     __init_symbol(&_LLVMAddTailCallEliminationPass__funptr,"LLVMAddTailCallEliminationPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddTailCallEliminationPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddTailCallEliminationPass__funptr)(PM)
 
 
 cdef void* _LLVMAddDemoteMemoryToRegisterPass__funptr = NULL
 # See llvm::demotePromoteMemoryToRegisterPass function. */
-cdef void LLVMAddDemoteMemoryToRegisterPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddDemoteMemoryToRegisterPass(LLVMPassManagerRef PM):
     global _LLVMAddDemoteMemoryToRegisterPass__funptr
     __init_symbol(&_LLVMAddDemoteMemoryToRegisterPass__funptr,"LLVMAddDemoteMemoryToRegisterPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddDemoteMemoryToRegisterPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddDemoteMemoryToRegisterPass__funptr)(PM)
 
 
 cdef void* _LLVMAddVerifierPass__funptr = NULL
 # See llvm::createVerifierPass function. */
-cdef void LLVMAddVerifierPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddVerifierPass(LLVMPassManagerRef PM):
     global _LLVMAddVerifierPass__funptr
     __init_symbol(&_LLVMAddVerifierPass__funptr,"LLVMAddVerifierPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddVerifierPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddVerifierPass__funptr)(PM)
 
 
 cdef void* _LLVMAddCorrelatedValuePropagationPass__funptr = NULL
 # See llvm::createCorrelatedValuePropagationPass function */
-cdef void LLVMAddCorrelatedValuePropagationPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddCorrelatedValuePropagationPass(LLVMPassManagerRef PM):
     global _LLVMAddCorrelatedValuePropagationPass__funptr
     __init_symbol(&_LLVMAddCorrelatedValuePropagationPass__funptr,"LLVMAddCorrelatedValuePropagationPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddCorrelatedValuePropagationPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddCorrelatedValuePropagationPass__funptr)(PM)
 
 
 cdef void* _LLVMAddEarlyCSEPass__funptr = NULL
 # See llvm::createEarlyCSEPass function */
-cdef void LLVMAddEarlyCSEPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddEarlyCSEPass(LLVMPassManagerRef PM):
     global _LLVMAddEarlyCSEPass__funptr
     __init_symbol(&_LLVMAddEarlyCSEPass__funptr,"LLVMAddEarlyCSEPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddEarlyCSEPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddEarlyCSEPass__funptr)(PM)
 
 
 cdef void* _LLVMAddEarlyCSEMemSSAPass__funptr = NULL
 # See llvm::createEarlyCSEPass function */
-cdef void LLVMAddEarlyCSEMemSSAPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddEarlyCSEMemSSAPass(LLVMPassManagerRef PM):
     global _LLVMAddEarlyCSEMemSSAPass__funptr
     __init_symbol(&_LLVMAddEarlyCSEMemSSAPass__funptr,"LLVMAddEarlyCSEMemSSAPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddEarlyCSEMemSSAPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddEarlyCSEMemSSAPass__funptr)(PM)
 
 
 cdef void* _LLVMAddLowerExpectIntrinsicPass__funptr = NULL
 # See llvm::createLowerExpectIntrinsicPass function */
-cdef void LLVMAddLowerExpectIntrinsicPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddLowerExpectIntrinsicPass(LLVMPassManagerRef PM):
     global _LLVMAddLowerExpectIntrinsicPass__funptr
     __init_symbol(&_LLVMAddLowerExpectIntrinsicPass__funptr,"LLVMAddLowerExpectIntrinsicPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddLowerExpectIntrinsicPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddLowerExpectIntrinsicPass__funptr)(PM)
 
 
 cdef void* _LLVMAddLowerConstantIntrinsicsPass__funptr = NULL
 # See llvm::createLowerConstantIntrinsicsPass function */
-cdef void LLVMAddLowerConstantIntrinsicsPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddLowerConstantIntrinsicsPass(LLVMPassManagerRef PM):
     global _LLVMAddLowerConstantIntrinsicsPass__funptr
     __init_symbol(&_LLVMAddLowerConstantIntrinsicsPass__funptr,"LLVMAddLowerConstantIntrinsicsPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddLowerConstantIntrinsicsPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddLowerConstantIntrinsicsPass__funptr)(PM)
 
 
 cdef void* _LLVMAddTypeBasedAliasAnalysisPass__funptr = NULL
 # See llvm::createTypeBasedAliasAnalysisPass function */
-cdef void LLVMAddTypeBasedAliasAnalysisPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddTypeBasedAliasAnalysisPass(LLVMPassManagerRef PM):
     global _LLVMAddTypeBasedAliasAnalysisPass__funptr
     __init_symbol(&_LLVMAddTypeBasedAliasAnalysisPass__funptr,"LLVMAddTypeBasedAliasAnalysisPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddTypeBasedAliasAnalysisPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddTypeBasedAliasAnalysisPass__funptr)(PM)
 
 
 cdef void* _LLVMAddScopedNoAliasAAPass__funptr = NULL
 # See llvm::createScopedNoAliasAAPass function */
-cdef void LLVMAddScopedNoAliasAAPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddScopedNoAliasAAPass(LLVMPassManagerRef PM):
     global _LLVMAddScopedNoAliasAAPass__funptr
     __init_symbol(&_LLVMAddScopedNoAliasAAPass__funptr,"LLVMAddScopedNoAliasAAPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddScopedNoAliasAAPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddScopedNoAliasAAPass__funptr)(PM)
 
 
 cdef void* _LLVMAddBasicAliasAnalysisPass__funptr = NULL
 # See llvm::createBasicAliasAnalysisPass function */
-cdef void LLVMAddBasicAliasAnalysisPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddBasicAliasAnalysisPass(LLVMPassManagerRef PM):
     global _LLVMAddBasicAliasAnalysisPass__funptr
     __init_symbol(&_LLVMAddBasicAliasAnalysisPass__funptr,"LLVMAddBasicAliasAnalysisPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddBasicAliasAnalysisPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddBasicAliasAnalysisPass__funptr)(PM)
 
 
 cdef void* _LLVMAddUnifyFunctionExitNodesPass__funptr = NULL
 # See llvm::createUnifyFunctionExitNodesPass function */
-cdef void LLVMAddUnifyFunctionExitNodesPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddUnifyFunctionExitNodesPass(LLVMPassManagerRef PM):
     global _LLVMAddUnifyFunctionExitNodesPass__funptr
     __init_symbol(&_LLVMAddUnifyFunctionExitNodesPass__funptr,"LLVMAddUnifyFunctionExitNodesPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddUnifyFunctionExitNodesPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddUnifyFunctionExitNodesPass__funptr)(PM)

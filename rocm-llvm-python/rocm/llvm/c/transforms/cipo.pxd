@@ -26,47 +26,47 @@ from libc.stdint cimport *
 ctypedef bint _Bool # bool is not a reserved keyword in C, _Bool is
 from rocm.llvm.c.ctypes cimport *
 # See llvm::createConstantMergePass function. */
-cdef void LLVMAddConstantMergePass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddConstantMergePass(LLVMPassManagerRef PM)
 
 
 # See llvm::createMergeFunctionsPass function. */
-cdef void LLVMAddMergeFunctionsPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddMergeFunctionsPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createCalledValuePropagationPass function. */
-cdef void LLVMAddCalledValuePropagationPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddCalledValuePropagationPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createDeadArgEliminationPass function. */
-cdef void LLVMAddDeadArgEliminationPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddDeadArgEliminationPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createFunctionAttrsPass function. */
-cdef void LLVMAddFunctionAttrsPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddFunctionAttrsPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createFunctionInliningPass function. */
-cdef void LLVMAddFunctionInliningPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddFunctionInliningPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createAlwaysInlinerPass function. */
-cdef void LLVMAddAlwaysInlinerPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddAlwaysInlinerPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createGlobalDCEPass function. */
-cdef void LLVMAddGlobalDCEPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddGlobalDCEPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createGlobalOptimizerPass function. */
-cdef void LLVMAddGlobalOptimizerPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddGlobalOptimizerPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createIPSCCPPass function. */
-cdef void LLVMAddIPSCCPPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddIPSCCPPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createInternalizePass function. */
-cdef void LLVMAddInternalizePass(LLVMPassManagerRef arg0,unsigned int AllButMain) nogil
+cdef void LLVMAddInternalizePass(LLVMPassManagerRef arg0,unsigned int AllButMain)
 
 
 ctypedef LLVMBool (*LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0) (LLVMValueRef,void *)
@@ -84,8 +84,8 @@ cdef void LLVMAddInternalizePassWithMustPreservePredicate(LLVMPassManagerRef PM,
 
 
 # See llvm::createStripDeadPrototypesPass function. */
-cdef void LLVMAddStripDeadPrototypesPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddStripDeadPrototypesPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createStripSymbolsPass function. */
-cdef void LLVMAddStripSymbolsPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddStripSymbolsPass(LLVMPassManagerRef PM)

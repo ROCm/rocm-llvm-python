@@ -25,23 +25,27 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMLinkModules2__funptr = NULL
-cdef int LLVMLinkModules2(LLVMModuleRef Dest,LLVMModuleRef Src) nogil:
+cdef int LLVMLinkModules2(LLVMModuleRef Dest,LLVMModuleRef Src):
     global _LLVMLinkModules2__funptr
     __init_symbol(&_LLVMLinkModules2__funptr,"LLVMLinkModules2")
-    return (<int (*)(LLVMModuleRef,LLVMModuleRef) nogil> _LLVMLinkModules2__funptr)(Dest,Src)
+    with nogil:
+        return (<int (*)(LLVMModuleRef,LLVMModuleRef) noexcept nogil> _LLVMLinkModules2__funptr)(Dest,Src)

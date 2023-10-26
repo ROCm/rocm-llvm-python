@@ -36,7 +36,7 @@ cdef extern from "llvm-c/Error.h":
 # 
 # Returns the type id for the given error instance, which must be a failure
 # value (i.e. non-null).
-cdef const void * LLVMGetErrorTypeId(LLVMErrorRef Err) nogil
+cdef const void * LLVMGetErrorTypeId(LLVMErrorRef Err)
 
 
 # 
@@ -44,7 +44,7 @@ cdef const void * LLVMGetErrorTypeId(LLVMErrorRef Err) nogil
 # error, and the given LLVMErrorRef value is not usable once this call returns.
 # Note: This method *only* needs to be called if the error is not being passed
 # to some other consuming operation, e.g. LLVMGetErrorMessage.
-cdef void LLVMConsumeError(LLVMErrorRef Err) nogil
+cdef void LLVMConsumeError(LLVMErrorRef Err)
 
 
 # 
@@ -52,19 +52,19 @@ cdef void LLVMConsumeError(LLVMErrorRef Err) nogil
 # and the given LLVMErrorRef value is not usable once this call returns.
 # The caller is responsible for disposing of the string by calling
 # LLVMDisposeErrorMessage.
-cdef char * LLVMGetErrorMessage(LLVMErrorRef Err) nogil
+cdef char * LLVMGetErrorMessage(LLVMErrorRef Err)
 
 
 # 
 # Dispose of the given error message.
-cdef void LLVMDisposeErrorMessage(char * ErrMsg) nogil
+cdef void LLVMDisposeErrorMessage(char * ErrMsg)
 
 
 # 
 # Returns the type id for llvm StringError.
-cdef const void * LLVMGetStringErrorTypeId() nogil
+cdef const void * LLVMGetStringErrorTypeId()
 
 
 # 
 # Create a StringError.
-cdef LLVMErrorRef LLVMCreateStringError(const char * ErrMsg) nogil
+cdef LLVMErrorRef LLVMCreateStringError(const char * ErrMsg)

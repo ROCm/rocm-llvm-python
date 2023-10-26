@@ -25,19 +25,22 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMInstallFatalErrorHandler__funptr = NULL
@@ -50,17 +53,19 @@ cdef void* _LLVMInstallFatalErrorHandler__funptr = NULL
 cdef void LLVMInstallFatalErrorHandler(LLVMFatalErrorHandler Handler):
     global _LLVMInstallFatalErrorHandler__funptr
     __init_symbol(&_LLVMInstallFatalErrorHandler__funptr,"LLVMInstallFatalErrorHandler")
-    (<void (*)(LLVMFatalErrorHandler)> _LLVMInstallFatalErrorHandler__funptr)(Handler)
+    with nogil:
+        (<void (*)(LLVMFatalErrorHandler) noexcept nogil> _LLVMInstallFatalErrorHandler__funptr)(Handler)
 
 
 cdef void* _LLVMResetFatalErrorHandler__funptr = NULL
 # 
 # Reset the fatal error handler. This resets LLVM's fatal error handling
 # behavior to the default.
-cdef void LLVMResetFatalErrorHandler() nogil:
+cdef void LLVMResetFatalErrorHandler():
     global _LLVMResetFatalErrorHandler__funptr
     __init_symbol(&_LLVMResetFatalErrorHandler__funptr,"LLVMResetFatalErrorHandler")
-    (<void (*)() nogil> _LLVMResetFatalErrorHandler__funptr)()
+    with nogil:
+        (<void (*)() noexcept nogil> _LLVMResetFatalErrorHandler__funptr)()
 
 
 cdef void* _LLVMEnablePrettyStackTrace__funptr = NULL
@@ -68,7 +73,8 @@ cdef void* _LLVMEnablePrettyStackTrace__funptr = NULL
 # Enable LLVM's built-in stack trace code. This intercepts the OS's crash
 # signals and prints which component of LLVM you were in at the time if the
 # crash.
-cdef void LLVMEnablePrettyStackTrace() nogil:
+cdef void LLVMEnablePrettyStackTrace():
     global _LLVMEnablePrettyStackTrace__funptr
     __init_symbol(&_LLVMEnablePrettyStackTrace__funptr,"LLVMEnablePrettyStackTrace")
-    (<void (*)() nogil> _LLVMEnablePrettyStackTrace__funptr)()
+    with nogil:
+        (<void (*)() noexcept nogil> _LLVMEnablePrettyStackTrace__funptr)()

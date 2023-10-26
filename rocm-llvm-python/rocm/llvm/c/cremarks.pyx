@@ -25,19 +25,22 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMRemarkStringGetData__funptr = NULL
@@ -45,10 +48,11 @@ cdef void* _LLVMRemarkStringGetData__funptr = NULL
 # Returns the buffer holding the string.
 # 
 # \since REMARKS_API_VERSION=0
-cdef const char * LLVMRemarkStringGetData(LLVMRemarkStringRef String) nogil:
+cdef const char * LLVMRemarkStringGetData(LLVMRemarkStringRef String):
     global _LLVMRemarkStringGetData__funptr
     __init_symbol(&_LLVMRemarkStringGetData__funptr,"LLVMRemarkStringGetData")
-    return (<const char * (*)(LLVMRemarkStringRef) nogil> _LLVMRemarkStringGetData__funptr)(String)
+    with nogil:
+        return (<const char * (*)(LLVMRemarkStringRef) noexcept nogil> _LLVMRemarkStringGetData__funptr)(String)
 
 
 cdef void* _LLVMRemarkStringGetLen__funptr = NULL
@@ -56,10 +60,11 @@ cdef void* _LLVMRemarkStringGetLen__funptr = NULL
 # Returns the size of the string.
 # 
 # \since REMARKS_API_VERSION=0
-cdef unsigned int LLVMRemarkStringGetLen(LLVMRemarkStringRef String) nogil:
+cdef unsigned int LLVMRemarkStringGetLen(LLVMRemarkStringRef String):
     global _LLVMRemarkStringGetLen__funptr
     __init_symbol(&_LLVMRemarkStringGetLen__funptr,"LLVMRemarkStringGetLen")
-    return (<unsigned int (*)(LLVMRemarkStringRef) nogil> _LLVMRemarkStringGetLen__funptr)(String)
+    with nogil:
+        return (<unsigned int (*)(LLVMRemarkStringRef) noexcept nogil> _LLVMRemarkStringGetLen__funptr)(String)
 
 
 cdef void* _LLVMRemarkDebugLocGetSourceFilePath__funptr = NULL
@@ -67,10 +72,11 @@ cdef void* _LLVMRemarkDebugLocGetSourceFilePath__funptr = NULL
 # Return the path to the source file for a debug location.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkStringRef LLVMRemarkDebugLocGetSourceFilePath(LLVMRemarkDebugLocRef DL) nogil:
+cdef LLVMRemarkStringRef LLVMRemarkDebugLocGetSourceFilePath(LLVMRemarkDebugLocRef DL):
     global _LLVMRemarkDebugLocGetSourceFilePath__funptr
     __init_symbol(&_LLVMRemarkDebugLocGetSourceFilePath__funptr,"LLVMRemarkDebugLocGetSourceFilePath")
-    return (<LLVMRemarkStringRef (*)(LLVMRemarkDebugLocRef) nogil> _LLVMRemarkDebugLocGetSourceFilePath__funptr)(DL)
+    with nogil:
+        return (<LLVMRemarkStringRef (*)(LLVMRemarkDebugLocRef) noexcept nogil> _LLVMRemarkDebugLocGetSourceFilePath__funptr)(DL)
 
 
 cdef void* _LLVMRemarkDebugLocGetSourceLine__funptr = NULL
@@ -78,10 +84,11 @@ cdef void* _LLVMRemarkDebugLocGetSourceLine__funptr = NULL
 # Return the line in the source file for a debug location.
 # 
 # \since REMARKS_API_VERSION=0
-cdef unsigned int LLVMRemarkDebugLocGetSourceLine(LLVMRemarkDebugLocRef DL) nogil:
+cdef unsigned int LLVMRemarkDebugLocGetSourceLine(LLVMRemarkDebugLocRef DL):
     global _LLVMRemarkDebugLocGetSourceLine__funptr
     __init_symbol(&_LLVMRemarkDebugLocGetSourceLine__funptr,"LLVMRemarkDebugLocGetSourceLine")
-    return (<unsigned int (*)(LLVMRemarkDebugLocRef) nogil> _LLVMRemarkDebugLocGetSourceLine__funptr)(DL)
+    with nogil:
+        return (<unsigned int (*)(LLVMRemarkDebugLocRef) noexcept nogil> _LLVMRemarkDebugLocGetSourceLine__funptr)(DL)
 
 
 cdef void* _LLVMRemarkDebugLocGetSourceColumn__funptr = NULL
@@ -89,10 +96,11 @@ cdef void* _LLVMRemarkDebugLocGetSourceColumn__funptr = NULL
 # Return the column in the source file for a debug location.
 # 
 # \since REMARKS_API_VERSION=0
-cdef unsigned int LLVMRemarkDebugLocGetSourceColumn(LLVMRemarkDebugLocRef DL) nogil:
+cdef unsigned int LLVMRemarkDebugLocGetSourceColumn(LLVMRemarkDebugLocRef DL):
     global _LLVMRemarkDebugLocGetSourceColumn__funptr
     __init_symbol(&_LLVMRemarkDebugLocGetSourceColumn__funptr,"LLVMRemarkDebugLocGetSourceColumn")
-    return (<unsigned int (*)(LLVMRemarkDebugLocRef) nogil> _LLVMRemarkDebugLocGetSourceColumn__funptr)(DL)
+    with nogil:
+        return (<unsigned int (*)(LLVMRemarkDebugLocRef) noexcept nogil> _LLVMRemarkDebugLocGetSourceColumn__funptr)(DL)
 
 
 cdef void* _LLVMRemarkArgGetKey__funptr = NULL
@@ -101,10 +109,11 @@ cdef void* _LLVMRemarkArgGetKey__funptr = NULL
 # same key can appear multiple times in the list of arguments.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkStringRef LLVMRemarkArgGetKey(LLVMRemarkArgRef Arg) nogil:
+cdef LLVMRemarkStringRef LLVMRemarkArgGetKey(LLVMRemarkArgRef Arg):
     global _LLVMRemarkArgGetKey__funptr
     __init_symbol(&_LLVMRemarkArgGetKey__funptr,"LLVMRemarkArgGetKey")
-    return (<LLVMRemarkStringRef (*)(LLVMRemarkArgRef) nogil> _LLVMRemarkArgGetKey__funptr)(Arg)
+    with nogil:
+        return (<LLVMRemarkStringRef (*)(LLVMRemarkArgRef) noexcept nogil> _LLVMRemarkArgGetKey__funptr)(Arg)
 
 
 cdef void* _LLVMRemarkArgGetValue__funptr = NULL
@@ -112,10 +121,11 @@ cdef void* _LLVMRemarkArgGetValue__funptr = NULL
 # Returns the value of an argument. This is a string that can contain newlines.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkStringRef LLVMRemarkArgGetValue(LLVMRemarkArgRef Arg) nogil:
+cdef LLVMRemarkStringRef LLVMRemarkArgGetValue(LLVMRemarkArgRef Arg):
     global _LLVMRemarkArgGetValue__funptr
     __init_symbol(&_LLVMRemarkArgGetValue__funptr,"LLVMRemarkArgGetValue")
-    return (<LLVMRemarkStringRef (*)(LLVMRemarkArgRef) nogil> _LLVMRemarkArgGetValue__funptr)(Arg)
+    with nogil:
+        return (<LLVMRemarkStringRef (*)(LLVMRemarkArgRef) noexcept nogil> _LLVMRemarkArgGetValue__funptr)(Arg)
 
 
 cdef void* _LLVMRemarkArgGetDebugLoc__funptr = NULL
@@ -125,10 +135,11 @@ cdef void* _LLVMRemarkArgGetDebugLoc__funptr = NULL
 # If there is no debug location, the return value will be `NULL`.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkDebugLocRef LLVMRemarkArgGetDebugLoc(LLVMRemarkArgRef Arg) nogil:
+cdef LLVMRemarkDebugLocRef LLVMRemarkArgGetDebugLoc(LLVMRemarkArgRef Arg):
     global _LLVMRemarkArgGetDebugLoc__funptr
     __init_symbol(&_LLVMRemarkArgGetDebugLoc__funptr,"LLVMRemarkArgGetDebugLoc")
-    return (<LLVMRemarkDebugLocRef (*)(LLVMRemarkArgRef) nogil> _LLVMRemarkArgGetDebugLoc__funptr)(Arg)
+    with nogil:
+        return (<LLVMRemarkDebugLocRef (*)(LLVMRemarkArgRef) noexcept nogil> _LLVMRemarkArgGetDebugLoc__funptr)(Arg)
 
 
 cdef void* _LLVMRemarkEntryDispose__funptr = NULL
@@ -136,10 +147,11 @@ cdef void* _LLVMRemarkEntryDispose__funptr = NULL
 # Free the resources used by the remark entry.
 # 
 # \since REMARKS_API_VERSION=0
-cdef void LLVMRemarkEntryDispose(LLVMRemarkEntryRef Remark) nogil:
+cdef void LLVMRemarkEntryDispose(LLVMRemarkEntryRef Remark):
     global _LLVMRemarkEntryDispose__funptr
     __init_symbol(&_LLVMRemarkEntryDispose__funptr,"LLVMRemarkEntryDispose")
-    (<void (*)(LLVMRemarkEntryRef) nogil> _LLVMRemarkEntryDispose__funptr)(Remark)
+    with nogil:
+        (<void (*)(LLVMRemarkEntryRef) noexcept nogil> _LLVMRemarkEntryDispose__funptr)(Remark)
 
 
 cdef void* _LLVMRemarkEntryGetType__funptr = NULL
@@ -148,10 +160,11 @@ cdef void* _LLVMRemarkEntryGetType__funptr = NULL
 # missed optimizations from the compiler.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkType LLVMRemarkEntryGetType(LLVMRemarkEntryRef Remark) nogil:
+cdef LLVMRemarkType LLVMRemarkEntryGetType(LLVMRemarkEntryRef Remark):
     global _LLVMRemarkEntryGetType__funptr
     __init_symbol(&_LLVMRemarkEntryGetType__funptr,"LLVMRemarkEntryGetType")
-    return (<LLVMRemarkType (*)(LLVMRemarkEntryRef) nogil> _LLVMRemarkEntryGetType__funptr)(Remark)
+    with nogil:
+        return (<LLVMRemarkType (*)(LLVMRemarkEntryRef) noexcept nogil> _LLVMRemarkEntryGetType__funptr)(Remark)
 
 
 cdef void* _LLVMRemarkEntryGetPassName__funptr = NULL
@@ -159,10 +172,11 @@ cdef void* _LLVMRemarkEntryGetPassName__funptr = NULL
 # Get the name of the pass that emitted this remark.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkStringRef LLVMRemarkEntryGetPassName(LLVMRemarkEntryRef Remark) nogil:
+cdef LLVMRemarkStringRef LLVMRemarkEntryGetPassName(LLVMRemarkEntryRef Remark):
     global _LLVMRemarkEntryGetPassName__funptr
     __init_symbol(&_LLVMRemarkEntryGetPassName__funptr,"LLVMRemarkEntryGetPassName")
-    return (<LLVMRemarkStringRef (*)(LLVMRemarkEntryRef) nogil> _LLVMRemarkEntryGetPassName__funptr)(Remark)
+    with nogil:
+        return (<LLVMRemarkStringRef (*)(LLVMRemarkEntryRef) noexcept nogil> _LLVMRemarkEntryGetPassName__funptr)(Remark)
 
 
 cdef void* _LLVMRemarkEntryGetRemarkName__funptr = NULL
@@ -170,10 +184,11 @@ cdef void* _LLVMRemarkEntryGetRemarkName__funptr = NULL
 # Get an identifier of the remark.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkStringRef LLVMRemarkEntryGetRemarkName(LLVMRemarkEntryRef Remark) nogil:
+cdef LLVMRemarkStringRef LLVMRemarkEntryGetRemarkName(LLVMRemarkEntryRef Remark):
     global _LLVMRemarkEntryGetRemarkName__funptr
     __init_symbol(&_LLVMRemarkEntryGetRemarkName__funptr,"LLVMRemarkEntryGetRemarkName")
-    return (<LLVMRemarkStringRef (*)(LLVMRemarkEntryRef) nogil> _LLVMRemarkEntryGetRemarkName__funptr)(Remark)
+    with nogil:
+        return (<LLVMRemarkStringRef (*)(LLVMRemarkEntryRef) noexcept nogil> _LLVMRemarkEntryGetRemarkName__funptr)(Remark)
 
 
 cdef void* _LLVMRemarkEntryGetFunctionName__funptr = NULL
@@ -181,10 +196,11 @@ cdef void* _LLVMRemarkEntryGetFunctionName__funptr = NULL
 # Get the name of the function being processed when the remark was emitted.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkStringRef LLVMRemarkEntryGetFunctionName(LLVMRemarkEntryRef Remark) nogil:
+cdef LLVMRemarkStringRef LLVMRemarkEntryGetFunctionName(LLVMRemarkEntryRef Remark):
     global _LLVMRemarkEntryGetFunctionName__funptr
     __init_symbol(&_LLVMRemarkEntryGetFunctionName__funptr,"LLVMRemarkEntryGetFunctionName")
-    return (<LLVMRemarkStringRef (*)(LLVMRemarkEntryRef) nogil> _LLVMRemarkEntryGetFunctionName__funptr)(Remark)
+    with nogil:
+        return (<LLVMRemarkStringRef (*)(LLVMRemarkEntryRef) noexcept nogil> _LLVMRemarkEntryGetFunctionName__funptr)(Remark)
 
 
 cdef void* _LLVMRemarkEntryGetDebugLoc__funptr = NULL
@@ -194,10 +210,11 @@ cdef void* _LLVMRemarkEntryGetDebugLoc__funptr = NULL
 # If there is no debug location, the return value will be `NULL`.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkDebugLocRef LLVMRemarkEntryGetDebugLoc(LLVMRemarkEntryRef Remark) nogil:
+cdef LLVMRemarkDebugLocRef LLVMRemarkEntryGetDebugLoc(LLVMRemarkEntryRef Remark):
     global _LLVMRemarkEntryGetDebugLoc__funptr
     __init_symbol(&_LLVMRemarkEntryGetDebugLoc__funptr,"LLVMRemarkEntryGetDebugLoc")
-    return (<LLVMRemarkDebugLocRef (*)(LLVMRemarkEntryRef) nogil> _LLVMRemarkEntryGetDebugLoc__funptr)(Remark)
+    with nogil:
+        return (<LLVMRemarkDebugLocRef (*)(LLVMRemarkEntryRef) noexcept nogil> _LLVMRemarkEntryGetDebugLoc__funptr)(Remark)
 
 
 cdef void* _LLVMRemarkEntryGetHotness__funptr = NULL
@@ -207,10 +224,11 @@ cdef void* _LLVMRemarkEntryGetHotness__funptr = NULL
 # A hotness of `0` means this value is not set.
 # 
 # \since REMARKS_API_VERSION=0
-cdef unsigned long LLVMRemarkEntryGetHotness(LLVMRemarkEntryRef Remark) nogil:
+cdef unsigned long LLVMRemarkEntryGetHotness(LLVMRemarkEntryRef Remark):
     global _LLVMRemarkEntryGetHotness__funptr
     __init_symbol(&_LLVMRemarkEntryGetHotness__funptr,"LLVMRemarkEntryGetHotness")
-    return (<unsigned long (*)(LLVMRemarkEntryRef) nogil> _LLVMRemarkEntryGetHotness__funptr)(Remark)
+    with nogil:
+        return (<unsigned long (*)(LLVMRemarkEntryRef) noexcept nogil> _LLVMRemarkEntryGetHotness__funptr)(Remark)
 
 
 cdef void* _LLVMRemarkEntryGetNumArgs__funptr = NULL
@@ -218,10 +236,11 @@ cdef void* _LLVMRemarkEntryGetNumArgs__funptr = NULL
 # The number of arguments the remark holds.
 # 
 # \since REMARKS_API_VERSION=0
-cdef unsigned int LLVMRemarkEntryGetNumArgs(LLVMRemarkEntryRef Remark) nogil:
+cdef unsigned int LLVMRemarkEntryGetNumArgs(LLVMRemarkEntryRef Remark):
     global _LLVMRemarkEntryGetNumArgs__funptr
     __init_symbol(&_LLVMRemarkEntryGetNumArgs__funptr,"LLVMRemarkEntryGetNumArgs")
-    return (<unsigned int (*)(LLVMRemarkEntryRef) nogil> _LLVMRemarkEntryGetNumArgs__funptr)(Remark)
+    with nogil:
+        return (<unsigned int (*)(LLVMRemarkEntryRef) noexcept nogil> _LLVMRemarkEntryGetNumArgs__funptr)(Remark)
 
 
 cdef void* _LLVMRemarkEntryGetFirstArg__funptr = NULL
@@ -233,10 +252,11 @@ cdef void* _LLVMRemarkEntryGetFirstArg__funptr = NULL
 # The lifetime of the returned value is bound to the lifetime of \p Remark.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkArgRef LLVMRemarkEntryGetFirstArg(LLVMRemarkEntryRef Remark) nogil:
+cdef LLVMRemarkArgRef LLVMRemarkEntryGetFirstArg(LLVMRemarkEntryRef Remark):
     global _LLVMRemarkEntryGetFirstArg__funptr
     __init_symbol(&_LLVMRemarkEntryGetFirstArg__funptr,"LLVMRemarkEntryGetFirstArg")
-    return (<LLVMRemarkArgRef (*)(LLVMRemarkEntryRef) nogil> _LLVMRemarkEntryGetFirstArg__funptr)(Remark)
+    with nogil:
+        return (<LLVMRemarkArgRef (*)(LLVMRemarkEntryRef) noexcept nogil> _LLVMRemarkEntryGetFirstArg__funptr)(Remark)
 
 
 cdef void* _LLVMRemarkEntryGetNextArg__funptr = NULL
@@ -248,10 +268,11 @@ cdef void* _LLVMRemarkEntryGetNextArg__funptr = NULL
 # The lifetime of the returned value is bound to the lifetime of \p Remark.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkArgRef LLVMRemarkEntryGetNextArg(LLVMRemarkArgRef It,LLVMRemarkEntryRef Remark) nogil:
+cdef LLVMRemarkArgRef LLVMRemarkEntryGetNextArg(LLVMRemarkArgRef It,LLVMRemarkEntryRef Remark):
     global _LLVMRemarkEntryGetNextArg__funptr
     __init_symbol(&_LLVMRemarkEntryGetNextArg__funptr,"LLVMRemarkEntryGetNextArg")
-    return (<LLVMRemarkArgRef (*)(LLVMRemarkArgRef,LLVMRemarkEntryRef) nogil> _LLVMRemarkEntryGetNextArg__funptr)(It,Remark)
+    with nogil:
+        return (<LLVMRemarkArgRef (*)(LLVMRemarkArgRef,LLVMRemarkEntryRef) noexcept nogil> _LLVMRemarkEntryGetNextArg__funptr)(It,Remark)
 
 
 cdef void* _LLVMRemarkParserCreateYAML__funptr = NULL
@@ -265,10 +286,11 @@ cdef void* _LLVMRemarkParserCreateYAML__funptr = NULL
 # leaking resources.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkParserRef LLVMRemarkParserCreateYAML(const void * Buf,unsigned long Size) nogil:
+cdef LLVMRemarkParserRef LLVMRemarkParserCreateYAML(const void * Buf,unsigned long Size):
     global _LLVMRemarkParserCreateYAML__funptr
     __init_symbol(&_LLVMRemarkParserCreateYAML__funptr,"LLVMRemarkParserCreateYAML")
-    return (<LLVMRemarkParserRef (*)(const void *,unsigned long) nogil> _LLVMRemarkParserCreateYAML__funptr)(Buf,Size)
+    with nogil:
+        return (<LLVMRemarkParserRef (*)(const void *,unsigned long) noexcept nogil> _LLVMRemarkParserCreateYAML__funptr)(Buf,Size)
 
 
 cdef void* _LLVMRemarkParserCreateBitstream__funptr = NULL
@@ -282,10 +304,11 @@ cdef void* _LLVMRemarkParserCreateBitstream__funptr = NULL
 # leaking resources.
 # 
 # \since REMARKS_API_VERSION=1
-cdef LLVMRemarkParserRef LLVMRemarkParserCreateBitstream(const void * Buf,unsigned long Size) nogil:
+cdef LLVMRemarkParserRef LLVMRemarkParserCreateBitstream(const void * Buf,unsigned long Size):
     global _LLVMRemarkParserCreateBitstream__funptr
     __init_symbol(&_LLVMRemarkParserCreateBitstream__funptr,"LLVMRemarkParserCreateBitstream")
-    return (<LLVMRemarkParserRef (*)(const void *,unsigned long) nogil> _LLVMRemarkParserCreateBitstream__funptr)(Buf,Size)
+    with nogil:
+        return (<LLVMRemarkParserRef (*)(const void *,unsigned long) noexcept nogil> _LLVMRemarkParserCreateBitstream__funptr)(Buf,Size)
 
 
 cdef void* _LLVMRemarkParserGetNext__funptr = NULL
@@ -330,10 +353,11 @@ cdef void* _LLVMRemarkParserGetNext__funptr = NULL
 # ```
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkEntryRef LLVMRemarkParserGetNext(LLVMRemarkParserRef Parser) nogil:
+cdef LLVMRemarkEntryRef LLVMRemarkParserGetNext(LLVMRemarkParserRef Parser):
     global _LLVMRemarkParserGetNext__funptr
     __init_symbol(&_LLVMRemarkParserGetNext__funptr,"LLVMRemarkParserGetNext")
-    return (<LLVMRemarkEntryRef (*)(LLVMRemarkParserRef) nogil> _LLVMRemarkParserGetNext__funptr)(Parser)
+    with nogil:
+        return (<LLVMRemarkEntryRef (*)(LLVMRemarkParserRef) noexcept nogil> _LLVMRemarkParserGetNext__funptr)(Parser)
 
 
 cdef void* _LLVMRemarkParserHasError__funptr = NULL
@@ -341,10 +365,11 @@ cdef void* _LLVMRemarkParserHasError__funptr = NULL
 # Returns `1` if the parser encountered an error while parsing the buffer.
 # 
 # \since REMARKS_API_VERSION=0
-cdef int LLVMRemarkParserHasError(LLVMRemarkParserRef Parser) nogil:
+cdef int LLVMRemarkParserHasError(LLVMRemarkParserRef Parser):
     global _LLVMRemarkParserHasError__funptr
     __init_symbol(&_LLVMRemarkParserHasError__funptr,"LLVMRemarkParserHasError")
-    return (<int (*)(LLVMRemarkParserRef) nogil> _LLVMRemarkParserHasError__funptr)(Parser)
+    with nogil:
+        return (<int (*)(LLVMRemarkParserRef) noexcept nogil> _LLVMRemarkParserHasError__funptr)(Parser)
 
 
 cdef void* _LLVMRemarkParserGetErrorMessage__funptr = NULL
@@ -358,10 +383,11 @@ cdef void* _LLVMRemarkParserGetErrorMessage__funptr = NULL
 # released.
 # 
 # \since REMARKS_API_VERSION=0
-cdef const char * LLVMRemarkParserGetErrorMessage(LLVMRemarkParserRef Parser) nogil:
+cdef const char * LLVMRemarkParserGetErrorMessage(LLVMRemarkParserRef Parser):
     global _LLVMRemarkParserGetErrorMessage__funptr
     __init_symbol(&_LLVMRemarkParserGetErrorMessage__funptr,"LLVMRemarkParserGetErrorMessage")
-    return (<const char * (*)(LLVMRemarkParserRef) nogil> _LLVMRemarkParserGetErrorMessage__funptr)(Parser)
+    with nogil:
+        return (<const char * (*)(LLVMRemarkParserRef) noexcept nogil> _LLVMRemarkParserGetErrorMessage__funptr)(Parser)
 
 
 cdef void* _LLVMRemarkParserDispose__funptr = NULL
@@ -369,10 +395,11 @@ cdef void* _LLVMRemarkParserDispose__funptr = NULL
 # Releases all the resources used by \p Parser.
 # 
 # \since REMARKS_API_VERSION=0
-cdef void LLVMRemarkParserDispose(LLVMRemarkParserRef Parser) nogil:
+cdef void LLVMRemarkParserDispose(LLVMRemarkParserRef Parser):
     global _LLVMRemarkParserDispose__funptr
     __init_symbol(&_LLVMRemarkParserDispose__funptr,"LLVMRemarkParserDispose")
-    (<void (*)(LLVMRemarkParserRef) nogil> _LLVMRemarkParserDispose__funptr)(Parser)
+    with nogil:
+        (<void (*)(LLVMRemarkParserRef) noexcept nogil> _LLVMRemarkParserDispose__funptr)(Parser)
 
 
 cdef void* _LLVMRemarkVersion__funptr = NULL
@@ -380,7 +407,8 @@ cdef void* _LLVMRemarkVersion__funptr = NULL
 # Returns the version of the remarks library.
 # 
 # \since REMARKS_API_VERSION=0
-cdef unsigned int LLVMRemarkVersion() nogil:
+cdef unsigned int LLVMRemarkVersion():
     global _LLVMRemarkVersion__funptr
     __init_symbol(&_LLVMRemarkVersion__funptr,"LLVMRemarkVersion")
-    return (<unsigned int (*)() nogil> _LLVMRemarkVersion__funptr)()
+    with nogil:
+        return (<unsigned int (*)() noexcept nogil> _LLVMRemarkVersion__funptr)()

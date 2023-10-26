@@ -25,37 +25,42 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMDebugMetadataVersion__funptr = NULL
 # 
 # The current debug metadata version number.
-cdef unsigned int LLVMDebugMetadataVersion() nogil:
+cdef unsigned int LLVMDebugMetadataVersion():
     global _LLVMDebugMetadataVersion__funptr
     __init_symbol(&_LLVMDebugMetadataVersion__funptr,"LLVMDebugMetadataVersion")
-    return (<unsigned int (*)() nogil> _LLVMDebugMetadataVersion__funptr)()
+    with nogil:
+        return (<unsigned int (*)() noexcept nogil> _LLVMDebugMetadataVersion__funptr)()
 
 
 cdef void* _LLVMGetModuleDebugMetadataVersion__funptr = NULL
 # 
 # The version of debug metadata that's present in the provided \c Module.
-cdef unsigned int LLVMGetModuleDebugMetadataVersion(LLVMModuleRef Module) nogil:
+cdef unsigned int LLVMGetModuleDebugMetadataVersion(LLVMModuleRef Module):
     global _LLVMGetModuleDebugMetadataVersion__funptr
     __init_symbol(&_LLVMGetModuleDebugMetadataVersion__funptr,"LLVMGetModuleDebugMetadataVersion")
-    return (<unsigned int (*)(LLVMModuleRef) nogil> _LLVMGetModuleDebugMetadataVersion__funptr)(Module)
+    with nogil:
+        return (<unsigned int (*)(LLVMModuleRef) noexcept nogil> _LLVMGetModuleDebugMetadataVersion__funptr)(Module)
 
 
 cdef void* _LLVMStripModuleDebugInfo__funptr = NULL
@@ -64,20 +69,22 @@ cdef void* _LLVMStripModuleDebugInfo__funptr = NULL
 # To do this, we remove all calls to the debugger intrinsics and any named
 # metadata for debugging. We also remove debug locations for instructions.
 # Return true if module is modified.
-cdef int LLVMStripModuleDebugInfo(LLVMModuleRef Module) nogil:
+cdef int LLVMStripModuleDebugInfo(LLVMModuleRef Module):
     global _LLVMStripModuleDebugInfo__funptr
     __init_symbol(&_LLVMStripModuleDebugInfo__funptr,"LLVMStripModuleDebugInfo")
-    return (<int (*)(LLVMModuleRef) nogil> _LLVMStripModuleDebugInfo__funptr)(Module)
+    with nogil:
+        return (<int (*)(LLVMModuleRef) noexcept nogil> _LLVMStripModuleDebugInfo__funptr)(Module)
 
 
 cdef void* _LLVMCreateDIBuilderDisallowUnresolved__funptr = NULL
 # 
 # Construct a builder for a module, and do not allow for unresolved nodes
 # attached to the module.
-cdef LLVMDIBuilderRef LLVMCreateDIBuilderDisallowUnresolved(LLVMModuleRef M) nogil:
+cdef LLVMDIBuilderRef LLVMCreateDIBuilderDisallowUnresolved(LLVMModuleRef M):
     global _LLVMCreateDIBuilderDisallowUnresolved__funptr
     __init_symbol(&_LLVMCreateDIBuilderDisallowUnresolved__funptr,"LLVMCreateDIBuilderDisallowUnresolved")
-    return (<LLVMDIBuilderRef (*)(LLVMModuleRef) nogil> _LLVMCreateDIBuilderDisallowUnresolved__funptr)(M)
+    with nogil:
+        return (<LLVMDIBuilderRef (*)(LLVMModuleRef) noexcept nogil> _LLVMCreateDIBuilderDisallowUnresolved__funptr)(M)
 
 
 cdef void* _LLVMCreateDIBuilder__funptr = NULL
@@ -85,39 +92,43 @@ cdef void* _LLVMCreateDIBuilder__funptr = NULL
 # Construct a builder for a module and collect unresolved nodes attached
 # to the module in order to resolve cycles during a call to
 # \c LLVMDIBuilderFinalize.
-cdef LLVMDIBuilderRef LLVMCreateDIBuilder(LLVMModuleRef M) nogil:
+cdef LLVMDIBuilderRef LLVMCreateDIBuilder(LLVMModuleRef M):
     global _LLVMCreateDIBuilder__funptr
     __init_symbol(&_LLVMCreateDIBuilder__funptr,"LLVMCreateDIBuilder")
-    return (<LLVMDIBuilderRef (*)(LLVMModuleRef) nogil> _LLVMCreateDIBuilder__funptr)(M)
+    with nogil:
+        return (<LLVMDIBuilderRef (*)(LLVMModuleRef) noexcept nogil> _LLVMCreateDIBuilder__funptr)(M)
 
 
 cdef void* _LLVMDisposeDIBuilder__funptr = NULL
 # 
 # Deallocates the \c DIBuilder and everything it owns.
 # @note You must call \c LLVMDIBuilderFinalize before this
-cdef void LLVMDisposeDIBuilder(LLVMDIBuilderRef Builder) nogil:
+cdef void LLVMDisposeDIBuilder(LLVMDIBuilderRef Builder):
     global _LLVMDisposeDIBuilder__funptr
     __init_symbol(&_LLVMDisposeDIBuilder__funptr,"LLVMDisposeDIBuilder")
-    (<void (*)(LLVMDIBuilderRef) nogil> _LLVMDisposeDIBuilder__funptr)(Builder)
+    with nogil:
+        (<void (*)(LLVMDIBuilderRef) noexcept nogil> _LLVMDisposeDIBuilder__funptr)(Builder)
 
 
 cdef void* _LLVMDIBuilderFinalize__funptr = NULL
 # 
 # Construct any deferred debug info descriptors.
-cdef void LLVMDIBuilderFinalize(LLVMDIBuilderRef Builder) nogil:
+cdef void LLVMDIBuilderFinalize(LLVMDIBuilderRef Builder):
     global _LLVMDIBuilderFinalize__funptr
     __init_symbol(&_LLVMDIBuilderFinalize__funptr,"LLVMDIBuilderFinalize")
-    (<void (*)(LLVMDIBuilderRef) nogil> _LLVMDIBuilderFinalize__funptr)(Builder)
+    with nogil:
+        (<void (*)(LLVMDIBuilderRef) noexcept nogil> _LLVMDIBuilderFinalize__funptr)(Builder)
 
 
 cdef void* _LLVMDIBuilderFinalizeSubprogram__funptr = NULL
 # 
 # Finalize a specific subprogram.
 # No new variables may be added to this subprogram afterwards.
-cdef void LLVMDIBuilderFinalizeSubprogram(LLVMDIBuilderRef Builder,LLVMMetadataRef Subprogram) nogil:
+cdef void LLVMDIBuilderFinalizeSubprogram(LLVMDIBuilderRef Builder,LLVMMetadataRef Subprogram):
     global _LLVMDIBuilderFinalizeSubprogram__funptr
     __init_symbol(&_LLVMDIBuilderFinalizeSubprogram__funptr,"LLVMDIBuilderFinalizeSubprogram")
-    (<void (*)(LLVMDIBuilderRef,LLVMMetadataRef) nogil> _LLVMDIBuilderFinalizeSubprogram__funptr)(Builder,Subprogram)
+    with nogil:
+        (<void (*)(LLVMDIBuilderRef,LLVMMetadataRef) noexcept nogil> _LLVMDIBuilderFinalizeSubprogram__funptr)(Builder,Subprogram)
 
 
 cdef void* _LLVMDIBuilderCreateCompileUnit__funptr = NULL
@@ -152,10 +163,11 @@ cdef void* _LLVMDIBuilderCreateCompileUnit__funptr = NULL
 # \param SysRootLen      The length of the C string passed to \c SysRoot.
 # \param SDK           The SDK. On Darwin, the last component of the sysroot.
 # \param SDKLen        The length of the C string passed to \c SDK.
-cdef LLVMMetadataRef LLVMDIBuilderCreateCompileUnit(LLVMDIBuilderRef Builder,LLVMDWARFSourceLanguage Lang,LLVMMetadataRef FileRef,const char * Producer,unsigned long ProducerLen,int isOptimized,const char * Flags,unsigned long FlagsLen,unsigned int RuntimeVer,const char * SplitName,unsigned long SplitNameLen,LLVMDWARFEmissionKind Kind,unsigned int DWOId,int SplitDebugInlining,int DebugInfoForProfiling,const char * SysRoot,unsigned long SysRootLen,const char * SDK,unsigned long SDKLen) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateCompileUnit(LLVMDIBuilderRef Builder,LLVMDWARFSourceLanguage Lang,LLVMMetadataRef FileRef,const char * Producer,unsigned long ProducerLen,int isOptimized,const char * Flags,unsigned long FlagsLen,unsigned int RuntimeVer,const char * SplitName,unsigned long SplitNameLen,LLVMDWARFEmissionKind Kind,unsigned int DWOId,int SplitDebugInlining,int DebugInfoForProfiling,const char * SysRoot,unsigned long SysRootLen,const char * SDK,unsigned long SDKLen):
     global _LLVMDIBuilderCreateCompileUnit__funptr
     __init_symbol(&_LLVMDIBuilderCreateCompileUnit__funptr,"LLVMDIBuilderCreateCompileUnit")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMDWARFSourceLanguage,LLVMMetadataRef,const char *,unsigned long,int,const char *,unsigned long,unsigned int,const char *,unsigned long,LLVMDWARFEmissionKind,unsigned int,int,int,const char *,unsigned long,const char *,unsigned long) nogil> _LLVMDIBuilderCreateCompileUnit__funptr)(Builder,Lang,FileRef,Producer,ProducerLen,isOptimized,Flags,FlagsLen,RuntimeVer,SplitName,SplitNameLen,Kind,DWOId,SplitDebugInlining,DebugInfoForProfiling,SysRoot,SysRootLen,SDK,SDKLen)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMDWARFSourceLanguage,LLVMMetadataRef,const char *,unsigned long,int,const char *,unsigned long,unsigned int,const char *,unsigned long,LLVMDWARFEmissionKind,unsigned int,int,int,const char *,unsigned long,const char *,unsigned long) noexcept nogil> _LLVMDIBuilderCreateCompileUnit__funptr)(Builder,Lang,FileRef,Producer,ProducerLen,isOptimized,Flags,FlagsLen,RuntimeVer,SplitName,SplitNameLen,Kind,DWOId,SplitDebugInlining,DebugInfoForProfiling,SysRoot,SysRootLen,SDK,SDKLen)
 
 
 cdef void* _LLVMDIBuilderCreateFile__funptr = NULL
@@ -166,10 +178,11 @@ cdef void* _LLVMDIBuilderCreateFile__funptr = NULL
 # \param FilenameLen  The length of the C string passed to \c Filename.
 # \param Directory    Directory.
 # \param DirectoryLen The length of the C string passed to \c Directory.
-cdef LLVMMetadataRef LLVMDIBuilderCreateFile(LLVMDIBuilderRef Builder,const char * Filename,unsigned long FilenameLen,const char * Directory,unsigned long DirectoryLen) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateFile(LLVMDIBuilderRef Builder,const char * Filename,unsigned long FilenameLen,const char * Directory,unsigned long DirectoryLen):
     global _LLVMDIBuilderCreateFile__funptr
     __init_symbol(&_LLVMDIBuilderCreateFile__funptr,"LLVMDIBuilderCreateFile")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,const char *,unsigned long,const char *,unsigned long) nogil> _LLVMDIBuilderCreateFile__funptr)(Builder,Filename,FilenameLen,Directory,DirectoryLen)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,const char *,unsigned long,const char *,unsigned long) noexcept nogil> _LLVMDIBuilderCreateFile__funptr)(Builder,Filename,FilenameLen,Directory,DirectoryLen)
 
 
 cdef void* _LLVMDIBuilderCreateModule__funptr = NULL
@@ -186,10 +199,11 @@ cdef void* _LLVMDIBuilderCreateModule__funptr = NULL
 # \param IncludePathLen  The length of the C string passed to \c IncludePath.
 # \param APINotesFile    The path to an API notes file for the module.
 # \param APINotesFileLen The length of the C string passed to \c APINotestFile.
-cdef LLVMMetadataRef LLVMDIBuilderCreateModule(LLVMDIBuilderRef Builder,LLVMMetadataRef ParentScope,const char * Name,unsigned long NameLen,const char * ConfigMacros,unsigned long ConfigMacrosLen,const char * IncludePath,unsigned long IncludePathLen,const char * APINotesFile,unsigned long APINotesFileLen) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateModule(LLVMDIBuilderRef Builder,LLVMMetadataRef ParentScope,const char * Name,unsigned long NameLen,const char * ConfigMacros,unsigned long ConfigMacrosLen,const char * IncludePath,unsigned long IncludePathLen,const char * APINotesFile,unsigned long APINotesFileLen):
     global _LLVMDIBuilderCreateModule__funptr
     __init_symbol(&_LLVMDIBuilderCreateModule__funptr,"LLVMDIBuilderCreateModule")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,const char *,unsigned long,const char *,unsigned long,const char *,unsigned long) nogil> _LLVMDIBuilderCreateModule__funptr)(Builder,ParentScope,Name,NameLen,ConfigMacros,ConfigMacrosLen,IncludePath,IncludePathLen,APINotesFile,APINotesFileLen)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,const char *,unsigned long,const char *,unsigned long,const char *,unsigned long) noexcept nogil> _LLVMDIBuilderCreateModule__funptr)(Builder,ParentScope,Name,NameLen,ConfigMacros,ConfigMacrosLen,IncludePath,IncludePathLen,APINotesFile,APINotesFileLen)
 
 
 cdef void* _LLVMDIBuilderCreateNameSpace__funptr = NULL
@@ -201,10 +215,11 @@ cdef void* _LLVMDIBuilderCreateNameSpace__funptr = NULL
 # \param NameLen          The length of the C string passed to \c Name.
 # \param ExportSymbols    Whether or not the namespace exports symbols, e.g.
 #                         this is true of C++ inline namespaces.
-cdef LLVMMetadataRef LLVMDIBuilderCreateNameSpace(LLVMDIBuilderRef Builder,LLVMMetadataRef ParentScope,const char * Name,unsigned long NameLen,int ExportSymbols) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateNameSpace(LLVMDIBuilderRef Builder,LLVMMetadataRef ParentScope,const char * Name,unsigned long NameLen,int ExportSymbols):
     global _LLVMDIBuilderCreateNameSpace__funptr
     __init_symbol(&_LLVMDIBuilderCreateNameSpace__funptr,"LLVMDIBuilderCreateNameSpace")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,int) nogil> _LLVMDIBuilderCreateNameSpace__funptr)(Builder,ParentScope,Name,NameLen,ExportSymbols)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,int) noexcept nogil> _LLVMDIBuilderCreateNameSpace__funptr)(Builder,ParentScope,Name,NameLen,ExportSymbols)
 
 
 cdef void* _LLVMDIBuilderCreateFunction__funptr = NULL
@@ -225,10 +240,11 @@ cdef void* _LLVMDIBuilderCreateFunction__funptr = NULL
 # \param Flags           E.g.: \c LLVMDIFlagLValueReference. These flags are
 #                        used to emit dwarf attributes.
 # \param IsOptimized     True if optimization is ON.
-cdef LLVMMetadataRef LLVMDIBuilderCreateFunction(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,const char * LinkageName,unsigned long LinkageNameLen,LLVMMetadataRef File,unsigned int LineNo,LLVMMetadataRef Ty,int IsLocalToUnit,int IsDefinition,unsigned int ScopeLine,LLVMDIFlags Flags,int IsOptimized) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateFunction(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,const char * LinkageName,unsigned long LinkageNameLen,LLVMMetadataRef File,unsigned int LineNo,LLVMMetadataRef Ty,int IsLocalToUnit,int IsDefinition,unsigned int ScopeLine,LLVMDIFlags Flags,int IsOptimized):
     global _LLVMDIBuilderCreateFunction__funptr
     __init_symbol(&_LLVMDIBuilderCreateFunction__funptr,"LLVMDIBuilderCreateFunction")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,const char *,unsigned long,LLVMMetadataRef,unsigned int,LLVMMetadataRef,int,int,unsigned int,LLVMDIFlags,int) nogil> _LLVMDIBuilderCreateFunction__funptr)(Builder,Scope,Name,NameLen,LinkageName,LinkageNameLen,File,LineNo,Ty,IsLocalToUnit,IsDefinition,ScopeLine,Flags,IsOptimized)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,const char *,unsigned long,LLVMMetadataRef,unsigned int,LLVMMetadataRef,int,int,unsigned int,LLVMDIFlags,int) noexcept nogil> _LLVMDIBuilderCreateFunction__funptr)(Builder,Scope,Name,NameLen,LinkageName,LinkageNameLen,File,LineNo,Ty,IsLocalToUnit,IsDefinition,ScopeLine,Flags,IsOptimized)
 
 
 cdef void* _LLVMDIBuilderCreateLexicalBlock__funptr = NULL
@@ -239,10 +255,11 @@ cdef void* _LLVMDIBuilderCreateLexicalBlock__funptr = NULL
 # \param File         Source file.
 # \param Line         The line in the source file.
 # \param Column       The column in the source file.
-cdef LLVMMetadataRef LLVMDIBuilderCreateLexicalBlock(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,LLVMMetadataRef File,unsigned int Line,unsigned int Column) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateLexicalBlock(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,LLVMMetadataRef File,unsigned int Line,unsigned int Column):
     global _LLVMDIBuilderCreateLexicalBlock__funptr
     __init_symbol(&_LLVMDIBuilderCreateLexicalBlock__funptr,"LLVMDIBuilderCreateLexicalBlock")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,LLVMMetadataRef,unsigned int,unsigned int) nogil> _LLVMDIBuilderCreateLexicalBlock__funptr)(Builder,Scope,File,Line,Column)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,LLVMMetadataRef,unsigned int,unsigned int) noexcept nogil> _LLVMDIBuilderCreateLexicalBlock__funptr)(Builder,Scope,File,Line,Column)
 
 
 cdef void* _LLVMDIBuilderCreateLexicalBlockFile__funptr = NULL
@@ -252,10 +269,11 @@ cdef void* _LLVMDIBuilderCreateLexicalBlockFile__funptr = NULL
 # \param Scope          Lexical block.
 # \param File           Source file.
 # \param Discriminator  DWARF path discriminator value.
-cdef LLVMMetadataRef LLVMDIBuilderCreateLexicalBlockFile(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,LLVMMetadataRef File,unsigned int Discriminator) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateLexicalBlockFile(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,LLVMMetadataRef File,unsigned int Discriminator):
     global _LLVMDIBuilderCreateLexicalBlockFile__funptr
     __init_symbol(&_LLVMDIBuilderCreateLexicalBlockFile__funptr,"LLVMDIBuilderCreateLexicalBlockFile")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,LLVMMetadataRef,unsigned int) nogil> _LLVMDIBuilderCreateLexicalBlockFile__funptr)(Builder,Scope,File,Discriminator)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,LLVMMetadataRef,unsigned int) noexcept nogil> _LLVMDIBuilderCreateLexicalBlockFile__funptr)(Builder,Scope,File,Discriminator)
 
 
 cdef void* _LLVMDIBuilderCreateImportedModuleFromNamespace__funptr = NULL
@@ -266,10 +284,11 @@ cdef void* _LLVMDIBuilderCreateImportedModuleFromNamespace__funptr = NULL
 # \param Scope      The scope this module is imported into
 # \param File       File where the declaration is located.
 # \param Line       Line number of the declaration.
-cdef LLVMMetadataRef LLVMDIBuilderCreateImportedModuleFromNamespace(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,LLVMMetadataRef NS,LLVMMetadataRef File,unsigned int Line) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateImportedModuleFromNamespace(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,LLVMMetadataRef NS,LLVMMetadataRef File,unsigned int Line):
     global _LLVMDIBuilderCreateImportedModuleFromNamespace__funptr
     __init_symbol(&_LLVMDIBuilderCreateImportedModuleFromNamespace__funptr,"LLVMDIBuilderCreateImportedModuleFromNamespace")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,LLVMMetadataRef,LLVMMetadataRef,unsigned int) nogil> _LLVMDIBuilderCreateImportedModuleFromNamespace__funptr)(Builder,Scope,NS,File,Line)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,LLVMMetadataRef,LLVMMetadataRef,unsigned int) noexcept nogil> _LLVMDIBuilderCreateImportedModuleFromNamespace__funptr)(Builder,Scope,NS,File,Line)
 
 
 cdef void* _LLVMDIBuilderCreateImportedModuleFromAlias__funptr = NULL
@@ -283,10 +302,11 @@ cdef void* _LLVMDIBuilderCreateImportedModuleFromAlias__funptr = NULL
 # \param Line           Line number of the declaration.
 # \param Elements       Renamed elements.
 # \param NumElements    Number of renamed elements.
-cdef LLVMMetadataRef LLVMDIBuilderCreateImportedModuleFromAlias(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,LLVMMetadataRef ImportedEntity,LLVMMetadataRef File,unsigned int Line,LLVMMetadataRef* Elements,unsigned int NumElements) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateImportedModuleFromAlias(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,LLVMMetadataRef ImportedEntity,LLVMMetadataRef File,unsigned int Line,LLVMMetadataRef* Elements,unsigned int NumElements):
     global _LLVMDIBuilderCreateImportedModuleFromAlias__funptr
     __init_symbol(&_LLVMDIBuilderCreateImportedModuleFromAlias__funptr,"LLVMDIBuilderCreateImportedModuleFromAlias")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,LLVMMetadataRef,LLVMMetadataRef,unsigned int,LLVMMetadataRef*,unsigned int) nogil> _LLVMDIBuilderCreateImportedModuleFromAlias__funptr)(Builder,Scope,ImportedEntity,File,Line,Elements,NumElements)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,LLVMMetadataRef,LLVMMetadataRef,unsigned int,LLVMMetadataRef*,unsigned int) noexcept nogil> _LLVMDIBuilderCreateImportedModuleFromAlias__funptr)(Builder,Scope,ImportedEntity,File,Line,Elements,NumElements)
 
 
 cdef void* _LLVMDIBuilderCreateImportedModuleFromModule__funptr = NULL
@@ -299,10 +319,11 @@ cdef void* _LLVMDIBuilderCreateImportedModuleFromModule__funptr = NULL
 # \param Line           Line number of the declaration.
 # \param Elements       Renamed elements.
 # \param NumElements    Number of renamed elements.
-cdef LLVMMetadataRef LLVMDIBuilderCreateImportedModuleFromModule(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,LLVMMetadataRef M,LLVMMetadataRef File,unsigned int Line,LLVMMetadataRef* Elements,unsigned int NumElements) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateImportedModuleFromModule(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,LLVMMetadataRef M,LLVMMetadataRef File,unsigned int Line,LLVMMetadataRef* Elements,unsigned int NumElements):
     global _LLVMDIBuilderCreateImportedModuleFromModule__funptr
     __init_symbol(&_LLVMDIBuilderCreateImportedModuleFromModule__funptr,"LLVMDIBuilderCreateImportedModuleFromModule")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,LLVMMetadataRef,LLVMMetadataRef,unsigned int,LLVMMetadataRef*,unsigned int) nogil> _LLVMDIBuilderCreateImportedModuleFromModule__funptr)(Builder,Scope,M,File,Line,Elements,NumElements)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,LLVMMetadataRef,LLVMMetadataRef,unsigned int,LLVMMetadataRef*,unsigned int) noexcept nogil> _LLVMDIBuilderCreateImportedModuleFromModule__funptr)(Builder,Scope,M,File,Line,Elements,NumElements)
 
 
 cdef void* _LLVMDIBuilderCreateImportedDeclaration__funptr = NULL
@@ -320,10 +341,11 @@ cdef void* _LLVMDIBuilderCreateImportedDeclaration__funptr = NULL
 #   \param NameLen        The length of the C string passed to \c Name.
 #   \param Elements       Renamed elements.
 #   \param NumElements    Number of renamed elements.
-cdef LLVMMetadataRef LLVMDIBuilderCreateImportedDeclaration(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,LLVMMetadataRef Decl,LLVMMetadataRef File,unsigned int Line,const char * Name,unsigned long NameLen,LLVMMetadataRef* Elements,unsigned int NumElements) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateImportedDeclaration(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,LLVMMetadataRef Decl,LLVMMetadataRef File,unsigned int Line,const char * Name,unsigned long NameLen,LLVMMetadataRef* Elements,unsigned int NumElements):
     global _LLVMDIBuilderCreateImportedDeclaration__funptr
     __init_symbol(&_LLVMDIBuilderCreateImportedDeclaration__funptr,"LLVMDIBuilderCreateImportedDeclaration")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,LLVMMetadataRef,LLVMMetadataRef,unsigned int,const char *,unsigned long,LLVMMetadataRef*,unsigned int) nogil> _LLVMDIBuilderCreateImportedDeclaration__funptr)(Builder,Scope,Decl,File,Line,Name,NameLen,Elements,NumElements)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,LLVMMetadataRef,LLVMMetadataRef,unsigned int,const char *,unsigned long,LLVMMetadataRef*,unsigned int) noexcept nogil> _LLVMDIBuilderCreateImportedDeclaration__funptr)(Builder,Scope,Decl,File,Line,Name,NameLen,Elements,NumElements)
 
 
 cdef void* _LLVMDIBuilderCreateDebugLocation__funptr = NULL
@@ -336,10 +358,11 @@ cdef void* _LLVMDIBuilderCreateDebugLocation__funptr = NULL
 #                  (optional).
 # \note If the item to which this location is attached cannot be
 #       attributed to a source line, pass 0 for the line and column.
-cdef LLVMMetadataRef LLVMDIBuilderCreateDebugLocation(LLVMContextRef Ctx,unsigned int Line,unsigned int Column,LLVMMetadataRef Scope,LLVMMetadataRef InlinedAt) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateDebugLocation(LLVMContextRef Ctx,unsigned int Line,unsigned int Column,LLVMMetadataRef Scope,LLVMMetadataRef InlinedAt):
     global _LLVMDIBuilderCreateDebugLocation__funptr
     __init_symbol(&_LLVMDIBuilderCreateDebugLocation__funptr,"LLVMDIBuilderCreateDebugLocation")
-    return (<LLVMMetadataRef (*)(LLVMContextRef,unsigned int,unsigned int,LLVMMetadataRef,LLVMMetadataRef) nogil> _LLVMDIBuilderCreateDebugLocation__funptr)(Ctx,Line,Column,Scope,InlinedAt)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMContextRef,unsigned int,unsigned int,LLVMMetadataRef,LLVMMetadataRef) noexcept nogil> _LLVMDIBuilderCreateDebugLocation__funptr)(Ctx,Line,Column,Scope,InlinedAt)
 
 
 cdef void* _LLVMDILocationGetLine__funptr = NULL
@@ -348,10 +371,11 @@ cdef void* _LLVMDILocationGetLine__funptr = NULL
 # \param Location     The debug location.
 # 
 # @see DILocation::getLine()
-cdef unsigned int LLVMDILocationGetLine(LLVMMetadataRef Location) nogil:
+cdef unsigned int LLVMDILocationGetLine(LLVMMetadataRef Location):
     global _LLVMDILocationGetLine__funptr
     __init_symbol(&_LLVMDILocationGetLine__funptr,"LLVMDILocationGetLine")
-    return (<unsigned int (*)(LLVMMetadataRef) nogil> _LLVMDILocationGetLine__funptr)(Location)
+    with nogil:
+        return (<unsigned int (*)(LLVMMetadataRef) noexcept nogil> _LLVMDILocationGetLine__funptr)(Location)
 
 
 cdef void* _LLVMDILocationGetColumn__funptr = NULL
@@ -360,10 +384,11 @@ cdef void* _LLVMDILocationGetColumn__funptr = NULL
 # \param Location     The debug location.
 # 
 # @see DILocation::getColumn()
-cdef unsigned int LLVMDILocationGetColumn(LLVMMetadataRef Location) nogil:
+cdef unsigned int LLVMDILocationGetColumn(LLVMMetadataRef Location):
     global _LLVMDILocationGetColumn__funptr
     __init_symbol(&_LLVMDILocationGetColumn__funptr,"LLVMDILocationGetColumn")
-    return (<unsigned int (*)(LLVMMetadataRef) nogil> _LLVMDILocationGetColumn__funptr)(Location)
+    with nogil:
+        return (<unsigned int (*)(LLVMMetadataRef) noexcept nogil> _LLVMDILocationGetColumn__funptr)(Location)
 
 
 cdef void* _LLVMDILocationGetScope__funptr = NULL
@@ -372,10 +397,11 @@ cdef void* _LLVMDILocationGetScope__funptr = NULL
 # \param Location     The debug location.
 # 
 # @see DILocation::getScope()
-cdef LLVMMetadataRef LLVMDILocationGetScope(LLVMMetadataRef Location) nogil:
+cdef LLVMMetadataRef LLVMDILocationGetScope(LLVMMetadataRef Location):
     global _LLVMDILocationGetScope__funptr
     __init_symbol(&_LLVMDILocationGetScope__funptr,"LLVMDILocationGetScope")
-    return (<LLVMMetadataRef (*)(LLVMMetadataRef) nogil> _LLVMDILocationGetScope__funptr)(Location)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMMetadataRef) noexcept nogil> _LLVMDILocationGetScope__funptr)(Location)
 
 
 cdef void* _LLVMDILocationGetInlinedAt__funptr = NULL
@@ -384,10 +410,11 @@ cdef void* _LLVMDILocationGetInlinedAt__funptr = NULL
 # \param Location     The debug location.
 # 
 # @see DILocation::getInlinedAt()
-cdef LLVMMetadataRef LLVMDILocationGetInlinedAt(LLVMMetadataRef Location) nogil:
+cdef LLVMMetadataRef LLVMDILocationGetInlinedAt(LLVMMetadataRef Location):
     global _LLVMDILocationGetInlinedAt__funptr
     __init_symbol(&_LLVMDILocationGetInlinedAt__funptr,"LLVMDILocationGetInlinedAt")
-    return (<LLVMMetadataRef (*)(LLVMMetadataRef) nogil> _LLVMDILocationGetInlinedAt__funptr)(Location)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMMetadataRef) noexcept nogil> _LLVMDILocationGetInlinedAt__funptr)(Location)
 
 
 cdef void* _LLVMDIScopeGetFile__funptr = NULL
@@ -396,10 +423,11 @@ cdef void* _LLVMDIScopeGetFile__funptr = NULL
 # \param Scope     The scope object.
 # 
 # @see DIScope::getFile()
-cdef LLVMMetadataRef LLVMDIScopeGetFile(LLVMMetadataRef Scope) nogil:
+cdef LLVMMetadataRef LLVMDIScopeGetFile(LLVMMetadataRef Scope):
     global _LLVMDIScopeGetFile__funptr
     __init_symbol(&_LLVMDIScopeGetFile__funptr,"LLVMDIScopeGetFile")
-    return (<LLVMMetadataRef (*)(LLVMMetadataRef) nogil> _LLVMDIScopeGetFile__funptr)(Scope)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMMetadataRef) noexcept nogil> _LLVMDIScopeGetFile__funptr)(Scope)
 
 
 cdef void* _LLVMDIFileGetDirectory__funptr = NULL
@@ -409,10 +437,11 @@ cdef void* _LLVMDIFileGetDirectory__funptr = NULL
 # \param Len      The length of the returned string.
 # 
 # @see DIFile::getDirectory()
-cdef const char * LLVMDIFileGetDirectory(LLVMMetadataRef File,unsigned int * Len) nogil:
+cdef const char * LLVMDIFileGetDirectory(LLVMMetadataRef File,unsigned int * Len):
     global _LLVMDIFileGetDirectory__funptr
     __init_symbol(&_LLVMDIFileGetDirectory__funptr,"LLVMDIFileGetDirectory")
-    return (<const char * (*)(LLVMMetadataRef,unsigned int *) nogil> _LLVMDIFileGetDirectory__funptr)(File,Len)
+    with nogil:
+        return (<const char * (*)(LLVMMetadataRef,unsigned int *) noexcept nogil> _LLVMDIFileGetDirectory__funptr)(File,Len)
 
 
 cdef void* _LLVMDIFileGetFilename__funptr = NULL
@@ -422,10 +451,11 @@ cdef void* _LLVMDIFileGetFilename__funptr = NULL
 # \param Len      The length of the returned string.
 # 
 # @see DIFile::getFilename()
-cdef const char * LLVMDIFileGetFilename(LLVMMetadataRef File,unsigned int * Len) nogil:
+cdef const char * LLVMDIFileGetFilename(LLVMMetadataRef File,unsigned int * Len):
     global _LLVMDIFileGetFilename__funptr
     __init_symbol(&_LLVMDIFileGetFilename__funptr,"LLVMDIFileGetFilename")
-    return (<const char * (*)(LLVMMetadataRef,unsigned int *) nogil> _LLVMDIFileGetFilename__funptr)(File,Len)
+    with nogil:
+        return (<const char * (*)(LLVMMetadataRef,unsigned int *) noexcept nogil> _LLVMDIFileGetFilename__funptr)(File,Len)
 
 
 cdef void* _LLVMDIFileGetSource__funptr = NULL
@@ -435,10 +465,11 @@ cdef void* _LLVMDIFileGetSource__funptr = NULL
 # \param Len      The length of the returned string.
 # 
 # @see DIFile::getSource()
-cdef const char * LLVMDIFileGetSource(LLVMMetadataRef File,unsigned int * Len) nogil:
+cdef const char * LLVMDIFileGetSource(LLVMMetadataRef File,unsigned int * Len):
     global _LLVMDIFileGetSource__funptr
     __init_symbol(&_LLVMDIFileGetSource__funptr,"LLVMDIFileGetSource")
-    return (<const char * (*)(LLVMMetadataRef,unsigned int *) nogil> _LLVMDIFileGetSource__funptr)(File,Len)
+    with nogil:
+        return (<const char * (*)(LLVMMetadataRef,unsigned int *) noexcept nogil> _LLVMDIFileGetSource__funptr)(File,Len)
 
 
 cdef void* _LLVMDIBuilderGetOrCreateTypeArray__funptr = NULL
@@ -447,10 +478,11 @@ cdef void* _LLVMDIBuilderGetOrCreateTypeArray__funptr = NULL
 # \param Builder        The DIBuilder.
 # \param Data           The type elements.
 # \param NumElements    Number of type elements.
-cdef LLVMMetadataRef LLVMDIBuilderGetOrCreateTypeArray(LLVMDIBuilderRef Builder,LLVMMetadataRef* Data,unsigned long NumElements) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderGetOrCreateTypeArray(LLVMDIBuilderRef Builder,LLVMMetadataRef* Data,unsigned long NumElements):
     global _LLVMDIBuilderGetOrCreateTypeArray__funptr
     __init_symbol(&_LLVMDIBuilderGetOrCreateTypeArray__funptr,"LLVMDIBuilderGetOrCreateTypeArray")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef*,unsigned long) nogil> _LLVMDIBuilderGetOrCreateTypeArray__funptr)(Builder,Data,NumElements)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef*,unsigned long) noexcept nogil> _LLVMDIBuilderGetOrCreateTypeArray__funptr)(Builder,Data,NumElements)
 
 
 cdef void* _LLVMDIBuilderCreateSubroutineType__funptr = NULL
@@ -463,10 +495,11 @@ cdef void* _LLVMDIBuilderCreateSubroutineType__funptr = NULL
 # \param NumParameterTypes The number of parameter types in \c ParameterTypes
 # \param Flags           E.g.: \c LLVMDIFlagLValueReference.
 #                        These flags are used to emit dwarf attributes.
-cdef LLVMMetadataRef LLVMDIBuilderCreateSubroutineType(LLVMDIBuilderRef Builder,LLVMMetadataRef File,LLVMMetadataRef* ParameterTypes,unsigned int NumParameterTypes,LLVMDIFlags Flags) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateSubroutineType(LLVMDIBuilderRef Builder,LLVMMetadataRef File,LLVMMetadataRef* ParameterTypes,unsigned int NumParameterTypes,LLVMDIFlags Flags):
     global _LLVMDIBuilderCreateSubroutineType__funptr
     __init_symbol(&_LLVMDIBuilderCreateSubroutineType__funptr,"LLVMDIBuilderCreateSubroutineType")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,LLVMMetadataRef*,unsigned int,LLVMDIFlags) nogil> _LLVMDIBuilderCreateSubroutineType__funptr)(Builder,File,ParameterTypes,NumParameterTypes,Flags)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,LLVMMetadataRef*,unsigned int,LLVMDIFlags) noexcept nogil> _LLVMDIBuilderCreateSubroutineType__funptr)(Builder,File,ParameterTypes,NumParameterTypes,Flags)
 
 
 cdef void* _LLVMDIBuilderCreateMacro__funptr = NULL
@@ -480,10 +513,11 @@ cdef void* _LLVMDIBuilderCreateMacro__funptr = NULL
 # @param NameLen         Macro name length.
 # @param Value           Macro value.
 # @param ValueLen        Macro value length.
-cdef LLVMMetadataRef LLVMDIBuilderCreateMacro(LLVMDIBuilderRef Builder,LLVMMetadataRef ParentMacroFile,unsigned int Line,LLVMDWARFMacinfoRecordType RecordType,const char * Name,unsigned long NameLen,const char * Value,unsigned long ValueLen) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateMacro(LLVMDIBuilderRef Builder,LLVMMetadataRef ParentMacroFile,unsigned int Line,LLVMDWARFMacinfoRecordType RecordType,const char * Name,unsigned long NameLen,const char * Value,unsigned long ValueLen):
     global _LLVMDIBuilderCreateMacro__funptr
     __init_symbol(&_LLVMDIBuilderCreateMacro__funptr,"LLVMDIBuilderCreateMacro")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,unsigned int,LLVMDWARFMacinfoRecordType,const char *,unsigned long,const char *,unsigned long) nogil> _LLVMDIBuilderCreateMacro__funptr)(Builder,ParentMacroFile,Line,RecordType,Name,NameLen,Value,ValueLen)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,unsigned int,LLVMDWARFMacinfoRecordType,const char *,unsigned long,const char *,unsigned long) noexcept nogil> _LLVMDIBuilderCreateMacro__funptr)(Builder,ParentMacroFile,Line,RecordType,Name,NameLen,Value,ValueLen)
 
 
 cdef void* _LLVMDIBuilderCreateTempMacroFile__funptr = NULL
@@ -495,10 +529,11 @@ cdef void* _LLVMDIBuilderCreateTempMacroFile__funptr = NULL
 # @param ParentMacroFile Macro parent (could be NULL).
 # @param Line            Source line number where the macro file is included.
 # @param File            File descriptor containing the name of the macro file.
-cdef LLVMMetadataRef LLVMDIBuilderCreateTempMacroFile(LLVMDIBuilderRef Builder,LLVMMetadataRef ParentMacroFile,unsigned int Line,LLVMMetadataRef File) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateTempMacroFile(LLVMDIBuilderRef Builder,LLVMMetadataRef ParentMacroFile,unsigned int Line,LLVMMetadataRef File):
     global _LLVMDIBuilderCreateTempMacroFile__funptr
     __init_symbol(&_LLVMDIBuilderCreateTempMacroFile__funptr,"LLVMDIBuilderCreateTempMacroFile")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,unsigned int,LLVMMetadataRef) nogil> _LLVMDIBuilderCreateTempMacroFile__funptr)(Builder,ParentMacroFile,Line,File)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,unsigned int,LLVMMetadataRef) noexcept nogil> _LLVMDIBuilderCreateTempMacroFile__funptr)(Builder,ParentMacroFile,Line,File)
 
 
 cdef void* _LLVMDIBuilderCreateEnumerator__funptr = NULL
@@ -509,10 +544,11 @@ cdef void* _LLVMDIBuilderCreateEnumerator__funptr = NULL
 # @param NameLen        Length of enumerator name.
 # @param Value          Enumerator value.
 # @param IsUnsigned     True if the value is unsigned.
-cdef LLVMMetadataRef LLVMDIBuilderCreateEnumerator(LLVMDIBuilderRef Builder,const char * Name,unsigned long NameLen,long Value,int IsUnsigned) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateEnumerator(LLVMDIBuilderRef Builder,const char * Name,unsigned long NameLen,long Value,int IsUnsigned):
     global _LLVMDIBuilderCreateEnumerator__funptr
     __init_symbol(&_LLVMDIBuilderCreateEnumerator__funptr,"LLVMDIBuilderCreateEnumerator")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,const char *,unsigned long,long,int) nogil> _LLVMDIBuilderCreateEnumerator__funptr)(Builder,Name,NameLen,Value,IsUnsigned)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,const char *,unsigned long,long,int) noexcept nogil> _LLVMDIBuilderCreateEnumerator__funptr)(Builder,Name,NameLen,Value,IsUnsigned)
 
 
 cdef void* _LLVMDIBuilderCreateEnumerationType__funptr = NULL
@@ -529,10 +565,11 @@ cdef void* _LLVMDIBuilderCreateEnumerationType__funptr = NULL
 # \param Elements       Enumeration elements.
 # \param NumElements    Number of enumeration elements.
 # \param ClassTy        Underlying type of a C++11/ObjC fixed enum.
-cdef LLVMMetadataRef LLVMDIBuilderCreateEnumerationType(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,LLVMMetadataRef File,unsigned int LineNumber,unsigned long SizeInBits,unsigned int AlignInBits,LLVMMetadataRef* Elements,unsigned int NumElements,LLVMMetadataRef ClassTy) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateEnumerationType(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,LLVMMetadataRef File,unsigned int LineNumber,unsigned long SizeInBits,unsigned int AlignInBits,LLVMMetadataRef* Elements,unsigned int NumElements,LLVMMetadataRef ClassTy):
     global _LLVMDIBuilderCreateEnumerationType__funptr
     __init_symbol(&_LLVMDIBuilderCreateEnumerationType__funptr,"LLVMDIBuilderCreateEnumerationType")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,LLVMMetadataRef,unsigned int,unsigned long,unsigned int,LLVMMetadataRef*,unsigned int,LLVMMetadataRef) nogil> _LLVMDIBuilderCreateEnumerationType__funptr)(Builder,Scope,Name,NameLen,File,LineNumber,SizeInBits,AlignInBits,Elements,NumElements,ClassTy)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,LLVMMetadataRef,unsigned int,unsigned long,unsigned int,LLVMMetadataRef*,unsigned int,LLVMMetadataRef) noexcept nogil> _LLVMDIBuilderCreateEnumerationType__funptr)(Builder,Scope,Name,NameLen,File,LineNumber,SizeInBits,AlignInBits,Elements,NumElements,ClassTy)
 
 
 cdef void* _LLVMDIBuilderCreateUnionType__funptr = NULL
@@ -552,10 +589,11 @@ cdef void* _LLVMDIBuilderCreateUnionType__funptr = NULL
 # \param RunTimeLang  Optional parameter, Objective-C runtime version.
 # \param UniqueId     A unique identifier for the union.
 # \param UniqueIdLen  Length of unique identifier.
-cdef LLVMMetadataRef LLVMDIBuilderCreateUnionType(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,LLVMMetadataRef File,unsigned int LineNumber,unsigned long SizeInBits,unsigned int AlignInBits,LLVMDIFlags Flags,LLVMMetadataRef* Elements,unsigned int NumElements,unsigned int RunTimeLang,const char * UniqueId,unsigned long UniqueIdLen) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateUnionType(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,LLVMMetadataRef File,unsigned int LineNumber,unsigned long SizeInBits,unsigned int AlignInBits,LLVMDIFlags Flags,LLVMMetadataRef* Elements,unsigned int NumElements,unsigned int RunTimeLang,const char * UniqueId,unsigned long UniqueIdLen):
     global _LLVMDIBuilderCreateUnionType__funptr
     __init_symbol(&_LLVMDIBuilderCreateUnionType__funptr,"LLVMDIBuilderCreateUnionType")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,LLVMMetadataRef,unsigned int,unsigned long,unsigned int,LLVMDIFlags,LLVMMetadataRef*,unsigned int,unsigned int,const char *,unsigned long) nogil> _LLVMDIBuilderCreateUnionType__funptr)(Builder,Scope,Name,NameLen,File,LineNumber,SizeInBits,AlignInBits,Flags,Elements,NumElements,RunTimeLang,UniqueId,UniqueIdLen)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,LLVMMetadataRef,unsigned int,unsigned long,unsigned int,LLVMDIFlags,LLVMMetadataRef*,unsigned int,unsigned int,const char *,unsigned long) noexcept nogil> _LLVMDIBuilderCreateUnionType__funptr)(Builder,Scope,Name,NameLen,File,LineNumber,SizeInBits,AlignInBits,Flags,Elements,NumElements,RunTimeLang,UniqueId,UniqueIdLen)
 
 
 cdef void* _LLVMDIBuilderCreateArrayType__funptr = NULL
@@ -567,10 +605,11 @@ cdef void* _LLVMDIBuilderCreateArrayType__funptr = NULL
 # \param Ty           Element type.
 # \param Subscripts   Subscripts.
 # \param NumSubscripts Number of subscripts.
-cdef LLVMMetadataRef LLVMDIBuilderCreateArrayType(LLVMDIBuilderRef Builder,unsigned long Size,unsigned int AlignInBits,LLVMMetadataRef Ty,LLVMMetadataRef* Subscripts,unsigned int NumSubscripts) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateArrayType(LLVMDIBuilderRef Builder,unsigned long Size,unsigned int AlignInBits,LLVMMetadataRef Ty,LLVMMetadataRef* Subscripts,unsigned int NumSubscripts):
     global _LLVMDIBuilderCreateArrayType__funptr
     __init_symbol(&_LLVMDIBuilderCreateArrayType__funptr,"LLVMDIBuilderCreateArrayType")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,unsigned long,unsigned int,LLVMMetadataRef,LLVMMetadataRef*,unsigned int) nogil> _LLVMDIBuilderCreateArrayType__funptr)(Builder,Size,AlignInBits,Ty,Subscripts,NumSubscripts)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,unsigned long,unsigned int,LLVMMetadataRef,LLVMMetadataRef*,unsigned int) noexcept nogil> _LLVMDIBuilderCreateArrayType__funptr)(Builder,Size,AlignInBits,Ty,Subscripts,NumSubscripts)
 
 
 cdef void* _LLVMDIBuilderCreateVectorType__funptr = NULL
@@ -582,10 +621,11 @@ cdef void* _LLVMDIBuilderCreateVectorType__funptr = NULL
 # \param Ty           Element type.
 # \param Subscripts   Subscripts.
 # \param NumSubscripts Number of subscripts.
-cdef LLVMMetadataRef LLVMDIBuilderCreateVectorType(LLVMDIBuilderRef Builder,unsigned long Size,unsigned int AlignInBits,LLVMMetadataRef Ty,LLVMMetadataRef* Subscripts,unsigned int NumSubscripts) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateVectorType(LLVMDIBuilderRef Builder,unsigned long Size,unsigned int AlignInBits,LLVMMetadataRef Ty,LLVMMetadataRef* Subscripts,unsigned int NumSubscripts):
     global _LLVMDIBuilderCreateVectorType__funptr
     __init_symbol(&_LLVMDIBuilderCreateVectorType__funptr,"LLVMDIBuilderCreateVectorType")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,unsigned long,unsigned int,LLVMMetadataRef,LLVMMetadataRef*,unsigned int) nogil> _LLVMDIBuilderCreateVectorType__funptr)(Builder,Size,AlignInBits,Ty,Subscripts,NumSubscripts)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,unsigned long,unsigned int,LLVMMetadataRef,LLVMMetadataRef*,unsigned int) noexcept nogil> _LLVMDIBuilderCreateVectorType__funptr)(Builder,Size,AlignInBits,Ty,Subscripts,NumSubscripts)
 
 
 cdef void* _LLVMDIBuilderCreateUnspecifiedType__funptr = NULL
@@ -594,10 +634,11 @@ cdef void* _LLVMDIBuilderCreateUnspecifiedType__funptr = NULL
 # \param Builder   The DIBuilder.
 # \param Name      The unspecified type's name.
 # \param NameLen   Length of type name.
-cdef LLVMMetadataRef LLVMDIBuilderCreateUnspecifiedType(LLVMDIBuilderRef Builder,const char * Name,unsigned long NameLen) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateUnspecifiedType(LLVMDIBuilderRef Builder,const char * Name,unsigned long NameLen):
     global _LLVMDIBuilderCreateUnspecifiedType__funptr
     __init_symbol(&_LLVMDIBuilderCreateUnspecifiedType__funptr,"LLVMDIBuilderCreateUnspecifiedType")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,const char *,unsigned long) nogil> _LLVMDIBuilderCreateUnspecifiedType__funptr)(Builder,Name,NameLen)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,const char *,unsigned long) noexcept nogil> _LLVMDIBuilderCreateUnspecifiedType__funptr)(Builder,Name,NameLen)
 
 
 cdef void* _LLVMDIBuilderCreateBasicType__funptr = NULL
@@ -610,10 +651,11 @@ cdef void* _LLVMDIBuilderCreateBasicType__funptr = NULL
 # \param SizeInBits  Size of the type.
 # \param Encoding    DWARF encoding code, e.g. \c LLVMDWARFTypeEncoding_float.
 # \param Flags       Flags to encode optional attribute like endianity
-cdef LLVMMetadataRef LLVMDIBuilderCreateBasicType(LLVMDIBuilderRef Builder,const char * Name,unsigned long NameLen,unsigned long SizeInBits,unsigned int Encoding,LLVMDIFlags Flags) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateBasicType(LLVMDIBuilderRef Builder,const char * Name,unsigned long NameLen,unsigned long SizeInBits,unsigned int Encoding,LLVMDIFlags Flags):
     global _LLVMDIBuilderCreateBasicType__funptr
     __init_symbol(&_LLVMDIBuilderCreateBasicType__funptr,"LLVMDIBuilderCreateBasicType")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,const char *,unsigned long,unsigned long,unsigned int,LLVMDIFlags) nogil> _LLVMDIBuilderCreateBasicType__funptr)(Builder,Name,NameLen,SizeInBits,Encoding,Flags)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,const char *,unsigned long,unsigned long,unsigned int,LLVMDIFlags) noexcept nogil> _LLVMDIBuilderCreateBasicType__funptr)(Builder,Name,NameLen,SizeInBits,Encoding,Flags)
 
 
 cdef void* _LLVMDIBuilderCreatePointerType__funptr = NULL
@@ -626,10 +668,11 @@ cdef void* _LLVMDIBuilderCreatePointerType__funptr = NULL
 # \param AddressSpace      DWARF address space. (optional, pass 0 to ignore)
 # \param Name              Pointer type name. (optional)
 # \param NameLen           Length of pointer type name. (optional)
-cdef LLVMMetadataRef LLVMDIBuilderCreatePointerType(LLVMDIBuilderRef Builder,LLVMMetadataRef PointeeTy,unsigned long SizeInBits,unsigned int AlignInBits,unsigned int AddressSpace,const char * Name,unsigned long NameLen) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreatePointerType(LLVMDIBuilderRef Builder,LLVMMetadataRef PointeeTy,unsigned long SizeInBits,unsigned int AlignInBits,unsigned int AddressSpace,const char * Name,unsigned long NameLen):
     global _LLVMDIBuilderCreatePointerType__funptr
     __init_symbol(&_LLVMDIBuilderCreatePointerType__funptr,"LLVMDIBuilderCreatePointerType")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,unsigned long,unsigned int,unsigned int,const char *,unsigned long) nogil> _LLVMDIBuilderCreatePointerType__funptr)(Builder,PointeeTy,SizeInBits,AlignInBits,AddressSpace,Name,NameLen)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,unsigned long,unsigned int,unsigned int,const char *,unsigned long) noexcept nogil> _LLVMDIBuilderCreatePointerType__funptr)(Builder,PointeeTy,SizeInBits,AlignInBits,AddressSpace,Name,NameLen)
 
 
 cdef void* _LLVMDIBuilderCreateStructType__funptr = NULL
@@ -650,10 +693,11 @@ cdef void* _LLVMDIBuilderCreateStructType__funptr = NULL
 # \param VTableHolder The object containing the vtable for the struct.
 # \param UniqueId     A unique identifier for the struct.
 # \param UniqueIdLen  Length of the unique identifier for the struct.
-cdef LLVMMetadataRef LLVMDIBuilderCreateStructType(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,LLVMMetadataRef File,unsigned int LineNumber,unsigned long SizeInBits,unsigned int AlignInBits,LLVMDIFlags Flags,LLVMMetadataRef DerivedFrom,LLVMMetadataRef* Elements,unsigned int NumElements,unsigned int RunTimeLang,LLVMMetadataRef VTableHolder,const char * UniqueId,unsigned long UniqueIdLen) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateStructType(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,LLVMMetadataRef File,unsigned int LineNumber,unsigned long SizeInBits,unsigned int AlignInBits,LLVMDIFlags Flags,LLVMMetadataRef DerivedFrom,LLVMMetadataRef* Elements,unsigned int NumElements,unsigned int RunTimeLang,LLVMMetadataRef VTableHolder,const char * UniqueId,unsigned long UniqueIdLen):
     global _LLVMDIBuilderCreateStructType__funptr
     __init_symbol(&_LLVMDIBuilderCreateStructType__funptr,"LLVMDIBuilderCreateStructType")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,LLVMMetadataRef,unsigned int,unsigned long,unsigned int,LLVMDIFlags,LLVMMetadataRef,LLVMMetadataRef*,unsigned int,unsigned int,LLVMMetadataRef,const char *,unsigned long) nogil> _LLVMDIBuilderCreateStructType__funptr)(Builder,Scope,Name,NameLen,File,LineNumber,SizeInBits,AlignInBits,Flags,DerivedFrom,Elements,NumElements,RunTimeLang,VTableHolder,UniqueId,UniqueIdLen)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,LLVMMetadataRef,unsigned int,unsigned long,unsigned int,LLVMDIFlags,LLVMMetadataRef,LLVMMetadataRef*,unsigned int,unsigned int,LLVMMetadataRef,const char *,unsigned long) noexcept nogil> _LLVMDIBuilderCreateStructType__funptr)(Builder,Scope,Name,NameLen,File,LineNumber,SizeInBits,AlignInBits,Flags,DerivedFrom,Elements,NumElements,RunTimeLang,VTableHolder,UniqueId,UniqueIdLen)
 
 
 cdef void* _LLVMDIBuilderCreateMemberType__funptr = NULL
@@ -670,10 +714,11 @@ cdef void* _LLVMDIBuilderCreateMemberType__funptr = NULL
 # \param OffsetInBits Member offset.
 # \param Flags        Flags to encode member attribute, e.g. private
 # \param Ty           Parent type.
-cdef LLVMMetadataRef LLVMDIBuilderCreateMemberType(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,LLVMMetadataRef File,unsigned int LineNo,unsigned long SizeInBits,unsigned int AlignInBits,unsigned long OffsetInBits,LLVMDIFlags Flags,LLVMMetadataRef Ty) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateMemberType(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,LLVMMetadataRef File,unsigned int LineNo,unsigned long SizeInBits,unsigned int AlignInBits,unsigned long OffsetInBits,LLVMDIFlags Flags,LLVMMetadataRef Ty):
     global _LLVMDIBuilderCreateMemberType__funptr
     __init_symbol(&_LLVMDIBuilderCreateMemberType__funptr,"LLVMDIBuilderCreateMemberType")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,LLVMMetadataRef,unsigned int,unsigned long,unsigned int,unsigned long,LLVMDIFlags,LLVMMetadataRef) nogil> _LLVMDIBuilderCreateMemberType__funptr)(Builder,Scope,Name,NameLen,File,LineNo,SizeInBits,AlignInBits,OffsetInBits,Flags,Ty)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,LLVMMetadataRef,unsigned int,unsigned long,unsigned int,unsigned long,LLVMDIFlags,LLVMMetadataRef) noexcept nogil> _LLVMDIBuilderCreateMemberType__funptr)(Builder,Scope,Name,NameLen,File,LineNo,SizeInBits,AlignInBits,OffsetInBits,Flags,Ty)
 
 
 cdef void* _LLVMDIBuilderCreateStaticMemberType__funptr = NULL
@@ -690,10 +735,11 @@ cdef void* _LLVMDIBuilderCreateStaticMemberType__funptr = NULL
 # \param Flags        Flags to encode member attribute, e.g. private.
 # \param ConstantVal  Const initializer of the member.
 # \param AlignInBits  Member alignment.
-cdef LLVMMetadataRef LLVMDIBuilderCreateStaticMemberType(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,LLVMMetadataRef File,unsigned int LineNumber,LLVMMetadataRef Type,LLVMDIFlags Flags,LLVMValueRef ConstantVal,unsigned int AlignInBits) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateStaticMemberType(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,LLVMMetadataRef File,unsigned int LineNumber,LLVMMetadataRef Type,LLVMDIFlags Flags,LLVMValueRef ConstantVal,unsigned int AlignInBits):
     global _LLVMDIBuilderCreateStaticMemberType__funptr
     __init_symbol(&_LLVMDIBuilderCreateStaticMemberType__funptr,"LLVMDIBuilderCreateStaticMemberType")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,LLVMMetadataRef,unsigned int,LLVMMetadataRef,LLVMDIFlags,LLVMValueRef,unsigned int) nogil> _LLVMDIBuilderCreateStaticMemberType__funptr)(Builder,Scope,Name,NameLen,File,LineNumber,Type,Flags,ConstantVal,AlignInBits)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,LLVMMetadataRef,unsigned int,LLVMMetadataRef,LLVMDIFlags,LLVMValueRef,unsigned int) noexcept nogil> _LLVMDIBuilderCreateStaticMemberType__funptr)(Builder,Scope,Name,NameLen,File,LineNumber,Type,Flags,ConstantVal,AlignInBits)
 
 
 cdef void* _LLVMDIBuilderCreateMemberPointerType__funptr = NULL
@@ -705,10 +751,11 @@ cdef void* _LLVMDIBuilderCreateMemberPointerType__funptr = NULL
 # \param SizeInBits   Size.
 # \param AlignInBits  Alignment.
 # \param Flags        Flags.
-cdef LLVMMetadataRef LLVMDIBuilderCreateMemberPointerType(LLVMDIBuilderRef Builder,LLVMMetadataRef PointeeType,LLVMMetadataRef ClassType,unsigned long SizeInBits,unsigned int AlignInBits,LLVMDIFlags Flags) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateMemberPointerType(LLVMDIBuilderRef Builder,LLVMMetadataRef PointeeType,LLVMMetadataRef ClassType,unsigned long SizeInBits,unsigned int AlignInBits,LLVMDIFlags Flags):
     global _LLVMDIBuilderCreateMemberPointerType__funptr
     __init_symbol(&_LLVMDIBuilderCreateMemberPointerType__funptr,"LLVMDIBuilderCreateMemberPointerType")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,LLVMMetadataRef,unsigned long,unsigned int,LLVMDIFlags) nogil> _LLVMDIBuilderCreateMemberPointerType__funptr)(Builder,PointeeType,ClassType,SizeInBits,AlignInBits,Flags)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,LLVMMetadataRef,unsigned long,unsigned int,LLVMDIFlags) noexcept nogil> _LLVMDIBuilderCreateMemberPointerType__funptr)(Builder,PointeeType,ClassType,SizeInBits,AlignInBits,Flags)
 
 
 cdef void* _LLVMDIBuilderCreateObjCIVar__funptr = NULL
@@ -725,10 +772,11 @@ cdef void* _LLVMDIBuilderCreateObjCIVar__funptr = NULL
 # \param Flags        Flags to encode member attribute, e.g. private
 # \param Ty           Parent type.
 # \param PropertyNode Property associated with this ivar.
-cdef LLVMMetadataRef LLVMDIBuilderCreateObjCIVar(LLVMDIBuilderRef Builder,const char * Name,unsigned long NameLen,LLVMMetadataRef File,unsigned int LineNo,unsigned long SizeInBits,unsigned int AlignInBits,unsigned long OffsetInBits,LLVMDIFlags Flags,LLVMMetadataRef Ty,LLVMMetadataRef PropertyNode) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateObjCIVar(LLVMDIBuilderRef Builder,const char * Name,unsigned long NameLen,LLVMMetadataRef File,unsigned int LineNo,unsigned long SizeInBits,unsigned int AlignInBits,unsigned long OffsetInBits,LLVMDIFlags Flags,LLVMMetadataRef Ty,LLVMMetadataRef PropertyNode):
     global _LLVMDIBuilderCreateObjCIVar__funptr
     __init_symbol(&_LLVMDIBuilderCreateObjCIVar__funptr,"LLVMDIBuilderCreateObjCIVar")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,const char *,unsigned long,LLVMMetadataRef,unsigned int,unsigned long,unsigned int,unsigned long,LLVMDIFlags,LLVMMetadataRef,LLVMMetadataRef) nogil> _LLVMDIBuilderCreateObjCIVar__funptr)(Builder,Name,NameLen,File,LineNo,SizeInBits,AlignInBits,OffsetInBits,Flags,Ty,PropertyNode)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,const char *,unsigned long,LLVMMetadataRef,unsigned int,unsigned long,unsigned int,unsigned long,LLVMDIFlags,LLVMMetadataRef,LLVMMetadataRef) noexcept nogil> _LLVMDIBuilderCreateObjCIVar__funptr)(Builder,Name,NameLen,File,LineNo,SizeInBits,AlignInBits,OffsetInBits,Flags,Ty,PropertyNode)
 
 
 cdef void* _LLVMDIBuilderCreateObjCProperty__funptr = NULL
@@ -745,10 +793,11 @@ cdef void* _LLVMDIBuilderCreateObjCProperty__funptr = NULL
 # \param SetterNameLen      The length of the C string passed to \c SetterName.
 # \param PropertyAttributes Objective C property attributes.
 # \param Ty                 Type.
-cdef LLVMMetadataRef LLVMDIBuilderCreateObjCProperty(LLVMDIBuilderRef Builder,const char * Name,unsigned long NameLen,LLVMMetadataRef File,unsigned int LineNo,const char * GetterName,unsigned long GetterNameLen,const char * SetterName,unsigned long SetterNameLen,unsigned int PropertyAttributes,LLVMMetadataRef Ty) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateObjCProperty(LLVMDIBuilderRef Builder,const char * Name,unsigned long NameLen,LLVMMetadataRef File,unsigned int LineNo,const char * GetterName,unsigned long GetterNameLen,const char * SetterName,unsigned long SetterNameLen,unsigned int PropertyAttributes,LLVMMetadataRef Ty):
     global _LLVMDIBuilderCreateObjCProperty__funptr
     __init_symbol(&_LLVMDIBuilderCreateObjCProperty__funptr,"LLVMDIBuilderCreateObjCProperty")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,const char *,unsigned long,LLVMMetadataRef,unsigned int,const char *,unsigned long,const char *,unsigned long,unsigned int,LLVMMetadataRef) nogil> _LLVMDIBuilderCreateObjCProperty__funptr)(Builder,Name,NameLen,File,LineNo,GetterName,GetterNameLen,SetterName,SetterNameLen,PropertyAttributes,Ty)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,const char *,unsigned long,LLVMMetadataRef,unsigned int,const char *,unsigned long,const char *,unsigned long,unsigned int,LLVMMetadataRef) noexcept nogil> _LLVMDIBuilderCreateObjCProperty__funptr)(Builder,Name,NameLen,File,LineNo,GetterName,GetterNameLen,SetterName,SetterNameLen,PropertyAttributes,Ty)
 
 
 cdef void* _LLVMDIBuilderCreateObjectPointerType__funptr = NULL
@@ -756,10 +805,11 @@ cdef void* _LLVMDIBuilderCreateObjectPointerType__funptr = NULL
 # Create a uniqued DIType* clone with FlagObjectPointer and FlagArtificial set.
 # \param Builder   The DIBuilder.
 # \param Type      The underlying type to which this pointer points.
-cdef LLVMMetadataRef LLVMDIBuilderCreateObjectPointerType(LLVMDIBuilderRef Builder,LLVMMetadataRef Type) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateObjectPointerType(LLVMDIBuilderRef Builder,LLVMMetadataRef Type):
     global _LLVMDIBuilderCreateObjectPointerType__funptr
     __init_symbol(&_LLVMDIBuilderCreateObjectPointerType__funptr,"LLVMDIBuilderCreateObjectPointerType")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef) nogil> _LLVMDIBuilderCreateObjectPointerType__funptr)(Builder,Type)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef) noexcept nogil> _LLVMDIBuilderCreateObjectPointerType__funptr)(Builder,Type)
 
 
 cdef void* _LLVMDIBuilderCreateQualifiedType__funptr = NULL
@@ -770,10 +820,11 @@ cdef void* _LLVMDIBuilderCreateQualifiedType__funptr = NULL
 # \param Tag         Tag identifying type,
 #                    e.g. LLVMDWARFTypeQualifier_volatile_type
 # \param Type        Base Type.
-cdef LLVMMetadataRef LLVMDIBuilderCreateQualifiedType(LLVMDIBuilderRef Builder,unsigned int Tag,LLVMMetadataRef Type) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateQualifiedType(LLVMDIBuilderRef Builder,unsigned int Tag,LLVMMetadataRef Type):
     global _LLVMDIBuilderCreateQualifiedType__funptr
     __init_symbol(&_LLVMDIBuilderCreateQualifiedType__funptr,"LLVMDIBuilderCreateQualifiedType")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,unsigned int,LLVMMetadataRef) nogil> _LLVMDIBuilderCreateQualifiedType__funptr)(Builder,Tag,Type)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,unsigned int,LLVMMetadataRef) noexcept nogil> _LLVMDIBuilderCreateQualifiedType__funptr)(Builder,Tag,Type)
 
 
 cdef void* _LLVMDIBuilderCreateReferenceType__funptr = NULL
@@ -783,20 +834,22 @@ cdef void* _LLVMDIBuilderCreateReferenceType__funptr = NULL
 # \param Builder   The DIBuilder.
 # \param Tag       Tag identifying type,
 # \param Type      Base Type.
-cdef LLVMMetadataRef LLVMDIBuilderCreateReferenceType(LLVMDIBuilderRef Builder,unsigned int Tag,LLVMMetadataRef Type) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateReferenceType(LLVMDIBuilderRef Builder,unsigned int Tag,LLVMMetadataRef Type):
     global _LLVMDIBuilderCreateReferenceType__funptr
     __init_symbol(&_LLVMDIBuilderCreateReferenceType__funptr,"LLVMDIBuilderCreateReferenceType")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,unsigned int,LLVMMetadataRef) nogil> _LLVMDIBuilderCreateReferenceType__funptr)(Builder,Tag,Type)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,unsigned int,LLVMMetadataRef) noexcept nogil> _LLVMDIBuilderCreateReferenceType__funptr)(Builder,Tag,Type)
 
 
 cdef void* _LLVMDIBuilderCreateNullPtrType__funptr = NULL
 # 
 # Create C++11 nullptr type.
 # \param Builder   The DIBuilder.
-cdef LLVMMetadataRef LLVMDIBuilderCreateNullPtrType(LLVMDIBuilderRef Builder) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateNullPtrType(LLVMDIBuilderRef Builder):
     global _LLVMDIBuilderCreateNullPtrType__funptr
     __init_symbol(&_LLVMDIBuilderCreateNullPtrType__funptr,"LLVMDIBuilderCreateNullPtrType")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef) nogil> _LLVMDIBuilderCreateNullPtrType__funptr)(Builder)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef) noexcept nogil> _LLVMDIBuilderCreateNullPtrType__funptr)(Builder)
 
 
 cdef void* _LLVMDIBuilderCreateTypedef__funptr = NULL
@@ -808,10 +861,11 @@ cdef void* _LLVMDIBuilderCreateTypedef__funptr = NULL
 # \param File       File where this type is defined.
 # \param LineNo     Line number.
 # \param Scope      The surrounding context for the typedef.
-cdef LLVMMetadataRef LLVMDIBuilderCreateTypedef(LLVMDIBuilderRef Builder,LLVMMetadataRef Type,const char * Name,unsigned long NameLen,LLVMMetadataRef File,unsigned int LineNo,LLVMMetadataRef Scope,unsigned int AlignInBits) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateTypedef(LLVMDIBuilderRef Builder,LLVMMetadataRef Type,const char * Name,unsigned long NameLen,LLVMMetadataRef File,unsigned int LineNo,LLVMMetadataRef Scope,unsigned int AlignInBits):
     global _LLVMDIBuilderCreateTypedef__funptr
     __init_symbol(&_LLVMDIBuilderCreateTypedef__funptr,"LLVMDIBuilderCreateTypedef")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,LLVMMetadataRef,unsigned int,LLVMMetadataRef,unsigned int) nogil> _LLVMDIBuilderCreateTypedef__funptr)(Builder,Type,Name,NameLen,File,LineNo,Scope,AlignInBits)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,LLVMMetadataRef,unsigned int,LLVMMetadataRef,unsigned int) noexcept nogil> _LLVMDIBuilderCreateTypedef__funptr)(Builder,Type,Name,NameLen,File,LineNo,Scope,AlignInBits)
 
 
 cdef void* _LLVMDIBuilderCreateInheritance__funptr = NULL
@@ -824,10 +878,11 @@ cdef void* _LLVMDIBuilderCreateInheritance__funptr = NULL
 # \param BaseOffset    Base offset.
 # \param VBPtrOffset  Virtual base pointer offset.
 # \param Flags         Flags to describe inheritance attribute, e.g. private
-cdef LLVMMetadataRef LLVMDIBuilderCreateInheritance(LLVMDIBuilderRef Builder,LLVMMetadataRef Ty,LLVMMetadataRef BaseTy,unsigned long BaseOffset,unsigned int VBPtrOffset,LLVMDIFlags Flags) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateInheritance(LLVMDIBuilderRef Builder,LLVMMetadataRef Ty,LLVMMetadataRef BaseTy,unsigned long BaseOffset,unsigned int VBPtrOffset,LLVMDIFlags Flags):
     global _LLVMDIBuilderCreateInheritance__funptr
     __init_symbol(&_LLVMDIBuilderCreateInheritance__funptr,"LLVMDIBuilderCreateInheritance")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,LLVMMetadataRef,unsigned long,unsigned int,LLVMDIFlags) nogil> _LLVMDIBuilderCreateInheritance__funptr)(Builder,Ty,BaseTy,BaseOffset,VBPtrOffset,Flags)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,LLVMMetadataRef,unsigned long,unsigned int,LLVMDIFlags) noexcept nogil> _LLVMDIBuilderCreateInheritance__funptr)(Builder,Ty,BaseTy,BaseOffset,VBPtrOffset,Flags)
 
 
 cdef void* _LLVMDIBuilderCreateForwardDecl__funptr = NULL
@@ -846,10 +901,11 @@ cdef void* _LLVMDIBuilderCreateForwardDecl__funptr = NULL
 # \param AlignInBits         Member alignment.
 # \param UniqueIdentifier    A unique identifier for the type.
 # \param UniqueIdentifierLen Length of the unique identifier.
-cdef LLVMMetadataRef LLVMDIBuilderCreateForwardDecl(LLVMDIBuilderRef Builder,unsigned int Tag,const char * Name,unsigned long NameLen,LLVMMetadataRef Scope,LLVMMetadataRef File,unsigned int Line,unsigned int RuntimeLang,unsigned long SizeInBits,unsigned int AlignInBits,const char * UniqueIdentifier,unsigned long UniqueIdentifierLen) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateForwardDecl(LLVMDIBuilderRef Builder,unsigned int Tag,const char * Name,unsigned long NameLen,LLVMMetadataRef Scope,LLVMMetadataRef File,unsigned int Line,unsigned int RuntimeLang,unsigned long SizeInBits,unsigned int AlignInBits,const char * UniqueIdentifier,unsigned long UniqueIdentifierLen):
     global _LLVMDIBuilderCreateForwardDecl__funptr
     __init_symbol(&_LLVMDIBuilderCreateForwardDecl__funptr,"LLVMDIBuilderCreateForwardDecl")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,unsigned int,const char *,unsigned long,LLVMMetadataRef,LLVMMetadataRef,unsigned int,unsigned int,unsigned long,unsigned int,const char *,unsigned long) nogil> _LLVMDIBuilderCreateForwardDecl__funptr)(Builder,Tag,Name,NameLen,Scope,File,Line,RuntimeLang,SizeInBits,AlignInBits,UniqueIdentifier,UniqueIdentifierLen)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,unsigned int,const char *,unsigned long,LLVMMetadataRef,LLVMMetadataRef,unsigned int,unsigned int,unsigned long,unsigned int,const char *,unsigned long) noexcept nogil> _LLVMDIBuilderCreateForwardDecl__funptr)(Builder,Tag,Name,NameLen,Scope,File,Line,RuntimeLang,SizeInBits,AlignInBits,UniqueIdentifier,UniqueIdentifierLen)
 
 
 cdef void* _LLVMDIBuilderCreateReplaceableCompositeType__funptr = NULL
@@ -869,10 +925,11 @@ cdef void* _LLVMDIBuilderCreateReplaceableCompositeType__funptr = NULL
 # \param Flags               Flags.
 # \param UniqueIdentifier    A unique identifier for the type.
 # \param UniqueIdentifierLen Length of the unique identifier.
-cdef LLVMMetadataRef LLVMDIBuilderCreateReplaceableCompositeType(LLVMDIBuilderRef Builder,unsigned int Tag,const char * Name,unsigned long NameLen,LLVMMetadataRef Scope,LLVMMetadataRef File,unsigned int Line,unsigned int RuntimeLang,unsigned long SizeInBits,unsigned int AlignInBits,LLVMDIFlags Flags,const char * UniqueIdentifier,unsigned long UniqueIdentifierLen) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateReplaceableCompositeType(LLVMDIBuilderRef Builder,unsigned int Tag,const char * Name,unsigned long NameLen,LLVMMetadataRef Scope,LLVMMetadataRef File,unsigned int Line,unsigned int RuntimeLang,unsigned long SizeInBits,unsigned int AlignInBits,LLVMDIFlags Flags,const char * UniqueIdentifier,unsigned long UniqueIdentifierLen):
     global _LLVMDIBuilderCreateReplaceableCompositeType__funptr
     __init_symbol(&_LLVMDIBuilderCreateReplaceableCompositeType__funptr,"LLVMDIBuilderCreateReplaceableCompositeType")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,unsigned int,const char *,unsigned long,LLVMMetadataRef,LLVMMetadataRef,unsigned int,unsigned int,unsigned long,unsigned int,LLVMDIFlags,const char *,unsigned long) nogil> _LLVMDIBuilderCreateReplaceableCompositeType__funptr)(Builder,Tag,Name,NameLen,Scope,File,Line,RuntimeLang,SizeInBits,AlignInBits,Flags,UniqueIdentifier,UniqueIdentifierLen)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,unsigned int,const char *,unsigned long,LLVMMetadataRef,LLVMMetadataRef,unsigned int,unsigned int,unsigned long,unsigned int,LLVMDIFlags,const char *,unsigned long) noexcept nogil> _LLVMDIBuilderCreateReplaceableCompositeType__funptr)(Builder,Tag,Name,NameLen,Scope,File,Line,RuntimeLang,SizeInBits,AlignInBits,Flags,UniqueIdentifier,UniqueIdentifierLen)
 
 
 cdef void* _LLVMDIBuilderCreateBitFieldMemberType__funptr = NULL
@@ -889,10 +946,11 @@ cdef void* _LLVMDIBuilderCreateBitFieldMemberType__funptr = NULL
 # \param StorageOffsetInBits Member storage offset.
 # \param Flags               Flags to encode member attribute.
 # \param Type                Parent type.
-cdef LLVMMetadataRef LLVMDIBuilderCreateBitFieldMemberType(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,LLVMMetadataRef File,unsigned int LineNumber,unsigned long SizeInBits,unsigned long OffsetInBits,unsigned long StorageOffsetInBits,LLVMDIFlags Flags,LLVMMetadataRef Type) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateBitFieldMemberType(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,LLVMMetadataRef File,unsigned int LineNumber,unsigned long SizeInBits,unsigned long OffsetInBits,unsigned long StorageOffsetInBits,LLVMDIFlags Flags,LLVMMetadataRef Type):
     global _LLVMDIBuilderCreateBitFieldMemberType__funptr
     __init_symbol(&_LLVMDIBuilderCreateBitFieldMemberType__funptr,"LLVMDIBuilderCreateBitFieldMemberType")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,LLVMMetadataRef,unsigned int,unsigned long,unsigned long,unsigned long,LLVMDIFlags,LLVMMetadataRef) nogil> _LLVMDIBuilderCreateBitFieldMemberType__funptr)(Builder,Scope,Name,NameLen,File,LineNumber,SizeInBits,OffsetInBits,StorageOffsetInBits,Flags,Type)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,LLVMMetadataRef,unsigned int,unsigned long,unsigned long,unsigned long,LLVMDIFlags,LLVMMetadataRef) noexcept nogil> _LLVMDIBuilderCreateBitFieldMemberType__funptr)(Builder,Scope,Name,NameLen,File,LineNumber,SizeInBits,OffsetInBits,StorageOffsetInBits,Flags,Type)
 
 
 cdef void* _LLVMDIBuilderCreateClassType__funptr = NULL
@@ -917,10 +975,11 @@ cdef void* _LLVMDIBuilderCreateClassType__funptr = NULL
 # \param TemplateParamsNode  Template type parameters.
 # \param UniqueIdentifier    A unique identifier for the type.
 # \param UniqueIdentifierLen Length of the unique identifier.
-cdef LLVMMetadataRef LLVMDIBuilderCreateClassType(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,LLVMMetadataRef File,unsigned int LineNumber,unsigned long SizeInBits,unsigned int AlignInBits,unsigned long OffsetInBits,LLVMDIFlags Flags,LLVMMetadataRef DerivedFrom,LLVMMetadataRef* Elements,unsigned int NumElements,LLVMMetadataRef VTableHolder,LLVMMetadataRef TemplateParamsNode,const char * UniqueIdentifier,unsigned long UniqueIdentifierLen) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateClassType(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,LLVMMetadataRef File,unsigned int LineNumber,unsigned long SizeInBits,unsigned int AlignInBits,unsigned long OffsetInBits,LLVMDIFlags Flags,LLVMMetadataRef DerivedFrom,LLVMMetadataRef* Elements,unsigned int NumElements,LLVMMetadataRef VTableHolder,LLVMMetadataRef TemplateParamsNode,const char * UniqueIdentifier,unsigned long UniqueIdentifierLen):
     global _LLVMDIBuilderCreateClassType__funptr
     __init_symbol(&_LLVMDIBuilderCreateClassType__funptr,"LLVMDIBuilderCreateClassType")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,LLVMMetadataRef,unsigned int,unsigned long,unsigned int,unsigned long,LLVMDIFlags,LLVMMetadataRef,LLVMMetadataRef*,unsigned int,LLVMMetadataRef,LLVMMetadataRef,const char *,unsigned long) nogil> _LLVMDIBuilderCreateClassType__funptr)(Builder,Scope,Name,NameLen,File,LineNumber,SizeInBits,AlignInBits,OffsetInBits,Flags,DerivedFrom,Elements,NumElements,VTableHolder,TemplateParamsNode,UniqueIdentifier,UniqueIdentifierLen)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,LLVMMetadataRef,unsigned int,unsigned long,unsigned int,unsigned long,LLVMDIFlags,LLVMMetadataRef,LLVMMetadataRef*,unsigned int,LLVMMetadataRef,LLVMMetadataRef,const char *,unsigned long) noexcept nogil> _LLVMDIBuilderCreateClassType__funptr)(Builder,Scope,Name,NameLen,File,LineNumber,SizeInBits,AlignInBits,OffsetInBits,Flags,DerivedFrom,Elements,NumElements,VTableHolder,TemplateParamsNode,UniqueIdentifier,UniqueIdentifierLen)
 
 
 cdef void* _LLVMDIBuilderCreateArtificialType__funptr = NULL
@@ -928,10 +987,11 @@ cdef void* _LLVMDIBuilderCreateArtificialType__funptr = NULL
 # Create a uniqued DIType* clone with FlagArtificial set.
 # \param Builder     The DIBuilder.
 # \param Type        The underlying type.
-cdef LLVMMetadataRef LLVMDIBuilderCreateArtificialType(LLVMDIBuilderRef Builder,LLVMMetadataRef Type) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateArtificialType(LLVMDIBuilderRef Builder,LLVMMetadataRef Type):
     global _LLVMDIBuilderCreateArtificialType__funptr
     __init_symbol(&_LLVMDIBuilderCreateArtificialType__funptr,"LLVMDIBuilderCreateArtificialType")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef) nogil> _LLVMDIBuilderCreateArtificialType__funptr)(Builder,Type)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef) noexcept nogil> _LLVMDIBuilderCreateArtificialType__funptr)(Builder,Type)
 
 
 cdef void* _LLVMDITypeGetName__funptr = NULL
@@ -941,10 +1001,11 @@ cdef void* _LLVMDITypeGetName__funptr = NULL
 # \param Length    The length of the returned string.
 # 
 # @see DIType::getName()
-cdef const char * LLVMDITypeGetName(LLVMMetadataRef DType,unsigned long * Length) nogil:
+cdef const char * LLVMDITypeGetName(LLVMMetadataRef DType,unsigned long * Length):
     global _LLVMDITypeGetName__funptr
     __init_symbol(&_LLVMDITypeGetName__funptr,"LLVMDITypeGetName")
-    return (<const char * (*)(LLVMMetadataRef,unsigned long *) nogil> _LLVMDITypeGetName__funptr)(DType,Length)
+    with nogil:
+        return (<const char * (*)(LLVMMetadataRef,unsigned long *) noexcept nogil> _LLVMDITypeGetName__funptr)(DType,Length)
 
 
 cdef void* _LLVMDITypeGetSizeInBits__funptr = NULL
@@ -953,10 +1014,11 @@ cdef void* _LLVMDITypeGetSizeInBits__funptr = NULL
 # \param DType     The DIType.
 # 
 # @see DIType::getSizeInBits()
-cdef unsigned long LLVMDITypeGetSizeInBits(LLVMMetadataRef DType) nogil:
+cdef unsigned long LLVMDITypeGetSizeInBits(LLVMMetadataRef DType):
     global _LLVMDITypeGetSizeInBits__funptr
     __init_symbol(&_LLVMDITypeGetSizeInBits__funptr,"LLVMDITypeGetSizeInBits")
-    return (<unsigned long (*)(LLVMMetadataRef) nogil> _LLVMDITypeGetSizeInBits__funptr)(DType)
+    with nogil:
+        return (<unsigned long (*)(LLVMMetadataRef) noexcept nogil> _LLVMDITypeGetSizeInBits__funptr)(DType)
 
 
 cdef void* _LLVMDITypeGetOffsetInBits__funptr = NULL
@@ -965,10 +1027,11 @@ cdef void* _LLVMDITypeGetOffsetInBits__funptr = NULL
 # \param DType     The DIType.
 # 
 # @see DIType::getOffsetInBits()
-cdef unsigned long LLVMDITypeGetOffsetInBits(LLVMMetadataRef DType) nogil:
+cdef unsigned long LLVMDITypeGetOffsetInBits(LLVMMetadataRef DType):
     global _LLVMDITypeGetOffsetInBits__funptr
     __init_symbol(&_LLVMDITypeGetOffsetInBits__funptr,"LLVMDITypeGetOffsetInBits")
-    return (<unsigned long (*)(LLVMMetadataRef) nogil> _LLVMDITypeGetOffsetInBits__funptr)(DType)
+    with nogil:
+        return (<unsigned long (*)(LLVMMetadataRef) noexcept nogil> _LLVMDITypeGetOffsetInBits__funptr)(DType)
 
 
 cdef void* _LLVMDITypeGetAlignInBits__funptr = NULL
@@ -977,10 +1040,11 @@ cdef void* _LLVMDITypeGetAlignInBits__funptr = NULL
 # \param DType     The DIType.
 # 
 # @see DIType::getAlignInBits()
-cdef unsigned int LLVMDITypeGetAlignInBits(LLVMMetadataRef DType) nogil:
+cdef unsigned int LLVMDITypeGetAlignInBits(LLVMMetadataRef DType):
     global _LLVMDITypeGetAlignInBits__funptr
     __init_symbol(&_LLVMDITypeGetAlignInBits__funptr,"LLVMDITypeGetAlignInBits")
-    return (<unsigned int (*)(LLVMMetadataRef) nogil> _LLVMDITypeGetAlignInBits__funptr)(DType)
+    with nogil:
+        return (<unsigned int (*)(LLVMMetadataRef) noexcept nogil> _LLVMDITypeGetAlignInBits__funptr)(DType)
 
 
 cdef void* _LLVMDITypeGetLine__funptr = NULL
@@ -989,10 +1053,11 @@ cdef void* _LLVMDITypeGetLine__funptr = NULL
 # \param DType     The DIType.
 # 
 # @see DIType::getLine()
-cdef unsigned int LLVMDITypeGetLine(LLVMMetadataRef DType) nogil:
+cdef unsigned int LLVMDITypeGetLine(LLVMMetadataRef DType):
     global _LLVMDITypeGetLine__funptr
     __init_symbol(&_LLVMDITypeGetLine__funptr,"LLVMDITypeGetLine")
-    return (<unsigned int (*)(LLVMMetadataRef) nogil> _LLVMDITypeGetLine__funptr)(DType)
+    with nogil:
+        return (<unsigned int (*)(LLVMMetadataRef) noexcept nogil> _LLVMDITypeGetLine__funptr)(DType)
 
 
 cdef void* _LLVMDITypeGetFlags__funptr = NULL
@@ -1001,10 +1066,11 @@ cdef void* _LLVMDITypeGetFlags__funptr = NULL
 # \param DType     The DIType.
 # 
 # @see DIType::getFlags()
-cdef LLVMDIFlags LLVMDITypeGetFlags(LLVMMetadataRef DType) nogil:
+cdef LLVMDIFlags LLVMDITypeGetFlags(LLVMMetadataRef DType):
     global _LLVMDITypeGetFlags__funptr
     __init_symbol(&_LLVMDITypeGetFlags__funptr,"LLVMDITypeGetFlags")
-    return (<LLVMDIFlags (*)(LLVMMetadataRef) nogil> _LLVMDITypeGetFlags__funptr)(DType)
+    with nogil:
+        return (<LLVMDIFlags (*)(LLVMMetadataRef) noexcept nogil> _LLVMDITypeGetFlags__funptr)(DType)
 
 
 cdef void* _LLVMDIBuilderGetOrCreateSubrange__funptr = NULL
@@ -1013,10 +1079,11 @@ cdef void* _LLVMDIBuilderGetOrCreateSubrange__funptr = NULL
 # \param Builder    The DIBuilder.
 # \param LowerBound Lower bound of the subrange, e.g. 0 for C, 1 for Fortran.
 # \param Count      Count of elements in the subrange.
-cdef LLVMMetadataRef LLVMDIBuilderGetOrCreateSubrange(LLVMDIBuilderRef Builder,long LowerBound,long Count) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderGetOrCreateSubrange(LLVMDIBuilderRef Builder,long LowerBound,long Count):
     global _LLVMDIBuilderGetOrCreateSubrange__funptr
     __init_symbol(&_LLVMDIBuilderGetOrCreateSubrange__funptr,"LLVMDIBuilderGetOrCreateSubrange")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,long,long) nogil> _LLVMDIBuilderGetOrCreateSubrange__funptr)(Builder,LowerBound,Count)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,long,long) noexcept nogil> _LLVMDIBuilderGetOrCreateSubrange__funptr)(Builder,LowerBound,Count)
 
 
 cdef void* _LLVMDIBuilderGetOrCreateArray__funptr = NULL
@@ -1025,10 +1092,11 @@ cdef void* _LLVMDIBuilderGetOrCreateArray__funptr = NULL
 # \param Builder        The DIBuilder.
 # \param Data           The DI Node elements.
 # \param NumElements    Number of DI Node elements.
-cdef LLVMMetadataRef LLVMDIBuilderGetOrCreateArray(LLVMDIBuilderRef Builder,LLVMMetadataRef* Data,unsigned long NumElements) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderGetOrCreateArray(LLVMDIBuilderRef Builder,LLVMMetadataRef* Data,unsigned long NumElements):
     global _LLVMDIBuilderGetOrCreateArray__funptr
     __init_symbol(&_LLVMDIBuilderGetOrCreateArray__funptr,"LLVMDIBuilderGetOrCreateArray")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef*,unsigned long) nogil> _LLVMDIBuilderGetOrCreateArray__funptr)(Builder,Data,NumElements)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef*,unsigned long) noexcept nogil> _LLVMDIBuilderGetOrCreateArray__funptr)(Builder,Data,NumElements)
 
 
 cdef void* _LLVMDIBuilderCreateExpression__funptr = NULL
@@ -1038,10 +1106,11 @@ cdef void* _LLVMDIBuilderCreateExpression__funptr = NULL
 # \param Builder     The DIBuilder.
 # \param Addr        An array of complex address operations.
 # \param Length      Length of the address operation array.
-cdef LLVMMetadataRef LLVMDIBuilderCreateExpression(LLVMDIBuilderRef Builder,unsigned long * Addr,unsigned long Length) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateExpression(LLVMDIBuilderRef Builder,unsigned long * Addr,unsigned long Length):
     global _LLVMDIBuilderCreateExpression__funptr
     __init_symbol(&_LLVMDIBuilderCreateExpression__funptr,"LLVMDIBuilderCreateExpression")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,unsigned long *,unsigned long) nogil> _LLVMDIBuilderCreateExpression__funptr)(Builder,Addr,Length)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,unsigned long *,unsigned long) noexcept nogil> _LLVMDIBuilderCreateExpression__funptr)(Builder,Addr,Length)
 
 
 cdef void* _LLVMDIBuilderCreateConstantValueExpression__funptr = NULL
@@ -1050,10 +1119,11 @@ cdef void* _LLVMDIBuilderCreateConstantValueExpression__funptr = NULL
 # address, but does have a constant value.
 # \param Builder     The DIBuilder.
 # \param Value       The constant value.
-cdef LLVMMetadataRef LLVMDIBuilderCreateConstantValueExpression(LLVMDIBuilderRef Builder,unsigned long Value) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateConstantValueExpression(LLVMDIBuilderRef Builder,unsigned long Value):
     global _LLVMDIBuilderCreateConstantValueExpression__funptr
     __init_symbol(&_LLVMDIBuilderCreateConstantValueExpression__funptr,"LLVMDIBuilderCreateConstantValueExpression")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,unsigned long) nogil> _LLVMDIBuilderCreateConstantValueExpression__funptr)(Builder,Value)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,unsigned long) noexcept nogil> _LLVMDIBuilderCreateConstantValueExpression__funptr)(Builder,Value)
 
 
 cdef void* _LLVMDIBuilderCreateGlobalVariableExpression__funptr = NULL
@@ -1075,10 +1145,11 @@ cdef void* _LLVMDIBuilderCreateGlobalVariableExpression__funptr = NULL
 #                    variables.
 # \param AlignInBits Variable alignment(or 0 if no alignment attr was
 #                    specified)
-cdef LLVMMetadataRef LLVMDIBuilderCreateGlobalVariableExpression(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,const char * Linkage,unsigned long LinkLen,LLVMMetadataRef File,unsigned int LineNo,LLVMMetadataRef Ty,int LocalToUnit,LLVMMetadataRef Expr,LLVMMetadataRef Decl,unsigned int AlignInBits) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateGlobalVariableExpression(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,const char * Linkage,unsigned long LinkLen,LLVMMetadataRef File,unsigned int LineNo,LLVMMetadataRef Ty,int LocalToUnit,LLVMMetadataRef Expr,LLVMMetadataRef Decl,unsigned int AlignInBits):
     global _LLVMDIBuilderCreateGlobalVariableExpression__funptr
     __init_symbol(&_LLVMDIBuilderCreateGlobalVariableExpression__funptr,"LLVMDIBuilderCreateGlobalVariableExpression")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,const char *,unsigned long,LLVMMetadataRef,unsigned int,LLVMMetadataRef,int,LLVMMetadataRef,LLVMMetadataRef,unsigned int) nogil> _LLVMDIBuilderCreateGlobalVariableExpression__funptr)(Builder,Scope,Name,NameLen,Linkage,LinkLen,File,LineNo,Ty,LocalToUnit,Expr,Decl,AlignInBits)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,const char *,unsigned long,LLVMMetadataRef,unsigned int,LLVMMetadataRef,int,LLVMMetadataRef,LLVMMetadataRef,unsigned int) noexcept nogil> _LLVMDIBuilderCreateGlobalVariableExpression__funptr)(Builder,Scope,Name,NameLen,Linkage,LinkLen,File,LineNo,Ty,LocalToUnit,Expr,Decl,AlignInBits)
 
 
 cdef void* _LLVMDIGlobalVariableExpressionGetVariable__funptr = NULL
@@ -1087,10 +1158,11 @@ cdef void* _LLVMDIGlobalVariableExpressionGetVariable__funptr = NULL
 # \param GVE    The global variable expression.
 # 
 # @see llvm::DIGlobalVariableExpression::getVariable()
-cdef LLVMMetadataRef LLVMDIGlobalVariableExpressionGetVariable(LLVMMetadataRef GVE) nogil:
+cdef LLVMMetadataRef LLVMDIGlobalVariableExpressionGetVariable(LLVMMetadataRef GVE):
     global _LLVMDIGlobalVariableExpressionGetVariable__funptr
     __init_symbol(&_LLVMDIGlobalVariableExpressionGetVariable__funptr,"LLVMDIGlobalVariableExpressionGetVariable")
-    return (<LLVMMetadataRef (*)(LLVMMetadataRef) nogil> _LLVMDIGlobalVariableExpressionGetVariable__funptr)(GVE)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMMetadataRef) noexcept nogil> _LLVMDIGlobalVariableExpressionGetVariable__funptr)(GVE)
 
 
 cdef void* _LLVMDIGlobalVariableExpressionGetExpression__funptr = NULL
@@ -1099,10 +1171,11 @@ cdef void* _LLVMDIGlobalVariableExpressionGetExpression__funptr = NULL
 # \param GVE    The global variable expression.
 # 
 # @see llvm::DIGlobalVariableExpression::getExpression()
-cdef LLVMMetadataRef LLVMDIGlobalVariableExpressionGetExpression(LLVMMetadataRef GVE) nogil:
+cdef LLVMMetadataRef LLVMDIGlobalVariableExpressionGetExpression(LLVMMetadataRef GVE):
     global _LLVMDIGlobalVariableExpressionGetExpression__funptr
     __init_symbol(&_LLVMDIGlobalVariableExpressionGetExpression__funptr,"LLVMDIGlobalVariableExpressionGetExpression")
-    return (<LLVMMetadataRef (*)(LLVMMetadataRef) nogil> _LLVMDIGlobalVariableExpressionGetExpression__funptr)(GVE)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMMetadataRef) noexcept nogil> _LLVMDIGlobalVariableExpressionGetExpression__funptr)(GVE)
 
 
 cdef void* _LLVMDIVariableGetFile__funptr = NULL
@@ -1111,10 +1184,11 @@ cdef void* _LLVMDIVariableGetFile__funptr = NULL
 # \param Var     The variable object.
 # 
 # @see DIVariable::getFile()
-cdef LLVMMetadataRef LLVMDIVariableGetFile(LLVMMetadataRef Var) nogil:
+cdef LLVMMetadataRef LLVMDIVariableGetFile(LLVMMetadataRef Var):
     global _LLVMDIVariableGetFile__funptr
     __init_symbol(&_LLVMDIVariableGetFile__funptr,"LLVMDIVariableGetFile")
-    return (<LLVMMetadataRef (*)(LLVMMetadataRef) nogil> _LLVMDIVariableGetFile__funptr)(Var)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMMetadataRef) noexcept nogil> _LLVMDIVariableGetFile__funptr)(Var)
 
 
 cdef void* _LLVMDIVariableGetScope__funptr = NULL
@@ -1123,10 +1197,11 @@ cdef void* _LLVMDIVariableGetScope__funptr = NULL
 # \param Var     The variable object.
 # 
 # @see DIVariable::getScope()
-cdef LLVMMetadataRef LLVMDIVariableGetScope(LLVMMetadataRef Var) nogil:
+cdef LLVMMetadataRef LLVMDIVariableGetScope(LLVMMetadataRef Var):
     global _LLVMDIVariableGetScope__funptr
     __init_symbol(&_LLVMDIVariableGetScope__funptr,"LLVMDIVariableGetScope")
-    return (<LLVMMetadataRef (*)(LLVMMetadataRef) nogil> _LLVMDIVariableGetScope__funptr)(Var)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMMetadataRef) noexcept nogil> _LLVMDIVariableGetScope__funptr)(Var)
 
 
 cdef void* _LLVMDIVariableGetLine__funptr = NULL
@@ -1135,10 +1210,11 @@ cdef void* _LLVMDIVariableGetLine__funptr = NULL
 # \param Var     The DIVariable.
 # 
 # @see DIVariable::getLine()
-cdef unsigned int LLVMDIVariableGetLine(LLVMMetadataRef Var) nogil:
+cdef unsigned int LLVMDIVariableGetLine(LLVMMetadataRef Var):
     global _LLVMDIVariableGetLine__funptr
     __init_symbol(&_LLVMDIVariableGetLine__funptr,"LLVMDIVariableGetLine")
-    return (<unsigned int (*)(LLVMMetadataRef) nogil> _LLVMDIVariableGetLine__funptr)(Var)
+    with nogil:
+        return (<unsigned int (*)(LLVMMetadataRef) noexcept nogil> _LLVMDIVariableGetLine__funptr)(Var)
 
 
 cdef void* _LLVMTemporaryMDNode__funptr = NULL
@@ -1149,10 +1225,11 @@ cdef void* _LLVMTemporaryMDNode__funptr = NULL
 # \param Ctx            The context in which to construct the temporary node.
 # \param Data           The metadata elements.
 # \param NumElements    Number of metadata elements.
-cdef LLVMMetadataRef LLVMTemporaryMDNode(LLVMContextRef Ctx,LLVMMetadataRef* Data,unsigned long NumElements) nogil:
+cdef LLVMMetadataRef LLVMTemporaryMDNode(LLVMContextRef Ctx,LLVMMetadataRef* Data,unsigned long NumElements):
     global _LLVMTemporaryMDNode__funptr
     __init_symbol(&_LLVMTemporaryMDNode__funptr,"LLVMTemporaryMDNode")
-    return (<LLVMMetadataRef (*)(LLVMContextRef,LLVMMetadataRef*,unsigned long) nogil> _LLVMTemporaryMDNode__funptr)(Ctx,Data,NumElements)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMContextRef,LLVMMetadataRef*,unsigned long) noexcept nogil> _LLVMTemporaryMDNode__funptr)(Ctx,Data,NumElements)
 
 
 cdef void* _LLVMDisposeTemporaryMDNode__funptr = NULL
@@ -1162,10 +1239,11 @@ cdef void* _LLVMDisposeTemporaryMDNode__funptr = NULL
 # Calls \c replaceAllUsesWith(nullptr) before deleting, so any remaining
 # references will be reset.
 # \param TempNode    The temporary metadata node.
-cdef void LLVMDisposeTemporaryMDNode(LLVMMetadataRef TempNode) nogil:
+cdef void LLVMDisposeTemporaryMDNode(LLVMMetadataRef TempNode):
     global _LLVMDisposeTemporaryMDNode__funptr
     __init_symbol(&_LLVMDisposeTemporaryMDNode__funptr,"LLVMDisposeTemporaryMDNode")
-    (<void (*)(LLVMMetadataRef) nogil> _LLVMDisposeTemporaryMDNode__funptr)(TempNode)
+    with nogil:
+        (<void (*)(LLVMMetadataRef) noexcept nogil> _LLVMDisposeTemporaryMDNode__funptr)(TempNode)
 
 
 cdef void* _LLVMMetadataReplaceAllUsesWith__funptr = NULL
@@ -1173,10 +1251,11 @@ cdef void* _LLVMMetadataReplaceAllUsesWith__funptr = NULL
 # Replace all uses of temporary metadata.
 # \param TempTargetMetadata    The temporary metadata node.
 # \param Replacement           The replacement metadata node.
-cdef void LLVMMetadataReplaceAllUsesWith(LLVMMetadataRef TempTargetMetadata,LLVMMetadataRef Replacement) nogil:
+cdef void LLVMMetadataReplaceAllUsesWith(LLVMMetadataRef TempTargetMetadata,LLVMMetadataRef Replacement):
     global _LLVMMetadataReplaceAllUsesWith__funptr
     __init_symbol(&_LLVMMetadataReplaceAllUsesWith__funptr,"LLVMMetadataReplaceAllUsesWith")
-    (<void (*)(LLVMMetadataRef,LLVMMetadataRef) nogil> _LLVMMetadataReplaceAllUsesWith__funptr)(TempTargetMetadata,Replacement)
+    with nogil:
+        (<void (*)(LLVMMetadataRef,LLVMMetadataRef) noexcept nogil> _LLVMMetadataReplaceAllUsesWith__funptr)(TempTargetMetadata,Replacement)
 
 
 cdef void* _LLVMDIBuilderCreateTempGlobalVariableFwdDecl__funptr = NULL
@@ -1196,10 +1275,11 @@ cdef void* _LLVMDIBuilderCreateTempGlobalVariableFwdDecl__funptr = NULL
 # \param Decl        Reference to the corresponding declaration.
 # \param AlignInBits Variable alignment(or 0 if no alignment attr was
 #                    specified)
-cdef LLVMMetadataRef LLVMDIBuilderCreateTempGlobalVariableFwdDecl(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,const char * Linkage,unsigned long LnkLen,LLVMMetadataRef File,unsigned int LineNo,LLVMMetadataRef Ty,int LocalToUnit,LLVMMetadataRef Decl,unsigned int AlignInBits) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateTempGlobalVariableFwdDecl(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,const char * Linkage,unsigned long LnkLen,LLVMMetadataRef File,unsigned int LineNo,LLVMMetadataRef Ty,int LocalToUnit,LLVMMetadataRef Decl,unsigned int AlignInBits):
     global _LLVMDIBuilderCreateTempGlobalVariableFwdDecl__funptr
     __init_symbol(&_LLVMDIBuilderCreateTempGlobalVariableFwdDecl__funptr,"LLVMDIBuilderCreateTempGlobalVariableFwdDecl")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,const char *,unsigned long,LLVMMetadataRef,unsigned int,LLVMMetadataRef,int,LLVMMetadataRef,unsigned int) nogil> _LLVMDIBuilderCreateTempGlobalVariableFwdDecl__funptr)(Builder,Scope,Name,NameLen,Linkage,LnkLen,File,LineNo,Ty,LocalToUnit,Decl,AlignInBits)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,const char *,unsigned long,LLVMMetadataRef,unsigned int,LLVMMetadataRef,int,LLVMMetadataRef,unsigned int) noexcept nogil> _LLVMDIBuilderCreateTempGlobalVariableFwdDecl__funptr)(Builder,Scope,Name,NameLen,Linkage,LnkLen,File,LineNo,Ty,LocalToUnit,Decl,AlignInBits)
 
 
 cdef void* _LLVMDIBuilderInsertDeclareBefore__funptr = NULL
@@ -1211,10 +1291,11 @@ cdef void* _LLVMDIBuilderInsertDeclareBefore__funptr = NULL
 # \param Expr        A complex location expression for the variable.
 # \param DebugLoc    Debug info location.
 # \param Instr       Instruction acting as a location for the new intrinsic.
-cdef LLVMValueRef LLVMDIBuilderInsertDeclareBefore(LLVMDIBuilderRef Builder,LLVMValueRef Storage,LLVMMetadataRef VarInfo,LLVMMetadataRef Expr,LLVMMetadataRef DebugLoc,LLVMValueRef Instr) nogil:
+cdef LLVMValueRef LLVMDIBuilderInsertDeclareBefore(LLVMDIBuilderRef Builder,LLVMValueRef Storage,LLVMMetadataRef VarInfo,LLVMMetadataRef Expr,LLVMMetadataRef DebugLoc,LLVMValueRef Instr):
     global _LLVMDIBuilderInsertDeclareBefore__funptr
     __init_symbol(&_LLVMDIBuilderInsertDeclareBefore__funptr,"LLVMDIBuilderInsertDeclareBefore")
-    return (<LLVMValueRef (*)(LLVMDIBuilderRef,LLVMValueRef,LLVMMetadataRef,LLVMMetadataRef,LLVMMetadataRef,LLVMValueRef) nogil> _LLVMDIBuilderInsertDeclareBefore__funptr)(Builder,Storage,VarInfo,Expr,DebugLoc,Instr)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMDIBuilderRef,LLVMValueRef,LLVMMetadataRef,LLVMMetadataRef,LLVMMetadataRef,LLVMValueRef) noexcept nogil> _LLVMDIBuilderInsertDeclareBefore__funptr)(Builder,Storage,VarInfo,Expr,DebugLoc,Instr)
 
 
 cdef void* _LLVMDIBuilderInsertDeclareAtEnd__funptr = NULL
@@ -1228,10 +1309,11 @@ cdef void* _LLVMDIBuilderInsertDeclareAtEnd__funptr = NULL
 # \param Expr        A complex location expression for the variable.
 # \param DebugLoc    Debug info location.
 # \param Block       Basic block acting as a location for the new intrinsic.
-cdef LLVMValueRef LLVMDIBuilderInsertDeclareAtEnd(LLVMDIBuilderRef Builder,LLVMValueRef Storage,LLVMMetadataRef VarInfo,LLVMMetadataRef Expr,LLVMMetadataRef DebugLoc,LLVMBasicBlockRef Block) nogil:
+cdef LLVMValueRef LLVMDIBuilderInsertDeclareAtEnd(LLVMDIBuilderRef Builder,LLVMValueRef Storage,LLVMMetadataRef VarInfo,LLVMMetadataRef Expr,LLVMMetadataRef DebugLoc,LLVMBasicBlockRef Block):
     global _LLVMDIBuilderInsertDeclareAtEnd__funptr
     __init_symbol(&_LLVMDIBuilderInsertDeclareAtEnd__funptr,"LLVMDIBuilderInsertDeclareAtEnd")
-    return (<LLVMValueRef (*)(LLVMDIBuilderRef,LLVMValueRef,LLVMMetadataRef,LLVMMetadataRef,LLVMMetadataRef,LLVMBasicBlockRef) nogil> _LLVMDIBuilderInsertDeclareAtEnd__funptr)(Builder,Storage,VarInfo,Expr,DebugLoc,Block)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMDIBuilderRef,LLVMValueRef,LLVMMetadataRef,LLVMMetadataRef,LLVMMetadataRef,LLVMBasicBlockRef) noexcept nogil> _LLVMDIBuilderInsertDeclareAtEnd__funptr)(Builder,Storage,VarInfo,Expr,DebugLoc,Block)
 
 
 cdef void* _LLVMDIBuilderInsertDbgValueBefore__funptr = NULL
@@ -1243,10 +1325,11 @@ cdef void* _LLVMDIBuilderInsertDbgValueBefore__funptr = NULL
 # \param Expr        A complex location expression for the variable.
 # \param DebugLoc    Debug info location.
 # \param Instr       Instruction acting as a location for the new intrinsic.
-cdef LLVMValueRef LLVMDIBuilderInsertDbgValueBefore(LLVMDIBuilderRef Builder,LLVMValueRef Val,LLVMMetadataRef VarInfo,LLVMMetadataRef Expr,LLVMMetadataRef DebugLoc,LLVMValueRef Instr) nogil:
+cdef LLVMValueRef LLVMDIBuilderInsertDbgValueBefore(LLVMDIBuilderRef Builder,LLVMValueRef Val,LLVMMetadataRef VarInfo,LLVMMetadataRef Expr,LLVMMetadataRef DebugLoc,LLVMValueRef Instr):
     global _LLVMDIBuilderInsertDbgValueBefore__funptr
     __init_symbol(&_LLVMDIBuilderInsertDbgValueBefore__funptr,"LLVMDIBuilderInsertDbgValueBefore")
-    return (<LLVMValueRef (*)(LLVMDIBuilderRef,LLVMValueRef,LLVMMetadataRef,LLVMMetadataRef,LLVMMetadataRef,LLVMValueRef) nogil> _LLVMDIBuilderInsertDbgValueBefore__funptr)(Builder,Val,VarInfo,Expr,DebugLoc,Instr)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMDIBuilderRef,LLVMValueRef,LLVMMetadataRef,LLVMMetadataRef,LLVMMetadataRef,LLVMValueRef) noexcept nogil> _LLVMDIBuilderInsertDbgValueBefore__funptr)(Builder,Val,VarInfo,Expr,DebugLoc,Instr)
 
 
 cdef void* _LLVMDIBuilderInsertDbgValueAtEnd__funptr = NULL
@@ -1260,10 +1343,11 @@ cdef void* _LLVMDIBuilderInsertDbgValueAtEnd__funptr = NULL
 # \param Expr        A complex location expression for the variable.
 # \param DebugLoc    Debug info location.
 # \param Block       Basic block acting as a location for the new intrinsic.
-cdef LLVMValueRef LLVMDIBuilderInsertDbgValueAtEnd(LLVMDIBuilderRef Builder,LLVMValueRef Val,LLVMMetadataRef VarInfo,LLVMMetadataRef Expr,LLVMMetadataRef DebugLoc,LLVMBasicBlockRef Block) nogil:
+cdef LLVMValueRef LLVMDIBuilderInsertDbgValueAtEnd(LLVMDIBuilderRef Builder,LLVMValueRef Val,LLVMMetadataRef VarInfo,LLVMMetadataRef Expr,LLVMMetadataRef DebugLoc,LLVMBasicBlockRef Block):
     global _LLVMDIBuilderInsertDbgValueAtEnd__funptr
     __init_symbol(&_LLVMDIBuilderInsertDbgValueAtEnd__funptr,"LLVMDIBuilderInsertDbgValueAtEnd")
-    return (<LLVMValueRef (*)(LLVMDIBuilderRef,LLVMValueRef,LLVMMetadataRef,LLVMMetadataRef,LLVMMetadataRef,LLVMBasicBlockRef) nogil> _LLVMDIBuilderInsertDbgValueAtEnd__funptr)(Builder,Val,VarInfo,Expr,DebugLoc,Block)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMDIBuilderRef,LLVMValueRef,LLVMMetadataRef,LLVMMetadataRef,LLVMMetadataRef,LLVMBasicBlockRef) noexcept nogil> _LLVMDIBuilderInsertDbgValueAtEnd__funptr)(Builder,Val,VarInfo,Expr,DebugLoc,Block)
 
 
 cdef void* _LLVMDIBuilderCreateAutoVariable__funptr = NULL
@@ -1279,10 +1363,11 @@ cdef void* _LLVMDIBuilderCreateAutoVariable__funptr = NULL
 # \param AlwaysPreserve  If true, this descriptor will survive optimizations.
 # \param Flags           Flags.
 # \param AlignInBits     Variable alignment.
-cdef LLVMMetadataRef LLVMDIBuilderCreateAutoVariable(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,LLVMMetadataRef File,unsigned int LineNo,LLVMMetadataRef Ty,int AlwaysPreserve,LLVMDIFlags Flags,unsigned int AlignInBits) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateAutoVariable(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,LLVMMetadataRef File,unsigned int LineNo,LLVMMetadataRef Ty,int AlwaysPreserve,LLVMDIFlags Flags,unsigned int AlignInBits):
     global _LLVMDIBuilderCreateAutoVariable__funptr
     __init_symbol(&_LLVMDIBuilderCreateAutoVariable__funptr,"LLVMDIBuilderCreateAutoVariable")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,LLVMMetadataRef,unsigned int,LLVMMetadataRef,int,LLVMDIFlags,unsigned int) nogil> _LLVMDIBuilderCreateAutoVariable__funptr)(Builder,Scope,Name,NameLen,File,LineNo,Ty,AlwaysPreserve,Flags,AlignInBits)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,LLVMMetadataRef,unsigned int,LLVMMetadataRef,int,LLVMDIFlags,unsigned int) noexcept nogil> _LLVMDIBuilderCreateAutoVariable__funptr)(Builder,Scope,Name,NameLen,File,LineNo,Ty,AlwaysPreserve,Flags,AlignInBits)
 
 
 cdef void* _LLVMDIBuilderCreateParameterVariable__funptr = NULL
@@ -1298,10 +1383,11 @@ cdef void* _LLVMDIBuilderCreateParameterVariable__funptr = NULL
 # \param Ty              Metadata describing the type of the variable.
 # \param AlwaysPreserve  If true, this descriptor will survive optimizations.
 # \param Flags           Flags.
-cdef LLVMMetadataRef LLVMDIBuilderCreateParameterVariable(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,unsigned int ArgNo,LLVMMetadataRef File,unsigned int LineNo,LLVMMetadataRef Ty,int AlwaysPreserve,LLVMDIFlags Flags) nogil:
+cdef LLVMMetadataRef LLVMDIBuilderCreateParameterVariable(LLVMDIBuilderRef Builder,LLVMMetadataRef Scope,const char * Name,unsigned long NameLen,unsigned int ArgNo,LLVMMetadataRef File,unsigned int LineNo,LLVMMetadataRef Ty,int AlwaysPreserve,LLVMDIFlags Flags):
     global _LLVMDIBuilderCreateParameterVariable__funptr
     __init_symbol(&_LLVMDIBuilderCreateParameterVariable__funptr,"LLVMDIBuilderCreateParameterVariable")
-    return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,unsigned int,LLVMMetadataRef,unsigned int,LLVMMetadataRef,int,LLVMDIFlags) nogil> _LLVMDIBuilderCreateParameterVariable__funptr)(Builder,Scope,Name,NameLen,ArgNo,File,LineNo,Ty,AlwaysPreserve,Flags)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMDIBuilderRef,LLVMMetadataRef,const char *,unsigned long,unsigned int,LLVMMetadataRef,unsigned int,LLVMMetadataRef,int,LLVMDIFlags) noexcept nogil> _LLVMDIBuilderCreateParameterVariable__funptr)(Builder,Scope,Name,NameLen,ArgNo,File,LineNo,Ty,AlwaysPreserve,Flags)
 
 
 cdef void* _LLVMGetSubprogram__funptr = NULL
@@ -1309,10 +1395,11 @@ cdef void* _LLVMGetSubprogram__funptr = NULL
 # Get the metadata of the subprogram attached to a function.
 # 
 # @see llvm::Function::getSubprogram()
-cdef LLVMMetadataRef LLVMGetSubprogram(LLVMValueRef Func) nogil:
+cdef LLVMMetadataRef LLVMGetSubprogram(LLVMValueRef Func):
     global _LLVMGetSubprogram__funptr
     __init_symbol(&_LLVMGetSubprogram__funptr,"LLVMGetSubprogram")
-    return (<LLVMMetadataRef (*)(LLVMValueRef) nogil> _LLVMGetSubprogram__funptr)(Func)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetSubprogram__funptr)(Func)
 
 
 cdef void* _LLVMSetSubprogram__funptr = NULL
@@ -1320,10 +1407,11 @@ cdef void* _LLVMSetSubprogram__funptr = NULL
 # Set the subprogram attached to a function.
 # 
 # @see llvm::Function::setSubprogram()
-cdef void LLVMSetSubprogram(LLVMValueRef Func,LLVMMetadataRef SP) nogil:
+cdef void LLVMSetSubprogram(LLVMValueRef Func,LLVMMetadataRef SP):
     global _LLVMSetSubprogram__funptr
     __init_symbol(&_LLVMSetSubprogram__funptr,"LLVMSetSubprogram")
-    (<void (*)(LLVMValueRef,LLVMMetadataRef) nogil> _LLVMSetSubprogram__funptr)(Func,SP)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMMetadataRef) noexcept nogil> _LLVMSetSubprogram__funptr)(Func,SP)
 
 
 cdef void* _LLVMDISubprogramGetLine__funptr = NULL
@@ -1332,10 +1420,11 @@ cdef void* _LLVMDISubprogramGetLine__funptr = NULL
 # \param Subprogram     The subprogram object.
 # 
 # @see DISubprogram::getLine()
-cdef unsigned int LLVMDISubprogramGetLine(LLVMMetadataRef Subprogram) nogil:
+cdef unsigned int LLVMDISubprogramGetLine(LLVMMetadataRef Subprogram):
     global _LLVMDISubprogramGetLine__funptr
     __init_symbol(&_LLVMDISubprogramGetLine__funptr,"LLVMDISubprogramGetLine")
-    return (<unsigned int (*)(LLVMMetadataRef) nogil> _LLVMDISubprogramGetLine__funptr)(Subprogram)
+    with nogil:
+        return (<unsigned int (*)(LLVMMetadataRef) noexcept nogil> _LLVMDISubprogramGetLine__funptr)(Subprogram)
 
 
 cdef void* _LLVMInstructionGetDebugLoc__funptr = NULL
@@ -1343,10 +1432,11 @@ cdef void* _LLVMInstructionGetDebugLoc__funptr = NULL
 # Get the debug location for the given instruction.
 # 
 # @see llvm::Instruction::getDebugLoc()
-cdef LLVMMetadataRef LLVMInstructionGetDebugLoc(LLVMValueRef Inst) nogil:
+cdef LLVMMetadataRef LLVMInstructionGetDebugLoc(LLVMValueRef Inst):
     global _LLVMInstructionGetDebugLoc__funptr
     __init_symbol(&_LLVMInstructionGetDebugLoc__funptr,"LLVMInstructionGetDebugLoc")
-    return (<LLVMMetadataRef (*)(LLVMValueRef) nogil> _LLVMInstructionGetDebugLoc__funptr)(Inst)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMValueRef) noexcept nogil> _LLVMInstructionGetDebugLoc__funptr)(Inst)
 
 
 cdef void* _LLVMInstructionSetDebugLoc__funptr = NULL
@@ -1356,10 +1446,11 @@ cdef void* _LLVMInstructionSetDebugLoc__funptr = NULL
 # To clear the location metadata of the given instruction, pass NULL to \p Loc.
 # 
 # @see llvm::Instruction::setDebugLoc()
-cdef void LLVMInstructionSetDebugLoc(LLVMValueRef Inst,LLVMMetadataRef Loc) nogil:
+cdef void LLVMInstructionSetDebugLoc(LLVMValueRef Inst,LLVMMetadataRef Loc):
     global _LLVMInstructionSetDebugLoc__funptr
     __init_symbol(&_LLVMInstructionSetDebugLoc__funptr,"LLVMInstructionSetDebugLoc")
-    (<void (*)(LLVMValueRef,LLVMMetadataRef) nogil> _LLVMInstructionSetDebugLoc__funptr)(Inst,Loc)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMMetadataRef) noexcept nogil> _LLVMInstructionSetDebugLoc__funptr)(Inst,Loc)
 
 
 cdef void* _LLVMGetMetadataKind__funptr = NULL
@@ -1367,7 +1458,8 @@ cdef void* _LLVMGetMetadataKind__funptr = NULL
 # Obtain the enumerated type of a Metadata instance.
 # 
 # @see llvm::Metadata::getMetadataID()
-cdef unsigned int LLVMGetMetadataKind(LLVMMetadataRef Metadata) nogil:
+cdef unsigned int LLVMGetMetadataKind(LLVMMetadataRef Metadata):
     global _LLVMGetMetadataKind__funptr
     __init_symbol(&_LLVMGetMetadataKind__funptr,"LLVMGetMetadataKind")
-    return (<unsigned int (*)(LLVMMetadataRef) nogil> _LLVMGetMetadataKind__funptr)(Metadata)
+    with nogil:
+        return (<unsigned int (*)(LLVMMetadataRef) noexcept nogil> _LLVMGetMetadataKind__funptr)(Metadata)

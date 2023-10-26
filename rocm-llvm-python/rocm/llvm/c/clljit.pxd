@@ -47,14 +47,14 @@ cdef extern from "llvm-c/LLJIT.h":
 # 
 # The client owns the resulting LLJITBuilder and should dispose of it using
 # LLVMOrcDisposeLLJITBuilder once they are done with it.
-cdef LLVMOrcLLJITBuilderRef LLVMOrcCreateLLJITBuilder() nogil
+cdef LLVMOrcLLJITBuilderRef LLVMOrcCreateLLJITBuilder()
 
 
 # 
 # Dispose of an LLVMOrcLLJITBuilderRef. This should only be called if ownership
 # has not been passed to LLVMOrcCreateLLJIT (e.g. because some error prevented
 # that function from being called).
-cdef void LLVMOrcDisposeLLJITBuilder(LLVMOrcLLJITBuilderRef Builder) nogil
+cdef void LLVMOrcDisposeLLJITBuilder(LLVMOrcLLJITBuilderRef Builder)
 
 
 # 
@@ -65,7 +65,7 @@ cdef void LLVMOrcDisposeLLJITBuilder(LLVMOrcLLJITBuilderRef Builder) nogil
 # 
 # This function takes ownership of the JTMB argument: clients should not
 # dispose of the JITTargetMachineBuilder after calling this function.
-cdef void LLVMOrcLLJITBuilderSetJITTargetMachineBuilder(LLVMOrcLLJITBuilderRef Builder,LLVMOrcJITTargetMachineBuilderRef JTMB) nogil
+cdef void LLVMOrcLLJITBuilderSetJITTargetMachineBuilder(LLVMOrcLLJITBuilderRef Builder,LLVMOrcJITTargetMachineBuilderRef JTMB)
 
 
 # 
@@ -86,12 +86,12 @@ cdef void LLVMOrcLLJITBuilderSetObjectLinkingLayerCreator(LLVMOrcLLJITBuilderRef
 # transferred to it (e.g. via LLVMOrcLLJITAddLLVMIRModule). Disposing of the
 # LLJIT instance will free all memory managed by the JIT, including JIT'd code
 # and not-yet compiled modules.
-cdef LLVMErrorRef LLVMOrcCreateLLJIT(LLVMOrcLLJITRef* Result,LLVMOrcLLJITBuilderRef Builder) nogil
+cdef LLVMErrorRef LLVMOrcCreateLLJIT(LLVMOrcLLJITRef* Result,LLVMOrcLLJITBuilderRef Builder)
 
 
 # 
 # Dispose of an LLJIT instance.
-cdef LLVMErrorRef LLVMOrcDisposeLLJIT(LLVMOrcLLJITRef J) nogil
+cdef LLVMErrorRef LLVMOrcDisposeLLJIT(LLVMOrcLLJITRef J)
 
 
 # 
@@ -99,7 +99,7 @@ cdef LLVMErrorRef LLVMOrcDisposeLLJIT(LLVMOrcLLJITRef J) nogil
 # 
 # The ExecutionSession is owned by the LLJIT instance. The client is not
 # responsible for managing its memory.
-cdef LLVMOrcExecutionSessionRef LLVMOrcLLJITGetExecutionSession(LLVMOrcLLJITRef J) nogil
+cdef LLVMOrcExecutionSessionRef LLVMOrcLLJITGetExecutionSession(LLVMOrcLLJITRef J)
 
 
 # 
@@ -107,18 +107,18 @@ cdef LLVMOrcExecutionSessionRef LLVMOrcLLJITGetExecutionSession(LLVMOrcLLJITRef 
 # 
 # The JITDylib is owned by the LLJIT instance. The client is not responsible
 # for managing its memory.
-cdef LLVMOrcJITDylibRef LLVMOrcLLJITGetMainJITDylib(LLVMOrcLLJITRef J) nogil
+cdef LLVMOrcJITDylibRef LLVMOrcLLJITGetMainJITDylib(LLVMOrcLLJITRef J)
 
 
 # 
 # Return the target triple for this LLJIT instance. This string is owned by
 # the LLJIT instance and should not be freed by the client.
-cdef const char * LLVMOrcLLJITGetTripleString(LLVMOrcLLJITRef J) nogil
+cdef const char * LLVMOrcLLJITGetTripleString(LLVMOrcLLJITRef J)
 
 
 # 
 # Returns the global prefix character according to the LLJIT's DataLayout.
-cdef char LLVMOrcLLJITGetGlobalPrefix(LLVMOrcLLJITRef J) nogil
+cdef char LLVMOrcLLJITGetGlobalPrefix(LLVMOrcLLJITRef J)
 
 
 # 
@@ -127,7 +127,7 @@ cdef char LLVMOrcLLJITGetGlobalPrefix(LLVMOrcLLJITRef J) nogil
 # pool entry. Clients should call LLVMOrcReleaseSymbolStringPoolEntry to
 # decrement the ref-count on the pool entry once they are finished with this
 # value.
-cdef LLVMOrcSymbolStringPoolEntryRef LLVMOrcLLJITMangleAndIntern(LLVMOrcLLJITRef J,const char * UnmangledName) nogil
+cdef LLVMOrcSymbolStringPoolEntryRef LLVMOrcLLJITMangleAndIntern(LLVMOrcLLJITRef J,const char * UnmangledName)
 
 
 # 
@@ -138,7 +138,7 @@ cdef LLVMOrcSymbolStringPoolEntryRef LLVMOrcLLJITMangleAndIntern(LLVMOrcLLJITRef
 # 
 # Resources associated with the given object will be tracked by the given
 # JITDylib's default resource tracker.
-cdef LLVMErrorRef LLVMOrcLLJITAddObjectFile(LLVMOrcLLJITRef J,LLVMOrcJITDylibRef JD,LLVMMemoryBufferRef ObjBuffer) nogil
+cdef LLVMErrorRef LLVMOrcLLJITAddObjectFile(LLVMOrcLLJITRef J,LLVMOrcJITDylibRef JD,LLVMMemoryBufferRef ObjBuffer)
 
 
 # 
@@ -149,7 +149,7 @@ cdef LLVMErrorRef LLVMOrcLLJITAddObjectFile(LLVMOrcLLJITRef J,LLVMOrcJITDylibRef
 # 
 # Resources associated with the given object will be tracked by ResourceTracker
 # RT.
-cdef LLVMErrorRef LLVMOrcLLJITAddObjectFileWithRT(LLVMOrcLLJITRef J,LLVMOrcResourceTrackerRef RT,LLVMMemoryBufferRef ObjBuffer) nogil
+cdef LLVMErrorRef LLVMOrcLLJITAddObjectFileWithRT(LLVMOrcLLJITRef J,LLVMOrcResourceTrackerRef RT,LLVMMemoryBufferRef ObjBuffer)
 
 
 # 
@@ -160,7 +160,7 @@ cdef LLVMErrorRef LLVMOrcLLJITAddObjectFileWithRT(LLVMOrcLLJITRef J,LLVMOrcResou
 # 
 # Resources associated with the given Module will be tracked by the given
 # JITDylib's default resource tracker.
-cdef LLVMErrorRef LLVMOrcLLJITAddLLVMIRModule(LLVMOrcLLJITRef J,LLVMOrcJITDylibRef JD,LLVMOrcThreadSafeModuleRef TSM) nogil
+cdef LLVMErrorRef LLVMOrcLLJITAddLLVMIRModule(LLVMOrcLLJITRef J,LLVMOrcJITDylibRef JD,LLVMOrcThreadSafeModuleRef TSM)
 
 
 # 
@@ -171,29 +171,29 @@ cdef LLVMErrorRef LLVMOrcLLJITAddLLVMIRModule(LLVMOrcLLJITRef J,LLVMOrcJITDylibR
 # 
 # Resources associated with the given Module will be tracked by ResourceTracker
 # RT.
-cdef LLVMErrorRef LLVMOrcLLJITAddLLVMIRModuleWithRT(LLVMOrcLLJITRef J,LLVMOrcResourceTrackerRef JD,LLVMOrcThreadSafeModuleRef TSM) nogil
+cdef LLVMErrorRef LLVMOrcLLJITAddLLVMIRModuleWithRT(LLVMOrcLLJITRef J,LLVMOrcResourceTrackerRef JD,LLVMOrcThreadSafeModuleRef TSM)
 
 
 # 
 # Look up the given symbol in the main JITDylib of the given LLJIT instance.
 # 
 # This operation does not take ownership of the Name argument.
-cdef LLVMErrorRef LLVMOrcLLJITLookup(LLVMOrcLLJITRef J,unsigned long * Result,const char * Name) nogil
+cdef LLVMErrorRef LLVMOrcLLJITLookup(LLVMOrcLLJITRef J,unsigned long * Result,const char * Name)
 
 
 # 
 # Returns a non-owning reference to the LLJIT instance's object linking layer.
-cdef LLVMOrcObjectLayerRef LLVMOrcLLJITGetObjLinkingLayer(LLVMOrcLLJITRef J) nogil
+cdef LLVMOrcObjectLayerRef LLVMOrcLLJITGetObjLinkingLayer(LLVMOrcLLJITRef J)
 
 
 # 
 # Returns a non-owning reference to the LLJIT instance's object linking layer.
-cdef LLVMOrcObjectTransformLayerRef LLVMOrcLLJITGetObjTransformLayer(LLVMOrcLLJITRef J) nogil
+cdef LLVMOrcObjectTransformLayerRef LLVMOrcLLJITGetObjTransformLayer(LLVMOrcLLJITRef J)
 
 
 # 
 # Returns a non-owning reference to the LLJIT instance's IR transform layer.
-cdef LLVMOrcIRTransformLayerRef LLVMOrcLLJITGetIRTransformLayer(LLVMOrcLLJITRef J) nogil
+cdef LLVMOrcIRTransformLayerRef LLVMOrcLLJITGetIRTransformLayer(LLVMOrcLLJITRef J)
 
 
 # 
@@ -201,4 +201,4 @@ cdef LLVMOrcIRTransformLayerRef LLVMOrcLLJITGetIRTransformLayer(LLVMOrcLLJITRef 
 # 
 # This string is owned by the LLJIT instance and does not need to be freed
 # by the caller.
-cdef const char * LLVMOrcLLJITGetDataLayoutStr(LLVMOrcLLJITRef J) nogil
+cdef const char * LLVMOrcLLJITGetDataLayoutStr(LLVMOrcLLJITRef J)

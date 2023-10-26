@@ -38,7 +38,7 @@ cdef extern from "llvm-c/OrcEE.h":
 # 
 # Create a RTDyldObjectLinkingLayer instance using the standard
 # SectionMemoryManager for memory management.
-cdef LLVMOrcObjectLayerRef LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager(LLVMOrcExecutionSessionRef ES) nogil
+cdef LLVMOrcObjectLayerRef LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager(LLVMOrcExecutionSessionRef ES)
 
 
 # 
@@ -72,4 +72,4 @@ cdef LLVMOrcObjectLayerRef LLVMOrcCreateRTDyldObjectLinkingLayerWithMCJITMemoryM
 # 
 # Note: Layer must be an RTDyldObjectLinkingLayer instance or
 # behavior is undefined.
-cdef void LLVMOrcRTDyldObjectLinkingLayerRegisterJITEventListener(LLVMOrcObjectLayerRef RTDyldObjLinkingLayer,LLVMJITEventListenerRef Listener) nogil
+cdef void LLVMOrcRTDyldObjectLinkingLayerRegisterJITEventListener(LLVMOrcObjectLayerRef RTDyldObjLinkingLayer,LLVMJITEventListenerRef Listener)

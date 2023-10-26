@@ -33,40 +33,40 @@ cdef extern from "llvm-c/Transforms/PassManagerBuilder.h":
     ctypedef LLVMOpaquePassManagerBuilder * LLVMPassManagerBuilderRef
 
 # See llvm::PassManagerBuilder. */
-cdef LLVMPassManagerBuilderRef LLVMPassManagerBuilderCreate() nogil
+cdef LLVMPassManagerBuilderRef LLVMPassManagerBuilderCreate()
 
 
 
-cdef void LLVMPassManagerBuilderDispose(LLVMPassManagerBuilderRef PMB) nogil
+cdef void LLVMPassManagerBuilderDispose(LLVMPassManagerBuilderRef PMB)
 
 
 # See llvm::PassManagerBuilder::OptLevel. */
-cdef void LLVMPassManagerBuilderSetOptLevel(LLVMPassManagerBuilderRef PMB,unsigned int OptLevel) nogil
+cdef void LLVMPassManagerBuilderSetOptLevel(LLVMPassManagerBuilderRef PMB,unsigned int OptLevel)
 
 
 # See llvm::PassManagerBuilder::SizeLevel. */
-cdef void LLVMPassManagerBuilderSetSizeLevel(LLVMPassManagerBuilderRef PMB,unsigned int SizeLevel) nogil
+cdef void LLVMPassManagerBuilderSetSizeLevel(LLVMPassManagerBuilderRef PMB,unsigned int SizeLevel)
 
 
 # See llvm::PassManagerBuilder::DisableUnitAtATime. */
-cdef void LLVMPassManagerBuilderSetDisableUnitAtATime(LLVMPassManagerBuilderRef PMB,int Value) nogil
+cdef void LLVMPassManagerBuilderSetDisableUnitAtATime(LLVMPassManagerBuilderRef PMB,int Value)
 
 
 # See llvm::PassManagerBuilder::DisableUnrollLoops. */
-cdef void LLVMPassManagerBuilderSetDisableUnrollLoops(LLVMPassManagerBuilderRef PMB,int Value) nogil
+cdef void LLVMPassManagerBuilderSetDisableUnrollLoops(LLVMPassManagerBuilderRef PMB,int Value)
 
 
 # See llvm::PassManagerBuilder::DisableSimplifyLibCalls */
-cdef void LLVMPassManagerBuilderSetDisableSimplifyLibCalls(LLVMPassManagerBuilderRef PMB,int Value) nogil
+cdef void LLVMPassManagerBuilderSetDisableSimplifyLibCalls(LLVMPassManagerBuilderRef PMB,int Value)
 
 
 # See llvm::PassManagerBuilder::Inliner. */
-cdef void LLVMPassManagerBuilderUseInlinerWithThreshold(LLVMPassManagerBuilderRef PMB,unsigned int Threshold) nogil
+cdef void LLVMPassManagerBuilderUseInlinerWithThreshold(LLVMPassManagerBuilderRef PMB,unsigned int Threshold)
 
 
 # See llvm::PassManagerBuilder::populateFunctionPassManager. */
-cdef void LLVMPassManagerBuilderPopulateFunctionPassManager(LLVMPassManagerBuilderRef PMB,LLVMPassManagerRef PM) nogil
+cdef void LLVMPassManagerBuilderPopulateFunctionPassManager(LLVMPassManagerBuilderRef PMB,LLVMPassManagerRef PM)
 
 
 # See llvm::PassManagerBuilder::populateModulePassManager. */
-cdef void LLVMPassManagerBuilderPopulateModulePassManager(LLVMPassManagerBuilderRef PMB,LLVMPassManagerRef PM) nogil
+cdef void LLVMPassManagerBuilderPopulateModulePassManager(LLVMPassManagerBuilderRef PMB,LLVMPassManagerRef PM)

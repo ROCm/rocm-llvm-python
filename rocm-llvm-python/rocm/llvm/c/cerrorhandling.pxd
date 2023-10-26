@@ -40,11 +40,11 @@ cdef void LLVMInstallFatalErrorHandler(LLVMFatalErrorHandler Handler)
 # 
 # Reset the fatal error handler. This resets LLVM's fatal error handling
 # behavior to the default.
-cdef void LLVMResetFatalErrorHandler() nogil
+cdef void LLVMResetFatalErrorHandler()
 
 
 # 
 # Enable LLVM's built-in stack trace code. This intercepts the OS's crash
 # signals and prints which component of LLVM you were in at the time if the
 # crash.
-cdef void LLVMEnablePrettyStackTrace() nogil
+cdef void LLVMEnablePrettyStackTrace()

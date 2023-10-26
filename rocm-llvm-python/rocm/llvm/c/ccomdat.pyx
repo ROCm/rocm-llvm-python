@@ -25,19 +25,22 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMGetOrInsertComdat__funptr = NULL
@@ -46,10 +49,11 @@ cdef void* _LLVMGetOrInsertComdat__funptr = NULL
 # if it didn't already exist.
 # 
 # @see llvm::Module::getOrInsertComdat()
-cdef LLVMComdatRef LLVMGetOrInsertComdat(LLVMModuleRef M,const char * Name) nogil:
+cdef LLVMComdatRef LLVMGetOrInsertComdat(LLVMModuleRef M,const char * Name):
     global _LLVMGetOrInsertComdat__funptr
     __init_symbol(&_LLVMGetOrInsertComdat__funptr,"LLVMGetOrInsertComdat")
-    return (<LLVMComdatRef (*)(LLVMModuleRef,const char *) nogil> _LLVMGetOrInsertComdat__funptr)(M,Name)
+    with nogil:
+        return (<LLVMComdatRef (*)(LLVMModuleRef,const char *) noexcept nogil> _LLVMGetOrInsertComdat__funptr)(M,Name)
 
 
 cdef void* _LLVMGetComdat__funptr = NULL
@@ -57,10 +61,11 @@ cdef void* _LLVMGetComdat__funptr = NULL
 # Get the Comdat assigned to the given global object.
 # 
 # @see llvm::GlobalObject::getComdat()
-cdef LLVMComdatRef LLVMGetComdat(LLVMValueRef V) nogil:
+cdef LLVMComdatRef LLVMGetComdat(LLVMValueRef V):
     global _LLVMGetComdat__funptr
     __init_symbol(&_LLVMGetComdat__funptr,"LLVMGetComdat")
-    return (<LLVMComdatRef (*)(LLVMValueRef) nogil> _LLVMGetComdat__funptr)(V)
+    with nogil:
+        return (<LLVMComdatRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetComdat__funptr)(V)
 
 
 cdef void* _LLVMSetComdat__funptr = NULL
@@ -68,21 +73,24 @@ cdef void* _LLVMSetComdat__funptr = NULL
 # Assign the Comdat to the given global object.
 # 
 # @see llvm::GlobalObject::setComdat()
-cdef void LLVMSetComdat(LLVMValueRef V,LLVMComdatRef C) nogil:
+cdef void LLVMSetComdat(LLVMValueRef V,LLVMComdatRef C):
     global _LLVMSetComdat__funptr
     __init_symbol(&_LLVMSetComdat__funptr,"LLVMSetComdat")
-    (<void (*)(LLVMValueRef,LLVMComdatRef) nogil> _LLVMSetComdat__funptr)(V,C)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMComdatRef) noexcept nogil> _LLVMSetComdat__funptr)(V,C)
 
 
 cdef void* _LLVMGetComdatSelectionKind__funptr = NULL
-cdef LLVMComdatSelectionKind LLVMGetComdatSelectionKind(LLVMComdatRef C) nogil:
+cdef LLVMComdatSelectionKind LLVMGetComdatSelectionKind(LLVMComdatRef C):
     global _LLVMGetComdatSelectionKind__funptr
     __init_symbol(&_LLVMGetComdatSelectionKind__funptr,"LLVMGetComdatSelectionKind")
-    return (<LLVMComdatSelectionKind (*)(LLVMComdatRef) nogil> _LLVMGetComdatSelectionKind__funptr)(C)
+    with nogil:
+        return (<LLVMComdatSelectionKind (*)(LLVMComdatRef) noexcept nogil> _LLVMGetComdatSelectionKind__funptr)(C)
 
 
 cdef void* _LLVMSetComdatSelectionKind__funptr = NULL
-cdef void LLVMSetComdatSelectionKind(LLVMComdatRef C,LLVMComdatSelectionKind Kind) nogil:
+cdef void LLVMSetComdatSelectionKind(LLVMComdatRef C,LLVMComdatSelectionKind Kind):
     global _LLVMSetComdatSelectionKind__funptr
     __init_symbol(&_LLVMSetComdatSelectionKind__funptr,"LLVMSetComdatSelectionKind")
-    (<void (*)(LLVMComdatRef,LLVMComdatSelectionKind) nogil> _LLVMSetComdatSelectionKind__funptr)(C,Kind)
+    with nogil:
+        (<void (*)(LLVMComdatRef,LLVMComdatSelectionKind) noexcept nogil> _LLVMSetComdatSelectionKind__funptr)(C,Kind)

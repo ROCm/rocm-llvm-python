@@ -25,49 +25,56 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMWriteBitcodeToFile__funptr = NULL
 # Writes a module to the specified path. Returns 0 on success. */
-cdef int LLVMWriteBitcodeToFile(LLVMModuleRef M,const char * Path) nogil:
+cdef int LLVMWriteBitcodeToFile(LLVMModuleRef M,const char * Path):
     global _LLVMWriteBitcodeToFile__funptr
     __init_symbol(&_LLVMWriteBitcodeToFile__funptr,"LLVMWriteBitcodeToFile")
-    return (<int (*)(LLVMModuleRef,const char *) nogil> _LLVMWriteBitcodeToFile__funptr)(M,Path)
+    with nogil:
+        return (<int (*)(LLVMModuleRef,const char *) noexcept nogil> _LLVMWriteBitcodeToFile__funptr)(M,Path)
 
 
 cdef void* _LLVMWriteBitcodeToFD__funptr = NULL
 # Writes a module to an open file descriptor. Returns 0 on success. */
-cdef int LLVMWriteBitcodeToFD(LLVMModuleRef M,int FD,int ShouldClose,int Unbuffered) nogil:
+cdef int LLVMWriteBitcodeToFD(LLVMModuleRef M,int FD,int ShouldClose,int Unbuffered):
     global _LLVMWriteBitcodeToFD__funptr
     __init_symbol(&_LLVMWriteBitcodeToFD__funptr,"LLVMWriteBitcodeToFD")
-    return (<int (*)(LLVMModuleRef,int,int,int) nogil> _LLVMWriteBitcodeToFD__funptr)(M,FD,ShouldClose,Unbuffered)
+    with nogil:
+        return (<int (*)(LLVMModuleRef,int,int,int) noexcept nogil> _LLVMWriteBitcodeToFD__funptr)(M,FD,ShouldClose,Unbuffered)
 
 
 cdef void* _LLVMWriteBitcodeToFileHandle__funptr = NULL
 # Deprecated for LLVMWriteBitcodeToFD. Writes a module to an open file
 # descriptor. Returns 0 on success. Closes the Handle.
-cdef int LLVMWriteBitcodeToFileHandle(LLVMModuleRef M,int Handle) nogil:
+cdef int LLVMWriteBitcodeToFileHandle(LLVMModuleRef M,int Handle):
     global _LLVMWriteBitcodeToFileHandle__funptr
     __init_symbol(&_LLVMWriteBitcodeToFileHandle__funptr,"LLVMWriteBitcodeToFileHandle")
-    return (<int (*)(LLVMModuleRef,int) nogil> _LLVMWriteBitcodeToFileHandle__funptr)(M,Handle)
+    with nogil:
+        return (<int (*)(LLVMModuleRef,int) noexcept nogil> _LLVMWriteBitcodeToFileHandle__funptr)(M,Handle)
 
 
 cdef void* _LLVMWriteBitcodeToMemoryBuffer__funptr = NULL
 # Writes a module to a new memory buffer and returns it. */
-cdef LLVMMemoryBufferRef LLVMWriteBitcodeToMemoryBuffer(LLVMModuleRef M) nogil:
+cdef LLVMMemoryBufferRef LLVMWriteBitcodeToMemoryBuffer(LLVMModuleRef M):
     global _LLVMWriteBitcodeToMemoryBuffer__funptr
     __init_symbol(&_LLVMWriteBitcodeToMemoryBuffer__funptr,"LLVMWriteBitcodeToMemoryBuffer")
-    return (<LLVMMemoryBufferRef (*)(LLVMModuleRef) nogil> _LLVMWriteBitcodeToMemoryBuffer__funptr)(M)
+    with nogil:
+        return (<LLVMMemoryBufferRef (*)(LLVMModuleRef) noexcept nogil> _LLVMWriteBitcodeToMemoryBuffer__funptr)(M)

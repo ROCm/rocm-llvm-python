@@ -76,7 +76,7 @@ cdef extern from "llvm-c/Object.h":
 # message by calling \c LLVMDisposeMessage.
 # 
 # @see llvm::object::createBinary
-cdef LLVMBinaryRef LLVMCreateBinary(LLVMMemoryBufferRef MemBuf,LLVMContextRef Context,char ** ErrorMessage) nogil
+cdef LLVMBinaryRef LLVMCreateBinary(LLVMMemoryBufferRef MemBuf,LLVMContextRef Context,char ** ErrorMessage)
 
 
 # 
@@ -84,7 +84,7 @@ cdef LLVMBinaryRef LLVMCreateBinary(LLVMMemoryBufferRef MemBuf,LLVMContextRef Co
 # 
 # The binary file does not own its backing buffer.  It is the responsibilty
 # of the caller to free it with \c LLVMDisposeMemoryBuffer.
-cdef void LLVMDisposeBinary(LLVMBinaryRef BR) nogil
+cdef void LLVMDisposeBinary(LLVMBinaryRef BR)
 
 
 # 
@@ -95,18 +95,18 @@ cdef void LLVMDisposeBinary(LLVMBinaryRef BR) nogil
 # caller to free it with \c LLVMDisposeMemoryBuffer.
 # 
 # @see llvm::object::getMemoryBufferRef
-cdef LLVMMemoryBufferRef LLVMBinaryCopyMemoryBuffer(LLVMBinaryRef BR) nogil
+cdef LLVMMemoryBufferRef LLVMBinaryCopyMemoryBuffer(LLVMBinaryRef BR)
 
 
 # 
 # Retrieve the specific type of a binary.
 # 
 # @see llvm::object::Binary::getType
-cdef LLVMBinaryType LLVMBinaryGetType(LLVMBinaryRef BR) nogil
+cdef LLVMBinaryType LLVMBinaryGetType(LLVMBinaryRef BR)
 
 
 
-cdef LLVMBinaryRef LLVMMachOUniversalBinaryCopyObjectForArch(LLVMBinaryRef BR,const char * Arch,unsigned long ArchLen,char ** ErrorMessage) nogil
+cdef LLVMBinaryRef LLVMMachOUniversalBinaryCopyObjectForArch(LLVMBinaryRef BR,const char * Arch,unsigned long ArchLen,char ** ErrorMessage)
 
 
 # 
@@ -119,14 +119,14 @@ cdef LLVMBinaryRef LLVMMachOUniversalBinaryCopyObjectForArch(LLVMBinaryRef BR,co
 # \c LLVMDisposeSectionIterator.
 # 
 # @see llvm::object::sections()
-cdef LLVMSectionIteratorRef LLVMObjectFileCopySectionIterator(LLVMBinaryRef BR) nogil
+cdef LLVMSectionIteratorRef LLVMObjectFileCopySectionIterator(LLVMBinaryRef BR)
 
 
 # 
 # Returns whether the given section iterator is at the end.
 # 
 # @see llvm::object::section_end
-cdef int LLVMObjectFileIsSectionIteratorAtEnd(LLVMBinaryRef BR,LLVMSectionIteratorRef SI) nogil
+cdef int LLVMObjectFileIsSectionIteratorAtEnd(LLVMBinaryRef BR,LLVMSectionIteratorRef SI)
 
 
 # 
@@ -139,102 +139,102 @@ cdef int LLVMObjectFileIsSectionIteratorAtEnd(LLVMBinaryRef BR,LLVMSectionIterat
 # \c LLVMDisposeSymbolIterator.
 # 
 # @see llvm::object::symbols()
-cdef LLVMSymbolIteratorRef LLVMObjectFileCopySymbolIterator(LLVMBinaryRef BR) nogil
+cdef LLVMSymbolIteratorRef LLVMObjectFileCopySymbolIterator(LLVMBinaryRef BR)
 
 
 # 
 # Returns whether the given symbol iterator is at the end.
 # 
 # @see llvm::object::symbol_end
-cdef int LLVMObjectFileIsSymbolIteratorAtEnd(LLVMBinaryRef BR,LLVMSymbolIteratorRef SI) nogil
+cdef int LLVMObjectFileIsSymbolIteratorAtEnd(LLVMBinaryRef BR,LLVMSymbolIteratorRef SI)
 
 
 
-cdef void LLVMDisposeSectionIterator(LLVMSectionIteratorRef SI) nogil
+cdef void LLVMDisposeSectionIterator(LLVMSectionIteratorRef SI)
 
 
 
-cdef void LLVMMoveToNextSection(LLVMSectionIteratorRef SI) nogil
+cdef void LLVMMoveToNextSection(LLVMSectionIteratorRef SI)
 
 
 
-cdef void LLVMMoveToContainingSection(LLVMSectionIteratorRef Sect,LLVMSymbolIteratorRef Sym) nogil
+cdef void LLVMMoveToContainingSection(LLVMSectionIteratorRef Sect,LLVMSymbolIteratorRef Sym)
 
 
 
-cdef void LLVMDisposeSymbolIterator(LLVMSymbolIteratorRef SI) nogil
+cdef void LLVMDisposeSymbolIterator(LLVMSymbolIteratorRef SI)
 
 
 
-cdef void LLVMMoveToNextSymbol(LLVMSymbolIteratorRef SI) nogil
+cdef void LLVMMoveToNextSymbol(LLVMSymbolIteratorRef SI)
 
 
 
-cdef const char * LLVMGetSectionName(LLVMSectionIteratorRef SI) nogil
+cdef const char * LLVMGetSectionName(LLVMSectionIteratorRef SI)
 
 
 
-cdef unsigned long LLVMGetSectionSize(LLVMSectionIteratorRef SI) nogil
+cdef unsigned long LLVMGetSectionSize(LLVMSectionIteratorRef SI)
 
 
 
-cdef const char * LLVMGetSectionContents(LLVMSectionIteratorRef SI) nogil
+cdef const char * LLVMGetSectionContents(LLVMSectionIteratorRef SI)
 
 
 
-cdef unsigned long LLVMGetSectionAddress(LLVMSectionIteratorRef SI) nogil
+cdef unsigned long LLVMGetSectionAddress(LLVMSectionIteratorRef SI)
 
 
 
-cdef int LLVMGetSectionContainsSymbol(LLVMSectionIteratorRef SI,LLVMSymbolIteratorRef Sym) nogil
+cdef int LLVMGetSectionContainsSymbol(LLVMSectionIteratorRef SI,LLVMSymbolIteratorRef Sym)
 
 
 
-cdef LLVMRelocationIteratorRef LLVMGetRelocations(LLVMSectionIteratorRef Section) nogil
+cdef LLVMRelocationIteratorRef LLVMGetRelocations(LLVMSectionIteratorRef Section)
 
 
 
-cdef void LLVMDisposeRelocationIterator(LLVMRelocationIteratorRef RI) nogil
+cdef void LLVMDisposeRelocationIterator(LLVMRelocationIteratorRef RI)
 
 
 
-cdef int LLVMIsRelocationIteratorAtEnd(LLVMSectionIteratorRef Section,LLVMRelocationIteratorRef RI) nogil
+cdef int LLVMIsRelocationIteratorAtEnd(LLVMSectionIteratorRef Section,LLVMRelocationIteratorRef RI)
 
 
 
-cdef void LLVMMoveToNextRelocation(LLVMRelocationIteratorRef RI) nogil
+cdef void LLVMMoveToNextRelocation(LLVMRelocationIteratorRef RI)
 
 
 
-cdef const char * LLVMGetSymbolName(LLVMSymbolIteratorRef SI) nogil
+cdef const char * LLVMGetSymbolName(LLVMSymbolIteratorRef SI)
 
 
 
-cdef unsigned long LLVMGetSymbolAddress(LLVMSymbolIteratorRef SI) nogil
+cdef unsigned long LLVMGetSymbolAddress(LLVMSymbolIteratorRef SI)
 
 
 
-cdef unsigned long LLVMGetSymbolSize(LLVMSymbolIteratorRef SI) nogil
+cdef unsigned long LLVMGetSymbolSize(LLVMSymbolIteratorRef SI)
 
 
 
-cdef unsigned long LLVMGetRelocationOffset(LLVMRelocationIteratorRef RI) nogil
+cdef unsigned long LLVMGetRelocationOffset(LLVMRelocationIteratorRef RI)
 
 
 
-cdef LLVMSymbolIteratorRef LLVMGetRelocationSymbol(LLVMRelocationIteratorRef RI) nogil
+cdef LLVMSymbolIteratorRef LLVMGetRelocationSymbol(LLVMRelocationIteratorRef RI)
 
 
 
-cdef unsigned long LLVMGetRelocationType(LLVMRelocationIteratorRef RI) nogil
+cdef unsigned long LLVMGetRelocationType(LLVMRelocationIteratorRef RI)
 
 
 
-cdef const char * LLVMGetRelocationTypeName(LLVMRelocationIteratorRef RI) nogil
+cdef const char * LLVMGetRelocationTypeName(LLVMRelocationIteratorRef RI)
 
 
 
-cdef const char * LLVMGetRelocationValueString(LLVMRelocationIteratorRef RI) nogil
+cdef const char * LLVMGetRelocationValueString(LLVMRelocationIteratorRef RI)
 
 
 cdef extern from "llvm-c/Object.h":
@@ -245,24 +245,24 @@ cdef extern from "llvm-c/Object.h":
     ctypedef LLVMOpaqueObjectFile * LLVMObjectFileRef
 
 # Deprecated: Use LLVMCreateBinary instead. */
-cdef LLVMObjectFileRef LLVMCreateObjectFile(LLVMMemoryBufferRef MemBuf) nogil
+cdef LLVMObjectFileRef LLVMCreateObjectFile(LLVMMemoryBufferRef MemBuf)
 
 
 # Deprecated: Use LLVMDisposeBinary instead. */
-cdef void LLVMDisposeObjectFile(LLVMObjectFileRef ObjectFile) nogil
+cdef void LLVMDisposeObjectFile(LLVMObjectFileRef ObjectFile)
 
 
 # Deprecated: Use LLVMObjectFileCopySectionIterator instead. */
-cdef LLVMSectionIteratorRef LLVMGetSections(LLVMObjectFileRef ObjectFile) nogil
+cdef LLVMSectionIteratorRef LLVMGetSections(LLVMObjectFileRef ObjectFile)
 
 
 # Deprecated: Use LLVMObjectFileIsSectionIteratorAtEnd instead. */
-cdef int LLVMIsSectionIteratorAtEnd(LLVMObjectFileRef ObjectFile,LLVMSectionIteratorRef SI) nogil
+cdef int LLVMIsSectionIteratorAtEnd(LLVMObjectFileRef ObjectFile,LLVMSectionIteratorRef SI)
 
 
 # Deprecated: Use LLVMObjectFileCopySymbolIterator instead. */
-cdef LLVMSymbolIteratorRef LLVMGetSymbols(LLVMObjectFileRef ObjectFile) nogil
+cdef LLVMSymbolIteratorRef LLVMGetSymbols(LLVMObjectFileRef ObjectFile)
 
 
 # Deprecated: Use LLVMObjectFileIsSymbolIteratorAtEnd instead. */
-cdef int LLVMIsSymbolIteratorAtEnd(LLVMObjectFileRef ObjectFile,LLVMSymbolIteratorRef SI) nogil
+cdef int LLVMIsSymbolIteratorAtEnd(LLVMObjectFileRef ObjectFile,LLVMSymbolIteratorRef SI)

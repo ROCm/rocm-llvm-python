@@ -25,95 +25,108 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMPassManagerBuilderCreate__funptr = NULL
 # See llvm::PassManagerBuilder. */
-cdef LLVMPassManagerBuilderRef LLVMPassManagerBuilderCreate() nogil:
+cdef LLVMPassManagerBuilderRef LLVMPassManagerBuilderCreate():
     global _LLVMPassManagerBuilderCreate__funptr
     __init_symbol(&_LLVMPassManagerBuilderCreate__funptr,"LLVMPassManagerBuilderCreate")
-    return (<LLVMPassManagerBuilderRef (*)() nogil> _LLVMPassManagerBuilderCreate__funptr)()
+    with nogil:
+        return (<LLVMPassManagerBuilderRef (*)() noexcept nogil> _LLVMPassManagerBuilderCreate__funptr)()
 
 
 cdef void* _LLVMPassManagerBuilderDispose__funptr = NULL
-cdef void LLVMPassManagerBuilderDispose(LLVMPassManagerBuilderRef PMB) nogil:
+cdef void LLVMPassManagerBuilderDispose(LLVMPassManagerBuilderRef PMB):
     global _LLVMPassManagerBuilderDispose__funptr
     __init_symbol(&_LLVMPassManagerBuilderDispose__funptr,"LLVMPassManagerBuilderDispose")
-    (<void (*)(LLVMPassManagerBuilderRef) nogil> _LLVMPassManagerBuilderDispose__funptr)(PMB)
+    with nogil:
+        (<void (*)(LLVMPassManagerBuilderRef) noexcept nogil> _LLVMPassManagerBuilderDispose__funptr)(PMB)
 
 
 cdef void* _LLVMPassManagerBuilderSetOptLevel__funptr = NULL
 # See llvm::PassManagerBuilder::OptLevel. */
-cdef void LLVMPassManagerBuilderSetOptLevel(LLVMPassManagerBuilderRef PMB,unsigned int OptLevel) nogil:
+cdef void LLVMPassManagerBuilderSetOptLevel(LLVMPassManagerBuilderRef PMB,unsigned int OptLevel):
     global _LLVMPassManagerBuilderSetOptLevel__funptr
     __init_symbol(&_LLVMPassManagerBuilderSetOptLevel__funptr,"LLVMPassManagerBuilderSetOptLevel")
-    (<void (*)(LLVMPassManagerBuilderRef,unsigned int) nogil> _LLVMPassManagerBuilderSetOptLevel__funptr)(PMB,OptLevel)
+    with nogil:
+        (<void (*)(LLVMPassManagerBuilderRef,unsigned int) noexcept nogil> _LLVMPassManagerBuilderSetOptLevel__funptr)(PMB,OptLevel)
 
 
 cdef void* _LLVMPassManagerBuilderSetSizeLevel__funptr = NULL
 # See llvm::PassManagerBuilder::SizeLevel. */
-cdef void LLVMPassManagerBuilderSetSizeLevel(LLVMPassManagerBuilderRef PMB,unsigned int SizeLevel) nogil:
+cdef void LLVMPassManagerBuilderSetSizeLevel(LLVMPassManagerBuilderRef PMB,unsigned int SizeLevel):
     global _LLVMPassManagerBuilderSetSizeLevel__funptr
     __init_symbol(&_LLVMPassManagerBuilderSetSizeLevel__funptr,"LLVMPassManagerBuilderSetSizeLevel")
-    (<void (*)(LLVMPassManagerBuilderRef,unsigned int) nogil> _LLVMPassManagerBuilderSetSizeLevel__funptr)(PMB,SizeLevel)
+    with nogil:
+        (<void (*)(LLVMPassManagerBuilderRef,unsigned int) noexcept nogil> _LLVMPassManagerBuilderSetSizeLevel__funptr)(PMB,SizeLevel)
 
 
 cdef void* _LLVMPassManagerBuilderSetDisableUnitAtATime__funptr = NULL
 # See llvm::PassManagerBuilder::DisableUnitAtATime. */
-cdef void LLVMPassManagerBuilderSetDisableUnitAtATime(LLVMPassManagerBuilderRef PMB,int Value) nogil:
+cdef void LLVMPassManagerBuilderSetDisableUnitAtATime(LLVMPassManagerBuilderRef PMB,int Value):
     global _LLVMPassManagerBuilderSetDisableUnitAtATime__funptr
     __init_symbol(&_LLVMPassManagerBuilderSetDisableUnitAtATime__funptr,"LLVMPassManagerBuilderSetDisableUnitAtATime")
-    (<void (*)(LLVMPassManagerBuilderRef,int) nogil> _LLVMPassManagerBuilderSetDisableUnitAtATime__funptr)(PMB,Value)
+    with nogil:
+        (<void (*)(LLVMPassManagerBuilderRef,int) noexcept nogil> _LLVMPassManagerBuilderSetDisableUnitAtATime__funptr)(PMB,Value)
 
 
 cdef void* _LLVMPassManagerBuilderSetDisableUnrollLoops__funptr = NULL
 # See llvm::PassManagerBuilder::DisableUnrollLoops. */
-cdef void LLVMPassManagerBuilderSetDisableUnrollLoops(LLVMPassManagerBuilderRef PMB,int Value) nogil:
+cdef void LLVMPassManagerBuilderSetDisableUnrollLoops(LLVMPassManagerBuilderRef PMB,int Value):
     global _LLVMPassManagerBuilderSetDisableUnrollLoops__funptr
     __init_symbol(&_LLVMPassManagerBuilderSetDisableUnrollLoops__funptr,"LLVMPassManagerBuilderSetDisableUnrollLoops")
-    (<void (*)(LLVMPassManagerBuilderRef,int) nogil> _LLVMPassManagerBuilderSetDisableUnrollLoops__funptr)(PMB,Value)
+    with nogil:
+        (<void (*)(LLVMPassManagerBuilderRef,int) noexcept nogil> _LLVMPassManagerBuilderSetDisableUnrollLoops__funptr)(PMB,Value)
 
 
 cdef void* _LLVMPassManagerBuilderSetDisableSimplifyLibCalls__funptr = NULL
 # See llvm::PassManagerBuilder::DisableSimplifyLibCalls */
-cdef void LLVMPassManagerBuilderSetDisableSimplifyLibCalls(LLVMPassManagerBuilderRef PMB,int Value) nogil:
+cdef void LLVMPassManagerBuilderSetDisableSimplifyLibCalls(LLVMPassManagerBuilderRef PMB,int Value):
     global _LLVMPassManagerBuilderSetDisableSimplifyLibCalls__funptr
     __init_symbol(&_LLVMPassManagerBuilderSetDisableSimplifyLibCalls__funptr,"LLVMPassManagerBuilderSetDisableSimplifyLibCalls")
-    (<void (*)(LLVMPassManagerBuilderRef,int) nogil> _LLVMPassManagerBuilderSetDisableSimplifyLibCalls__funptr)(PMB,Value)
+    with nogil:
+        (<void (*)(LLVMPassManagerBuilderRef,int) noexcept nogil> _LLVMPassManagerBuilderSetDisableSimplifyLibCalls__funptr)(PMB,Value)
 
 
 cdef void* _LLVMPassManagerBuilderUseInlinerWithThreshold__funptr = NULL
 # See llvm::PassManagerBuilder::Inliner. */
-cdef void LLVMPassManagerBuilderUseInlinerWithThreshold(LLVMPassManagerBuilderRef PMB,unsigned int Threshold) nogil:
+cdef void LLVMPassManagerBuilderUseInlinerWithThreshold(LLVMPassManagerBuilderRef PMB,unsigned int Threshold):
     global _LLVMPassManagerBuilderUseInlinerWithThreshold__funptr
     __init_symbol(&_LLVMPassManagerBuilderUseInlinerWithThreshold__funptr,"LLVMPassManagerBuilderUseInlinerWithThreshold")
-    (<void (*)(LLVMPassManagerBuilderRef,unsigned int) nogil> _LLVMPassManagerBuilderUseInlinerWithThreshold__funptr)(PMB,Threshold)
+    with nogil:
+        (<void (*)(LLVMPassManagerBuilderRef,unsigned int) noexcept nogil> _LLVMPassManagerBuilderUseInlinerWithThreshold__funptr)(PMB,Threshold)
 
 
 cdef void* _LLVMPassManagerBuilderPopulateFunctionPassManager__funptr = NULL
 # See llvm::PassManagerBuilder::populateFunctionPassManager. */
-cdef void LLVMPassManagerBuilderPopulateFunctionPassManager(LLVMPassManagerBuilderRef PMB,LLVMPassManagerRef PM) nogil:
+cdef void LLVMPassManagerBuilderPopulateFunctionPassManager(LLVMPassManagerBuilderRef PMB,LLVMPassManagerRef PM):
     global _LLVMPassManagerBuilderPopulateFunctionPassManager__funptr
     __init_symbol(&_LLVMPassManagerBuilderPopulateFunctionPassManager__funptr,"LLVMPassManagerBuilderPopulateFunctionPassManager")
-    (<void (*)(LLVMPassManagerBuilderRef,LLVMPassManagerRef) nogil> _LLVMPassManagerBuilderPopulateFunctionPassManager__funptr)(PMB,PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerBuilderRef,LLVMPassManagerRef) noexcept nogil> _LLVMPassManagerBuilderPopulateFunctionPassManager__funptr)(PMB,PM)
 
 
 cdef void* _LLVMPassManagerBuilderPopulateModulePassManager__funptr = NULL
 # See llvm::PassManagerBuilder::populateModulePassManager. */
-cdef void LLVMPassManagerBuilderPopulateModulePassManager(LLVMPassManagerBuilderRef PMB,LLVMPassManagerRef PM) nogil:
+cdef void LLVMPassManagerBuilderPopulateModulePassManager(LLVMPassManagerBuilderRef PMB,LLVMPassManagerRef PM):
     global _LLVMPassManagerBuilderPopulateModulePassManager__funptr
     __init_symbol(&_LLVMPassManagerBuilderPopulateModulePassManager__funptr,"LLVMPassManagerBuilderPopulateModulePassManager")
-    (<void (*)(LLVMPassManagerBuilderRef,LLVMPassManagerRef) nogil> _LLVMPassManagerBuilderPopulateModulePassManager__funptr)(PMB,PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerBuilderRef,LLVMPassManagerRef) noexcept nogil> _LLVMPassManagerBuilderPopulateModulePassManager__funptr)(PMB,PM)

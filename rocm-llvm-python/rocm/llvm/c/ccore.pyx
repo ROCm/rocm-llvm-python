@@ -25,38 +25,43 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMInitializeCore__funptr = NULL
 # 
 # @}
-cdef void LLVMInitializeCore(LLVMPassRegistryRef R) nogil:
+cdef void LLVMInitializeCore(LLVMPassRegistryRef R):
     global _LLVMInitializeCore__funptr
     __init_symbol(&_LLVMInitializeCore__funptr,"LLVMInitializeCore")
-    (<void (*)(LLVMPassRegistryRef) nogil> _LLVMInitializeCore__funptr)(R)
+    with nogil:
+        (<void (*)(LLVMPassRegistryRef) noexcept nogil> _LLVMInitializeCore__funptr)(R)
 
 
 cdef void* _LLVMShutdown__funptr = NULL
 # Deallocate and destroy all ManagedStatic variables.
 # @see llvm::llvm_shutdown
 # @see ManagedStatic
-cdef void LLVMShutdown() nogil:
+cdef void LLVMShutdown():
     global _LLVMShutdown__funptr
     __init_symbol(&_LLVMShutdown__funptr,"LLVMShutdown")
-    (<void (*)() nogil> _LLVMShutdown__funptr)()
+    with nogil:
+        (<void (*)() noexcept nogil> _LLVMShutdown__funptr)()
 
 
 cdef void* _LLVMGetVersion__funptr = NULL
@@ -65,24 +70,27 @@ cdef void* _LLVMGetVersion__funptr = NULL
 # 
 # The version components are returned via the function's three output
 # parameters or skipped if a NULL pointer was supplied.
-cdef void LLVMGetVersion(unsigned int * Major,unsigned int * Minor,unsigned int * Patch) nogil:
+cdef void LLVMGetVersion(unsigned int * Major,unsigned int * Minor,unsigned int * Patch):
     global _LLVMGetVersion__funptr
     __init_symbol(&_LLVMGetVersion__funptr,"LLVMGetVersion")
-    (<void (*)(unsigned int *,unsigned int *,unsigned int *) nogil> _LLVMGetVersion__funptr)(Major,Minor,Patch)
+    with nogil:
+        (<void (*)(unsigned int *,unsigned int *,unsigned int *) noexcept nogil> _LLVMGetVersion__funptr)(Major,Minor,Patch)
 
 
 cdef void* _LLVMCreateMessage__funptr = NULL
-cdef char * LLVMCreateMessage(const char * Message) nogil:
+cdef char * LLVMCreateMessage(const char * Message):
     global _LLVMCreateMessage__funptr
     __init_symbol(&_LLVMCreateMessage__funptr,"LLVMCreateMessage")
-    return (<char * (*)(const char *) nogil> _LLVMCreateMessage__funptr)(Message)
+    with nogil:
+        return (<char * (*)(const char *) noexcept nogil> _LLVMCreateMessage__funptr)(Message)
 
 
 cdef void* _LLVMDisposeMessage__funptr = NULL
-cdef void LLVMDisposeMessage(char * Message) nogil:
+cdef void LLVMDisposeMessage(char * Message):
     global _LLVMDisposeMessage__funptr
     __init_symbol(&_LLVMDisposeMessage__funptr,"LLVMDisposeMessage")
-    (<void (*)(char *) nogil> _LLVMDisposeMessage__funptr)(Message)
+    with nogil:
+        (<void (*)(char *) noexcept nogil> _LLVMDisposeMessage__funptr)(Message)
 
 
 cdef void* _LLVMContextCreate__funptr = NULL
@@ -91,19 +99,21 @@ cdef void* _LLVMContextCreate__funptr = NULL
 # 
 # Every call to this function should be paired with a call to
 # LLVMContextDispose() or the context will leak memory.
-cdef LLVMContextRef LLVMContextCreate() nogil:
+cdef LLVMContextRef LLVMContextCreate():
     global _LLVMContextCreate__funptr
     __init_symbol(&_LLVMContextCreate__funptr,"LLVMContextCreate")
-    return (<LLVMContextRef (*)() nogil> _LLVMContextCreate__funptr)()
+    with nogil:
+        return (<LLVMContextRef (*)() noexcept nogil> _LLVMContextCreate__funptr)()
 
 
 cdef void* _LLVMGetGlobalContext__funptr = NULL
 # 
 # Obtain the global context instance.
-cdef LLVMContextRef LLVMGetGlobalContext() nogil:
+cdef LLVMContextRef LLVMGetGlobalContext():
     global _LLVMGetGlobalContext__funptr
     __init_symbol(&_LLVMGetGlobalContext__funptr,"LLVMGetGlobalContext")
-    return (<LLVMContextRef (*)() nogil> _LLVMGetGlobalContext__funptr)()
+    with nogil:
+        return (<LLVMContextRef (*)() noexcept nogil> _LLVMGetGlobalContext__funptr)()
 
 
 cdef void* _LLVMContextSetDiagnosticHandler__funptr = NULL
@@ -112,25 +122,28 @@ cdef void* _LLVMContextSetDiagnosticHandler__funptr = NULL
 cdef void LLVMContextSetDiagnosticHandler(LLVMContextRef C,LLVMDiagnosticHandler Handler,void * DiagnosticContext):
     global _LLVMContextSetDiagnosticHandler__funptr
     __init_symbol(&_LLVMContextSetDiagnosticHandler__funptr,"LLVMContextSetDiagnosticHandler")
-    (<void (*)(LLVMContextRef,LLVMDiagnosticHandler,void *)> _LLVMContextSetDiagnosticHandler__funptr)(C,Handler,DiagnosticContext)
+    with nogil:
+        (<void (*)(LLVMContextRef,LLVMDiagnosticHandler,void *) noexcept nogil> _LLVMContextSetDiagnosticHandler__funptr)(C,Handler,DiagnosticContext)
 
 
 cdef void* _LLVMContextGetDiagnosticHandler__funptr = NULL
 # 
 # Get the diagnostic handler of this context.
-cdef LLVMDiagnosticHandler LLVMContextGetDiagnosticHandler(LLVMContextRef C) nogil:
+cdef LLVMDiagnosticHandler LLVMContextGetDiagnosticHandler(LLVMContextRef C):
     global _LLVMContextGetDiagnosticHandler__funptr
     __init_symbol(&_LLVMContextGetDiagnosticHandler__funptr,"LLVMContextGetDiagnosticHandler")
-    return (<LLVMDiagnosticHandler (*)(LLVMContextRef) nogil> _LLVMContextGetDiagnosticHandler__funptr)(C)
+    with nogil:
+        return (<LLVMDiagnosticHandler (*)(LLVMContextRef) noexcept nogil> _LLVMContextGetDiagnosticHandler__funptr)(C)
 
 
 cdef void* _LLVMContextGetDiagnosticContext__funptr = NULL
 # 
 # Get the diagnostic context of this context.
-cdef void * LLVMContextGetDiagnosticContext(LLVMContextRef C) nogil:
+cdef void * LLVMContextGetDiagnosticContext(LLVMContextRef C):
     global _LLVMContextGetDiagnosticContext__funptr
     __init_symbol(&_LLVMContextGetDiagnosticContext__funptr,"LLVMContextGetDiagnosticContext")
-    return (<void * (*)(LLVMContextRef) nogil> _LLVMContextGetDiagnosticContext__funptr)(C)
+    with nogil:
+        return (<void * (*)(LLVMContextRef) noexcept nogil> _LLVMContextGetDiagnosticContext__funptr)(C)
 
 
 cdef void* _LLVMContextSetYieldCallback__funptr = NULL
@@ -141,7 +154,8 @@ cdef void* _LLVMContextSetYieldCallback__funptr = NULL
 cdef void LLVMContextSetYieldCallback(LLVMContextRef C,LLVMYieldCallback Callback,void * OpaqueHandle):
     global _LLVMContextSetYieldCallback__funptr
     __init_symbol(&_LLVMContextSetYieldCallback__funptr,"LLVMContextSetYieldCallback")
-    (<void (*)(LLVMContextRef,LLVMYieldCallback,void *)> _LLVMContextSetYieldCallback__funptr)(C,Callback,OpaqueHandle)
+    with nogil:
+        (<void (*)(LLVMContextRef,LLVMYieldCallback,void *) noexcept nogil> _LLVMContextSetYieldCallback__funptr)(C,Callback,OpaqueHandle)
 
 
 cdef void* _LLVMContextShouldDiscardValueNames__funptr = NULL
@@ -149,10 +163,11 @@ cdef void* _LLVMContextShouldDiscardValueNames__funptr = NULL
 # Retrieve whether the given context is set to discard all value names.
 # 
 # @see LLVMContext::shouldDiscardValueNames()
-cdef int LLVMContextShouldDiscardValueNames(LLVMContextRef C) nogil:
+cdef int LLVMContextShouldDiscardValueNames(LLVMContextRef C):
     global _LLVMContextShouldDiscardValueNames__funptr
     __init_symbol(&_LLVMContextShouldDiscardValueNames__funptr,"LLVMContextShouldDiscardValueNames")
-    return (<int (*)(LLVMContextRef) nogil> _LLVMContextShouldDiscardValueNames__funptr)(C)
+    with nogil:
+        return (<int (*)(LLVMContextRef) noexcept nogil> _LLVMContextShouldDiscardValueNames__funptr)(C)
 
 
 cdef void* _LLVMContextSetDiscardValueNames__funptr = NULL
@@ -163,10 +178,11 @@ cdef void* _LLVMContextSetDiscardValueNames__funptr = NULL
 # This can be used to save memory and runtime, especially in release mode.
 # 
 # @see LLVMContext::setDiscardValueNames()
-cdef void LLVMContextSetDiscardValueNames(LLVMContextRef C,int Discard) nogil:
+cdef void LLVMContextSetDiscardValueNames(LLVMContextRef C,int Discard):
     global _LLVMContextSetDiscardValueNames__funptr
     __init_symbol(&_LLVMContextSetDiscardValueNames__funptr,"LLVMContextSetDiscardValueNames")
-    (<void (*)(LLVMContextRef,int) nogil> _LLVMContextSetDiscardValueNames__funptr)(C,Discard)
+    with nogil:
+        (<void (*)(LLVMContextRef,int) noexcept nogil> _LLVMContextSetDiscardValueNames__funptr)(C,Discard)
 
 
 cdef void* _LLVMContextSetOpaquePointers__funptr = NULL
@@ -174,10 +190,11 @@ cdef void* _LLVMContextSetOpaquePointers__funptr = NULL
 # Set whether the given context is in opaque pointer mode.
 # 
 # @see LLVMContext::setOpaquePointers()
-cdef void LLVMContextSetOpaquePointers(LLVMContextRef C,int OpaquePointers) nogil:
+cdef void LLVMContextSetOpaquePointers(LLVMContextRef C,int OpaquePointers):
     global _LLVMContextSetOpaquePointers__funptr
     __init_symbol(&_LLVMContextSetOpaquePointers__funptr,"LLVMContextSetOpaquePointers")
-    (<void (*)(LLVMContextRef,int) nogil> _LLVMContextSetOpaquePointers__funptr)(C,OpaquePointers)
+    with nogil:
+        (<void (*)(LLVMContextRef,int) noexcept nogil> _LLVMContextSetOpaquePointers__funptr)(C,OpaquePointers)
 
 
 cdef void* _LLVMContextDispose__funptr = NULL
@@ -186,10 +203,11 @@ cdef void* _LLVMContextDispose__funptr = NULL
 # 
 # This should be called for every call to LLVMContextCreate() or memory
 # will be leaked.
-cdef void LLVMContextDispose(LLVMContextRef C) nogil:
+cdef void LLVMContextDispose(LLVMContextRef C):
     global _LLVMContextDispose__funptr
     __init_symbol(&_LLVMContextDispose__funptr,"LLVMContextDispose")
-    (<void (*)(LLVMContextRef) nogil> _LLVMContextDispose__funptr)(C)
+    with nogil:
+        (<void (*)(LLVMContextRef) noexcept nogil> _LLVMContextDispose__funptr)(C)
 
 
 cdef void* _LLVMGetDiagInfoDescription__funptr = NULL
@@ -198,10 +216,11 @@ cdef void* _LLVMGetDiagInfoDescription__funptr = NULL
 # LLVMDisposeMessage to free the string.
 # 
 # @see DiagnosticInfo::print()
-cdef char * LLVMGetDiagInfoDescription(LLVMDiagnosticInfoRef DI) nogil:
+cdef char * LLVMGetDiagInfoDescription(LLVMDiagnosticInfoRef DI):
     global _LLVMGetDiagInfoDescription__funptr
     __init_symbol(&_LLVMGetDiagInfoDescription__funptr,"LLVMGetDiagInfoDescription")
-    return (<char * (*)(LLVMDiagnosticInfoRef) nogil> _LLVMGetDiagInfoDescription__funptr)(DI)
+    with nogil:
+        return (<char * (*)(LLVMDiagnosticInfoRef) noexcept nogil> _LLVMGetDiagInfoDescription__funptr)(DI)
 
 
 cdef void* _LLVMGetDiagInfoSeverity__funptr = NULL
@@ -209,24 +228,27 @@ cdef void* _LLVMGetDiagInfoSeverity__funptr = NULL
 # Return an enum LLVMDiagnosticSeverity.
 # 
 # @see DiagnosticInfo::getSeverity()
-cdef LLVMDiagnosticSeverity LLVMGetDiagInfoSeverity(LLVMDiagnosticInfoRef DI) nogil:
+cdef LLVMDiagnosticSeverity LLVMGetDiagInfoSeverity(LLVMDiagnosticInfoRef DI):
     global _LLVMGetDiagInfoSeverity__funptr
     __init_symbol(&_LLVMGetDiagInfoSeverity__funptr,"LLVMGetDiagInfoSeverity")
-    return (<LLVMDiagnosticSeverity (*)(LLVMDiagnosticInfoRef) nogil> _LLVMGetDiagInfoSeverity__funptr)(DI)
+    with nogil:
+        return (<LLVMDiagnosticSeverity (*)(LLVMDiagnosticInfoRef) noexcept nogil> _LLVMGetDiagInfoSeverity__funptr)(DI)
 
 
 cdef void* _LLVMGetMDKindIDInContext__funptr = NULL
-cdef unsigned int LLVMGetMDKindIDInContext(LLVMContextRef C,const char * Name,unsigned int SLen) nogil:
+cdef unsigned int LLVMGetMDKindIDInContext(LLVMContextRef C,const char * Name,unsigned int SLen):
     global _LLVMGetMDKindIDInContext__funptr
     __init_symbol(&_LLVMGetMDKindIDInContext__funptr,"LLVMGetMDKindIDInContext")
-    return (<unsigned int (*)(LLVMContextRef,const char *,unsigned int) nogil> _LLVMGetMDKindIDInContext__funptr)(C,Name,SLen)
+    with nogil:
+        return (<unsigned int (*)(LLVMContextRef,const char *,unsigned int) noexcept nogil> _LLVMGetMDKindIDInContext__funptr)(C,Name,SLen)
 
 
 cdef void* _LLVMGetMDKindID__funptr = NULL
-cdef unsigned int LLVMGetMDKindID(const char * Name,unsigned int SLen) nogil:
+cdef unsigned int LLVMGetMDKindID(const char * Name,unsigned int SLen):
     global _LLVMGetMDKindID__funptr
     __init_symbol(&_LLVMGetMDKindID__funptr,"LLVMGetMDKindID")
-    return (<unsigned int (*)(const char *,unsigned int) nogil> _LLVMGetMDKindID__funptr)(Name,SLen)
+    with nogil:
+        return (<unsigned int (*)(const char *,unsigned int) noexcept nogil> _LLVMGetMDKindID__funptr)(Name,SLen)
 
 
 cdef void* _LLVMGetEnumAttributeKindForName__funptr = NULL
@@ -240,122 +262,136 @@ cdef void* _LLVMGetEnumAttributeKindForName__funptr = NULL
 # 
 # NB: Attribute names and/or id are subject to change without
 # going through the C API deprecation cycle.
-cdef unsigned int LLVMGetEnumAttributeKindForName(const char * Name,unsigned long SLen) nogil:
+cdef unsigned int LLVMGetEnumAttributeKindForName(const char * Name,unsigned long SLen):
     global _LLVMGetEnumAttributeKindForName__funptr
     __init_symbol(&_LLVMGetEnumAttributeKindForName__funptr,"LLVMGetEnumAttributeKindForName")
-    return (<unsigned int (*)(const char *,unsigned long) nogil> _LLVMGetEnumAttributeKindForName__funptr)(Name,SLen)
+    with nogil:
+        return (<unsigned int (*)(const char *,unsigned long) noexcept nogil> _LLVMGetEnumAttributeKindForName__funptr)(Name,SLen)
 
 
 cdef void* _LLVMGetLastEnumAttributeKind__funptr = NULL
-cdef unsigned int LLVMGetLastEnumAttributeKind() nogil:
+cdef unsigned int LLVMGetLastEnumAttributeKind():
     global _LLVMGetLastEnumAttributeKind__funptr
     __init_symbol(&_LLVMGetLastEnumAttributeKind__funptr,"LLVMGetLastEnumAttributeKind")
-    return (<unsigned int (*)() nogil> _LLVMGetLastEnumAttributeKind__funptr)()
+    with nogil:
+        return (<unsigned int (*)() noexcept nogil> _LLVMGetLastEnumAttributeKind__funptr)()
 
 
 cdef void* _LLVMCreateEnumAttribute__funptr = NULL
 # 
 # Create an enum attribute.
-cdef LLVMAttributeRef LLVMCreateEnumAttribute(LLVMContextRef C,unsigned int KindID,unsigned long Val) nogil:
+cdef LLVMAttributeRef LLVMCreateEnumAttribute(LLVMContextRef C,unsigned int KindID,unsigned long Val):
     global _LLVMCreateEnumAttribute__funptr
     __init_symbol(&_LLVMCreateEnumAttribute__funptr,"LLVMCreateEnumAttribute")
-    return (<LLVMAttributeRef (*)(LLVMContextRef,unsigned int,unsigned long) nogil> _LLVMCreateEnumAttribute__funptr)(C,KindID,Val)
+    with nogil:
+        return (<LLVMAttributeRef (*)(LLVMContextRef,unsigned int,unsigned long) noexcept nogil> _LLVMCreateEnumAttribute__funptr)(C,KindID,Val)
 
 
 cdef void* _LLVMGetEnumAttributeKind__funptr = NULL
 # 
 # Get the unique id corresponding to the enum attribute
 # passed as argument.
-cdef unsigned int LLVMGetEnumAttributeKind(LLVMAttributeRef A) nogil:
+cdef unsigned int LLVMGetEnumAttributeKind(LLVMAttributeRef A):
     global _LLVMGetEnumAttributeKind__funptr
     __init_symbol(&_LLVMGetEnumAttributeKind__funptr,"LLVMGetEnumAttributeKind")
-    return (<unsigned int (*)(LLVMAttributeRef) nogil> _LLVMGetEnumAttributeKind__funptr)(A)
+    with nogil:
+        return (<unsigned int (*)(LLVMAttributeRef) noexcept nogil> _LLVMGetEnumAttributeKind__funptr)(A)
 
 
 cdef void* _LLVMGetEnumAttributeValue__funptr = NULL
 # 
 # Get the enum attribute's value. 0 is returned if none exists.
-cdef unsigned long LLVMGetEnumAttributeValue(LLVMAttributeRef A) nogil:
+cdef unsigned long LLVMGetEnumAttributeValue(LLVMAttributeRef A):
     global _LLVMGetEnumAttributeValue__funptr
     __init_symbol(&_LLVMGetEnumAttributeValue__funptr,"LLVMGetEnumAttributeValue")
-    return (<unsigned long (*)(LLVMAttributeRef) nogil> _LLVMGetEnumAttributeValue__funptr)(A)
+    with nogil:
+        return (<unsigned long (*)(LLVMAttributeRef) noexcept nogil> _LLVMGetEnumAttributeValue__funptr)(A)
 
 
 cdef void* _LLVMCreateTypeAttribute__funptr = NULL
 # 
 # Create a type attribute
-cdef LLVMAttributeRef LLVMCreateTypeAttribute(LLVMContextRef C,unsigned int KindID,LLVMTypeRef type_ref) nogil:
+cdef LLVMAttributeRef LLVMCreateTypeAttribute(LLVMContextRef C,unsigned int KindID,LLVMTypeRef type_ref):
     global _LLVMCreateTypeAttribute__funptr
     __init_symbol(&_LLVMCreateTypeAttribute__funptr,"LLVMCreateTypeAttribute")
-    return (<LLVMAttributeRef (*)(LLVMContextRef,unsigned int,LLVMTypeRef) nogil> _LLVMCreateTypeAttribute__funptr)(C,KindID,type_ref)
+    with nogil:
+        return (<LLVMAttributeRef (*)(LLVMContextRef,unsigned int,LLVMTypeRef) noexcept nogil> _LLVMCreateTypeAttribute__funptr)(C,KindID,type_ref)
 
 
 cdef void* _LLVMGetTypeAttributeValue__funptr = NULL
 # 
 # Get the type attribute's value.
-cdef LLVMTypeRef LLVMGetTypeAttributeValue(LLVMAttributeRef A) nogil:
+cdef LLVMTypeRef LLVMGetTypeAttributeValue(LLVMAttributeRef A):
     global _LLVMGetTypeAttributeValue__funptr
     __init_symbol(&_LLVMGetTypeAttributeValue__funptr,"LLVMGetTypeAttributeValue")
-    return (<LLVMTypeRef (*)(LLVMAttributeRef) nogil> _LLVMGetTypeAttributeValue__funptr)(A)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMAttributeRef) noexcept nogil> _LLVMGetTypeAttributeValue__funptr)(A)
 
 
 cdef void* _LLVMCreateStringAttribute__funptr = NULL
 # 
 # Create a string attribute.
-cdef LLVMAttributeRef LLVMCreateStringAttribute(LLVMContextRef C,const char * K,unsigned int KLength,const char * V,unsigned int VLength) nogil:
+cdef LLVMAttributeRef LLVMCreateStringAttribute(LLVMContextRef C,const char * K,unsigned int KLength,const char * V,unsigned int VLength):
     global _LLVMCreateStringAttribute__funptr
     __init_symbol(&_LLVMCreateStringAttribute__funptr,"LLVMCreateStringAttribute")
-    return (<LLVMAttributeRef (*)(LLVMContextRef,const char *,unsigned int,const char *,unsigned int) nogil> _LLVMCreateStringAttribute__funptr)(C,K,KLength,V,VLength)
+    with nogil:
+        return (<LLVMAttributeRef (*)(LLVMContextRef,const char *,unsigned int,const char *,unsigned int) noexcept nogil> _LLVMCreateStringAttribute__funptr)(C,K,KLength,V,VLength)
 
 
 cdef void* _LLVMGetStringAttributeKind__funptr = NULL
 # 
 # Get the string attribute's kind.
-cdef const char * LLVMGetStringAttributeKind(LLVMAttributeRef A,unsigned int * Length) nogil:
+cdef const char * LLVMGetStringAttributeKind(LLVMAttributeRef A,unsigned int * Length):
     global _LLVMGetStringAttributeKind__funptr
     __init_symbol(&_LLVMGetStringAttributeKind__funptr,"LLVMGetStringAttributeKind")
-    return (<const char * (*)(LLVMAttributeRef,unsigned int *) nogil> _LLVMGetStringAttributeKind__funptr)(A,Length)
+    with nogil:
+        return (<const char * (*)(LLVMAttributeRef,unsigned int *) noexcept nogil> _LLVMGetStringAttributeKind__funptr)(A,Length)
 
 
 cdef void* _LLVMGetStringAttributeValue__funptr = NULL
 # 
 # Get the string attribute's value.
-cdef const char * LLVMGetStringAttributeValue(LLVMAttributeRef A,unsigned int * Length) nogil:
+cdef const char * LLVMGetStringAttributeValue(LLVMAttributeRef A,unsigned int * Length):
     global _LLVMGetStringAttributeValue__funptr
     __init_symbol(&_LLVMGetStringAttributeValue__funptr,"LLVMGetStringAttributeValue")
-    return (<const char * (*)(LLVMAttributeRef,unsigned int *) nogil> _LLVMGetStringAttributeValue__funptr)(A,Length)
+    with nogil:
+        return (<const char * (*)(LLVMAttributeRef,unsigned int *) noexcept nogil> _LLVMGetStringAttributeValue__funptr)(A,Length)
 
 
 cdef void* _LLVMIsEnumAttribute__funptr = NULL
 # 
 # Check for the different types of attributes.
-cdef int LLVMIsEnumAttribute(LLVMAttributeRef A) nogil:
+cdef int LLVMIsEnumAttribute(LLVMAttributeRef A):
     global _LLVMIsEnumAttribute__funptr
     __init_symbol(&_LLVMIsEnumAttribute__funptr,"LLVMIsEnumAttribute")
-    return (<int (*)(LLVMAttributeRef) nogil> _LLVMIsEnumAttribute__funptr)(A)
+    with nogil:
+        return (<int (*)(LLVMAttributeRef) noexcept nogil> _LLVMIsEnumAttribute__funptr)(A)
 
 
 cdef void* _LLVMIsStringAttribute__funptr = NULL
-cdef int LLVMIsStringAttribute(LLVMAttributeRef A) nogil:
+cdef int LLVMIsStringAttribute(LLVMAttributeRef A):
     global _LLVMIsStringAttribute__funptr
     __init_symbol(&_LLVMIsStringAttribute__funptr,"LLVMIsStringAttribute")
-    return (<int (*)(LLVMAttributeRef) nogil> _LLVMIsStringAttribute__funptr)(A)
+    with nogil:
+        return (<int (*)(LLVMAttributeRef) noexcept nogil> _LLVMIsStringAttribute__funptr)(A)
 
 
 cdef void* _LLVMIsTypeAttribute__funptr = NULL
-cdef int LLVMIsTypeAttribute(LLVMAttributeRef A) nogil:
+cdef int LLVMIsTypeAttribute(LLVMAttributeRef A):
     global _LLVMIsTypeAttribute__funptr
     __init_symbol(&_LLVMIsTypeAttribute__funptr,"LLVMIsTypeAttribute")
-    return (<int (*)(LLVMAttributeRef) nogil> _LLVMIsTypeAttribute__funptr)(A)
+    with nogil:
+        return (<int (*)(LLVMAttributeRef) noexcept nogil> _LLVMIsTypeAttribute__funptr)(A)
 
 
 cdef void* _LLVMGetTypeByName2__funptr = NULL
 # 
 # Obtain a Type from a context by its registered name.
-cdef LLVMTypeRef LLVMGetTypeByName2(LLVMContextRef C,const char * Name) nogil:
+cdef LLVMTypeRef LLVMGetTypeByName2(LLVMContextRef C,const char * Name):
     global _LLVMGetTypeByName2__funptr
     __init_symbol(&_LLVMGetTypeByName2__funptr,"LLVMGetTypeByName2")
-    return (<LLVMTypeRef (*)(LLVMContextRef,const char *) nogil> _LLVMGetTypeByName2__funptr)(C,Name)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef,const char *) noexcept nogil> _LLVMGetTypeByName2__funptr)(C,Name)
 
 
 cdef void* _LLVMModuleCreateWithName__funptr = NULL
@@ -367,10 +403,11 @@ cdef void* _LLVMModuleCreateWithName__funptr = NULL
 # 
 # Every invocation should be paired with LLVMDisposeModule() or memory
 # will be leaked.
-cdef LLVMModuleRef LLVMModuleCreateWithName(const char * ModuleID) nogil:
+cdef LLVMModuleRef LLVMModuleCreateWithName(const char * ModuleID):
     global _LLVMModuleCreateWithName__funptr
     __init_symbol(&_LLVMModuleCreateWithName__funptr,"LLVMModuleCreateWithName")
-    return (<LLVMModuleRef (*)(const char *) nogil> _LLVMModuleCreateWithName__funptr)(ModuleID)
+    with nogil:
+        return (<LLVMModuleRef (*)(const char *) noexcept nogil> _LLVMModuleCreateWithName__funptr)(ModuleID)
 
 
 cdef void* _LLVMModuleCreateWithNameInContext__funptr = NULL
@@ -379,19 +416,21 @@ cdef void* _LLVMModuleCreateWithNameInContext__funptr = NULL
 # 
 # Every invocation should be paired with LLVMDisposeModule() or memory
 # will be leaked.
-cdef LLVMModuleRef LLVMModuleCreateWithNameInContext(const char * ModuleID,LLVMContextRef C) nogil:
+cdef LLVMModuleRef LLVMModuleCreateWithNameInContext(const char * ModuleID,LLVMContextRef C):
     global _LLVMModuleCreateWithNameInContext__funptr
     __init_symbol(&_LLVMModuleCreateWithNameInContext__funptr,"LLVMModuleCreateWithNameInContext")
-    return (<LLVMModuleRef (*)(const char *,LLVMContextRef) nogil> _LLVMModuleCreateWithNameInContext__funptr)(ModuleID,C)
+    with nogil:
+        return (<LLVMModuleRef (*)(const char *,LLVMContextRef) noexcept nogil> _LLVMModuleCreateWithNameInContext__funptr)(ModuleID,C)
 
 
 cdef void* _LLVMCloneModule__funptr = NULL
 # 
 # Return an exact copy of the specified module.
-cdef LLVMModuleRef LLVMCloneModule(LLVMModuleRef M) nogil:
+cdef LLVMModuleRef LLVMCloneModule(LLVMModuleRef M):
     global _LLVMCloneModule__funptr
     __init_symbol(&_LLVMCloneModule__funptr,"LLVMCloneModule")
-    return (<LLVMModuleRef (*)(LLVMModuleRef) nogil> _LLVMCloneModule__funptr)(M)
+    with nogil:
+        return (<LLVMModuleRef (*)(LLVMModuleRef) noexcept nogil> _LLVMCloneModule__funptr)(M)
 
 
 cdef void* _LLVMDisposeModule__funptr = NULL
@@ -400,10 +439,11 @@ cdef void* _LLVMDisposeModule__funptr = NULL
 # 
 # This must be called for every created module or memory will be
 # leaked.
-cdef void LLVMDisposeModule(LLVMModuleRef M) nogil:
+cdef void LLVMDisposeModule(LLVMModuleRef M):
     global _LLVMDisposeModule__funptr
     __init_symbol(&_LLVMDisposeModule__funptr,"LLVMDisposeModule")
-    (<void (*)(LLVMModuleRef) nogil> _LLVMDisposeModule__funptr)(M)
+    with nogil:
+        (<void (*)(LLVMModuleRef) noexcept nogil> _LLVMDisposeModule__funptr)(M)
 
 
 cdef void* _LLVMGetModuleIdentifier__funptr = NULL
@@ -414,10 +454,11 @@ cdef void* _LLVMGetModuleIdentifier__funptr = NULL
 # @param Len Out parameter which holds the length of the returned string.
 # @return The identifier of M.
 # @see Module::getModuleIdentifier()
-cdef const char * LLVMGetModuleIdentifier(LLVMModuleRef M,unsigned long * Len) nogil:
+cdef const char * LLVMGetModuleIdentifier(LLVMModuleRef M,unsigned long * Len):
     global _LLVMGetModuleIdentifier__funptr
     __init_symbol(&_LLVMGetModuleIdentifier__funptr,"LLVMGetModuleIdentifier")
-    return (<const char * (*)(LLVMModuleRef,unsigned long *) nogil> _LLVMGetModuleIdentifier__funptr)(M,Len)
+    with nogil:
+        return (<const char * (*)(LLVMModuleRef,unsigned long *) noexcept nogil> _LLVMGetModuleIdentifier__funptr)(M,Len)
 
 
 cdef void* _LLVMSetModuleIdentifier__funptr = NULL
@@ -428,10 +469,11 @@ cdef void* _LLVMSetModuleIdentifier__funptr = NULL
 # @param Ident The string to set M's identifier to
 # @param Len Length of Ident
 # @see Module::setModuleIdentifier()
-cdef void LLVMSetModuleIdentifier(LLVMModuleRef M,const char * Ident,unsigned long Len) nogil:
+cdef void LLVMSetModuleIdentifier(LLVMModuleRef M,const char * Ident,unsigned long Len):
     global _LLVMSetModuleIdentifier__funptr
     __init_symbol(&_LLVMSetModuleIdentifier__funptr,"LLVMSetModuleIdentifier")
-    (<void (*)(LLVMModuleRef,const char *,unsigned long) nogil> _LLVMSetModuleIdentifier__funptr)(M,Ident,Len)
+    with nogil:
+        (<void (*)(LLVMModuleRef,const char *,unsigned long) noexcept nogil> _LLVMSetModuleIdentifier__funptr)(M,Ident,Len)
 
 
 cdef void* _LLVMGetSourceFileName__funptr = NULL
@@ -442,10 +484,11 @@ cdef void* _LLVMGetSourceFileName__funptr = NULL
 # @param Len Out parameter which holds the length of the returned string
 # @return The original source file name of M
 # @see Module::getSourceFileName()
-cdef const char * LLVMGetSourceFileName(LLVMModuleRef M,unsigned long * Len) nogil:
+cdef const char * LLVMGetSourceFileName(LLVMModuleRef M,unsigned long * Len):
     global _LLVMGetSourceFileName__funptr
     __init_symbol(&_LLVMGetSourceFileName__funptr,"LLVMGetSourceFileName")
-    return (<const char * (*)(LLVMModuleRef,unsigned long *) nogil> _LLVMGetSourceFileName__funptr)(M,Len)
+    with nogil:
+        return (<const char * (*)(LLVMModuleRef,unsigned long *) noexcept nogil> _LLVMGetSourceFileName__funptr)(M,Len)
 
 
 cdef void* _LLVMSetSourceFileName__funptr = NULL
@@ -457,10 +500,11 @@ cdef void* _LLVMSetSourceFileName__funptr = NULL
 # @param Name The string to set M's source file name to
 # @param Len Length of Name
 # @see Module::setSourceFileName()
-cdef void LLVMSetSourceFileName(LLVMModuleRef M,const char * Name,unsigned long Len) nogil:
+cdef void LLVMSetSourceFileName(LLVMModuleRef M,const char * Name,unsigned long Len):
     global _LLVMSetSourceFileName__funptr
     __init_symbol(&_LLVMSetSourceFileName__funptr,"LLVMSetSourceFileName")
-    (<void (*)(LLVMModuleRef,const char *,unsigned long) nogil> _LLVMSetSourceFileName__funptr)(M,Name,Len)
+    with nogil:
+        (<void (*)(LLVMModuleRef,const char *,unsigned long) noexcept nogil> _LLVMSetSourceFileName__funptr)(M,Name,Len)
 
 
 cdef void* _LLVMGetDataLayoutStr__funptr = NULL
@@ -472,17 +516,19 @@ cdef void* _LLVMGetDataLayoutStr__funptr = NULL
 # LLVMGetDataLayout is DEPRECATED, as the name is not only incorrect,
 # but match the name of another method on the module. Prefer the use
 # of LLVMGetDataLayoutStr, which is not ambiguous.
-cdef const char * LLVMGetDataLayoutStr(LLVMModuleRef M) nogil:
+cdef const char * LLVMGetDataLayoutStr(LLVMModuleRef M):
     global _LLVMGetDataLayoutStr__funptr
     __init_symbol(&_LLVMGetDataLayoutStr__funptr,"LLVMGetDataLayoutStr")
-    return (<const char * (*)(LLVMModuleRef) nogil> _LLVMGetDataLayoutStr__funptr)(M)
+    with nogil:
+        return (<const char * (*)(LLVMModuleRef) noexcept nogil> _LLVMGetDataLayoutStr__funptr)(M)
 
 
 cdef void* _LLVMGetDataLayout__funptr = NULL
-cdef const char * LLVMGetDataLayout(LLVMModuleRef M) nogil:
+cdef const char * LLVMGetDataLayout(LLVMModuleRef M):
     global _LLVMGetDataLayout__funptr
     __init_symbol(&_LLVMGetDataLayout__funptr,"LLVMGetDataLayout")
-    return (<const char * (*)(LLVMModuleRef) nogil> _LLVMGetDataLayout__funptr)(M)
+    with nogil:
+        return (<const char * (*)(LLVMModuleRef) noexcept nogil> _LLVMGetDataLayout__funptr)(M)
 
 
 cdef void* _LLVMSetDataLayout__funptr = NULL
@@ -490,10 +536,11 @@ cdef void* _LLVMSetDataLayout__funptr = NULL
 # Set the data layout for a module.
 # 
 # @see Module::setDataLayout()
-cdef void LLVMSetDataLayout(LLVMModuleRef M,const char * DataLayoutStr) nogil:
+cdef void LLVMSetDataLayout(LLVMModuleRef M,const char * DataLayoutStr):
     global _LLVMSetDataLayout__funptr
     __init_symbol(&_LLVMSetDataLayout__funptr,"LLVMSetDataLayout")
-    (<void (*)(LLVMModuleRef,const char *) nogil> _LLVMSetDataLayout__funptr)(M,DataLayoutStr)
+    with nogil:
+        (<void (*)(LLVMModuleRef,const char *) noexcept nogil> _LLVMSetDataLayout__funptr)(M,DataLayoutStr)
 
 
 cdef void* _LLVMGetTarget__funptr = NULL
@@ -501,10 +548,11 @@ cdef void* _LLVMGetTarget__funptr = NULL
 # Obtain the target triple for a module.
 # 
 # @see Module::getTargetTriple()
-cdef const char * LLVMGetTarget(LLVMModuleRef M) nogil:
+cdef const char * LLVMGetTarget(LLVMModuleRef M):
     global _LLVMGetTarget__funptr
     __init_symbol(&_LLVMGetTarget__funptr,"LLVMGetTarget")
-    return (<const char * (*)(LLVMModuleRef) nogil> _LLVMGetTarget__funptr)(M)
+    with nogil:
+        return (<const char * (*)(LLVMModuleRef) noexcept nogil> _LLVMGetTarget__funptr)(M)
 
 
 cdef void* _LLVMSetTarget__funptr = NULL
@@ -512,10 +560,11 @@ cdef void* _LLVMSetTarget__funptr = NULL
 # Set the target triple for a module.
 # 
 # @see Module::setTargetTriple()
-cdef void LLVMSetTarget(LLVMModuleRef M,const char * Triple) nogil:
+cdef void LLVMSetTarget(LLVMModuleRef M,const char * Triple):
     global _LLVMSetTarget__funptr
     __init_symbol(&_LLVMSetTarget__funptr,"LLVMSetTarget")
-    (<void (*)(LLVMModuleRef,const char *) nogil> _LLVMSetTarget__funptr)(M,Triple)
+    with nogil:
+        (<void (*)(LLVMModuleRef,const char *) noexcept nogil> _LLVMSetTarget__funptr)(M,Triple)
 
 
 cdef void* _LLVMCopyModuleFlagsMetadata__funptr = NULL
@@ -525,19 +574,21 @@ cdef void* _LLVMCopyModuleFlagsMetadata__funptr = NULL
 # \c LLVMDisposeModuleFlagsMetadata.
 # 
 # @see Module::getModuleFlagsMetadata()
-cdef LLVMOpaqueModuleFlagEntry * LLVMCopyModuleFlagsMetadata(LLVMModuleRef M,unsigned long * Len) nogil:
+cdef LLVMOpaqueModuleFlagEntry * LLVMCopyModuleFlagsMetadata(LLVMModuleRef M,unsigned long * Len):
     global _LLVMCopyModuleFlagsMetadata__funptr
     __init_symbol(&_LLVMCopyModuleFlagsMetadata__funptr,"LLVMCopyModuleFlagsMetadata")
-    return (<LLVMOpaqueModuleFlagEntry * (*)(LLVMModuleRef,unsigned long *) nogil> _LLVMCopyModuleFlagsMetadata__funptr)(M,Len)
+    with nogil:
+        return (<LLVMOpaqueModuleFlagEntry * (*)(LLVMModuleRef,unsigned long *) noexcept nogil> _LLVMCopyModuleFlagsMetadata__funptr)(M,Len)
 
 
 cdef void* _LLVMDisposeModuleFlagsMetadata__funptr = NULL
 # 
 # Destroys module flags metadata entries.
-cdef void LLVMDisposeModuleFlagsMetadata(LLVMOpaqueModuleFlagEntry * Entries) nogil:
+cdef void LLVMDisposeModuleFlagsMetadata(LLVMOpaqueModuleFlagEntry * Entries):
     global _LLVMDisposeModuleFlagsMetadata__funptr
     __init_symbol(&_LLVMDisposeModuleFlagsMetadata__funptr,"LLVMDisposeModuleFlagsMetadata")
-    (<void (*)(LLVMOpaqueModuleFlagEntry *) nogil> _LLVMDisposeModuleFlagsMetadata__funptr)(Entries)
+    with nogil:
+        (<void (*)(LLVMOpaqueModuleFlagEntry *) noexcept nogil> _LLVMDisposeModuleFlagsMetadata__funptr)(Entries)
 
 
 cdef void* _LLVMModuleFlagEntriesGetFlagBehavior__funptr = NULL
@@ -545,10 +596,11 @@ cdef void* _LLVMModuleFlagEntriesGetFlagBehavior__funptr = NULL
 # Returns the flag behavior for a module flag entry at a specific index.
 # 
 # @see Module::ModuleFlagEntry::Behavior
-cdef LLVMModuleFlagBehavior LLVMModuleFlagEntriesGetFlagBehavior(LLVMOpaqueModuleFlagEntry * Entries,unsigned int Index) nogil:
+cdef LLVMModuleFlagBehavior LLVMModuleFlagEntriesGetFlagBehavior(LLVMOpaqueModuleFlagEntry * Entries,unsigned int Index):
     global _LLVMModuleFlagEntriesGetFlagBehavior__funptr
     __init_symbol(&_LLVMModuleFlagEntriesGetFlagBehavior__funptr,"LLVMModuleFlagEntriesGetFlagBehavior")
-    return (<LLVMModuleFlagBehavior (*)(LLVMOpaqueModuleFlagEntry *,unsigned int) nogil> _LLVMModuleFlagEntriesGetFlagBehavior__funptr)(Entries,Index)
+    with nogil:
+        return (<LLVMModuleFlagBehavior (*)(LLVMOpaqueModuleFlagEntry *,unsigned int) noexcept nogil> _LLVMModuleFlagEntriesGetFlagBehavior__funptr)(Entries,Index)
 
 
 cdef void* _LLVMModuleFlagEntriesGetKey__funptr = NULL
@@ -556,10 +608,11 @@ cdef void* _LLVMModuleFlagEntriesGetKey__funptr = NULL
 # Returns the key for a module flag entry at a specific index.
 # 
 # @see Module::ModuleFlagEntry::Key
-cdef const char * LLVMModuleFlagEntriesGetKey(LLVMOpaqueModuleFlagEntry * Entries,unsigned int Index,unsigned long * Len) nogil:
+cdef const char * LLVMModuleFlagEntriesGetKey(LLVMOpaqueModuleFlagEntry * Entries,unsigned int Index,unsigned long * Len):
     global _LLVMModuleFlagEntriesGetKey__funptr
     __init_symbol(&_LLVMModuleFlagEntriesGetKey__funptr,"LLVMModuleFlagEntriesGetKey")
-    return (<const char * (*)(LLVMOpaqueModuleFlagEntry *,unsigned int,unsigned long *) nogil> _LLVMModuleFlagEntriesGetKey__funptr)(Entries,Index,Len)
+    with nogil:
+        return (<const char * (*)(LLVMOpaqueModuleFlagEntry *,unsigned int,unsigned long *) noexcept nogil> _LLVMModuleFlagEntriesGetKey__funptr)(Entries,Index,Len)
 
 
 cdef void* _LLVMModuleFlagEntriesGetMetadata__funptr = NULL
@@ -567,10 +620,11 @@ cdef void* _LLVMModuleFlagEntriesGetMetadata__funptr = NULL
 # Returns the metadata for a module flag entry at a specific index.
 # 
 # @see Module::ModuleFlagEntry::Val
-cdef LLVMMetadataRef LLVMModuleFlagEntriesGetMetadata(LLVMOpaqueModuleFlagEntry * Entries,unsigned int Index) nogil:
+cdef LLVMMetadataRef LLVMModuleFlagEntriesGetMetadata(LLVMOpaqueModuleFlagEntry * Entries,unsigned int Index):
     global _LLVMModuleFlagEntriesGetMetadata__funptr
     __init_symbol(&_LLVMModuleFlagEntriesGetMetadata__funptr,"LLVMModuleFlagEntriesGetMetadata")
-    return (<LLVMMetadataRef (*)(LLVMOpaqueModuleFlagEntry *,unsigned int) nogil> _LLVMModuleFlagEntriesGetMetadata__funptr)(Entries,Index)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMOpaqueModuleFlagEntry *,unsigned int) noexcept nogil> _LLVMModuleFlagEntriesGetMetadata__funptr)(Entries,Index)
 
 
 cdef void* _LLVMGetModuleFlag__funptr = NULL
@@ -579,10 +633,11 @@ cdef void* _LLVMGetModuleFlag__funptr = NULL
 # already exist.
 # 
 # @see Module::getModuleFlag()
-cdef LLVMMetadataRef LLVMGetModuleFlag(LLVMModuleRef M,const char * Key,unsigned long KeyLen) nogil:
+cdef LLVMMetadataRef LLVMGetModuleFlag(LLVMModuleRef M,const char * Key,unsigned long KeyLen):
     global _LLVMGetModuleFlag__funptr
     __init_symbol(&_LLVMGetModuleFlag__funptr,"LLVMGetModuleFlag")
-    return (<LLVMMetadataRef (*)(LLVMModuleRef,const char *,unsigned long) nogil> _LLVMGetModuleFlag__funptr)(M,Key,KeyLen)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMModuleRef,const char *,unsigned long) noexcept nogil> _LLVMGetModuleFlag__funptr)(M,Key,KeyLen)
 
 
 cdef void* _LLVMAddModuleFlag__funptr = NULL
@@ -591,10 +646,11 @@ cdef void* _LLVMAddModuleFlag__funptr = NULL
 # already exist.
 # 
 # @see Module::addModuleFlag()
-cdef void LLVMAddModuleFlag(LLVMModuleRef M,LLVMModuleFlagBehavior Behavior,const char * Key,unsigned long KeyLen,LLVMMetadataRef Val) nogil:
+cdef void LLVMAddModuleFlag(LLVMModuleRef M,LLVMModuleFlagBehavior Behavior,const char * Key,unsigned long KeyLen,LLVMMetadataRef Val):
     global _LLVMAddModuleFlag__funptr
     __init_symbol(&_LLVMAddModuleFlag__funptr,"LLVMAddModuleFlag")
-    (<void (*)(LLVMModuleRef,LLVMModuleFlagBehavior,const char *,unsigned long,LLVMMetadataRef) nogil> _LLVMAddModuleFlag__funptr)(M,Behavior,Key,KeyLen,Val)
+    with nogil:
+        (<void (*)(LLVMModuleRef,LLVMModuleFlagBehavior,const char *,unsigned long,LLVMMetadataRef) noexcept nogil> _LLVMAddModuleFlag__funptr)(M,Behavior,Key,KeyLen,Val)
 
 
 cdef void* _LLVMDumpModule__funptr = NULL
@@ -602,10 +658,11 @@ cdef void* _LLVMDumpModule__funptr = NULL
 # Dump a representation of a module to stderr.
 # 
 # @see Module::dump()
-cdef void LLVMDumpModule(LLVMModuleRef M) nogil:
+cdef void LLVMDumpModule(LLVMModuleRef M):
     global _LLVMDumpModule__funptr
     __init_symbol(&_LLVMDumpModule__funptr,"LLVMDumpModule")
-    (<void (*)(LLVMModuleRef) nogil> _LLVMDumpModule__funptr)(M)
+    with nogil:
+        (<void (*)(LLVMModuleRef) noexcept nogil> _LLVMDumpModule__funptr)(M)
 
 
 cdef void* _LLVMPrintModuleToFile__funptr = NULL
@@ -614,10 +671,11 @@ cdef void* _LLVMPrintModuleToFile__funptr = NULL
 # disposed with LLVMDisposeMessage. Returns 0 on success, 1 otherwise.
 # 
 # @see Module::print()
-cdef int LLVMPrintModuleToFile(LLVMModuleRef M,const char * Filename,char ** ErrorMessage) nogil:
+cdef int LLVMPrintModuleToFile(LLVMModuleRef M,const char * Filename,char ** ErrorMessage):
     global _LLVMPrintModuleToFile__funptr
     __init_symbol(&_LLVMPrintModuleToFile__funptr,"LLVMPrintModuleToFile")
-    return (<int (*)(LLVMModuleRef,const char *,char **) nogil> _LLVMPrintModuleToFile__funptr)(M,Filename,ErrorMessage)
+    with nogil:
+        return (<int (*)(LLVMModuleRef,const char *,char **) noexcept nogil> _LLVMPrintModuleToFile__funptr)(M,Filename,ErrorMessage)
 
 
 cdef void* _LLVMPrintModuleToString__funptr = NULL
@@ -626,10 +684,11 @@ cdef void* _LLVMPrintModuleToString__funptr = NULL
 # LLVMDisposeMessage to free the string.
 # 
 # @see Module::print()
-cdef char * LLVMPrintModuleToString(LLVMModuleRef M) nogil:
+cdef char * LLVMPrintModuleToString(LLVMModuleRef M):
     global _LLVMPrintModuleToString__funptr
     __init_symbol(&_LLVMPrintModuleToString__funptr,"LLVMPrintModuleToString")
-    return (<char * (*)(LLVMModuleRef) nogil> _LLVMPrintModuleToString__funptr)(M)
+    with nogil:
+        return (<char * (*)(LLVMModuleRef) noexcept nogil> _LLVMPrintModuleToString__funptr)(M)
 
 
 cdef void* _LLVMGetModuleInlineAsm__funptr = NULL
@@ -637,10 +696,11 @@ cdef void* _LLVMGetModuleInlineAsm__funptr = NULL
 # Get inline assembly for a module.
 # 
 # @see Module::getModuleInlineAsm()
-cdef const char * LLVMGetModuleInlineAsm(LLVMModuleRef M,unsigned long * Len) nogil:
+cdef const char * LLVMGetModuleInlineAsm(LLVMModuleRef M,unsigned long * Len):
     global _LLVMGetModuleInlineAsm__funptr
     __init_symbol(&_LLVMGetModuleInlineAsm__funptr,"LLVMGetModuleInlineAsm")
-    return (<const char * (*)(LLVMModuleRef,unsigned long *) nogil> _LLVMGetModuleInlineAsm__funptr)(M,Len)
+    with nogil:
+        return (<const char * (*)(LLVMModuleRef,unsigned long *) noexcept nogil> _LLVMGetModuleInlineAsm__funptr)(M,Len)
 
 
 cdef void* _LLVMSetModuleInlineAsm2__funptr = NULL
@@ -648,10 +708,11 @@ cdef void* _LLVMSetModuleInlineAsm2__funptr = NULL
 # Set inline assembly for a module.
 # 
 # @see Module::setModuleInlineAsm()
-cdef void LLVMSetModuleInlineAsm2(LLVMModuleRef M,const char * Asm,unsigned long Len) nogil:
+cdef void LLVMSetModuleInlineAsm2(LLVMModuleRef M,const char * Asm,unsigned long Len):
     global _LLVMSetModuleInlineAsm2__funptr
     __init_symbol(&_LLVMSetModuleInlineAsm2__funptr,"LLVMSetModuleInlineAsm2")
-    (<void (*)(LLVMModuleRef,const char *,unsigned long) nogil> _LLVMSetModuleInlineAsm2__funptr)(M,Asm,Len)
+    with nogil:
+        (<void (*)(LLVMModuleRef,const char *,unsigned long) noexcept nogil> _LLVMSetModuleInlineAsm2__funptr)(M,Asm,Len)
 
 
 cdef void* _LLVMAppendModuleInlineAsm__funptr = NULL
@@ -659,10 +720,11 @@ cdef void* _LLVMAppendModuleInlineAsm__funptr = NULL
 # Append inline assembly to a module.
 # 
 # @see Module::appendModuleInlineAsm()
-cdef void LLVMAppendModuleInlineAsm(LLVMModuleRef M,const char * Asm,unsigned long Len) nogil:
+cdef void LLVMAppendModuleInlineAsm(LLVMModuleRef M,const char * Asm,unsigned long Len):
     global _LLVMAppendModuleInlineAsm__funptr
     __init_symbol(&_LLVMAppendModuleInlineAsm__funptr,"LLVMAppendModuleInlineAsm")
-    (<void (*)(LLVMModuleRef,const char *,unsigned long) nogil> _LLVMAppendModuleInlineAsm__funptr)(M,Asm,Len)
+    with nogil:
+        (<void (*)(LLVMModuleRef,const char *,unsigned long) noexcept nogil> _LLVMAppendModuleInlineAsm__funptr)(M,Asm,Len)
 
 
 cdef void* _LLVMGetInlineAsm__funptr = NULL
@@ -670,10 +732,11 @@ cdef void* _LLVMGetInlineAsm__funptr = NULL
 # Create the specified uniqued inline asm string.
 # 
 # @see InlineAsm::get()
-cdef LLVMValueRef LLVMGetInlineAsm(LLVMTypeRef Ty,char * AsmString,unsigned long AsmStringSize,char * Constraints,unsigned long ConstraintsSize,int HasSideEffects,int IsAlignStack,LLVMInlineAsmDialect Dialect,int CanThrow) nogil:
+cdef LLVMValueRef LLVMGetInlineAsm(LLVMTypeRef Ty,char * AsmString,unsigned long AsmStringSize,char * Constraints,unsigned long ConstraintsSize,int HasSideEffects,int IsAlignStack,LLVMInlineAsmDialect Dialect,int CanThrow):
     global _LLVMGetInlineAsm__funptr
     __init_symbol(&_LLVMGetInlineAsm__funptr,"LLVMGetInlineAsm")
-    return (<LLVMValueRef (*)(LLVMTypeRef,char *,unsigned long,char *,unsigned long,int,int,LLVMInlineAsmDialect,int) nogil> _LLVMGetInlineAsm__funptr)(Ty,AsmString,AsmStringSize,Constraints,ConstraintsSize,HasSideEffects,IsAlignStack,Dialect,CanThrow)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMTypeRef,char *,unsigned long,char *,unsigned long,int,int,LLVMInlineAsmDialect,int) noexcept nogil> _LLVMGetInlineAsm__funptr)(Ty,AsmString,AsmStringSize,Constraints,ConstraintsSize,HasSideEffects,IsAlignStack,Dialect,CanThrow)
 
 
 cdef void* _LLVMGetModuleContext__funptr = NULL
@@ -681,18 +744,20 @@ cdef void* _LLVMGetModuleContext__funptr = NULL
 # Obtain the context to which this module is associated.
 # 
 # @see Module::getContext()
-cdef LLVMContextRef LLVMGetModuleContext(LLVMModuleRef M) nogil:
+cdef LLVMContextRef LLVMGetModuleContext(LLVMModuleRef M):
     global _LLVMGetModuleContext__funptr
     __init_symbol(&_LLVMGetModuleContext__funptr,"LLVMGetModuleContext")
-    return (<LLVMContextRef (*)(LLVMModuleRef) nogil> _LLVMGetModuleContext__funptr)(M)
+    with nogil:
+        return (<LLVMContextRef (*)(LLVMModuleRef) noexcept nogil> _LLVMGetModuleContext__funptr)(M)
 
 
 cdef void* _LLVMGetTypeByName__funptr = NULL
 # Deprecated: Use LLVMGetTypeByName2 instead. */
-cdef LLVMTypeRef LLVMGetTypeByName(LLVMModuleRef M,const char * Name) nogil:
+cdef LLVMTypeRef LLVMGetTypeByName(LLVMModuleRef M,const char * Name):
     global _LLVMGetTypeByName__funptr
     __init_symbol(&_LLVMGetTypeByName__funptr,"LLVMGetTypeByName")
-    return (<LLVMTypeRef (*)(LLVMModuleRef,const char *) nogil> _LLVMGetTypeByName__funptr)(M,Name)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMModuleRef,const char *) noexcept nogil> _LLVMGetTypeByName__funptr)(M,Name)
 
 
 cdef void* _LLVMGetFirstNamedMetadata__funptr = NULL
@@ -700,10 +765,11 @@ cdef void* _LLVMGetFirstNamedMetadata__funptr = NULL
 # Obtain an iterator to the first NamedMDNode in a Module.
 # 
 # @see llvm::Module::named_metadata_begin()
-cdef LLVMNamedMDNodeRef LLVMGetFirstNamedMetadata(LLVMModuleRef M) nogil:
+cdef LLVMNamedMDNodeRef LLVMGetFirstNamedMetadata(LLVMModuleRef M):
     global _LLVMGetFirstNamedMetadata__funptr
     __init_symbol(&_LLVMGetFirstNamedMetadata__funptr,"LLVMGetFirstNamedMetadata")
-    return (<LLVMNamedMDNodeRef (*)(LLVMModuleRef) nogil> _LLVMGetFirstNamedMetadata__funptr)(M)
+    with nogil:
+        return (<LLVMNamedMDNodeRef (*)(LLVMModuleRef) noexcept nogil> _LLVMGetFirstNamedMetadata__funptr)(M)
 
 
 cdef void* _LLVMGetLastNamedMetadata__funptr = NULL
@@ -711,10 +777,11 @@ cdef void* _LLVMGetLastNamedMetadata__funptr = NULL
 # Obtain an iterator to the last NamedMDNode in a Module.
 # 
 # @see llvm::Module::named_metadata_end()
-cdef LLVMNamedMDNodeRef LLVMGetLastNamedMetadata(LLVMModuleRef M) nogil:
+cdef LLVMNamedMDNodeRef LLVMGetLastNamedMetadata(LLVMModuleRef M):
     global _LLVMGetLastNamedMetadata__funptr
     __init_symbol(&_LLVMGetLastNamedMetadata__funptr,"LLVMGetLastNamedMetadata")
-    return (<LLVMNamedMDNodeRef (*)(LLVMModuleRef) nogil> _LLVMGetLastNamedMetadata__funptr)(M)
+    with nogil:
+        return (<LLVMNamedMDNodeRef (*)(LLVMModuleRef) noexcept nogil> _LLVMGetLastNamedMetadata__funptr)(M)
 
 
 cdef void* _LLVMGetNextNamedMetadata__funptr = NULL
@@ -723,10 +790,11 @@ cdef void* _LLVMGetNextNamedMetadata__funptr = NULL
 # 
 # Returns NULL if the iterator was already at the end and there are no more
 # named metadata nodes.
-cdef LLVMNamedMDNodeRef LLVMGetNextNamedMetadata(LLVMNamedMDNodeRef NamedMDNode) nogil:
+cdef LLVMNamedMDNodeRef LLVMGetNextNamedMetadata(LLVMNamedMDNodeRef NamedMDNode):
     global _LLVMGetNextNamedMetadata__funptr
     __init_symbol(&_LLVMGetNextNamedMetadata__funptr,"LLVMGetNextNamedMetadata")
-    return (<LLVMNamedMDNodeRef (*)(LLVMNamedMDNodeRef) nogil> _LLVMGetNextNamedMetadata__funptr)(NamedMDNode)
+    with nogil:
+        return (<LLVMNamedMDNodeRef (*)(LLVMNamedMDNodeRef) noexcept nogil> _LLVMGetNextNamedMetadata__funptr)(NamedMDNode)
 
 
 cdef void* _LLVMGetPreviousNamedMetadata__funptr = NULL
@@ -735,10 +803,11 @@ cdef void* _LLVMGetPreviousNamedMetadata__funptr = NULL
 # 
 # Returns NULL if the iterator was already at the beginning and there are
 # no previous named metadata nodes.
-cdef LLVMNamedMDNodeRef LLVMGetPreviousNamedMetadata(LLVMNamedMDNodeRef NamedMDNode) nogil:
+cdef LLVMNamedMDNodeRef LLVMGetPreviousNamedMetadata(LLVMNamedMDNodeRef NamedMDNode):
     global _LLVMGetPreviousNamedMetadata__funptr
     __init_symbol(&_LLVMGetPreviousNamedMetadata__funptr,"LLVMGetPreviousNamedMetadata")
-    return (<LLVMNamedMDNodeRef (*)(LLVMNamedMDNodeRef) nogil> _LLVMGetPreviousNamedMetadata__funptr)(NamedMDNode)
+    with nogil:
+        return (<LLVMNamedMDNodeRef (*)(LLVMNamedMDNodeRef) noexcept nogil> _LLVMGetPreviousNamedMetadata__funptr)(NamedMDNode)
 
 
 cdef void* _LLVMGetNamedMetadata__funptr = NULL
@@ -747,10 +816,11 @@ cdef void* _LLVMGetNamedMetadata__funptr = NULL
 # node exists.
 # 
 # @see llvm::Module::getNamedMetadata()
-cdef LLVMNamedMDNodeRef LLVMGetNamedMetadata(LLVMModuleRef M,const char * Name,unsigned long NameLen) nogil:
+cdef LLVMNamedMDNodeRef LLVMGetNamedMetadata(LLVMModuleRef M,const char * Name,unsigned long NameLen):
     global _LLVMGetNamedMetadata__funptr
     __init_symbol(&_LLVMGetNamedMetadata__funptr,"LLVMGetNamedMetadata")
-    return (<LLVMNamedMDNodeRef (*)(LLVMModuleRef,const char *,unsigned long) nogil> _LLVMGetNamedMetadata__funptr)(M,Name,NameLen)
+    with nogil:
+        return (<LLVMNamedMDNodeRef (*)(LLVMModuleRef,const char *,unsigned long) noexcept nogil> _LLVMGetNamedMetadata__funptr)(M,Name,NameLen)
 
 
 cdef void* _LLVMGetOrInsertNamedMetadata__funptr = NULL
@@ -759,10 +829,11 @@ cdef void* _LLVMGetOrInsertNamedMetadata__funptr = NULL
 # node exists.
 # 
 # @see llvm::Module::getOrInsertNamedMetadata()
-cdef LLVMNamedMDNodeRef LLVMGetOrInsertNamedMetadata(LLVMModuleRef M,const char * Name,unsigned long NameLen) nogil:
+cdef LLVMNamedMDNodeRef LLVMGetOrInsertNamedMetadata(LLVMModuleRef M,const char * Name,unsigned long NameLen):
     global _LLVMGetOrInsertNamedMetadata__funptr
     __init_symbol(&_LLVMGetOrInsertNamedMetadata__funptr,"LLVMGetOrInsertNamedMetadata")
-    return (<LLVMNamedMDNodeRef (*)(LLVMModuleRef,const char *,unsigned long) nogil> _LLVMGetOrInsertNamedMetadata__funptr)(M,Name,NameLen)
+    with nogil:
+        return (<LLVMNamedMDNodeRef (*)(LLVMModuleRef,const char *,unsigned long) noexcept nogil> _LLVMGetOrInsertNamedMetadata__funptr)(M,Name,NameLen)
 
 
 cdef void* _LLVMGetNamedMetadataName__funptr = NULL
@@ -770,10 +841,11 @@ cdef void* _LLVMGetNamedMetadataName__funptr = NULL
 # Retrieve the name of a NamedMDNode.
 # 
 # @see llvm::NamedMDNode::getName()
-cdef const char * LLVMGetNamedMetadataName(LLVMNamedMDNodeRef NamedMD,unsigned long * NameLen) nogil:
+cdef const char * LLVMGetNamedMetadataName(LLVMNamedMDNodeRef NamedMD,unsigned long * NameLen):
     global _LLVMGetNamedMetadataName__funptr
     __init_symbol(&_LLVMGetNamedMetadataName__funptr,"LLVMGetNamedMetadataName")
-    return (<const char * (*)(LLVMNamedMDNodeRef,unsigned long *) nogil> _LLVMGetNamedMetadataName__funptr)(NamedMD,NameLen)
+    with nogil:
+        return (<const char * (*)(LLVMNamedMDNodeRef,unsigned long *) noexcept nogil> _LLVMGetNamedMetadataName__funptr)(NamedMD,NameLen)
 
 
 cdef void* _LLVMGetNamedMetadataNumOperands__funptr = NULL
@@ -781,10 +853,11 @@ cdef void* _LLVMGetNamedMetadataNumOperands__funptr = NULL
 # Obtain the number of operands for named metadata in a module.
 # 
 # @see llvm::Module::getNamedMetadata()
-cdef unsigned int LLVMGetNamedMetadataNumOperands(LLVMModuleRef M,const char * Name) nogil:
+cdef unsigned int LLVMGetNamedMetadataNumOperands(LLVMModuleRef M,const char * Name):
     global _LLVMGetNamedMetadataNumOperands__funptr
     __init_symbol(&_LLVMGetNamedMetadataNumOperands__funptr,"LLVMGetNamedMetadataNumOperands")
-    return (<unsigned int (*)(LLVMModuleRef,const char *) nogil> _LLVMGetNamedMetadataNumOperands__funptr)(M,Name)
+    with nogil:
+        return (<unsigned int (*)(LLVMModuleRef,const char *) noexcept nogil> _LLVMGetNamedMetadataNumOperands__funptr)(M,Name)
 
 
 cdef void* _LLVMGetNamedMetadataOperands__funptr = NULL
@@ -798,10 +871,11 @@ cdef void* _LLVMGetNamedMetadataOperands__funptr = NULL
 # 
 # @see llvm::Module::getNamedMetadata()
 # @see llvm::MDNode::getOperand()
-cdef void LLVMGetNamedMetadataOperands(LLVMModuleRef M,const char * Name,LLVMValueRef* Dest) nogil:
+cdef void LLVMGetNamedMetadataOperands(LLVMModuleRef M,const char * Name,LLVMValueRef* Dest):
     global _LLVMGetNamedMetadataOperands__funptr
     __init_symbol(&_LLVMGetNamedMetadataOperands__funptr,"LLVMGetNamedMetadataOperands")
-    (<void (*)(LLVMModuleRef,const char *,LLVMValueRef*) nogil> _LLVMGetNamedMetadataOperands__funptr)(M,Name,Dest)
+    with nogil:
+        (<void (*)(LLVMModuleRef,const char *,LLVMValueRef*) noexcept nogil> _LLVMGetNamedMetadataOperands__funptr)(M,Name,Dest)
 
 
 cdef void* _LLVMAddNamedMetadataOperand__funptr = NULL
@@ -810,10 +884,11 @@ cdef void* _LLVMAddNamedMetadataOperand__funptr = NULL
 # 
 # @see llvm::Module::getNamedMetadata()
 # @see llvm::MDNode::addOperand()
-cdef void LLVMAddNamedMetadataOperand(LLVMModuleRef M,const char * Name,LLVMValueRef Val) nogil:
+cdef void LLVMAddNamedMetadataOperand(LLVMModuleRef M,const char * Name,LLVMValueRef Val):
     global _LLVMAddNamedMetadataOperand__funptr
     __init_symbol(&_LLVMAddNamedMetadataOperand__funptr,"LLVMAddNamedMetadataOperand")
-    (<void (*)(LLVMModuleRef,const char *,LLVMValueRef) nogil> _LLVMAddNamedMetadataOperand__funptr)(M,Name,Val)
+    with nogil:
+        (<void (*)(LLVMModuleRef,const char *,LLVMValueRef) noexcept nogil> _LLVMAddNamedMetadataOperand__funptr)(M,Name,Val)
 
 
 cdef void* _LLVMGetDebugLocDirectory__funptr = NULL
@@ -824,10 +899,11 @@ cdef void* _LLVMGetDebugLocDirectory__funptr = NULL
 # @see llvm::Instruction::getDebugLoc()
 # @see llvm::GlobalVariable::getDebugInfo()
 # @see llvm::Function::getSubprogram()
-cdef const char * LLVMGetDebugLocDirectory(LLVMValueRef Val,unsigned int * Length) nogil:
+cdef const char * LLVMGetDebugLocDirectory(LLVMValueRef Val,unsigned int * Length):
     global _LLVMGetDebugLocDirectory__funptr
     __init_symbol(&_LLVMGetDebugLocDirectory__funptr,"LLVMGetDebugLocDirectory")
-    return (<const char * (*)(LLVMValueRef,unsigned int *) nogil> _LLVMGetDebugLocDirectory__funptr)(Val,Length)
+    with nogil:
+        return (<const char * (*)(LLVMValueRef,unsigned int *) noexcept nogil> _LLVMGetDebugLocDirectory__funptr)(Val,Length)
 
 
 cdef void* _LLVMGetDebugLocFilename__funptr = NULL
@@ -838,10 +914,11 @@ cdef void* _LLVMGetDebugLocFilename__funptr = NULL
 # @see llvm::Instruction::getDebugLoc()
 # @see llvm::GlobalVariable::getDebugInfo()
 # @see llvm::Function::getSubprogram()
-cdef const char * LLVMGetDebugLocFilename(LLVMValueRef Val,unsigned int * Length) nogil:
+cdef const char * LLVMGetDebugLocFilename(LLVMValueRef Val,unsigned int * Length):
     global _LLVMGetDebugLocFilename__funptr
     __init_symbol(&_LLVMGetDebugLocFilename__funptr,"LLVMGetDebugLocFilename")
-    return (<const char * (*)(LLVMValueRef,unsigned int *) nogil> _LLVMGetDebugLocFilename__funptr)(Val,Length)
+    with nogil:
+        return (<const char * (*)(LLVMValueRef,unsigned int *) noexcept nogil> _LLVMGetDebugLocFilename__funptr)(Val,Length)
 
 
 cdef void* _LLVMGetDebugLocLine__funptr = NULL
@@ -852,10 +929,11 @@ cdef void* _LLVMGetDebugLocLine__funptr = NULL
 # @see llvm::Instruction::getDebugLoc()
 # @see llvm::GlobalVariable::getDebugInfo()
 # @see llvm::Function::getSubprogram()
-cdef unsigned int LLVMGetDebugLocLine(LLVMValueRef Val) nogil:
+cdef unsigned int LLVMGetDebugLocLine(LLVMValueRef Val):
     global _LLVMGetDebugLocLine__funptr
     __init_symbol(&_LLVMGetDebugLocLine__funptr,"LLVMGetDebugLocLine")
-    return (<unsigned int (*)(LLVMValueRef) nogil> _LLVMGetDebugLocLine__funptr)(Val)
+    with nogil:
+        return (<unsigned int (*)(LLVMValueRef) noexcept nogil> _LLVMGetDebugLocLine__funptr)(Val)
 
 
 cdef void* _LLVMGetDebugLocColumn__funptr = NULL
@@ -864,10 +942,11 @@ cdef void* _LLVMGetDebugLocColumn__funptr = NULL
 # an llvm::Instruction.
 # 
 # @see llvm::Instruction::getDebugLoc()
-cdef unsigned int LLVMGetDebugLocColumn(LLVMValueRef Val) nogil:
+cdef unsigned int LLVMGetDebugLocColumn(LLVMValueRef Val):
     global _LLVMGetDebugLocColumn__funptr
     __init_symbol(&_LLVMGetDebugLocColumn__funptr,"LLVMGetDebugLocColumn")
-    return (<unsigned int (*)(LLVMValueRef) nogil> _LLVMGetDebugLocColumn__funptr)(Val)
+    with nogil:
+        return (<unsigned int (*)(LLVMValueRef) noexcept nogil> _LLVMGetDebugLocColumn__funptr)(Val)
 
 
 cdef void* _LLVMAddFunction__funptr = NULL
@@ -875,10 +954,11 @@ cdef void* _LLVMAddFunction__funptr = NULL
 # Add a function to a module under a specified name.
 # 
 # @see llvm::Function::Create()
-cdef LLVMValueRef LLVMAddFunction(LLVMModuleRef M,const char * Name,LLVMTypeRef FunctionTy) nogil:
+cdef LLVMValueRef LLVMAddFunction(LLVMModuleRef M,const char * Name,LLVMTypeRef FunctionTy):
     global _LLVMAddFunction__funptr
     __init_symbol(&_LLVMAddFunction__funptr,"LLVMAddFunction")
-    return (<LLVMValueRef (*)(LLVMModuleRef,const char *,LLVMTypeRef) nogil> _LLVMAddFunction__funptr)(M,Name,FunctionTy)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMModuleRef,const char *,LLVMTypeRef) noexcept nogil> _LLVMAddFunction__funptr)(M,Name,FunctionTy)
 
 
 cdef void* _LLVMGetNamedFunction__funptr = NULL
@@ -888,10 +968,11 @@ cdef void* _LLVMGetNamedFunction__funptr = NULL
 # The returned value corresponds to a llvm::Function value.
 # 
 # @see llvm::Module::getFunction()
-cdef LLVMValueRef LLVMGetNamedFunction(LLVMModuleRef M,const char * Name) nogil:
+cdef LLVMValueRef LLVMGetNamedFunction(LLVMModuleRef M,const char * Name):
     global _LLVMGetNamedFunction__funptr
     __init_symbol(&_LLVMGetNamedFunction__funptr,"LLVMGetNamedFunction")
-    return (<LLVMValueRef (*)(LLVMModuleRef,const char *) nogil> _LLVMGetNamedFunction__funptr)(M,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMModuleRef,const char *) noexcept nogil> _LLVMGetNamedFunction__funptr)(M,Name)
 
 
 cdef void* _LLVMGetFirstFunction__funptr = NULL
@@ -899,10 +980,11 @@ cdef void* _LLVMGetFirstFunction__funptr = NULL
 # Obtain an iterator to the first Function in a Module.
 # 
 # @see llvm::Module::begin()
-cdef LLVMValueRef LLVMGetFirstFunction(LLVMModuleRef M) nogil:
+cdef LLVMValueRef LLVMGetFirstFunction(LLVMModuleRef M):
     global _LLVMGetFirstFunction__funptr
     __init_symbol(&_LLVMGetFirstFunction__funptr,"LLVMGetFirstFunction")
-    return (<LLVMValueRef (*)(LLVMModuleRef) nogil> _LLVMGetFirstFunction__funptr)(M)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMModuleRef) noexcept nogil> _LLVMGetFirstFunction__funptr)(M)
 
 
 cdef void* _LLVMGetLastFunction__funptr = NULL
@@ -910,10 +992,11 @@ cdef void* _LLVMGetLastFunction__funptr = NULL
 # Obtain an iterator to the last Function in a Module.
 # 
 # @see llvm::Module::end()
-cdef LLVMValueRef LLVMGetLastFunction(LLVMModuleRef M) nogil:
+cdef LLVMValueRef LLVMGetLastFunction(LLVMModuleRef M):
     global _LLVMGetLastFunction__funptr
     __init_symbol(&_LLVMGetLastFunction__funptr,"LLVMGetLastFunction")
-    return (<LLVMValueRef (*)(LLVMModuleRef) nogil> _LLVMGetLastFunction__funptr)(M)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMModuleRef) noexcept nogil> _LLVMGetLastFunction__funptr)(M)
 
 
 cdef void* _LLVMGetNextFunction__funptr = NULL
@@ -922,10 +1005,11 @@ cdef void* _LLVMGetNextFunction__funptr = NULL
 # 
 # Returns NULL if the iterator was already at the end and there are no more
 # functions.
-cdef LLVMValueRef LLVMGetNextFunction(LLVMValueRef Fn) nogil:
+cdef LLVMValueRef LLVMGetNextFunction(LLVMValueRef Fn):
     global _LLVMGetNextFunction__funptr
     __init_symbol(&_LLVMGetNextFunction__funptr,"LLVMGetNextFunction")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMGetNextFunction__funptr)(Fn)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetNextFunction__funptr)(Fn)
 
 
 cdef void* _LLVMGetPreviousFunction__funptr = NULL
@@ -934,18 +1018,20 @@ cdef void* _LLVMGetPreviousFunction__funptr = NULL
 # 
 # Returns NULL if the iterator was already at the beginning and there are
 # no previous functions.
-cdef LLVMValueRef LLVMGetPreviousFunction(LLVMValueRef Fn) nogil:
+cdef LLVMValueRef LLVMGetPreviousFunction(LLVMValueRef Fn):
     global _LLVMGetPreviousFunction__funptr
     __init_symbol(&_LLVMGetPreviousFunction__funptr,"LLVMGetPreviousFunction")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMGetPreviousFunction__funptr)(Fn)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetPreviousFunction__funptr)(Fn)
 
 
 cdef void* _LLVMSetModuleInlineAsm__funptr = NULL
 # Deprecated: Use LLVMSetModuleInlineAsm2 instead. */
-cdef void LLVMSetModuleInlineAsm(LLVMModuleRef M,const char * Asm) nogil:
+cdef void LLVMSetModuleInlineAsm(LLVMModuleRef M,const char * Asm):
     global _LLVMSetModuleInlineAsm__funptr
     __init_symbol(&_LLVMSetModuleInlineAsm__funptr,"LLVMSetModuleInlineAsm")
-    (<void (*)(LLVMModuleRef,const char *) nogil> _LLVMSetModuleInlineAsm__funptr)(M,Asm)
+    with nogil:
+        (<void (*)(LLVMModuleRef,const char *) noexcept nogil> _LLVMSetModuleInlineAsm__funptr)(M,Asm)
 
 
 cdef void* _LLVMGetTypeKind__funptr = NULL
@@ -953,10 +1039,11 @@ cdef void* _LLVMGetTypeKind__funptr = NULL
 # Obtain the enumerated type of a Type instance.
 # 
 # @see llvm::Type:getTypeID()
-cdef LLVMTypeKind LLVMGetTypeKind(LLVMTypeRef Ty) nogil:
+cdef LLVMTypeKind LLVMGetTypeKind(LLVMTypeRef Ty):
     global _LLVMGetTypeKind__funptr
     __init_symbol(&_LLVMGetTypeKind__funptr,"LLVMGetTypeKind")
-    return (<LLVMTypeKind (*)(LLVMTypeRef) nogil> _LLVMGetTypeKind__funptr)(Ty)
+    with nogil:
+        return (<LLVMTypeKind (*)(LLVMTypeRef) noexcept nogil> _LLVMGetTypeKind__funptr)(Ty)
 
 
 cdef void* _LLVMTypeIsSized__funptr = NULL
@@ -966,10 +1053,11 @@ cdef void* _LLVMTypeIsSized__funptr = NULL
 # Things that don't have a size are abstract types, labels, and void.a
 # 
 # @see llvm::Type::isSized()
-cdef int LLVMTypeIsSized(LLVMTypeRef Ty) nogil:
+cdef int LLVMTypeIsSized(LLVMTypeRef Ty):
     global _LLVMTypeIsSized__funptr
     __init_symbol(&_LLVMTypeIsSized__funptr,"LLVMTypeIsSized")
-    return (<int (*)(LLVMTypeRef) nogil> _LLVMTypeIsSized__funptr)(Ty)
+    with nogil:
+        return (<int (*)(LLVMTypeRef) noexcept nogil> _LLVMTypeIsSized__funptr)(Ty)
 
 
 cdef void* _LLVMGetTypeContext__funptr = NULL
@@ -977,10 +1065,11 @@ cdef void* _LLVMGetTypeContext__funptr = NULL
 # Obtain the context to which this type instance is associated.
 # 
 # @see llvm::Type::getContext()
-cdef LLVMContextRef LLVMGetTypeContext(LLVMTypeRef Ty) nogil:
+cdef LLVMContextRef LLVMGetTypeContext(LLVMTypeRef Ty):
     global _LLVMGetTypeContext__funptr
     __init_symbol(&_LLVMGetTypeContext__funptr,"LLVMGetTypeContext")
-    return (<LLVMContextRef (*)(LLVMTypeRef) nogil> _LLVMGetTypeContext__funptr)(Ty)
+    with nogil:
+        return (<LLVMContextRef (*)(LLVMTypeRef) noexcept nogil> _LLVMGetTypeContext__funptr)(Ty)
 
 
 cdef void* _LLVMDumpType__funptr = NULL
@@ -988,10 +1077,11 @@ cdef void* _LLVMDumpType__funptr = NULL
 # Dump a representation of a type to stderr.
 # 
 # @see llvm::Type::dump()
-cdef void LLVMDumpType(LLVMTypeRef Val) nogil:
+cdef void LLVMDumpType(LLVMTypeRef Val):
     global _LLVMDumpType__funptr
     __init_symbol(&_LLVMDumpType__funptr,"LLVMDumpType")
-    (<void (*)(LLVMTypeRef) nogil> _LLVMDumpType__funptr)(Val)
+    with nogil:
+        (<void (*)(LLVMTypeRef) noexcept nogil> _LLVMDumpType__funptr)(Val)
 
 
 cdef void* _LLVMPrintTypeToString__funptr = NULL
@@ -1000,184 +1090,207 @@ cdef void* _LLVMPrintTypeToString__funptr = NULL
 # LLVMDisposeMessage to free the string.
 # 
 # @see llvm::Type::print()
-cdef char * LLVMPrintTypeToString(LLVMTypeRef Val) nogil:
+cdef char * LLVMPrintTypeToString(LLVMTypeRef Val):
     global _LLVMPrintTypeToString__funptr
     __init_symbol(&_LLVMPrintTypeToString__funptr,"LLVMPrintTypeToString")
-    return (<char * (*)(LLVMTypeRef) nogil> _LLVMPrintTypeToString__funptr)(Val)
+    with nogil:
+        return (<char * (*)(LLVMTypeRef) noexcept nogil> _LLVMPrintTypeToString__funptr)(Val)
 
 
 cdef void* _LLVMInt1TypeInContext__funptr = NULL
 # 
 # Obtain an integer type from a context with specified bit width.
-cdef LLVMTypeRef LLVMInt1TypeInContext(LLVMContextRef C) nogil:
+cdef LLVMTypeRef LLVMInt1TypeInContext(LLVMContextRef C):
     global _LLVMInt1TypeInContext__funptr
     __init_symbol(&_LLVMInt1TypeInContext__funptr,"LLVMInt1TypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef) nogil> _LLVMInt1TypeInContext__funptr)(C)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef) noexcept nogil> _LLVMInt1TypeInContext__funptr)(C)
 
 
 cdef void* _LLVMInt8TypeInContext__funptr = NULL
-cdef LLVMTypeRef LLVMInt8TypeInContext(LLVMContextRef C) nogil:
+cdef LLVMTypeRef LLVMInt8TypeInContext(LLVMContextRef C):
     global _LLVMInt8TypeInContext__funptr
     __init_symbol(&_LLVMInt8TypeInContext__funptr,"LLVMInt8TypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef) nogil> _LLVMInt8TypeInContext__funptr)(C)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef) noexcept nogil> _LLVMInt8TypeInContext__funptr)(C)
 
 
 cdef void* _LLVMInt16TypeInContext__funptr = NULL
-cdef LLVMTypeRef LLVMInt16TypeInContext(LLVMContextRef C) nogil:
+cdef LLVMTypeRef LLVMInt16TypeInContext(LLVMContextRef C):
     global _LLVMInt16TypeInContext__funptr
     __init_symbol(&_LLVMInt16TypeInContext__funptr,"LLVMInt16TypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef) nogil> _LLVMInt16TypeInContext__funptr)(C)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef) noexcept nogil> _LLVMInt16TypeInContext__funptr)(C)
 
 
 cdef void* _LLVMInt32TypeInContext__funptr = NULL
-cdef LLVMTypeRef LLVMInt32TypeInContext(LLVMContextRef C) nogil:
+cdef LLVMTypeRef LLVMInt32TypeInContext(LLVMContextRef C):
     global _LLVMInt32TypeInContext__funptr
     __init_symbol(&_LLVMInt32TypeInContext__funptr,"LLVMInt32TypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef) nogil> _LLVMInt32TypeInContext__funptr)(C)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef) noexcept nogil> _LLVMInt32TypeInContext__funptr)(C)
 
 
 cdef void* _LLVMInt64TypeInContext__funptr = NULL
-cdef LLVMTypeRef LLVMInt64TypeInContext(LLVMContextRef C) nogil:
+cdef LLVMTypeRef LLVMInt64TypeInContext(LLVMContextRef C):
     global _LLVMInt64TypeInContext__funptr
     __init_symbol(&_LLVMInt64TypeInContext__funptr,"LLVMInt64TypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef) nogil> _LLVMInt64TypeInContext__funptr)(C)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef) noexcept nogil> _LLVMInt64TypeInContext__funptr)(C)
 
 
 cdef void* _LLVMInt128TypeInContext__funptr = NULL
-cdef LLVMTypeRef LLVMInt128TypeInContext(LLVMContextRef C) nogil:
+cdef LLVMTypeRef LLVMInt128TypeInContext(LLVMContextRef C):
     global _LLVMInt128TypeInContext__funptr
     __init_symbol(&_LLVMInt128TypeInContext__funptr,"LLVMInt128TypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef) nogil> _LLVMInt128TypeInContext__funptr)(C)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef) noexcept nogil> _LLVMInt128TypeInContext__funptr)(C)
 
 
 cdef void* _LLVMIntTypeInContext__funptr = NULL
-cdef LLVMTypeRef LLVMIntTypeInContext(LLVMContextRef C,unsigned int NumBits) nogil:
+cdef LLVMTypeRef LLVMIntTypeInContext(LLVMContextRef C,unsigned int NumBits):
     global _LLVMIntTypeInContext__funptr
     __init_symbol(&_LLVMIntTypeInContext__funptr,"LLVMIntTypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef,unsigned int) nogil> _LLVMIntTypeInContext__funptr)(C,NumBits)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef,unsigned int) noexcept nogil> _LLVMIntTypeInContext__funptr)(C,NumBits)
 
 
 cdef void* _LLVMInt1Type__funptr = NULL
 # 
 # Obtain an integer type from the global context with a specified bit
 # width.
-cdef LLVMTypeRef LLVMInt1Type() nogil:
+cdef LLVMTypeRef LLVMInt1Type():
     global _LLVMInt1Type__funptr
     __init_symbol(&_LLVMInt1Type__funptr,"LLVMInt1Type")
-    return (<LLVMTypeRef (*)() nogil> _LLVMInt1Type__funptr)()
+    with nogil:
+        return (<LLVMTypeRef (*)() noexcept nogil> _LLVMInt1Type__funptr)()
 
 
 cdef void* _LLVMInt8Type__funptr = NULL
-cdef LLVMTypeRef LLVMInt8Type() nogil:
+cdef LLVMTypeRef LLVMInt8Type():
     global _LLVMInt8Type__funptr
     __init_symbol(&_LLVMInt8Type__funptr,"LLVMInt8Type")
-    return (<LLVMTypeRef (*)() nogil> _LLVMInt8Type__funptr)()
+    with nogil:
+        return (<LLVMTypeRef (*)() noexcept nogil> _LLVMInt8Type__funptr)()
 
 
 cdef void* _LLVMInt16Type__funptr = NULL
-cdef LLVMTypeRef LLVMInt16Type() nogil:
+cdef LLVMTypeRef LLVMInt16Type():
     global _LLVMInt16Type__funptr
     __init_symbol(&_LLVMInt16Type__funptr,"LLVMInt16Type")
-    return (<LLVMTypeRef (*)() nogil> _LLVMInt16Type__funptr)()
+    with nogil:
+        return (<LLVMTypeRef (*)() noexcept nogil> _LLVMInt16Type__funptr)()
 
 
 cdef void* _LLVMInt32Type__funptr = NULL
-cdef LLVMTypeRef LLVMInt32Type() nogil:
+cdef LLVMTypeRef LLVMInt32Type():
     global _LLVMInt32Type__funptr
     __init_symbol(&_LLVMInt32Type__funptr,"LLVMInt32Type")
-    return (<LLVMTypeRef (*)() nogil> _LLVMInt32Type__funptr)()
+    with nogil:
+        return (<LLVMTypeRef (*)() noexcept nogil> _LLVMInt32Type__funptr)()
 
 
 cdef void* _LLVMInt64Type__funptr = NULL
-cdef LLVMTypeRef LLVMInt64Type() nogil:
+cdef LLVMTypeRef LLVMInt64Type():
     global _LLVMInt64Type__funptr
     __init_symbol(&_LLVMInt64Type__funptr,"LLVMInt64Type")
-    return (<LLVMTypeRef (*)() nogil> _LLVMInt64Type__funptr)()
+    with nogil:
+        return (<LLVMTypeRef (*)() noexcept nogil> _LLVMInt64Type__funptr)()
 
 
 cdef void* _LLVMInt128Type__funptr = NULL
-cdef LLVMTypeRef LLVMInt128Type() nogil:
+cdef LLVMTypeRef LLVMInt128Type():
     global _LLVMInt128Type__funptr
     __init_symbol(&_LLVMInt128Type__funptr,"LLVMInt128Type")
-    return (<LLVMTypeRef (*)() nogil> _LLVMInt128Type__funptr)()
+    with nogil:
+        return (<LLVMTypeRef (*)() noexcept nogil> _LLVMInt128Type__funptr)()
 
 
 cdef void* _LLVMIntType__funptr = NULL
-cdef LLVMTypeRef LLVMIntType(unsigned int NumBits) nogil:
+cdef LLVMTypeRef LLVMIntType(unsigned int NumBits):
     global _LLVMIntType__funptr
     __init_symbol(&_LLVMIntType__funptr,"LLVMIntType")
-    return (<LLVMTypeRef (*)(unsigned int) nogil> _LLVMIntType__funptr)(NumBits)
+    with nogil:
+        return (<LLVMTypeRef (*)(unsigned int) noexcept nogil> _LLVMIntType__funptr)(NumBits)
 
 
 cdef void* _LLVMGetIntTypeWidth__funptr = NULL
-cdef unsigned int LLVMGetIntTypeWidth(LLVMTypeRef IntegerTy) nogil:
+cdef unsigned int LLVMGetIntTypeWidth(LLVMTypeRef IntegerTy):
     global _LLVMGetIntTypeWidth__funptr
     __init_symbol(&_LLVMGetIntTypeWidth__funptr,"LLVMGetIntTypeWidth")
-    return (<unsigned int (*)(LLVMTypeRef) nogil> _LLVMGetIntTypeWidth__funptr)(IntegerTy)
+    with nogil:
+        return (<unsigned int (*)(LLVMTypeRef) noexcept nogil> _LLVMGetIntTypeWidth__funptr)(IntegerTy)
 
 
 cdef void* _LLVMHalfTypeInContext__funptr = NULL
 # 
 # Obtain a 16-bit floating point type from a context.
-cdef LLVMTypeRef LLVMHalfTypeInContext(LLVMContextRef C) nogil:
+cdef LLVMTypeRef LLVMHalfTypeInContext(LLVMContextRef C):
     global _LLVMHalfTypeInContext__funptr
     __init_symbol(&_LLVMHalfTypeInContext__funptr,"LLVMHalfTypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef) nogil> _LLVMHalfTypeInContext__funptr)(C)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef) noexcept nogil> _LLVMHalfTypeInContext__funptr)(C)
 
 
 cdef void* _LLVMBFloatTypeInContext__funptr = NULL
 # 
 # Obtain a 16-bit brain floating point type from a context.
-cdef LLVMTypeRef LLVMBFloatTypeInContext(LLVMContextRef C) nogil:
+cdef LLVMTypeRef LLVMBFloatTypeInContext(LLVMContextRef C):
     global _LLVMBFloatTypeInContext__funptr
     __init_symbol(&_LLVMBFloatTypeInContext__funptr,"LLVMBFloatTypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef) nogil> _LLVMBFloatTypeInContext__funptr)(C)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef) noexcept nogil> _LLVMBFloatTypeInContext__funptr)(C)
 
 
 cdef void* _LLVMFloatTypeInContext__funptr = NULL
 # 
 # Obtain a 32-bit floating point type from a context.
-cdef LLVMTypeRef LLVMFloatTypeInContext(LLVMContextRef C) nogil:
+cdef LLVMTypeRef LLVMFloatTypeInContext(LLVMContextRef C):
     global _LLVMFloatTypeInContext__funptr
     __init_symbol(&_LLVMFloatTypeInContext__funptr,"LLVMFloatTypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef) nogil> _LLVMFloatTypeInContext__funptr)(C)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef) noexcept nogil> _LLVMFloatTypeInContext__funptr)(C)
 
 
 cdef void* _LLVMDoubleTypeInContext__funptr = NULL
 # 
 # Obtain a 64-bit floating point type from a context.
-cdef LLVMTypeRef LLVMDoubleTypeInContext(LLVMContextRef C) nogil:
+cdef LLVMTypeRef LLVMDoubleTypeInContext(LLVMContextRef C):
     global _LLVMDoubleTypeInContext__funptr
     __init_symbol(&_LLVMDoubleTypeInContext__funptr,"LLVMDoubleTypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef) nogil> _LLVMDoubleTypeInContext__funptr)(C)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef) noexcept nogil> _LLVMDoubleTypeInContext__funptr)(C)
 
 
 cdef void* _LLVMX86FP80TypeInContext__funptr = NULL
 # 
 # Obtain a 80-bit floating point type (X87) from a context.
-cdef LLVMTypeRef LLVMX86FP80TypeInContext(LLVMContextRef C) nogil:
+cdef LLVMTypeRef LLVMX86FP80TypeInContext(LLVMContextRef C):
     global _LLVMX86FP80TypeInContext__funptr
     __init_symbol(&_LLVMX86FP80TypeInContext__funptr,"LLVMX86FP80TypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef) nogil> _LLVMX86FP80TypeInContext__funptr)(C)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef) noexcept nogil> _LLVMX86FP80TypeInContext__funptr)(C)
 
 
 cdef void* _LLVMFP128TypeInContext__funptr = NULL
 # 
 # Obtain a 128-bit floating point type (112-bit mantissa) from a
 # context.
-cdef LLVMTypeRef LLVMFP128TypeInContext(LLVMContextRef C) nogil:
+cdef LLVMTypeRef LLVMFP128TypeInContext(LLVMContextRef C):
     global _LLVMFP128TypeInContext__funptr
     __init_symbol(&_LLVMFP128TypeInContext__funptr,"LLVMFP128TypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef) nogil> _LLVMFP128TypeInContext__funptr)(C)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef) noexcept nogil> _LLVMFP128TypeInContext__funptr)(C)
 
 
 cdef void* _LLVMPPCFP128TypeInContext__funptr = NULL
 # 
 # Obtain a 128-bit floating point type (two 64-bits) from a context.
-cdef LLVMTypeRef LLVMPPCFP128TypeInContext(LLVMContextRef C) nogil:
+cdef LLVMTypeRef LLVMPPCFP128TypeInContext(LLVMContextRef C):
     global _LLVMPPCFP128TypeInContext__funptr
     __init_symbol(&_LLVMPPCFP128TypeInContext__funptr,"LLVMPPCFP128TypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef) nogil> _LLVMPPCFP128TypeInContext__funptr)(C)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef) noexcept nogil> _LLVMPPCFP128TypeInContext__funptr)(C)
 
 
 cdef void* _LLVMHalfType__funptr = NULL
@@ -1185,52 +1298,59 @@ cdef void* _LLVMHalfType__funptr = NULL
 # Obtain a floating point type from the global context.
 # 
 # These map to the functions in this group of the same name.
-cdef LLVMTypeRef LLVMHalfType() nogil:
+cdef LLVMTypeRef LLVMHalfType():
     global _LLVMHalfType__funptr
     __init_symbol(&_LLVMHalfType__funptr,"LLVMHalfType")
-    return (<LLVMTypeRef (*)() nogil> _LLVMHalfType__funptr)()
+    with nogil:
+        return (<LLVMTypeRef (*)() noexcept nogil> _LLVMHalfType__funptr)()
 
 
 cdef void* _LLVMBFloatType__funptr = NULL
-cdef LLVMTypeRef LLVMBFloatType() nogil:
+cdef LLVMTypeRef LLVMBFloatType():
     global _LLVMBFloatType__funptr
     __init_symbol(&_LLVMBFloatType__funptr,"LLVMBFloatType")
-    return (<LLVMTypeRef (*)() nogil> _LLVMBFloatType__funptr)()
+    with nogil:
+        return (<LLVMTypeRef (*)() noexcept nogil> _LLVMBFloatType__funptr)()
 
 
 cdef void* _LLVMFloatType__funptr = NULL
-cdef LLVMTypeRef LLVMFloatType() nogil:
+cdef LLVMTypeRef LLVMFloatType():
     global _LLVMFloatType__funptr
     __init_symbol(&_LLVMFloatType__funptr,"LLVMFloatType")
-    return (<LLVMTypeRef (*)() nogil> _LLVMFloatType__funptr)()
+    with nogil:
+        return (<LLVMTypeRef (*)() noexcept nogil> _LLVMFloatType__funptr)()
 
 
 cdef void* _LLVMDoubleType__funptr = NULL
-cdef LLVMTypeRef LLVMDoubleType() nogil:
+cdef LLVMTypeRef LLVMDoubleType():
     global _LLVMDoubleType__funptr
     __init_symbol(&_LLVMDoubleType__funptr,"LLVMDoubleType")
-    return (<LLVMTypeRef (*)() nogil> _LLVMDoubleType__funptr)()
+    with nogil:
+        return (<LLVMTypeRef (*)() noexcept nogil> _LLVMDoubleType__funptr)()
 
 
 cdef void* _LLVMX86FP80Type__funptr = NULL
-cdef LLVMTypeRef LLVMX86FP80Type() nogil:
+cdef LLVMTypeRef LLVMX86FP80Type():
     global _LLVMX86FP80Type__funptr
     __init_symbol(&_LLVMX86FP80Type__funptr,"LLVMX86FP80Type")
-    return (<LLVMTypeRef (*)() nogil> _LLVMX86FP80Type__funptr)()
+    with nogil:
+        return (<LLVMTypeRef (*)() noexcept nogil> _LLVMX86FP80Type__funptr)()
 
 
 cdef void* _LLVMFP128Type__funptr = NULL
-cdef LLVMTypeRef LLVMFP128Type() nogil:
+cdef LLVMTypeRef LLVMFP128Type():
     global _LLVMFP128Type__funptr
     __init_symbol(&_LLVMFP128Type__funptr,"LLVMFP128Type")
-    return (<LLVMTypeRef (*)() nogil> _LLVMFP128Type__funptr)()
+    with nogil:
+        return (<LLVMTypeRef (*)() noexcept nogil> _LLVMFP128Type__funptr)()
 
 
 cdef void* _LLVMPPCFP128Type__funptr = NULL
-cdef LLVMTypeRef LLVMPPCFP128Type() nogil:
+cdef LLVMTypeRef LLVMPPCFP128Type():
     global _LLVMPPCFP128Type__funptr
     __init_symbol(&_LLVMPPCFP128Type__funptr,"LLVMPPCFP128Type")
-    return (<LLVMTypeRef (*)() nogil> _LLVMPPCFP128Type__funptr)()
+    with nogil:
+        return (<LLVMTypeRef (*)() noexcept nogil> _LLVMPPCFP128Type__funptr)()
 
 
 cdef void* _LLVMFunctionType__funptr = NULL
@@ -1239,37 +1359,41 @@ cdef void* _LLVMFunctionType__funptr = NULL
 # 
 # The function is defined as a tuple of a return Type, a list of
 # parameter types, and whether the function is variadic.
-cdef LLVMTypeRef LLVMFunctionType(LLVMTypeRef ReturnType,LLVMTypeRef* ParamTypes,unsigned int ParamCount,int IsVarArg) nogil:
+cdef LLVMTypeRef LLVMFunctionType(LLVMTypeRef ReturnType,LLVMTypeRef* ParamTypes,unsigned int ParamCount,int IsVarArg):
     global _LLVMFunctionType__funptr
     __init_symbol(&_LLVMFunctionType__funptr,"LLVMFunctionType")
-    return (<LLVMTypeRef (*)(LLVMTypeRef,LLVMTypeRef*,unsigned int,int) nogil> _LLVMFunctionType__funptr)(ReturnType,ParamTypes,ParamCount,IsVarArg)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMTypeRef,LLVMTypeRef*,unsigned int,int) noexcept nogil> _LLVMFunctionType__funptr)(ReturnType,ParamTypes,ParamCount,IsVarArg)
 
 
 cdef void* _LLVMIsFunctionVarArg__funptr = NULL
 # 
 # Returns whether a function type is variadic.
-cdef int LLVMIsFunctionVarArg(LLVMTypeRef FunctionTy) nogil:
+cdef int LLVMIsFunctionVarArg(LLVMTypeRef FunctionTy):
     global _LLVMIsFunctionVarArg__funptr
     __init_symbol(&_LLVMIsFunctionVarArg__funptr,"LLVMIsFunctionVarArg")
-    return (<int (*)(LLVMTypeRef) nogil> _LLVMIsFunctionVarArg__funptr)(FunctionTy)
+    with nogil:
+        return (<int (*)(LLVMTypeRef) noexcept nogil> _LLVMIsFunctionVarArg__funptr)(FunctionTy)
 
 
 cdef void* _LLVMGetReturnType__funptr = NULL
 # 
 # Obtain the Type this function Type returns.
-cdef LLVMTypeRef LLVMGetReturnType(LLVMTypeRef FunctionTy) nogil:
+cdef LLVMTypeRef LLVMGetReturnType(LLVMTypeRef FunctionTy):
     global _LLVMGetReturnType__funptr
     __init_symbol(&_LLVMGetReturnType__funptr,"LLVMGetReturnType")
-    return (<LLVMTypeRef (*)(LLVMTypeRef) nogil> _LLVMGetReturnType__funptr)(FunctionTy)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMTypeRef) noexcept nogil> _LLVMGetReturnType__funptr)(FunctionTy)
 
 
 cdef void* _LLVMCountParamTypes__funptr = NULL
 # 
 # Obtain the number of parameters this function accepts.
-cdef unsigned int LLVMCountParamTypes(LLVMTypeRef FunctionTy) nogil:
+cdef unsigned int LLVMCountParamTypes(LLVMTypeRef FunctionTy):
     global _LLVMCountParamTypes__funptr
     __init_symbol(&_LLVMCountParamTypes__funptr,"LLVMCountParamTypes")
-    return (<unsigned int (*)(LLVMTypeRef) nogil> _LLVMCountParamTypes__funptr)(FunctionTy)
+    with nogil:
+        return (<unsigned int (*)(LLVMTypeRef) noexcept nogil> _LLVMCountParamTypes__funptr)(FunctionTy)
 
 
 cdef void* _LLVMGetParamTypes__funptr = NULL
@@ -1283,10 +1407,11 @@ cdef void* _LLVMGetParamTypes__funptr = NULL
 # 
 # @param FunctionTy The function type to operate on.
 # @param Dest Memory address of an array to be filled with result.
-cdef void LLVMGetParamTypes(LLVMTypeRef FunctionTy,LLVMTypeRef* Dest) nogil:
+cdef void LLVMGetParamTypes(LLVMTypeRef FunctionTy,LLVMTypeRef* Dest):
     global _LLVMGetParamTypes__funptr
     __init_symbol(&_LLVMGetParamTypes__funptr,"LLVMGetParamTypes")
-    (<void (*)(LLVMTypeRef,LLVMTypeRef*) nogil> _LLVMGetParamTypes__funptr)(FunctionTy,Dest)
+    with nogil:
+        (<void (*)(LLVMTypeRef,LLVMTypeRef*) noexcept nogil> _LLVMGetParamTypes__funptr)(FunctionTy,Dest)
 
 
 cdef void* _LLVMStructTypeInContext__funptr = NULL
@@ -1297,10 +1422,11 @@ cdef void* _LLVMStructTypeInContext__funptr = NULL
 # whether these can be packed together.
 # 
 # @see llvm::StructType::create()
-cdef LLVMTypeRef LLVMStructTypeInContext(LLVMContextRef C,LLVMTypeRef* ElementTypes,unsigned int ElementCount,int Packed) nogil:
+cdef LLVMTypeRef LLVMStructTypeInContext(LLVMContextRef C,LLVMTypeRef* ElementTypes,unsigned int ElementCount,int Packed):
     global _LLVMStructTypeInContext__funptr
     __init_symbol(&_LLVMStructTypeInContext__funptr,"LLVMStructTypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef,LLVMTypeRef*,unsigned int,int) nogil> _LLVMStructTypeInContext__funptr)(C,ElementTypes,ElementCount,Packed)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef,LLVMTypeRef*,unsigned int,int) noexcept nogil> _LLVMStructTypeInContext__funptr)(C,ElementTypes,ElementCount,Packed)
 
 
 cdef void* _LLVMStructType__funptr = NULL
@@ -1308,10 +1434,11 @@ cdef void* _LLVMStructType__funptr = NULL
 # Create a new structure type in the global context.
 # 
 # @see llvm::StructType::create()
-cdef LLVMTypeRef LLVMStructType(LLVMTypeRef* ElementTypes,unsigned int ElementCount,int Packed) nogil:
+cdef LLVMTypeRef LLVMStructType(LLVMTypeRef* ElementTypes,unsigned int ElementCount,int Packed):
     global _LLVMStructType__funptr
     __init_symbol(&_LLVMStructType__funptr,"LLVMStructType")
-    return (<LLVMTypeRef (*)(LLVMTypeRef*,unsigned int,int) nogil> _LLVMStructType__funptr)(ElementTypes,ElementCount,Packed)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMTypeRef*,unsigned int,int) noexcept nogil> _LLVMStructType__funptr)(ElementTypes,ElementCount,Packed)
 
 
 cdef void* _LLVMStructCreateNamed__funptr = NULL
@@ -1319,10 +1446,11 @@ cdef void* _LLVMStructCreateNamed__funptr = NULL
 # Create an empty structure in a context having a specified name.
 # 
 # @see llvm::StructType::create()
-cdef LLVMTypeRef LLVMStructCreateNamed(LLVMContextRef C,const char * Name) nogil:
+cdef LLVMTypeRef LLVMStructCreateNamed(LLVMContextRef C,const char * Name):
     global _LLVMStructCreateNamed__funptr
     __init_symbol(&_LLVMStructCreateNamed__funptr,"LLVMStructCreateNamed")
-    return (<LLVMTypeRef (*)(LLVMContextRef,const char *) nogil> _LLVMStructCreateNamed__funptr)(C,Name)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef,const char *) noexcept nogil> _LLVMStructCreateNamed__funptr)(C,Name)
 
 
 cdef void* _LLVMGetStructName__funptr = NULL
@@ -1330,10 +1458,11 @@ cdef void* _LLVMGetStructName__funptr = NULL
 # Obtain the name of a structure.
 # 
 # @see llvm::StructType::getName()
-cdef const char * LLVMGetStructName(LLVMTypeRef Ty) nogil:
+cdef const char * LLVMGetStructName(LLVMTypeRef Ty):
     global _LLVMGetStructName__funptr
     __init_symbol(&_LLVMGetStructName__funptr,"LLVMGetStructName")
-    return (<const char * (*)(LLVMTypeRef) nogil> _LLVMGetStructName__funptr)(Ty)
+    with nogil:
+        return (<const char * (*)(LLVMTypeRef) noexcept nogil> _LLVMGetStructName__funptr)(Ty)
 
 
 cdef void* _LLVMStructSetBody__funptr = NULL
@@ -1341,10 +1470,11 @@ cdef void* _LLVMStructSetBody__funptr = NULL
 # Set the contents of a structure type.
 # 
 # @see llvm::StructType::setBody()
-cdef void LLVMStructSetBody(LLVMTypeRef StructTy,LLVMTypeRef* ElementTypes,unsigned int ElementCount,int Packed) nogil:
+cdef void LLVMStructSetBody(LLVMTypeRef StructTy,LLVMTypeRef* ElementTypes,unsigned int ElementCount,int Packed):
     global _LLVMStructSetBody__funptr
     __init_symbol(&_LLVMStructSetBody__funptr,"LLVMStructSetBody")
-    (<void (*)(LLVMTypeRef,LLVMTypeRef*,unsigned int,int) nogil> _LLVMStructSetBody__funptr)(StructTy,ElementTypes,ElementCount,Packed)
+    with nogil:
+        (<void (*)(LLVMTypeRef,LLVMTypeRef*,unsigned int,int) noexcept nogil> _LLVMStructSetBody__funptr)(StructTy,ElementTypes,ElementCount,Packed)
 
 
 cdef void* _LLVMCountStructElementTypes__funptr = NULL
@@ -1352,10 +1482,11 @@ cdef void* _LLVMCountStructElementTypes__funptr = NULL
 # Get the number of elements defined inside the structure.
 # 
 # @see llvm::StructType::getNumElements()
-cdef unsigned int LLVMCountStructElementTypes(LLVMTypeRef StructTy) nogil:
+cdef unsigned int LLVMCountStructElementTypes(LLVMTypeRef StructTy):
     global _LLVMCountStructElementTypes__funptr
     __init_symbol(&_LLVMCountStructElementTypes__funptr,"LLVMCountStructElementTypes")
-    return (<unsigned int (*)(LLVMTypeRef) nogil> _LLVMCountStructElementTypes__funptr)(StructTy)
+    with nogil:
+        return (<unsigned int (*)(LLVMTypeRef) noexcept nogil> _LLVMCountStructElementTypes__funptr)(StructTy)
 
 
 cdef void* _LLVMGetStructElementTypes__funptr = NULL
@@ -1368,10 +1499,11 @@ cdef void* _LLVMGetStructElementTypes__funptr = NULL
 # elements. The objects in the destination array will have a lifetime
 # of the structure type itself, which is the lifetime of the context it
 # is contained in.
-cdef void LLVMGetStructElementTypes(LLVMTypeRef StructTy,LLVMTypeRef* Dest) nogil:
+cdef void LLVMGetStructElementTypes(LLVMTypeRef StructTy,LLVMTypeRef* Dest):
     global _LLVMGetStructElementTypes__funptr
     __init_symbol(&_LLVMGetStructElementTypes__funptr,"LLVMGetStructElementTypes")
-    (<void (*)(LLVMTypeRef,LLVMTypeRef*) nogil> _LLVMGetStructElementTypes__funptr)(StructTy,Dest)
+    with nogil:
+        (<void (*)(LLVMTypeRef,LLVMTypeRef*) noexcept nogil> _LLVMGetStructElementTypes__funptr)(StructTy,Dest)
 
 
 cdef void* _LLVMStructGetTypeAtIndex__funptr = NULL
@@ -1379,10 +1511,11 @@ cdef void* _LLVMStructGetTypeAtIndex__funptr = NULL
 # Get the type of the element at a given index in the structure.
 # 
 # @see llvm::StructType::getTypeAtIndex()
-cdef LLVMTypeRef LLVMStructGetTypeAtIndex(LLVMTypeRef StructTy,unsigned int i) nogil:
+cdef LLVMTypeRef LLVMStructGetTypeAtIndex(LLVMTypeRef StructTy,unsigned int i):
     global _LLVMStructGetTypeAtIndex__funptr
     __init_symbol(&_LLVMStructGetTypeAtIndex__funptr,"LLVMStructGetTypeAtIndex")
-    return (<LLVMTypeRef (*)(LLVMTypeRef,unsigned int) nogil> _LLVMStructGetTypeAtIndex__funptr)(StructTy,i)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMTypeRef,unsigned int) noexcept nogil> _LLVMStructGetTypeAtIndex__funptr)(StructTy,i)
 
 
 cdef void* _LLVMIsPackedStruct__funptr = NULL
@@ -1390,10 +1523,11 @@ cdef void* _LLVMIsPackedStruct__funptr = NULL
 # Determine whether a structure is packed.
 # 
 # @see llvm::StructType::isPacked()
-cdef int LLVMIsPackedStruct(LLVMTypeRef StructTy) nogil:
+cdef int LLVMIsPackedStruct(LLVMTypeRef StructTy):
     global _LLVMIsPackedStruct__funptr
     __init_symbol(&_LLVMIsPackedStruct__funptr,"LLVMIsPackedStruct")
-    return (<int (*)(LLVMTypeRef) nogil> _LLVMIsPackedStruct__funptr)(StructTy)
+    with nogil:
+        return (<int (*)(LLVMTypeRef) noexcept nogil> _LLVMIsPackedStruct__funptr)(StructTy)
 
 
 cdef void* _LLVMIsOpaqueStruct__funptr = NULL
@@ -1401,10 +1535,11 @@ cdef void* _LLVMIsOpaqueStruct__funptr = NULL
 # Determine whether a structure is opaque.
 # 
 # @see llvm::StructType::isOpaque()
-cdef int LLVMIsOpaqueStruct(LLVMTypeRef StructTy) nogil:
+cdef int LLVMIsOpaqueStruct(LLVMTypeRef StructTy):
     global _LLVMIsOpaqueStruct__funptr
     __init_symbol(&_LLVMIsOpaqueStruct__funptr,"LLVMIsOpaqueStruct")
-    return (<int (*)(LLVMTypeRef) nogil> _LLVMIsOpaqueStruct__funptr)(StructTy)
+    with nogil:
+        return (<int (*)(LLVMTypeRef) noexcept nogil> _LLVMIsOpaqueStruct__funptr)(StructTy)
 
 
 cdef void* _LLVMIsLiteralStruct__funptr = NULL
@@ -1412,10 +1547,11 @@ cdef void* _LLVMIsLiteralStruct__funptr = NULL
 # Determine whether a structure is literal.
 # 
 # @see llvm::StructType::isLiteral()
-cdef int LLVMIsLiteralStruct(LLVMTypeRef StructTy) nogil:
+cdef int LLVMIsLiteralStruct(LLVMTypeRef StructTy):
     global _LLVMIsLiteralStruct__funptr
     __init_symbol(&_LLVMIsLiteralStruct__funptr,"LLVMIsLiteralStruct")
-    return (<int (*)(LLVMTypeRef) nogil> _LLVMIsLiteralStruct__funptr)(StructTy)
+    with nogil:
+        return (<int (*)(LLVMTypeRef) noexcept nogil> _LLVMIsLiteralStruct__funptr)(StructTy)
 
 
 cdef void* _LLVMGetElementType__funptr = NULL
@@ -1425,10 +1561,11 @@ cdef void* _LLVMGetElementType__funptr = NULL
 # This currently also works for pointer types, but this usage is deprecated.
 # 
 # @see llvm::SequentialType::getElementType()
-cdef LLVMTypeRef LLVMGetElementType(LLVMTypeRef Ty) nogil:
+cdef LLVMTypeRef LLVMGetElementType(LLVMTypeRef Ty):
     global _LLVMGetElementType__funptr
     __init_symbol(&_LLVMGetElementType__funptr,"LLVMGetElementType")
-    return (<LLVMTypeRef (*)(LLVMTypeRef) nogil> _LLVMGetElementType__funptr)(Ty)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMTypeRef) noexcept nogil> _LLVMGetElementType__funptr)(Ty)
 
 
 cdef void* _LLVMGetSubtypes__funptr = NULL
@@ -1436,10 +1573,11 @@ cdef void* _LLVMGetSubtypes__funptr = NULL
 # Returns type's subtypes
 # 
 # @see llvm::Type::subtypes()
-cdef void LLVMGetSubtypes(LLVMTypeRef Tp,LLVMTypeRef* Arr) nogil:
+cdef void LLVMGetSubtypes(LLVMTypeRef Tp,LLVMTypeRef* Arr):
     global _LLVMGetSubtypes__funptr
     __init_symbol(&_LLVMGetSubtypes__funptr,"LLVMGetSubtypes")
-    (<void (*)(LLVMTypeRef,LLVMTypeRef*) nogil> _LLVMGetSubtypes__funptr)(Tp,Arr)
+    with nogil:
+        (<void (*)(LLVMTypeRef,LLVMTypeRef*) noexcept nogil> _LLVMGetSubtypes__funptr)(Tp,Arr)
 
 
 cdef void* _LLVMGetNumContainedTypes__funptr = NULL
@@ -1447,10 +1585,11 @@ cdef void* _LLVMGetNumContainedTypes__funptr = NULL
 #  Return the number of types in the derived type.
 # 
 # @see llvm::Type::getNumContainedTypes()
-cdef unsigned int LLVMGetNumContainedTypes(LLVMTypeRef Tp) nogil:
+cdef unsigned int LLVMGetNumContainedTypes(LLVMTypeRef Tp):
     global _LLVMGetNumContainedTypes__funptr
     __init_symbol(&_LLVMGetNumContainedTypes__funptr,"LLVMGetNumContainedTypes")
-    return (<unsigned int (*)(LLVMTypeRef) nogil> _LLVMGetNumContainedTypes__funptr)(Tp)
+    with nogil:
+        return (<unsigned int (*)(LLVMTypeRef) noexcept nogil> _LLVMGetNumContainedTypes__funptr)(Tp)
 
 
 cdef void* _LLVMArrayType__funptr = NULL
@@ -1461,10 +1600,11 @@ cdef void* _LLVMArrayType__funptr = NULL
 # exists in.
 # 
 # @see llvm::ArrayType::get()
-cdef LLVMTypeRef LLVMArrayType(LLVMTypeRef ElementType,unsigned int ElementCount) nogil:
+cdef LLVMTypeRef LLVMArrayType(LLVMTypeRef ElementType,unsigned int ElementCount):
     global _LLVMArrayType__funptr
     __init_symbol(&_LLVMArrayType__funptr,"LLVMArrayType")
-    return (<LLVMTypeRef (*)(LLVMTypeRef,unsigned int) nogil> _LLVMArrayType__funptr)(ElementType,ElementCount)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMTypeRef,unsigned int) noexcept nogil> _LLVMArrayType__funptr)(ElementType,ElementCount)
 
 
 cdef void* _LLVMGetArrayLength__funptr = NULL
@@ -1474,10 +1614,11 @@ cdef void* _LLVMGetArrayLength__funptr = NULL
 # This only works on types that represent arrays.
 # 
 # @see llvm::ArrayType::getNumElements()
-cdef unsigned int LLVMGetArrayLength(LLVMTypeRef ArrayTy) nogil:
+cdef unsigned int LLVMGetArrayLength(LLVMTypeRef ArrayTy):
     global _LLVMGetArrayLength__funptr
     __init_symbol(&_LLVMGetArrayLength__funptr,"LLVMGetArrayLength")
-    return (<unsigned int (*)(LLVMTypeRef) nogil> _LLVMGetArrayLength__funptr)(ArrayTy)
+    with nogil:
+        return (<unsigned int (*)(LLVMTypeRef) noexcept nogil> _LLVMGetArrayLength__funptr)(ArrayTy)
 
 
 cdef void* _LLVMPointerType__funptr = NULL
@@ -1488,10 +1629,11 @@ cdef void* _LLVMPointerType__funptr = NULL
 # exists in.
 # 
 # @see llvm::PointerType::get()
-cdef LLVMTypeRef LLVMPointerType(LLVMTypeRef ElementType,unsigned int AddressSpace) nogil:
+cdef LLVMTypeRef LLVMPointerType(LLVMTypeRef ElementType,unsigned int AddressSpace):
     global _LLVMPointerType__funptr
     __init_symbol(&_LLVMPointerType__funptr,"LLVMPointerType")
-    return (<LLVMTypeRef (*)(LLVMTypeRef,unsigned int) nogil> _LLVMPointerType__funptr)(ElementType,AddressSpace)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMTypeRef,unsigned int) noexcept nogil> _LLVMPointerType__funptr)(ElementType,AddressSpace)
 
 
 cdef void* _LLVMPointerTypeIsOpaque__funptr = NULL
@@ -1501,10 +1643,11 @@ cdef void* _LLVMPointerTypeIsOpaque__funptr = NULL
 # True if this is an instance of an opaque PointerType.
 # 
 # @see llvm::Type::isOpaquePointerTy()
-cdef int LLVMPointerTypeIsOpaque(LLVMTypeRef Ty) nogil:
+cdef int LLVMPointerTypeIsOpaque(LLVMTypeRef Ty):
     global _LLVMPointerTypeIsOpaque__funptr
     __init_symbol(&_LLVMPointerTypeIsOpaque__funptr,"LLVMPointerTypeIsOpaque")
-    return (<int (*)(LLVMTypeRef) nogil> _LLVMPointerTypeIsOpaque__funptr)(Ty)
+    with nogil:
+        return (<int (*)(LLVMTypeRef) noexcept nogil> _LLVMPointerTypeIsOpaque__funptr)(Ty)
 
 
 cdef void* _LLVMPointerTypeInContext__funptr = NULL
@@ -1512,10 +1655,11 @@ cdef void* _LLVMPointerTypeInContext__funptr = NULL
 # Create an opaque pointer type in a context.
 # 
 # @see llvm::PointerType::get()
-cdef LLVMTypeRef LLVMPointerTypeInContext(LLVMContextRef C,unsigned int AddressSpace) nogil:
+cdef LLVMTypeRef LLVMPointerTypeInContext(LLVMContextRef C,unsigned int AddressSpace):
     global _LLVMPointerTypeInContext__funptr
     __init_symbol(&_LLVMPointerTypeInContext__funptr,"LLVMPointerTypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef,unsigned int) nogil> _LLVMPointerTypeInContext__funptr)(C,AddressSpace)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef,unsigned int) noexcept nogil> _LLVMPointerTypeInContext__funptr)(C,AddressSpace)
 
 
 cdef void* _LLVMGetPointerAddressSpace__funptr = NULL
@@ -1525,10 +1669,11 @@ cdef void* _LLVMGetPointerAddressSpace__funptr = NULL
 # This only works on types that represent pointers.
 # 
 # @see llvm::PointerType::getAddressSpace()
-cdef unsigned int LLVMGetPointerAddressSpace(LLVMTypeRef PointerTy) nogil:
+cdef unsigned int LLVMGetPointerAddressSpace(LLVMTypeRef PointerTy):
     global _LLVMGetPointerAddressSpace__funptr
     __init_symbol(&_LLVMGetPointerAddressSpace__funptr,"LLVMGetPointerAddressSpace")
-    return (<unsigned int (*)(LLVMTypeRef) nogil> _LLVMGetPointerAddressSpace__funptr)(PointerTy)
+    with nogil:
+        return (<unsigned int (*)(LLVMTypeRef) noexcept nogil> _LLVMGetPointerAddressSpace__funptr)(PointerTy)
 
 
 cdef void* _LLVMVectorType__funptr = NULL
@@ -1540,10 +1685,11 @@ cdef void* _LLVMVectorType__funptr = NULL
 # exists in.
 # 
 # @see llvm::VectorType::get()
-cdef LLVMTypeRef LLVMVectorType(LLVMTypeRef ElementType,unsigned int ElementCount) nogil:
+cdef LLVMTypeRef LLVMVectorType(LLVMTypeRef ElementType,unsigned int ElementCount):
     global _LLVMVectorType__funptr
     __init_symbol(&_LLVMVectorType__funptr,"LLVMVectorType")
-    return (<LLVMTypeRef (*)(LLVMTypeRef,unsigned int) nogil> _LLVMVectorType__funptr)(ElementType,ElementCount)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMTypeRef,unsigned int) noexcept nogil> _LLVMVectorType__funptr)(ElementType,ElementCount)
 
 
 cdef void* _LLVMScalableVectorType__funptr = NULL
@@ -1555,10 +1701,11 @@ cdef void* _LLVMScalableVectorType__funptr = NULL
 # exists in.
 # 
 # @see llvm::ScalableVectorType::get()
-cdef LLVMTypeRef LLVMScalableVectorType(LLVMTypeRef ElementType,unsigned int ElementCount) nogil:
+cdef LLVMTypeRef LLVMScalableVectorType(LLVMTypeRef ElementType,unsigned int ElementCount):
     global _LLVMScalableVectorType__funptr
     __init_symbol(&_LLVMScalableVectorType__funptr,"LLVMScalableVectorType")
-    return (<LLVMTypeRef (*)(LLVMTypeRef,unsigned int) nogil> _LLVMScalableVectorType__funptr)(ElementType,ElementCount)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMTypeRef,unsigned int) noexcept nogil> _LLVMScalableVectorType__funptr)(ElementType,ElementCount)
 
 
 cdef void* _LLVMGetVectorSize__funptr = NULL
@@ -1568,104 +1715,116 @@ cdef void* _LLVMGetVectorSize__funptr = NULL
 # This only works on types that represent vectors (fixed or scalable).
 # 
 # @see llvm::VectorType::getNumElements()
-cdef unsigned int LLVMGetVectorSize(LLVMTypeRef VectorTy) nogil:
+cdef unsigned int LLVMGetVectorSize(LLVMTypeRef VectorTy):
     global _LLVMGetVectorSize__funptr
     __init_symbol(&_LLVMGetVectorSize__funptr,"LLVMGetVectorSize")
-    return (<unsigned int (*)(LLVMTypeRef) nogil> _LLVMGetVectorSize__funptr)(VectorTy)
+    with nogil:
+        return (<unsigned int (*)(LLVMTypeRef) noexcept nogil> _LLVMGetVectorSize__funptr)(VectorTy)
 
 
 cdef void* _LLVMVoidTypeInContext__funptr = NULL
 # 
 # Create a void type in a context.
-cdef LLVMTypeRef LLVMVoidTypeInContext(LLVMContextRef C) nogil:
+cdef LLVMTypeRef LLVMVoidTypeInContext(LLVMContextRef C):
     global _LLVMVoidTypeInContext__funptr
     __init_symbol(&_LLVMVoidTypeInContext__funptr,"LLVMVoidTypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef) nogil> _LLVMVoidTypeInContext__funptr)(C)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef) noexcept nogil> _LLVMVoidTypeInContext__funptr)(C)
 
 
 cdef void* _LLVMLabelTypeInContext__funptr = NULL
 # 
 # Create a label type in a context.
-cdef LLVMTypeRef LLVMLabelTypeInContext(LLVMContextRef C) nogil:
+cdef LLVMTypeRef LLVMLabelTypeInContext(LLVMContextRef C):
     global _LLVMLabelTypeInContext__funptr
     __init_symbol(&_LLVMLabelTypeInContext__funptr,"LLVMLabelTypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef) nogil> _LLVMLabelTypeInContext__funptr)(C)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef) noexcept nogil> _LLVMLabelTypeInContext__funptr)(C)
 
 
 cdef void* _LLVMX86MMXTypeInContext__funptr = NULL
 # 
 # Create a X86 MMX type in a context.
-cdef LLVMTypeRef LLVMX86MMXTypeInContext(LLVMContextRef C) nogil:
+cdef LLVMTypeRef LLVMX86MMXTypeInContext(LLVMContextRef C):
     global _LLVMX86MMXTypeInContext__funptr
     __init_symbol(&_LLVMX86MMXTypeInContext__funptr,"LLVMX86MMXTypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef) nogil> _LLVMX86MMXTypeInContext__funptr)(C)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef) noexcept nogil> _LLVMX86MMXTypeInContext__funptr)(C)
 
 
 cdef void* _LLVMX86AMXTypeInContext__funptr = NULL
 # 
 # Create a X86 AMX type in a context.
-cdef LLVMTypeRef LLVMX86AMXTypeInContext(LLVMContextRef C) nogil:
+cdef LLVMTypeRef LLVMX86AMXTypeInContext(LLVMContextRef C):
     global _LLVMX86AMXTypeInContext__funptr
     __init_symbol(&_LLVMX86AMXTypeInContext__funptr,"LLVMX86AMXTypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef) nogil> _LLVMX86AMXTypeInContext__funptr)(C)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef) noexcept nogil> _LLVMX86AMXTypeInContext__funptr)(C)
 
 
 cdef void* _LLVMTokenTypeInContext__funptr = NULL
 # 
 # Create a token type in a context.
-cdef LLVMTypeRef LLVMTokenTypeInContext(LLVMContextRef C) nogil:
+cdef LLVMTypeRef LLVMTokenTypeInContext(LLVMContextRef C):
     global _LLVMTokenTypeInContext__funptr
     __init_symbol(&_LLVMTokenTypeInContext__funptr,"LLVMTokenTypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef) nogil> _LLVMTokenTypeInContext__funptr)(C)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef) noexcept nogil> _LLVMTokenTypeInContext__funptr)(C)
 
 
 cdef void* _LLVMMetadataTypeInContext__funptr = NULL
 # 
 # Create a metadata type in a context.
-cdef LLVMTypeRef LLVMMetadataTypeInContext(LLVMContextRef C) nogil:
+cdef LLVMTypeRef LLVMMetadataTypeInContext(LLVMContextRef C):
     global _LLVMMetadataTypeInContext__funptr
     __init_symbol(&_LLVMMetadataTypeInContext__funptr,"LLVMMetadataTypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef) nogil> _LLVMMetadataTypeInContext__funptr)(C)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef) noexcept nogil> _LLVMMetadataTypeInContext__funptr)(C)
 
 
 cdef void* _LLVMVoidType__funptr = NULL
 # 
 # These are similar to the above functions except they operate on the
 # global context.
-cdef LLVMTypeRef LLVMVoidType() nogil:
+cdef LLVMTypeRef LLVMVoidType():
     global _LLVMVoidType__funptr
     __init_symbol(&_LLVMVoidType__funptr,"LLVMVoidType")
-    return (<LLVMTypeRef (*)() nogil> _LLVMVoidType__funptr)()
+    with nogil:
+        return (<LLVMTypeRef (*)() noexcept nogil> _LLVMVoidType__funptr)()
 
 
 cdef void* _LLVMLabelType__funptr = NULL
-cdef LLVMTypeRef LLVMLabelType() nogil:
+cdef LLVMTypeRef LLVMLabelType():
     global _LLVMLabelType__funptr
     __init_symbol(&_LLVMLabelType__funptr,"LLVMLabelType")
-    return (<LLVMTypeRef (*)() nogil> _LLVMLabelType__funptr)()
+    with nogil:
+        return (<LLVMTypeRef (*)() noexcept nogil> _LLVMLabelType__funptr)()
 
 
 cdef void* _LLVMX86MMXType__funptr = NULL
-cdef LLVMTypeRef LLVMX86MMXType() nogil:
+cdef LLVMTypeRef LLVMX86MMXType():
     global _LLVMX86MMXType__funptr
     __init_symbol(&_LLVMX86MMXType__funptr,"LLVMX86MMXType")
-    return (<LLVMTypeRef (*)() nogil> _LLVMX86MMXType__funptr)()
+    with nogil:
+        return (<LLVMTypeRef (*)() noexcept nogil> _LLVMX86MMXType__funptr)()
 
 
 cdef void* _LLVMX86AMXType__funptr = NULL
-cdef LLVMTypeRef LLVMX86AMXType() nogil:
+cdef LLVMTypeRef LLVMX86AMXType():
     global _LLVMX86AMXType__funptr
     __init_symbol(&_LLVMX86AMXType__funptr,"LLVMX86AMXType")
-    return (<LLVMTypeRef (*)() nogil> _LLVMX86AMXType__funptr)()
+    with nogil:
+        return (<LLVMTypeRef (*)() noexcept nogil> _LLVMX86AMXType__funptr)()
 
 
 cdef void* _LLVMTargetExtTypeInContext__funptr = NULL
 # 
 # Create a target extension type in LLVM context.
-cdef LLVMTypeRef LLVMTargetExtTypeInContext(LLVMContextRef C,const char * Name,LLVMTypeRef* TypeParams,unsigned int TypeParamCount,unsigned int * IntParams,unsigned int IntParamCount) nogil:
+cdef LLVMTypeRef LLVMTargetExtTypeInContext(LLVMContextRef C,const char * Name,LLVMTypeRef* TypeParams,unsigned int TypeParamCount,unsigned int * IntParams,unsigned int IntParamCount):
     global _LLVMTargetExtTypeInContext__funptr
     __init_symbol(&_LLVMTargetExtTypeInContext__funptr,"LLVMTargetExtTypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef,const char *,LLVMTypeRef*,unsigned int,unsigned int *,unsigned int) nogil> _LLVMTargetExtTypeInContext__funptr)(C,Name,TypeParams,TypeParamCount,IntParams,IntParamCount)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef,const char *,LLVMTypeRef*,unsigned int,unsigned int *,unsigned int) noexcept nogil> _LLVMTargetExtTypeInContext__funptr)(C,Name,TypeParams,TypeParamCount,IntParams,IntParamCount)
 
 
 cdef void* _LLVMTypeOf__funptr = NULL
@@ -1673,10 +1832,11 @@ cdef void* _LLVMTypeOf__funptr = NULL
 # Obtain the type of a value.
 # 
 # @see llvm::Value::getType()
-cdef LLVMTypeRef LLVMTypeOf(LLVMValueRef Val) nogil:
+cdef LLVMTypeRef LLVMTypeOf(LLVMValueRef Val):
     global _LLVMTypeOf__funptr
     __init_symbol(&_LLVMTypeOf__funptr,"LLVMTypeOf")
-    return (<LLVMTypeRef (*)(LLVMValueRef) nogil> _LLVMTypeOf__funptr)(Val)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMValueRef) noexcept nogil> _LLVMTypeOf__funptr)(Val)
 
 
 cdef void* _LLVMGetValueKind__funptr = NULL
@@ -1684,10 +1844,11 @@ cdef void* _LLVMGetValueKind__funptr = NULL
 # Obtain the enumerated type of a Value instance.
 # 
 # @see llvm::Value::getValueID()
-cdef LLVMValueKind LLVMGetValueKind(LLVMValueRef Val) nogil:
+cdef LLVMValueKind LLVMGetValueKind(LLVMValueRef Val):
     global _LLVMGetValueKind__funptr
     __init_symbol(&_LLVMGetValueKind__funptr,"LLVMGetValueKind")
-    return (<LLVMValueKind (*)(LLVMValueRef) nogil> _LLVMGetValueKind__funptr)(Val)
+    with nogil:
+        return (<LLVMValueKind (*)(LLVMValueRef) noexcept nogil> _LLVMGetValueKind__funptr)(Val)
 
 
 cdef void* _LLVMGetValueName2__funptr = NULL
@@ -1695,10 +1856,11 @@ cdef void* _LLVMGetValueName2__funptr = NULL
 # Obtain the string name of a value.
 # 
 # @see llvm::Value::getName()
-cdef const char * LLVMGetValueName2(LLVMValueRef Val,unsigned long * Length) nogil:
+cdef const char * LLVMGetValueName2(LLVMValueRef Val,unsigned long * Length):
     global _LLVMGetValueName2__funptr
     __init_symbol(&_LLVMGetValueName2__funptr,"LLVMGetValueName2")
-    return (<const char * (*)(LLVMValueRef,unsigned long *) nogil> _LLVMGetValueName2__funptr)(Val,Length)
+    with nogil:
+        return (<const char * (*)(LLVMValueRef,unsigned long *) noexcept nogil> _LLVMGetValueName2__funptr)(Val,Length)
 
 
 cdef void* _LLVMSetValueName2__funptr = NULL
@@ -1706,10 +1868,11 @@ cdef void* _LLVMSetValueName2__funptr = NULL
 # Set the string name of a value.
 # 
 # @see llvm::Value::setName()
-cdef void LLVMSetValueName2(LLVMValueRef Val,const char * Name,unsigned long NameLen) nogil:
+cdef void LLVMSetValueName2(LLVMValueRef Val,const char * Name,unsigned long NameLen):
     global _LLVMSetValueName2__funptr
     __init_symbol(&_LLVMSetValueName2__funptr,"LLVMSetValueName2")
-    (<void (*)(LLVMValueRef,const char *,unsigned long) nogil> _LLVMSetValueName2__funptr)(Val,Name,NameLen)
+    with nogil:
+        (<void (*)(LLVMValueRef,const char *,unsigned long) noexcept nogil> _LLVMSetValueName2__funptr)(Val,Name,NameLen)
 
 
 cdef void* _LLVMDumpValue__funptr = NULL
@@ -1717,10 +1880,11 @@ cdef void* _LLVMDumpValue__funptr = NULL
 # Dump a representation of a value to stderr.
 # 
 # @see llvm::Value::dump()
-cdef void LLVMDumpValue(LLVMValueRef Val) nogil:
+cdef void LLVMDumpValue(LLVMValueRef Val):
     global _LLVMDumpValue__funptr
     __init_symbol(&_LLVMDumpValue__funptr,"LLVMDumpValue")
-    (<void (*)(LLVMValueRef) nogil> _LLVMDumpValue__funptr)(Val)
+    with nogil:
+        (<void (*)(LLVMValueRef) noexcept nogil> _LLVMDumpValue__funptr)(Val)
 
 
 cdef void* _LLVMPrintValueToString__funptr = NULL
@@ -1729,10 +1893,11 @@ cdef void* _LLVMPrintValueToString__funptr = NULL
 # LLVMDisposeMessage to free the string.
 # 
 # @see llvm::Value::print()
-cdef char * LLVMPrintValueToString(LLVMValueRef Val) nogil:
+cdef char * LLVMPrintValueToString(LLVMValueRef Val):
     global _LLVMPrintValueToString__funptr
     __init_symbol(&_LLVMPrintValueToString__funptr,"LLVMPrintValueToString")
-    return (<char * (*)(LLVMValueRef) nogil> _LLVMPrintValueToString__funptr)(Val)
+    with nogil:
+        return (<char * (*)(LLVMValueRef) noexcept nogil> _LLVMPrintValueToString__funptr)(Val)
 
 
 cdef void* _LLVMReplaceAllUsesWith__funptr = NULL
@@ -1740,683 +1905,779 @@ cdef void* _LLVMReplaceAllUsesWith__funptr = NULL
 # Replace all uses of a value with another one.
 # 
 # @see llvm::Value::replaceAllUsesWith()
-cdef void LLVMReplaceAllUsesWith(LLVMValueRef OldVal,LLVMValueRef NewVal) nogil:
+cdef void LLVMReplaceAllUsesWith(LLVMValueRef OldVal,LLVMValueRef NewVal):
     global _LLVMReplaceAllUsesWith__funptr
     __init_symbol(&_LLVMReplaceAllUsesWith__funptr,"LLVMReplaceAllUsesWith")
-    (<void (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMReplaceAllUsesWith__funptr)(OldVal,NewVal)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMReplaceAllUsesWith__funptr)(OldVal,NewVal)
 
 
 cdef void* _LLVMIsConstant__funptr = NULL
 # 
 # Determine whether the specified value instance is constant.
-cdef int LLVMIsConstant(LLVMValueRef Val) nogil:
+cdef int LLVMIsConstant(LLVMValueRef Val):
     global _LLVMIsConstant__funptr
     __init_symbol(&_LLVMIsConstant__funptr,"LLVMIsConstant")
-    return (<int (*)(LLVMValueRef) nogil> _LLVMIsConstant__funptr)(Val)
+    with nogil:
+        return (<int (*)(LLVMValueRef) noexcept nogil> _LLVMIsConstant__funptr)(Val)
 
 
 cdef void* _LLVMIsUndef__funptr = NULL
 # 
 # Determine whether a value instance is undefined.
-cdef int LLVMIsUndef(LLVMValueRef Val) nogil:
+cdef int LLVMIsUndef(LLVMValueRef Val):
     global _LLVMIsUndef__funptr
     __init_symbol(&_LLVMIsUndef__funptr,"LLVMIsUndef")
-    return (<int (*)(LLVMValueRef) nogil> _LLVMIsUndef__funptr)(Val)
+    with nogil:
+        return (<int (*)(LLVMValueRef) noexcept nogil> _LLVMIsUndef__funptr)(Val)
 
 
 cdef void* _LLVMIsPoison__funptr = NULL
 # 
 # Determine whether a value instance is poisonous.
-cdef int LLVMIsPoison(LLVMValueRef Val) nogil:
+cdef int LLVMIsPoison(LLVMValueRef Val):
     global _LLVMIsPoison__funptr
     __init_symbol(&_LLVMIsPoison__funptr,"LLVMIsPoison")
-    return (<int (*)(LLVMValueRef) nogil> _LLVMIsPoison__funptr)(Val)
+    with nogil:
+        return (<int (*)(LLVMValueRef) noexcept nogil> _LLVMIsPoison__funptr)(Val)
 
 
 cdef void* _LLVMIsAArgument__funptr = NULL
-cdef LLVMValueRef LLVMIsAArgument(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAArgument(LLVMValueRef Val):
     global _LLVMIsAArgument__funptr
     __init_symbol(&_LLVMIsAArgument__funptr,"LLVMIsAArgument")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAArgument__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAArgument__funptr)(Val)
 
 
 cdef void* _LLVMIsABasicBlock__funptr = NULL
-cdef LLVMValueRef LLVMIsABasicBlock(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsABasicBlock(LLVMValueRef Val):
     global _LLVMIsABasicBlock__funptr
     __init_symbol(&_LLVMIsABasicBlock__funptr,"LLVMIsABasicBlock")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsABasicBlock__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsABasicBlock__funptr)(Val)
 
 
 cdef void* _LLVMIsAInlineAsm__funptr = NULL
-cdef LLVMValueRef LLVMIsAInlineAsm(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAInlineAsm(LLVMValueRef Val):
     global _LLVMIsAInlineAsm__funptr
     __init_symbol(&_LLVMIsAInlineAsm__funptr,"LLVMIsAInlineAsm")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAInlineAsm__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAInlineAsm__funptr)(Val)
 
 
 cdef void* _LLVMIsAUser__funptr = NULL
-cdef LLVMValueRef LLVMIsAUser(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAUser(LLVMValueRef Val):
     global _LLVMIsAUser__funptr
     __init_symbol(&_LLVMIsAUser__funptr,"LLVMIsAUser")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAUser__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAUser__funptr)(Val)
 
 
 cdef void* _LLVMIsAConstant__funptr = NULL
-cdef LLVMValueRef LLVMIsAConstant(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAConstant(LLVMValueRef Val):
     global _LLVMIsAConstant__funptr
     __init_symbol(&_LLVMIsAConstant__funptr,"LLVMIsAConstant")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAConstant__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAConstant__funptr)(Val)
 
 
 cdef void* _LLVMIsABlockAddress__funptr = NULL
-cdef LLVMValueRef LLVMIsABlockAddress(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsABlockAddress(LLVMValueRef Val):
     global _LLVMIsABlockAddress__funptr
     __init_symbol(&_LLVMIsABlockAddress__funptr,"LLVMIsABlockAddress")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsABlockAddress__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsABlockAddress__funptr)(Val)
 
 
 cdef void* _LLVMIsAConstantAggregateZero__funptr = NULL
-cdef LLVMValueRef LLVMIsAConstantAggregateZero(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAConstantAggregateZero(LLVMValueRef Val):
     global _LLVMIsAConstantAggregateZero__funptr
     __init_symbol(&_LLVMIsAConstantAggregateZero__funptr,"LLVMIsAConstantAggregateZero")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAConstantAggregateZero__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAConstantAggregateZero__funptr)(Val)
 
 
 cdef void* _LLVMIsAConstantArray__funptr = NULL
-cdef LLVMValueRef LLVMIsAConstantArray(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAConstantArray(LLVMValueRef Val):
     global _LLVMIsAConstantArray__funptr
     __init_symbol(&_LLVMIsAConstantArray__funptr,"LLVMIsAConstantArray")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAConstantArray__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAConstantArray__funptr)(Val)
 
 
 cdef void* _LLVMIsAConstantDataSequential__funptr = NULL
-cdef LLVMValueRef LLVMIsAConstantDataSequential(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAConstantDataSequential(LLVMValueRef Val):
     global _LLVMIsAConstantDataSequential__funptr
     __init_symbol(&_LLVMIsAConstantDataSequential__funptr,"LLVMIsAConstantDataSequential")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAConstantDataSequential__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAConstantDataSequential__funptr)(Val)
 
 
 cdef void* _LLVMIsAConstantDataArray__funptr = NULL
-cdef LLVMValueRef LLVMIsAConstantDataArray(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAConstantDataArray(LLVMValueRef Val):
     global _LLVMIsAConstantDataArray__funptr
     __init_symbol(&_LLVMIsAConstantDataArray__funptr,"LLVMIsAConstantDataArray")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAConstantDataArray__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAConstantDataArray__funptr)(Val)
 
 
 cdef void* _LLVMIsAConstantDataVector__funptr = NULL
-cdef LLVMValueRef LLVMIsAConstantDataVector(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAConstantDataVector(LLVMValueRef Val):
     global _LLVMIsAConstantDataVector__funptr
     __init_symbol(&_LLVMIsAConstantDataVector__funptr,"LLVMIsAConstantDataVector")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAConstantDataVector__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAConstantDataVector__funptr)(Val)
 
 
 cdef void* _LLVMIsAConstantExpr__funptr = NULL
-cdef LLVMValueRef LLVMIsAConstantExpr(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAConstantExpr(LLVMValueRef Val):
     global _LLVMIsAConstantExpr__funptr
     __init_symbol(&_LLVMIsAConstantExpr__funptr,"LLVMIsAConstantExpr")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAConstantExpr__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAConstantExpr__funptr)(Val)
 
 
 cdef void* _LLVMIsAConstantFP__funptr = NULL
-cdef LLVMValueRef LLVMIsAConstantFP(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAConstantFP(LLVMValueRef Val):
     global _LLVMIsAConstantFP__funptr
     __init_symbol(&_LLVMIsAConstantFP__funptr,"LLVMIsAConstantFP")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAConstantFP__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAConstantFP__funptr)(Val)
 
 
 cdef void* _LLVMIsAConstantInt__funptr = NULL
-cdef LLVMValueRef LLVMIsAConstantInt(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAConstantInt(LLVMValueRef Val):
     global _LLVMIsAConstantInt__funptr
     __init_symbol(&_LLVMIsAConstantInt__funptr,"LLVMIsAConstantInt")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAConstantInt__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAConstantInt__funptr)(Val)
 
 
 cdef void* _LLVMIsAConstantPointerNull__funptr = NULL
-cdef LLVMValueRef LLVMIsAConstantPointerNull(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAConstantPointerNull(LLVMValueRef Val):
     global _LLVMIsAConstantPointerNull__funptr
     __init_symbol(&_LLVMIsAConstantPointerNull__funptr,"LLVMIsAConstantPointerNull")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAConstantPointerNull__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAConstantPointerNull__funptr)(Val)
 
 
 cdef void* _LLVMIsAConstantStruct__funptr = NULL
-cdef LLVMValueRef LLVMIsAConstantStruct(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAConstantStruct(LLVMValueRef Val):
     global _LLVMIsAConstantStruct__funptr
     __init_symbol(&_LLVMIsAConstantStruct__funptr,"LLVMIsAConstantStruct")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAConstantStruct__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAConstantStruct__funptr)(Val)
 
 
 cdef void* _LLVMIsAConstantTokenNone__funptr = NULL
-cdef LLVMValueRef LLVMIsAConstantTokenNone(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAConstantTokenNone(LLVMValueRef Val):
     global _LLVMIsAConstantTokenNone__funptr
     __init_symbol(&_LLVMIsAConstantTokenNone__funptr,"LLVMIsAConstantTokenNone")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAConstantTokenNone__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAConstantTokenNone__funptr)(Val)
 
 
 cdef void* _LLVMIsAConstantVector__funptr = NULL
-cdef LLVMValueRef LLVMIsAConstantVector(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAConstantVector(LLVMValueRef Val):
     global _LLVMIsAConstantVector__funptr
     __init_symbol(&_LLVMIsAConstantVector__funptr,"LLVMIsAConstantVector")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAConstantVector__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAConstantVector__funptr)(Val)
 
 
 cdef void* _LLVMIsAGlobalValue__funptr = NULL
-cdef LLVMValueRef LLVMIsAGlobalValue(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAGlobalValue(LLVMValueRef Val):
     global _LLVMIsAGlobalValue__funptr
     __init_symbol(&_LLVMIsAGlobalValue__funptr,"LLVMIsAGlobalValue")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAGlobalValue__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAGlobalValue__funptr)(Val)
 
 
 cdef void* _LLVMIsAGlobalAlias__funptr = NULL
-cdef LLVMValueRef LLVMIsAGlobalAlias(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAGlobalAlias(LLVMValueRef Val):
     global _LLVMIsAGlobalAlias__funptr
     __init_symbol(&_LLVMIsAGlobalAlias__funptr,"LLVMIsAGlobalAlias")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAGlobalAlias__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAGlobalAlias__funptr)(Val)
 
 
 cdef void* _LLVMIsAGlobalObject__funptr = NULL
-cdef LLVMValueRef LLVMIsAGlobalObject(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAGlobalObject(LLVMValueRef Val):
     global _LLVMIsAGlobalObject__funptr
     __init_symbol(&_LLVMIsAGlobalObject__funptr,"LLVMIsAGlobalObject")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAGlobalObject__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAGlobalObject__funptr)(Val)
 
 
 cdef void* _LLVMIsAFunction__funptr = NULL
-cdef LLVMValueRef LLVMIsAFunction(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAFunction(LLVMValueRef Val):
     global _LLVMIsAFunction__funptr
     __init_symbol(&_LLVMIsAFunction__funptr,"LLVMIsAFunction")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAFunction__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAFunction__funptr)(Val)
 
 
 cdef void* _LLVMIsAGlobalVariable__funptr = NULL
-cdef LLVMValueRef LLVMIsAGlobalVariable(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAGlobalVariable(LLVMValueRef Val):
     global _LLVMIsAGlobalVariable__funptr
     __init_symbol(&_LLVMIsAGlobalVariable__funptr,"LLVMIsAGlobalVariable")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAGlobalVariable__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAGlobalVariable__funptr)(Val)
 
 
 cdef void* _LLVMIsAGlobalIFunc__funptr = NULL
-cdef LLVMValueRef LLVMIsAGlobalIFunc(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAGlobalIFunc(LLVMValueRef Val):
     global _LLVMIsAGlobalIFunc__funptr
     __init_symbol(&_LLVMIsAGlobalIFunc__funptr,"LLVMIsAGlobalIFunc")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAGlobalIFunc__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAGlobalIFunc__funptr)(Val)
 
 
 cdef void* _LLVMIsAUndefValue__funptr = NULL
-cdef LLVMValueRef LLVMIsAUndefValue(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAUndefValue(LLVMValueRef Val):
     global _LLVMIsAUndefValue__funptr
     __init_symbol(&_LLVMIsAUndefValue__funptr,"LLVMIsAUndefValue")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAUndefValue__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAUndefValue__funptr)(Val)
 
 
 cdef void* _LLVMIsAPoisonValue__funptr = NULL
-cdef LLVMValueRef LLVMIsAPoisonValue(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAPoisonValue(LLVMValueRef Val):
     global _LLVMIsAPoisonValue__funptr
     __init_symbol(&_LLVMIsAPoisonValue__funptr,"LLVMIsAPoisonValue")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAPoisonValue__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAPoisonValue__funptr)(Val)
 
 
 cdef void* _LLVMIsAInstruction__funptr = NULL
-cdef LLVMValueRef LLVMIsAInstruction(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAInstruction(LLVMValueRef Val):
     global _LLVMIsAInstruction__funptr
     __init_symbol(&_LLVMIsAInstruction__funptr,"LLVMIsAInstruction")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAInstruction__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAInstruction__funptr)(Val)
 
 
 cdef void* _LLVMIsAUnaryOperator__funptr = NULL
-cdef LLVMValueRef LLVMIsAUnaryOperator(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAUnaryOperator(LLVMValueRef Val):
     global _LLVMIsAUnaryOperator__funptr
     __init_symbol(&_LLVMIsAUnaryOperator__funptr,"LLVMIsAUnaryOperator")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAUnaryOperator__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAUnaryOperator__funptr)(Val)
 
 
 cdef void* _LLVMIsABinaryOperator__funptr = NULL
-cdef LLVMValueRef LLVMIsABinaryOperator(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsABinaryOperator(LLVMValueRef Val):
     global _LLVMIsABinaryOperator__funptr
     __init_symbol(&_LLVMIsABinaryOperator__funptr,"LLVMIsABinaryOperator")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsABinaryOperator__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsABinaryOperator__funptr)(Val)
 
 
 cdef void* _LLVMIsACallInst__funptr = NULL
-cdef LLVMValueRef LLVMIsACallInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsACallInst(LLVMValueRef Val):
     global _LLVMIsACallInst__funptr
     __init_symbol(&_LLVMIsACallInst__funptr,"LLVMIsACallInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsACallInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsACallInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAIntrinsicInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAIntrinsicInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAIntrinsicInst(LLVMValueRef Val):
     global _LLVMIsAIntrinsicInst__funptr
     __init_symbol(&_LLVMIsAIntrinsicInst__funptr,"LLVMIsAIntrinsicInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAIntrinsicInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAIntrinsicInst__funptr)(Val)
 
 
 cdef void* _LLVMIsADbgInfoIntrinsic__funptr = NULL
-cdef LLVMValueRef LLVMIsADbgInfoIntrinsic(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsADbgInfoIntrinsic(LLVMValueRef Val):
     global _LLVMIsADbgInfoIntrinsic__funptr
     __init_symbol(&_LLVMIsADbgInfoIntrinsic__funptr,"LLVMIsADbgInfoIntrinsic")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsADbgInfoIntrinsic__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsADbgInfoIntrinsic__funptr)(Val)
 
 
 cdef void* _LLVMIsADbgVariableIntrinsic__funptr = NULL
-cdef LLVMValueRef LLVMIsADbgVariableIntrinsic(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsADbgVariableIntrinsic(LLVMValueRef Val):
     global _LLVMIsADbgVariableIntrinsic__funptr
     __init_symbol(&_LLVMIsADbgVariableIntrinsic__funptr,"LLVMIsADbgVariableIntrinsic")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsADbgVariableIntrinsic__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsADbgVariableIntrinsic__funptr)(Val)
 
 
 cdef void* _LLVMIsADbgDeclareInst__funptr = NULL
-cdef LLVMValueRef LLVMIsADbgDeclareInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsADbgDeclareInst(LLVMValueRef Val):
     global _LLVMIsADbgDeclareInst__funptr
     __init_symbol(&_LLVMIsADbgDeclareInst__funptr,"LLVMIsADbgDeclareInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsADbgDeclareInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsADbgDeclareInst__funptr)(Val)
 
 
 cdef void* _LLVMIsADbgLabelInst__funptr = NULL
-cdef LLVMValueRef LLVMIsADbgLabelInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsADbgLabelInst(LLVMValueRef Val):
     global _LLVMIsADbgLabelInst__funptr
     __init_symbol(&_LLVMIsADbgLabelInst__funptr,"LLVMIsADbgLabelInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsADbgLabelInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsADbgLabelInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAMemIntrinsic__funptr = NULL
-cdef LLVMValueRef LLVMIsAMemIntrinsic(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAMemIntrinsic(LLVMValueRef Val):
     global _LLVMIsAMemIntrinsic__funptr
     __init_symbol(&_LLVMIsAMemIntrinsic__funptr,"LLVMIsAMemIntrinsic")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAMemIntrinsic__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAMemIntrinsic__funptr)(Val)
 
 
 cdef void* _LLVMIsAMemCpyInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAMemCpyInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAMemCpyInst(LLVMValueRef Val):
     global _LLVMIsAMemCpyInst__funptr
     __init_symbol(&_LLVMIsAMemCpyInst__funptr,"LLVMIsAMemCpyInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAMemCpyInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAMemCpyInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAMemMoveInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAMemMoveInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAMemMoveInst(LLVMValueRef Val):
     global _LLVMIsAMemMoveInst__funptr
     __init_symbol(&_LLVMIsAMemMoveInst__funptr,"LLVMIsAMemMoveInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAMemMoveInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAMemMoveInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAMemSetInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAMemSetInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAMemSetInst(LLVMValueRef Val):
     global _LLVMIsAMemSetInst__funptr
     __init_symbol(&_LLVMIsAMemSetInst__funptr,"LLVMIsAMemSetInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAMemSetInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAMemSetInst__funptr)(Val)
 
 
 cdef void* _LLVMIsACmpInst__funptr = NULL
-cdef LLVMValueRef LLVMIsACmpInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsACmpInst(LLVMValueRef Val):
     global _LLVMIsACmpInst__funptr
     __init_symbol(&_LLVMIsACmpInst__funptr,"LLVMIsACmpInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsACmpInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsACmpInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAFCmpInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAFCmpInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAFCmpInst(LLVMValueRef Val):
     global _LLVMIsAFCmpInst__funptr
     __init_symbol(&_LLVMIsAFCmpInst__funptr,"LLVMIsAFCmpInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAFCmpInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAFCmpInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAICmpInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAICmpInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAICmpInst(LLVMValueRef Val):
     global _LLVMIsAICmpInst__funptr
     __init_symbol(&_LLVMIsAICmpInst__funptr,"LLVMIsAICmpInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAICmpInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAICmpInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAExtractElementInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAExtractElementInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAExtractElementInst(LLVMValueRef Val):
     global _LLVMIsAExtractElementInst__funptr
     __init_symbol(&_LLVMIsAExtractElementInst__funptr,"LLVMIsAExtractElementInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAExtractElementInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAExtractElementInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAGetElementPtrInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAGetElementPtrInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAGetElementPtrInst(LLVMValueRef Val):
     global _LLVMIsAGetElementPtrInst__funptr
     __init_symbol(&_LLVMIsAGetElementPtrInst__funptr,"LLVMIsAGetElementPtrInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAGetElementPtrInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAGetElementPtrInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAInsertElementInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAInsertElementInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAInsertElementInst(LLVMValueRef Val):
     global _LLVMIsAInsertElementInst__funptr
     __init_symbol(&_LLVMIsAInsertElementInst__funptr,"LLVMIsAInsertElementInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAInsertElementInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAInsertElementInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAInsertValueInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAInsertValueInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAInsertValueInst(LLVMValueRef Val):
     global _LLVMIsAInsertValueInst__funptr
     __init_symbol(&_LLVMIsAInsertValueInst__funptr,"LLVMIsAInsertValueInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAInsertValueInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAInsertValueInst__funptr)(Val)
 
 
 cdef void* _LLVMIsALandingPadInst__funptr = NULL
-cdef LLVMValueRef LLVMIsALandingPadInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsALandingPadInst(LLVMValueRef Val):
     global _LLVMIsALandingPadInst__funptr
     __init_symbol(&_LLVMIsALandingPadInst__funptr,"LLVMIsALandingPadInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsALandingPadInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsALandingPadInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAPHINode__funptr = NULL
-cdef LLVMValueRef LLVMIsAPHINode(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAPHINode(LLVMValueRef Val):
     global _LLVMIsAPHINode__funptr
     __init_symbol(&_LLVMIsAPHINode__funptr,"LLVMIsAPHINode")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAPHINode__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAPHINode__funptr)(Val)
 
 
 cdef void* _LLVMIsASelectInst__funptr = NULL
-cdef LLVMValueRef LLVMIsASelectInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsASelectInst(LLVMValueRef Val):
     global _LLVMIsASelectInst__funptr
     __init_symbol(&_LLVMIsASelectInst__funptr,"LLVMIsASelectInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsASelectInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsASelectInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAShuffleVectorInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAShuffleVectorInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAShuffleVectorInst(LLVMValueRef Val):
     global _LLVMIsAShuffleVectorInst__funptr
     __init_symbol(&_LLVMIsAShuffleVectorInst__funptr,"LLVMIsAShuffleVectorInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAShuffleVectorInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAShuffleVectorInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAStoreInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAStoreInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAStoreInst(LLVMValueRef Val):
     global _LLVMIsAStoreInst__funptr
     __init_symbol(&_LLVMIsAStoreInst__funptr,"LLVMIsAStoreInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAStoreInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAStoreInst__funptr)(Val)
 
 
 cdef void* _LLVMIsABranchInst__funptr = NULL
-cdef LLVMValueRef LLVMIsABranchInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsABranchInst(LLVMValueRef Val):
     global _LLVMIsABranchInst__funptr
     __init_symbol(&_LLVMIsABranchInst__funptr,"LLVMIsABranchInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsABranchInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsABranchInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAIndirectBrInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAIndirectBrInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAIndirectBrInst(LLVMValueRef Val):
     global _LLVMIsAIndirectBrInst__funptr
     __init_symbol(&_LLVMIsAIndirectBrInst__funptr,"LLVMIsAIndirectBrInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAIndirectBrInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAIndirectBrInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAInvokeInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAInvokeInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAInvokeInst(LLVMValueRef Val):
     global _LLVMIsAInvokeInst__funptr
     __init_symbol(&_LLVMIsAInvokeInst__funptr,"LLVMIsAInvokeInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAInvokeInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAInvokeInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAReturnInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAReturnInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAReturnInst(LLVMValueRef Val):
     global _LLVMIsAReturnInst__funptr
     __init_symbol(&_LLVMIsAReturnInst__funptr,"LLVMIsAReturnInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAReturnInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAReturnInst__funptr)(Val)
 
 
 cdef void* _LLVMIsASwitchInst__funptr = NULL
-cdef LLVMValueRef LLVMIsASwitchInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsASwitchInst(LLVMValueRef Val):
     global _LLVMIsASwitchInst__funptr
     __init_symbol(&_LLVMIsASwitchInst__funptr,"LLVMIsASwitchInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsASwitchInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsASwitchInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAUnreachableInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAUnreachableInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAUnreachableInst(LLVMValueRef Val):
     global _LLVMIsAUnreachableInst__funptr
     __init_symbol(&_LLVMIsAUnreachableInst__funptr,"LLVMIsAUnreachableInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAUnreachableInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAUnreachableInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAResumeInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAResumeInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAResumeInst(LLVMValueRef Val):
     global _LLVMIsAResumeInst__funptr
     __init_symbol(&_LLVMIsAResumeInst__funptr,"LLVMIsAResumeInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAResumeInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAResumeInst__funptr)(Val)
 
 
 cdef void* _LLVMIsACleanupReturnInst__funptr = NULL
-cdef LLVMValueRef LLVMIsACleanupReturnInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsACleanupReturnInst(LLVMValueRef Val):
     global _LLVMIsACleanupReturnInst__funptr
     __init_symbol(&_LLVMIsACleanupReturnInst__funptr,"LLVMIsACleanupReturnInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsACleanupReturnInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsACleanupReturnInst__funptr)(Val)
 
 
 cdef void* _LLVMIsACatchReturnInst__funptr = NULL
-cdef LLVMValueRef LLVMIsACatchReturnInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsACatchReturnInst(LLVMValueRef Val):
     global _LLVMIsACatchReturnInst__funptr
     __init_symbol(&_LLVMIsACatchReturnInst__funptr,"LLVMIsACatchReturnInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsACatchReturnInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsACatchReturnInst__funptr)(Val)
 
 
 cdef void* _LLVMIsACatchSwitchInst__funptr = NULL
-cdef LLVMValueRef LLVMIsACatchSwitchInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsACatchSwitchInst(LLVMValueRef Val):
     global _LLVMIsACatchSwitchInst__funptr
     __init_symbol(&_LLVMIsACatchSwitchInst__funptr,"LLVMIsACatchSwitchInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsACatchSwitchInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsACatchSwitchInst__funptr)(Val)
 
 
 cdef void* _LLVMIsACallBrInst__funptr = NULL
-cdef LLVMValueRef LLVMIsACallBrInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsACallBrInst(LLVMValueRef Val):
     global _LLVMIsACallBrInst__funptr
     __init_symbol(&_LLVMIsACallBrInst__funptr,"LLVMIsACallBrInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsACallBrInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsACallBrInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAFuncletPadInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAFuncletPadInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAFuncletPadInst(LLVMValueRef Val):
     global _LLVMIsAFuncletPadInst__funptr
     __init_symbol(&_LLVMIsAFuncletPadInst__funptr,"LLVMIsAFuncletPadInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAFuncletPadInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAFuncletPadInst__funptr)(Val)
 
 
 cdef void* _LLVMIsACatchPadInst__funptr = NULL
-cdef LLVMValueRef LLVMIsACatchPadInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsACatchPadInst(LLVMValueRef Val):
     global _LLVMIsACatchPadInst__funptr
     __init_symbol(&_LLVMIsACatchPadInst__funptr,"LLVMIsACatchPadInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsACatchPadInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsACatchPadInst__funptr)(Val)
 
 
 cdef void* _LLVMIsACleanupPadInst__funptr = NULL
-cdef LLVMValueRef LLVMIsACleanupPadInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsACleanupPadInst(LLVMValueRef Val):
     global _LLVMIsACleanupPadInst__funptr
     __init_symbol(&_LLVMIsACleanupPadInst__funptr,"LLVMIsACleanupPadInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsACleanupPadInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsACleanupPadInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAUnaryInstruction__funptr = NULL
-cdef LLVMValueRef LLVMIsAUnaryInstruction(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAUnaryInstruction(LLVMValueRef Val):
     global _LLVMIsAUnaryInstruction__funptr
     __init_symbol(&_LLVMIsAUnaryInstruction__funptr,"LLVMIsAUnaryInstruction")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAUnaryInstruction__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAUnaryInstruction__funptr)(Val)
 
 
 cdef void* _LLVMIsAAllocaInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAAllocaInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAAllocaInst(LLVMValueRef Val):
     global _LLVMIsAAllocaInst__funptr
     __init_symbol(&_LLVMIsAAllocaInst__funptr,"LLVMIsAAllocaInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAAllocaInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAAllocaInst__funptr)(Val)
 
 
 cdef void* _LLVMIsACastInst__funptr = NULL
-cdef LLVMValueRef LLVMIsACastInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsACastInst(LLVMValueRef Val):
     global _LLVMIsACastInst__funptr
     __init_symbol(&_LLVMIsACastInst__funptr,"LLVMIsACastInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsACastInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsACastInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAAddrSpaceCastInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAAddrSpaceCastInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAAddrSpaceCastInst(LLVMValueRef Val):
     global _LLVMIsAAddrSpaceCastInst__funptr
     __init_symbol(&_LLVMIsAAddrSpaceCastInst__funptr,"LLVMIsAAddrSpaceCastInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAAddrSpaceCastInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAAddrSpaceCastInst__funptr)(Val)
 
 
 cdef void* _LLVMIsABitCastInst__funptr = NULL
-cdef LLVMValueRef LLVMIsABitCastInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsABitCastInst(LLVMValueRef Val):
     global _LLVMIsABitCastInst__funptr
     __init_symbol(&_LLVMIsABitCastInst__funptr,"LLVMIsABitCastInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsABitCastInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsABitCastInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAFPExtInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAFPExtInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAFPExtInst(LLVMValueRef Val):
     global _LLVMIsAFPExtInst__funptr
     __init_symbol(&_LLVMIsAFPExtInst__funptr,"LLVMIsAFPExtInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAFPExtInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAFPExtInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAFPToSIInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAFPToSIInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAFPToSIInst(LLVMValueRef Val):
     global _LLVMIsAFPToSIInst__funptr
     __init_symbol(&_LLVMIsAFPToSIInst__funptr,"LLVMIsAFPToSIInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAFPToSIInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAFPToSIInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAFPToUIInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAFPToUIInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAFPToUIInst(LLVMValueRef Val):
     global _LLVMIsAFPToUIInst__funptr
     __init_symbol(&_LLVMIsAFPToUIInst__funptr,"LLVMIsAFPToUIInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAFPToUIInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAFPToUIInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAFPTruncInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAFPTruncInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAFPTruncInst(LLVMValueRef Val):
     global _LLVMIsAFPTruncInst__funptr
     __init_symbol(&_LLVMIsAFPTruncInst__funptr,"LLVMIsAFPTruncInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAFPTruncInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAFPTruncInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAIntToPtrInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAIntToPtrInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAIntToPtrInst(LLVMValueRef Val):
     global _LLVMIsAIntToPtrInst__funptr
     __init_symbol(&_LLVMIsAIntToPtrInst__funptr,"LLVMIsAIntToPtrInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAIntToPtrInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAIntToPtrInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAPtrToIntInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAPtrToIntInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAPtrToIntInst(LLVMValueRef Val):
     global _LLVMIsAPtrToIntInst__funptr
     __init_symbol(&_LLVMIsAPtrToIntInst__funptr,"LLVMIsAPtrToIntInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAPtrToIntInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAPtrToIntInst__funptr)(Val)
 
 
 cdef void* _LLVMIsASExtInst__funptr = NULL
-cdef LLVMValueRef LLVMIsASExtInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsASExtInst(LLVMValueRef Val):
     global _LLVMIsASExtInst__funptr
     __init_symbol(&_LLVMIsASExtInst__funptr,"LLVMIsASExtInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsASExtInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsASExtInst__funptr)(Val)
 
 
 cdef void* _LLVMIsASIToFPInst__funptr = NULL
-cdef LLVMValueRef LLVMIsASIToFPInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsASIToFPInst(LLVMValueRef Val):
     global _LLVMIsASIToFPInst__funptr
     __init_symbol(&_LLVMIsASIToFPInst__funptr,"LLVMIsASIToFPInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsASIToFPInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsASIToFPInst__funptr)(Val)
 
 
 cdef void* _LLVMIsATruncInst__funptr = NULL
-cdef LLVMValueRef LLVMIsATruncInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsATruncInst(LLVMValueRef Val):
     global _LLVMIsATruncInst__funptr
     __init_symbol(&_LLVMIsATruncInst__funptr,"LLVMIsATruncInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsATruncInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsATruncInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAUIToFPInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAUIToFPInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAUIToFPInst(LLVMValueRef Val):
     global _LLVMIsAUIToFPInst__funptr
     __init_symbol(&_LLVMIsAUIToFPInst__funptr,"LLVMIsAUIToFPInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAUIToFPInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAUIToFPInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAZExtInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAZExtInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAZExtInst(LLVMValueRef Val):
     global _LLVMIsAZExtInst__funptr
     __init_symbol(&_LLVMIsAZExtInst__funptr,"LLVMIsAZExtInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAZExtInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAZExtInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAExtractValueInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAExtractValueInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAExtractValueInst(LLVMValueRef Val):
     global _LLVMIsAExtractValueInst__funptr
     __init_symbol(&_LLVMIsAExtractValueInst__funptr,"LLVMIsAExtractValueInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAExtractValueInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAExtractValueInst__funptr)(Val)
 
 
 cdef void* _LLVMIsALoadInst__funptr = NULL
-cdef LLVMValueRef LLVMIsALoadInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsALoadInst(LLVMValueRef Val):
     global _LLVMIsALoadInst__funptr
     __init_symbol(&_LLVMIsALoadInst__funptr,"LLVMIsALoadInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsALoadInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsALoadInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAVAArgInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAVAArgInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAVAArgInst(LLVMValueRef Val):
     global _LLVMIsAVAArgInst__funptr
     __init_symbol(&_LLVMIsAVAArgInst__funptr,"LLVMIsAVAArgInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAVAArgInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAVAArgInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAFreezeInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAFreezeInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAFreezeInst(LLVMValueRef Val):
     global _LLVMIsAFreezeInst__funptr
     __init_symbol(&_LLVMIsAFreezeInst__funptr,"LLVMIsAFreezeInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAFreezeInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAFreezeInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAAtomicCmpXchgInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAAtomicCmpXchgInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAAtomicCmpXchgInst(LLVMValueRef Val):
     global _LLVMIsAAtomicCmpXchgInst__funptr
     __init_symbol(&_LLVMIsAAtomicCmpXchgInst__funptr,"LLVMIsAAtomicCmpXchgInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAAtomicCmpXchgInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAAtomicCmpXchgInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAAtomicRMWInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAAtomicRMWInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAAtomicRMWInst(LLVMValueRef Val):
     global _LLVMIsAAtomicRMWInst__funptr
     __init_symbol(&_LLVMIsAAtomicRMWInst__funptr,"LLVMIsAAtomicRMWInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAAtomicRMWInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAAtomicRMWInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAFenceInst__funptr = NULL
-cdef LLVMValueRef LLVMIsAFenceInst(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAFenceInst(LLVMValueRef Val):
     global _LLVMIsAFenceInst__funptr
     __init_symbol(&_LLVMIsAFenceInst__funptr,"LLVMIsAFenceInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAFenceInst__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAFenceInst__funptr)(Val)
 
 
 cdef void* _LLVMIsAMDNode__funptr = NULL
-cdef LLVMValueRef LLVMIsAMDNode(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAMDNode(LLVMValueRef Val):
     global _LLVMIsAMDNode__funptr
     __init_symbol(&_LLVMIsAMDNode__funptr,"LLVMIsAMDNode")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAMDNode__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAMDNode__funptr)(Val)
 
 
 cdef void* _LLVMIsAMDString__funptr = NULL
-cdef LLVMValueRef LLVMIsAMDString(LLVMValueRef Val) nogil:
+cdef LLVMValueRef LLVMIsAMDString(LLVMValueRef Val):
     global _LLVMIsAMDString__funptr
     __init_symbol(&_LLVMIsAMDString__funptr,"LLVMIsAMDString")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsAMDString__funptr)(Val)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsAMDString__funptr)(Val)
 
 
 cdef void* _LLVMGetValueName__funptr = NULL
 # Deprecated: Use LLVMGetValueName2 instead. */
-cdef const char * LLVMGetValueName(LLVMValueRef Val) nogil:
+cdef const char * LLVMGetValueName(LLVMValueRef Val):
     global _LLVMGetValueName__funptr
     __init_symbol(&_LLVMGetValueName__funptr,"LLVMGetValueName")
-    return (<const char * (*)(LLVMValueRef) nogil> _LLVMGetValueName__funptr)(Val)
+    with nogil:
+        return (<const char * (*)(LLVMValueRef) noexcept nogil> _LLVMGetValueName__funptr)(Val)
 
 
 cdef void* _LLVMSetValueName__funptr = NULL
 # Deprecated: Use LLVMSetValueName2 instead. */
-cdef void LLVMSetValueName(LLVMValueRef Val,const char * Name) nogil:
+cdef void LLVMSetValueName(LLVMValueRef Val,const char * Name):
     global _LLVMSetValueName__funptr
     __init_symbol(&_LLVMSetValueName__funptr,"LLVMSetValueName")
-    (<void (*)(LLVMValueRef,const char *) nogil> _LLVMSetValueName__funptr)(Val,Name)
+    with nogil:
+        (<void (*)(LLVMValueRef,const char *) noexcept nogil> _LLVMSetValueName__funptr)(Val,Name)
 
 
 cdef void* _LLVMGetFirstUse__funptr = NULL
@@ -2429,10 +2690,11 @@ cdef void* _LLVMGetFirstUse__funptr = NULL
 # LLVMGetNextUse() returns NULL.
 # 
 # @see llvm::Value::use_begin()
-cdef LLVMUseRef LLVMGetFirstUse(LLVMValueRef Val) nogil:
+cdef LLVMUseRef LLVMGetFirstUse(LLVMValueRef Val):
     global _LLVMGetFirstUse__funptr
     __init_symbol(&_LLVMGetFirstUse__funptr,"LLVMGetFirstUse")
-    return (<LLVMUseRef (*)(LLVMValueRef) nogil> _LLVMGetFirstUse__funptr)(Val)
+    with nogil:
+        return (<LLVMUseRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetFirstUse__funptr)(Val)
 
 
 cdef void* _LLVMGetNextUse__funptr = NULL
@@ -2441,10 +2703,11 @@ cdef void* _LLVMGetNextUse__funptr = NULL
 # 
 # This effectively advances the iterator. It returns NULL if you are on
 # the final use and no more are available.
-cdef LLVMUseRef LLVMGetNextUse(LLVMUseRef U) nogil:
+cdef LLVMUseRef LLVMGetNextUse(LLVMUseRef U):
     global _LLVMGetNextUse__funptr
     __init_symbol(&_LLVMGetNextUse__funptr,"LLVMGetNextUse")
-    return (<LLVMUseRef (*)(LLVMUseRef) nogil> _LLVMGetNextUse__funptr)(U)
+    with nogil:
+        return (<LLVMUseRef (*)(LLVMUseRef) noexcept nogil> _LLVMGetNextUse__funptr)(U)
 
 
 cdef void* _LLVMGetUser__funptr = NULL
@@ -2454,10 +2717,11 @@ cdef void* _LLVMGetUser__funptr = NULL
 # The returned value corresponds to a llvm::User type.
 # 
 # @see llvm::Use::getUser()
-cdef LLVMValueRef LLVMGetUser(LLVMUseRef U) nogil:
+cdef LLVMValueRef LLVMGetUser(LLVMUseRef U):
     global _LLVMGetUser__funptr
     __init_symbol(&_LLVMGetUser__funptr,"LLVMGetUser")
-    return (<LLVMValueRef (*)(LLVMUseRef) nogil> _LLVMGetUser__funptr)(U)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMUseRef) noexcept nogil> _LLVMGetUser__funptr)(U)
 
 
 cdef void* _LLVMGetUsedValue__funptr = NULL
@@ -2465,10 +2729,11 @@ cdef void* _LLVMGetUsedValue__funptr = NULL
 # Obtain the value this use corresponds to.
 # 
 # @see llvm::Use::get().
-cdef LLVMValueRef LLVMGetUsedValue(LLVMUseRef U) nogil:
+cdef LLVMValueRef LLVMGetUsedValue(LLVMUseRef U):
     global _LLVMGetUsedValue__funptr
     __init_symbol(&_LLVMGetUsedValue__funptr,"LLVMGetUsedValue")
-    return (<LLVMValueRef (*)(LLVMUseRef) nogil> _LLVMGetUsedValue__funptr)(U)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMUseRef) noexcept nogil> _LLVMGetUsedValue__funptr)(U)
 
 
 cdef void* _LLVMGetOperand__funptr = NULL
@@ -2476,10 +2741,11 @@ cdef void* _LLVMGetOperand__funptr = NULL
 # Obtain an operand at a specific index in a llvm::User value.
 # 
 # @see llvm::User::getOperand()
-cdef LLVMValueRef LLVMGetOperand(LLVMValueRef Val,unsigned int Index) nogil:
+cdef LLVMValueRef LLVMGetOperand(LLVMValueRef Val,unsigned int Index):
     global _LLVMGetOperand__funptr
     __init_symbol(&_LLVMGetOperand__funptr,"LLVMGetOperand")
-    return (<LLVMValueRef (*)(LLVMValueRef,unsigned int) nogil> _LLVMGetOperand__funptr)(Val,Index)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,unsigned int) noexcept nogil> _LLVMGetOperand__funptr)(Val,Index)
 
 
 cdef void* _LLVMGetOperandUse__funptr = NULL
@@ -2487,10 +2753,11 @@ cdef void* _LLVMGetOperandUse__funptr = NULL
 # Obtain the use of an operand at a specific index in a llvm::User value.
 # 
 # @see llvm::User::getOperandUse()
-cdef LLVMUseRef LLVMGetOperandUse(LLVMValueRef Val,unsigned int Index) nogil:
+cdef LLVMUseRef LLVMGetOperandUse(LLVMValueRef Val,unsigned int Index):
     global _LLVMGetOperandUse__funptr
     __init_symbol(&_LLVMGetOperandUse__funptr,"LLVMGetOperandUse")
-    return (<LLVMUseRef (*)(LLVMValueRef,unsigned int) nogil> _LLVMGetOperandUse__funptr)(Val,Index)
+    with nogil:
+        return (<LLVMUseRef (*)(LLVMValueRef,unsigned int) noexcept nogil> _LLVMGetOperandUse__funptr)(Val,Index)
 
 
 cdef void* _LLVMSetOperand__funptr = NULL
@@ -2498,10 +2765,11 @@ cdef void* _LLVMSetOperand__funptr = NULL
 # Set an operand at a specific index in a llvm::User value.
 # 
 # @see llvm::User::setOperand()
-cdef void LLVMSetOperand(LLVMValueRef User,unsigned int Index,LLVMValueRef Val) nogil:
+cdef void LLVMSetOperand(LLVMValueRef User,unsigned int Index,LLVMValueRef Val):
     global _LLVMSetOperand__funptr
     __init_symbol(&_LLVMSetOperand__funptr,"LLVMSetOperand")
-    (<void (*)(LLVMValueRef,unsigned int,LLVMValueRef) nogil> _LLVMSetOperand__funptr)(User,Index,Val)
+    with nogil:
+        (<void (*)(LLVMValueRef,unsigned int,LLVMValueRef) noexcept nogil> _LLVMSetOperand__funptr)(User,Index,Val)
 
 
 cdef void* _LLVMGetNumOperands__funptr = NULL
@@ -2509,10 +2777,11 @@ cdef void* _LLVMGetNumOperands__funptr = NULL
 # Obtain the number of operands in a llvm::User value.
 # 
 # @see llvm::User::getNumOperands()
-cdef int LLVMGetNumOperands(LLVMValueRef Val) nogil:
+cdef int LLVMGetNumOperands(LLVMValueRef Val):
     global _LLVMGetNumOperands__funptr
     __init_symbol(&_LLVMGetNumOperands__funptr,"LLVMGetNumOperands")
-    return (<int (*)(LLVMValueRef) nogil> _LLVMGetNumOperands__funptr)(Val)
+    with nogil:
+        return (<int (*)(LLVMValueRef) noexcept nogil> _LLVMGetNumOperands__funptr)(Val)
 
 
 cdef void* _LLVMConstNull__funptr = NULL
@@ -2520,10 +2789,11 @@ cdef void* _LLVMConstNull__funptr = NULL
 # Obtain a constant value referring to the null instance of a type.
 # 
 # @see llvm::Constant::getNullValue()
-cdef LLVMValueRef LLVMConstNull(LLVMTypeRef Ty) nogil:
+cdef LLVMValueRef LLVMConstNull(LLVMTypeRef Ty):
     global _LLVMConstNull__funptr
     __init_symbol(&_LLVMConstNull__funptr,"LLVMConstNull")
-    return (<LLVMValueRef (*)(LLVMTypeRef) nogil> _LLVMConstNull__funptr)(Ty)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMTypeRef) noexcept nogil> _LLVMConstNull__funptr)(Ty)
 
 
 cdef void* _LLVMConstAllOnes__funptr = NULL
@@ -2534,10 +2804,11 @@ cdef void* _LLVMConstAllOnes__funptr = NULL
 # This is only valid for integer types.
 # 
 # @see llvm::Constant::getAllOnesValue()
-cdef LLVMValueRef LLVMConstAllOnes(LLVMTypeRef Ty) nogil:
+cdef LLVMValueRef LLVMConstAllOnes(LLVMTypeRef Ty):
     global _LLVMConstAllOnes__funptr
     __init_symbol(&_LLVMConstAllOnes__funptr,"LLVMConstAllOnes")
-    return (<LLVMValueRef (*)(LLVMTypeRef) nogil> _LLVMConstAllOnes__funptr)(Ty)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMTypeRef) noexcept nogil> _LLVMConstAllOnes__funptr)(Ty)
 
 
 cdef void* _LLVMGetUndef__funptr = NULL
@@ -2545,10 +2816,11 @@ cdef void* _LLVMGetUndef__funptr = NULL
 # Obtain a constant value referring to an undefined value of a type.
 # 
 # @see llvm::UndefValue::get()
-cdef LLVMValueRef LLVMGetUndef(LLVMTypeRef Ty) nogil:
+cdef LLVMValueRef LLVMGetUndef(LLVMTypeRef Ty):
     global _LLVMGetUndef__funptr
     __init_symbol(&_LLVMGetUndef__funptr,"LLVMGetUndef")
-    return (<LLVMValueRef (*)(LLVMTypeRef) nogil> _LLVMGetUndef__funptr)(Ty)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMTypeRef) noexcept nogil> _LLVMGetUndef__funptr)(Ty)
 
 
 cdef void* _LLVMGetPoison__funptr = NULL
@@ -2556,10 +2828,11 @@ cdef void* _LLVMGetPoison__funptr = NULL
 # Obtain a constant value referring to a poison value of a type.
 # 
 # @see llvm::PoisonValue::get()
-cdef LLVMValueRef LLVMGetPoison(LLVMTypeRef Ty) nogil:
+cdef LLVMValueRef LLVMGetPoison(LLVMTypeRef Ty):
     global _LLVMGetPoison__funptr
     __init_symbol(&_LLVMGetPoison__funptr,"LLVMGetPoison")
-    return (<LLVMValueRef (*)(LLVMTypeRef) nogil> _LLVMGetPoison__funptr)(Ty)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMTypeRef) noexcept nogil> _LLVMGetPoison__funptr)(Ty)
 
 
 cdef void* _LLVMIsNull__funptr = NULL
@@ -2567,20 +2840,22 @@ cdef void* _LLVMIsNull__funptr = NULL
 # Determine whether a value instance is null.
 # 
 # @see llvm::Constant::isNullValue()
-cdef int LLVMIsNull(LLVMValueRef Val) nogil:
+cdef int LLVMIsNull(LLVMValueRef Val):
     global _LLVMIsNull__funptr
     __init_symbol(&_LLVMIsNull__funptr,"LLVMIsNull")
-    return (<int (*)(LLVMValueRef) nogil> _LLVMIsNull__funptr)(Val)
+    with nogil:
+        return (<int (*)(LLVMValueRef) noexcept nogil> _LLVMIsNull__funptr)(Val)
 
 
 cdef void* _LLVMConstPointerNull__funptr = NULL
 # 
 # Obtain a constant that is a constant pointer pointing to NULL for a
 # specified type.
-cdef LLVMValueRef LLVMConstPointerNull(LLVMTypeRef Ty) nogil:
+cdef LLVMValueRef LLVMConstPointerNull(LLVMTypeRef Ty):
     global _LLVMConstPointerNull__funptr
     __init_symbol(&_LLVMConstPointerNull__funptr,"LLVMConstPointerNull")
-    return (<LLVMValueRef (*)(LLVMTypeRef) nogil> _LLVMConstPointerNull__funptr)(Ty)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMTypeRef) noexcept nogil> _LLVMConstPointerNull__funptr)(Ty)
 
 
 cdef void* _LLVMConstInt__funptr = NULL
@@ -2594,10 +2869,11 @@ cdef void* _LLVMConstInt__funptr = NULL
 # @param IntTy Integer type to obtain value of.
 # @param N The value the returned instance should refer to.
 # @param SignExtend Whether to sign extend the produced value.
-cdef LLVMValueRef LLVMConstInt(LLVMTypeRef IntTy,unsigned long long N,int SignExtend) nogil:
+cdef LLVMValueRef LLVMConstInt(LLVMTypeRef IntTy,unsigned long long N,int SignExtend):
     global _LLVMConstInt__funptr
     __init_symbol(&_LLVMConstInt__funptr,"LLVMConstInt")
-    return (<LLVMValueRef (*)(LLVMTypeRef,unsigned long long,int) nogil> _LLVMConstInt__funptr)(IntTy,N,SignExtend)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMTypeRef,unsigned long long,int) noexcept nogil> _LLVMConstInt__funptr)(IntTy,N,SignExtend)
 
 
 cdef void* _LLVMConstIntOfArbitraryPrecision__funptr = NULL
@@ -2605,10 +2881,11 @@ cdef void* _LLVMConstIntOfArbitraryPrecision__funptr = NULL
 # Obtain a constant value for an integer of arbitrary precision.
 # 
 # @see llvm::ConstantInt::get()
-cdef LLVMValueRef LLVMConstIntOfArbitraryPrecision(LLVMTypeRef IntTy,unsigned int NumWords,const unsigned long* Words) nogil:
+cdef LLVMValueRef LLVMConstIntOfArbitraryPrecision(LLVMTypeRef IntTy,unsigned int NumWords,const unsigned long* Words):
     global _LLVMConstIntOfArbitraryPrecision__funptr
     __init_symbol(&_LLVMConstIntOfArbitraryPrecision__funptr,"LLVMConstIntOfArbitraryPrecision")
-    return (<LLVMValueRef (*)(LLVMTypeRef,unsigned int,const unsigned long*) nogil> _LLVMConstIntOfArbitraryPrecision__funptr)(IntTy,NumWords,Words)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMTypeRef,unsigned int,const unsigned long*) noexcept nogil> _LLVMConstIntOfArbitraryPrecision__funptr)(IntTy,NumWords,Words)
 
 
 cdef void* _LLVMConstIntOfString__funptr = NULL
@@ -2620,10 +2897,11 @@ cdef void* _LLVMConstIntOfString__funptr = NULL
 # instead.
 # 
 # @see llvm::ConstantInt::get()
-cdef LLVMValueRef LLVMConstIntOfString(LLVMTypeRef IntTy,const char * Text,unsigned char Radix) nogil:
+cdef LLVMValueRef LLVMConstIntOfString(LLVMTypeRef IntTy,const char * Text,unsigned char Radix):
     global _LLVMConstIntOfString__funptr
     __init_symbol(&_LLVMConstIntOfString__funptr,"LLVMConstIntOfString")
-    return (<LLVMValueRef (*)(LLVMTypeRef,const char *,unsigned char) nogil> _LLVMConstIntOfString__funptr)(IntTy,Text,Radix)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMTypeRef,const char *,unsigned char) noexcept nogil> _LLVMConstIntOfString__funptr)(IntTy,Text,Radix)
 
 
 cdef void* _LLVMConstIntOfStringAndSize__funptr = NULL
@@ -2632,19 +2910,21 @@ cdef void* _LLVMConstIntOfStringAndSize__funptr = NULL
 # specified length.
 # 
 # @see llvm::ConstantInt::get()
-cdef LLVMValueRef LLVMConstIntOfStringAndSize(LLVMTypeRef IntTy,const char * Text,unsigned int SLen,unsigned char Radix) nogil:
+cdef LLVMValueRef LLVMConstIntOfStringAndSize(LLVMTypeRef IntTy,const char * Text,unsigned int SLen,unsigned char Radix):
     global _LLVMConstIntOfStringAndSize__funptr
     __init_symbol(&_LLVMConstIntOfStringAndSize__funptr,"LLVMConstIntOfStringAndSize")
-    return (<LLVMValueRef (*)(LLVMTypeRef,const char *,unsigned int,unsigned char) nogil> _LLVMConstIntOfStringAndSize__funptr)(IntTy,Text,SLen,Radix)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMTypeRef,const char *,unsigned int,unsigned char) noexcept nogil> _LLVMConstIntOfStringAndSize__funptr)(IntTy,Text,SLen,Radix)
 
 
 cdef void* _LLVMConstReal__funptr = NULL
 # 
 # Obtain a constant value referring to a double floating point value.
-cdef LLVMValueRef LLVMConstReal(LLVMTypeRef RealTy,double N) nogil:
+cdef LLVMValueRef LLVMConstReal(LLVMTypeRef RealTy,double N):
     global _LLVMConstReal__funptr
     __init_symbol(&_LLVMConstReal__funptr,"LLVMConstReal")
-    return (<LLVMValueRef (*)(LLVMTypeRef,double) nogil> _LLVMConstReal__funptr)(RealTy,N)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMTypeRef,double) noexcept nogil> _LLVMConstReal__funptr)(RealTy,N)
 
 
 cdef void* _LLVMConstRealOfString__funptr = NULL
@@ -2653,19 +2933,21 @@ cdef void* _LLVMConstRealOfString__funptr = NULL
 # 
 # A similar API, LLVMConstRealOfStringAndSize is also available. It
 # should be used if the input string's length is known.
-cdef LLVMValueRef LLVMConstRealOfString(LLVMTypeRef RealTy,const char * Text) nogil:
+cdef LLVMValueRef LLVMConstRealOfString(LLVMTypeRef RealTy,const char * Text):
     global _LLVMConstRealOfString__funptr
     __init_symbol(&_LLVMConstRealOfString__funptr,"LLVMConstRealOfString")
-    return (<LLVMValueRef (*)(LLVMTypeRef,const char *) nogil> _LLVMConstRealOfString__funptr)(RealTy,Text)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMTypeRef,const char *) noexcept nogil> _LLVMConstRealOfString__funptr)(RealTy,Text)
 
 
 cdef void* _LLVMConstRealOfStringAndSize__funptr = NULL
 # 
 # Obtain a constant for a floating point value parsed from a string.
-cdef LLVMValueRef LLVMConstRealOfStringAndSize(LLVMTypeRef RealTy,const char * Text,unsigned int SLen) nogil:
+cdef LLVMValueRef LLVMConstRealOfStringAndSize(LLVMTypeRef RealTy,const char * Text,unsigned int SLen):
     global _LLVMConstRealOfStringAndSize__funptr
     __init_symbol(&_LLVMConstRealOfStringAndSize__funptr,"LLVMConstRealOfStringAndSize")
-    return (<LLVMValueRef (*)(LLVMTypeRef,const char *,unsigned int) nogil> _LLVMConstRealOfStringAndSize__funptr)(RealTy,Text,SLen)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMTypeRef,const char *,unsigned int) noexcept nogil> _LLVMConstRealOfStringAndSize__funptr)(RealTy,Text,SLen)
 
 
 cdef void* _LLVMConstIntGetZExtValue__funptr = NULL
@@ -2673,10 +2955,11 @@ cdef void* _LLVMConstIntGetZExtValue__funptr = NULL
 # Obtain the zero extended value for an integer constant value.
 # 
 # @see llvm::ConstantInt::getZExtValue()
-cdef unsigned long long LLVMConstIntGetZExtValue(LLVMValueRef ConstantVal) nogil:
+cdef unsigned long long LLVMConstIntGetZExtValue(LLVMValueRef ConstantVal):
     global _LLVMConstIntGetZExtValue__funptr
     __init_symbol(&_LLVMConstIntGetZExtValue__funptr,"LLVMConstIntGetZExtValue")
-    return (<unsigned long long (*)(LLVMValueRef) nogil> _LLVMConstIntGetZExtValue__funptr)(ConstantVal)
+    with nogil:
+        return (<unsigned long long (*)(LLVMValueRef) noexcept nogil> _LLVMConstIntGetZExtValue__funptr)(ConstantVal)
 
 
 cdef void* _LLVMConstIntGetSExtValue__funptr = NULL
@@ -2684,10 +2967,11 @@ cdef void* _LLVMConstIntGetSExtValue__funptr = NULL
 # Obtain the sign extended value for an integer constant value.
 # 
 # @see llvm::ConstantInt::getSExtValue()
-cdef long long LLVMConstIntGetSExtValue(LLVMValueRef ConstantVal) nogil:
+cdef long long LLVMConstIntGetSExtValue(LLVMValueRef ConstantVal):
     global _LLVMConstIntGetSExtValue__funptr
     __init_symbol(&_LLVMConstIntGetSExtValue__funptr,"LLVMConstIntGetSExtValue")
-    return (<long long (*)(LLVMValueRef) nogil> _LLVMConstIntGetSExtValue__funptr)(ConstantVal)
+    with nogil:
+        return (<long long (*)(LLVMValueRef) noexcept nogil> _LLVMConstIntGetSExtValue__funptr)(ConstantVal)
 
 
 cdef void* _LLVMConstRealGetDouble__funptr = NULL
@@ -2696,10 +2980,11 @@ cdef void* _LLVMConstRealGetDouble__funptr = NULL
 # losesInfo indicates if some precision was lost in the conversion.
 # 
 # @see llvm::ConstantFP::getDoubleValue
-cdef double LLVMConstRealGetDouble(LLVMValueRef ConstantVal,int * losesInfo) nogil:
+cdef double LLVMConstRealGetDouble(LLVMValueRef ConstantVal,int * losesInfo):
     global _LLVMConstRealGetDouble__funptr
     __init_symbol(&_LLVMConstRealGetDouble__funptr,"LLVMConstRealGetDouble")
-    return (<double (*)(LLVMValueRef,int *) nogil> _LLVMConstRealGetDouble__funptr)(ConstantVal,losesInfo)
+    with nogil:
+        return (<double (*)(LLVMValueRef,int *) noexcept nogil> _LLVMConstRealGetDouble__funptr)(ConstantVal,losesInfo)
 
 
 cdef void* _LLVMConstStringInContext__funptr = NULL
@@ -2707,10 +2992,11 @@ cdef void* _LLVMConstStringInContext__funptr = NULL
 # Create a ConstantDataSequential and initialize it with a string.
 # 
 # @see llvm::ConstantDataArray::getString()
-cdef LLVMValueRef LLVMConstStringInContext(LLVMContextRef C,const char * Str,unsigned int Length,int DontNullTerminate) nogil:
+cdef LLVMValueRef LLVMConstStringInContext(LLVMContextRef C,const char * Str,unsigned int Length,int DontNullTerminate):
     global _LLVMConstStringInContext__funptr
     __init_symbol(&_LLVMConstStringInContext__funptr,"LLVMConstStringInContext")
-    return (<LLVMValueRef (*)(LLVMContextRef,const char *,unsigned int,int) nogil> _LLVMConstStringInContext__funptr)(C,Str,Length,DontNullTerminate)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMContextRef,const char *,unsigned int,int) noexcept nogil> _LLVMConstStringInContext__funptr)(C,Str,Length,DontNullTerminate)
 
 
 cdef void* _LLVMConstString__funptr = NULL
@@ -2722,10 +3008,11 @@ cdef void* _LLVMConstString__funptr = NULL
 # 
 # @see LLVMConstStringInContext()
 # @see llvm::ConstantDataArray::getString()
-cdef LLVMValueRef LLVMConstString(const char * Str,unsigned int Length,int DontNullTerminate) nogil:
+cdef LLVMValueRef LLVMConstString(const char * Str,unsigned int Length,int DontNullTerminate):
     global _LLVMConstString__funptr
     __init_symbol(&_LLVMConstString__funptr,"LLVMConstString")
-    return (<LLVMValueRef (*)(const char *,unsigned int,int) nogil> _LLVMConstString__funptr)(Str,Length,DontNullTerminate)
+    with nogil:
+        return (<LLVMValueRef (*)(const char *,unsigned int,int) noexcept nogil> _LLVMConstString__funptr)(Str,Length,DontNullTerminate)
 
 
 cdef void* _LLVMIsConstantString__funptr = NULL
@@ -2733,10 +3020,11 @@ cdef void* _LLVMIsConstantString__funptr = NULL
 # Returns true if the specified constant is an array of i8.
 # 
 # @see ConstantDataSequential::getAsString()
-cdef int LLVMIsConstantString(LLVMValueRef c) nogil:
+cdef int LLVMIsConstantString(LLVMValueRef c):
     global _LLVMIsConstantString__funptr
     __init_symbol(&_LLVMIsConstantString__funptr,"LLVMIsConstantString")
-    return (<int (*)(LLVMValueRef) nogil> _LLVMIsConstantString__funptr)(c)
+    with nogil:
+        return (<int (*)(LLVMValueRef) noexcept nogil> _LLVMIsConstantString__funptr)(c)
 
 
 cdef void* _LLVMGetAsString__funptr = NULL
@@ -2744,10 +3032,11 @@ cdef void* _LLVMGetAsString__funptr = NULL
 # Get the given constant data sequential as a string.
 # 
 # @see ConstantDataSequential::getAsString()
-cdef const char * LLVMGetAsString(LLVMValueRef c,unsigned long * Length) nogil:
+cdef const char * LLVMGetAsString(LLVMValueRef c,unsigned long * Length):
     global _LLVMGetAsString__funptr
     __init_symbol(&_LLVMGetAsString__funptr,"LLVMGetAsString")
-    return (<const char * (*)(LLVMValueRef,unsigned long *) nogil> _LLVMGetAsString__funptr)(c,Length)
+    with nogil:
+        return (<const char * (*)(LLVMValueRef,unsigned long *) noexcept nogil> _LLVMGetAsString__funptr)(c,Length)
 
 
 cdef void* _LLVMConstStructInContext__funptr = NULL
@@ -2755,10 +3044,11 @@ cdef void* _LLVMConstStructInContext__funptr = NULL
 # Create an anonymous ConstantStruct with the specified values.
 # 
 # @see llvm::ConstantStruct::getAnon()
-cdef LLVMValueRef LLVMConstStructInContext(LLVMContextRef C,LLVMValueRef* ConstantVals,unsigned int Count,int Packed) nogil:
+cdef LLVMValueRef LLVMConstStructInContext(LLVMContextRef C,LLVMValueRef* ConstantVals,unsigned int Count,int Packed):
     global _LLVMConstStructInContext__funptr
     __init_symbol(&_LLVMConstStructInContext__funptr,"LLVMConstStructInContext")
-    return (<LLVMValueRef (*)(LLVMContextRef,LLVMValueRef*,unsigned int,int) nogil> _LLVMConstStructInContext__funptr)(C,ConstantVals,Count,Packed)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMContextRef,LLVMValueRef*,unsigned int,int) noexcept nogil> _LLVMConstStructInContext__funptr)(C,ConstantVals,Count,Packed)
 
 
 cdef void* _LLVMConstStruct__funptr = NULL
@@ -2769,10 +3059,11 @@ cdef void* _LLVMConstStruct__funptr = NULL
 # global Context.
 # 
 # @see LLVMConstStructInContext()
-cdef LLVMValueRef LLVMConstStruct(LLVMValueRef* ConstantVals,unsigned int Count,int Packed) nogil:
+cdef LLVMValueRef LLVMConstStruct(LLVMValueRef* ConstantVals,unsigned int Count,int Packed):
     global _LLVMConstStruct__funptr
     __init_symbol(&_LLVMConstStruct__funptr,"LLVMConstStruct")
-    return (<LLVMValueRef (*)(LLVMValueRef*,unsigned int,int) nogil> _LLVMConstStruct__funptr)(ConstantVals,Count,Packed)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef*,unsigned int,int) noexcept nogil> _LLVMConstStruct__funptr)(ConstantVals,Count,Packed)
 
 
 cdef void* _LLVMConstArray__funptr = NULL
@@ -2780,10 +3071,11 @@ cdef void* _LLVMConstArray__funptr = NULL
 # Create a ConstantArray from values.
 # 
 # @see llvm::ConstantArray::get()
-cdef LLVMValueRef LLVMConstArray(LLVMTypeRef ElementTy,LLVMValueRef* ConstantVals,unsigned int Length) nogil:
+cdef LLVMValueRef LLVMConstArray(LLVMTypeRef ElementTy,LLVMValueRef* ConstantVals,unsigned int Length):
     global _LLVMConstArray__funptr
     __init_symbol(&_LLVMConstArray__funptr,"LLVMConstArray")
-    return (<LLVMValueRef (*)(LLVMTypeRef,LLVMValueRef*,unsigned int) nogil> _LLVMConstArray__funptr)(ElementTy,ConstantVals,Length)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMTypeRef,LLVMValueRef*,unsigned int) noexcept nogil> _LLVMConstArray__funptr)(ElementTy,ConstantVals,Length)
 
 
 cdef void* _LLVMConstNamedStruct__funptr = NULL
@@ -2791,10 +3083,11 @@ cdef void* _LLVMConstNamedStruct__funptr = NULL
 # Create a non-anonymous ConstantStruct from values.
 # 
 # @see llvm::ConstantStruct::get()
-cdef LLVMValueRef LLVMConstNamedStruct(LLVMTypeRef StructTy,LLVMValueRef* ConstantVals,unsigned int Count) nogil:
+cdef LLVMValueRef LLVMConstNamedStruct(LLVMTypeRef StructTy,LLVMValueRef* ConstantVals,unsigned int Count):
     global _LLVMConstNamedStruct__funptr
     __init_symbol(&_LLVMConstNamedStruct__funptr,"LLVMConstNamedStruct")
-    return (<LLVMValueRef (*)(LLVMTypeRef,LLVMValueRef*,unsigned int) nogil> _LLVMConstNamedStruct__funptr)(StructTy,ConstantVals,Count)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMTypeRef,LLVMValueRef*,unsigned int) noexcept nogil> _LLVMConstNamedStruct__funptr)(StructTy,ConstantVals,Count)
 
 
 cdef void* _LLVMGetAggregateElement__funptr = NULL
@@ -2805,17 +3098,19 @@ cdef void* _LLVMGetAggregateElement__funptr = NULL
 # constant expression.)
 # 
 # @see llvm::Constant::getAggregateElement()
-cdef LLVMValueRef LLVMGetAggregateElement(LLVMValueRef C,unsigned int Idx) nogil:
+cdef LLVMValueRef LLVMGetAggregateElement(LLVMValueRef C,unsigned int Idx):
     global _LLVMGetAggregateElement__funptr
     __init_symbol(&_LLVMGetAggregateElement__funptr,"LLVMGetAggregateElement")
-    return (<LLVMValueRef (*)(LLVMValueRef,unsigned int) nogil> _LLVMGetAggregateElement__funptr)(C,Idx)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,unsigned int) noexcept nogil> _LLVMGetAggregateElement__funptr)(C,Idx)
 
 
 cdef void* _LLVMGetElementAsConstant__funptr = NULL
-cdef LLVMValueRef LLVMGetElementAsConstant(LLVMValueRef C,unsigned int idx) nogil:
+cdef LLVMValueRef LLVMGetElementAsConstant(LLVMValueRef C,unsigned int idx):
     global _LLVMGetElementAsConstant__funptr
     __init_symbol(&_LLVMGetElementAsConstant__funptr,"LLVMGetElementAsConstant")
-    return (<LLVMValueRef (*)(LLVMValueRef,unsigned int) nogil> _LLVMGetElementAsConstant__funptr)(C,idx)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,unsigned int) noexcept nogil> _LLVMGetElementAsConstant__funptr)(C,idx)
 
 
 cdef void* _LLVMConstVector__funptr = NULL
@@ -2823,10 +3118,11 @@ cdef void* _LLVMConstVector__funptr = NULL
 # Create a ConstantVector from values.
 # 
 # @see llvm::ConstantVector::get()
-cdef LLVMValueRef LLVMConstVector(LLVMValueRef* ScalarConstantVals,unsigned int Size) nogil:
+cdef LLVMValueRef LLVMConstVector(LLVMValueRef* ScalarConstantVals,unsigned int Size):
     global _LLVMConstVector__funptr
     __init_symbol(&_LLVMConstVector__funptr,"LLVMConstVector")
-    return (<LLVMValueRef (*)(LLVMValueRef*,unsigned int) nogil> _LLVMConstVector__funptr)(ScalarConstantVals,Size)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef*,unsigned int) noexcept nogil> _LLVMConstVector__funptr)(ScalarConstantVals,Size)
 
 
 cdef void* _LLVMGetConstOpcode__funptr = NULL
@@ -2838,361 +3134,412 @@ cdef void* _LLVMGetConstOpcode__funptr = NULL
 # @see llvm::ConstantExpr.
 # 
 # @{
-cdef LLVMOpcode LLVMGetConstOpcode(LLVMValueRef ConstantVal) nogil:
+cdef LLVMOpcode LLVMGetConstOpcode(LLVMValueRef ConstantVal):
     global _LLVMGetConstOpcode__funptr
     __init_symbol(&_LLVMGetConstOpcode__funptr,"LLVMGetConstOpcode")
-    return (<LLVMOpcode (*)(LLVMValueRef) nogil> _LLVMGetConstOpcode__funptr)(ConstantVal)
+    with nogil:
+        return (<LLVMOpcode (*)(LLVMValueRef) noexcept nogil> _LLVMGetConstOpcode__funptr)(ConstantVal)
 
 
 cdef void* _LLVMAlignOf__funptr = NULL
-cdef LLVMValueRef LLVMAlignOf(LLVMTypeRef Ty) nogil:
+cdef LLVMValueRef LLVMAlignOf(LLVMTypeRef Ty):
     global _LLVMAlignOf__funptr
     __init_symbol(&_LLVMAlignOf__funptr,"LLVMAlignOf")
-    return (<LLVMValueRef (*)(LLVMTypeRef) nogil> _LLVMAlignOf__funptr)(Ty)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMTypeRef) noexcept nogil> _LLVMAlignOf__funptr)(Ty)
 
 
 cdef void* _LLVMSizeOf__funptr = NULL
-cdef LLVMValueRef LLVMSizeOf(LLVMTypeRef Ty) nogil:
+cdef LLVMValueRef LLVMSizeOf(LLVMTypeRef Ty):
     global _LLVMSizeOf__funptr
     __init_symbol(&_LLVMSizeOf__funptr,"LLVMSizeOf")
-    return (<LLVMValueRef (*)(LLVMTypeRef) nogil> _LLVMSizeOf__funptr)(Ty)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMTypeRef) noexcept nogil> _LLVMSizeOf__funptr)(Ty)
 
 
 cdef void* _LLVMConstNeg__funptr = NULL
-cdef LLVMValueRef LLVMConstNeg(LLVMValueRef ConstantVal) nogil:
+cdef LLVMValueRef LLVMConstNeg(LLVMValueRef ConstantVal):
     global _LLVMConstNeg__funptr
     __init_symbol(&_LLVMConstNeg__funptr,"LLVMConstNeg")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMConstNeg__funptr)(ConstantVal)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMConstNeg__funptr)(ConstantVal)
 
 
 cdef void* _LLVMConstNSWNeg__funptr = NULL
-cdef LLVMValueRef LLVMConstNSWNeg(LLVMValueRef ConstantVal) nogil:
+cdef LLVMValueRef LLVMConstNSWNeg(LLVMValueRef ConstantVal):
     global _LLVMConstNSWNeg__funptr
     __init_symbol(&_LLVMConstNSWNeg__funptr,"LLVMConstNSWNeg")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMConstNSWNeg__funptr)(ConstantVal)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMConstNSWNeg__funptr)(ConstantVal)
 
 
 cdef void* _LLVMConstNUWNeg__funptr = NULL
-cdef LLVMValueRef LLVMConstNUWNeg(LLVMValueRef ConstantVal) nogil:
+cdef LLVMValueRef LLVMConstNUWNeg(LLVMValueRef ConstantVal):
     global _LLVMConstNUWNeg__funptr
     __init_symbol(&_LLVMConstNUWNeg__funptr,"LLVMConstNUWNeg")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMConstNUWNeg__funptr)(ConstantVal)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMConstNUWNeg__funptr)(ConstantVal)
 
 
 cdef void* _LLVMConstNot__funptr = NULL
-cdef LLVMValueRef LLVMConstNot(LLVMValueRef ConstantVal) nogil:
+cdef LLVMValueRef LLVMConstNot(LLVMValueRef ConstantVal):
     global _LLVMConstNot__funptr
     __init_symbol(&_LLVMConstNot__funptr,"LLVMConstNot")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMConstNot__funptr)(ConstantVal)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMConstNot__funptr)(ConstantVal)
 
 
 cdef void* _LLVMConstAdd__funptr = NULL
-cdef LLVMValueRef LLVMConstAdd(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil:
+cdef LLVMValueRef LLVMConstAdd(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant):
     global _LLVMConstAdd__funptr
     __init_symbol(&_LLVMConstAdd__funptr,"LLVMConstAdd")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMConstAdd__funptr)(LHSConstant,RHSConstant)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMConstAdd__funptr)(LHSConstant,RHSConstant)
 
 
 cdef void* _LLVMConstNSWAdd__funptr = NULL
-cdef LLVMValueRef LLVMConstNSWAdd(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil:
+cdef LLVMValueRef LLVMConstNSWAdd(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant):
     global _LLVMConstNSWAdd__funptr
     __init_symbol(&_LLVMConstNSWAdd__funptr,"LLVMConstNSWAdd")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMConstNSWAdd__funptr)(LHSConstant,RHSConstant)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMConstNSWAdd__funptr)(LHSConstant,RHSConstant)
 
 
 cdef void* _LLVMConstNUWAdd__funptr = NULL
-cdef LLVMValueRef LLVMConstNUWAdd(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil:
+cdef LLVMValueRef LLVMConstNUWAdd(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant):
     global _LLVMConstNUWAdd__funptr
     __init_symbol(&_LLVMConstNUWAdd__funptr,"LLVMConstNUWAdd")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMConstNUWAdd__funptr)(LHSConstant,RHSConstant)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMConstNUWAdd__funptr)(LHSConstant,RHSConstant)
 
 
 cdef void* _LLVMConstSub__funptr = NULL
-cdef LLVMValueRef LLVMConstSub(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil:
+cdef LLVMValueRef LLVMConstSub(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant):
     global _LLVMConstSub__funptr
     __init_symbol(&_LLVMConstSub__funptr,"LLVMConstSub")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMConstSub__funptr)(LHSConstant,RHSConstant)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMConstSub__funptr)(LHSConstant,RHSConstant)
 
 
 cdef void* _LLVMConstNSWSub__funptr = NULL
-cdef LLVMValueRef LLVMConstNSWSub(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil:
+cdef LLVMValueRef LLVMConstNSWSub(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant):
     global _LLVMConstNSWSub__funptr
     __init_symbol(&_LLVMConstNSWSub__funptr,"LLVMConstNSWSub")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMConstNSWSub__funptr)(LHSConstant,RHSConstant)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMConstNSWSub__funptr)(LHSConstant,RHSConstant)
 
 
 cdef void* _LLVMConstNUWSub__funptr = NULL
-cdef LLVMValueRef LLVMConstNUWSub(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil:
+cdef LLVMValueRef LLVMConstNUWSub(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant):
     global _LLVMConstNUWSub__funptr
     __init_symbol(&_LLVMConstNUWSub__funptr,"LLVMConstNUWSub")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMConstNUWSub__funptr)(LHSConstant,RHSConstant)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMConstNUWSub__funptr)(LHSConstant,RHSConstant)
 
 
 cdef void* _LLVMConstMul__funptr = NULL
-cdef LLVMValueRef LLVMConstMul(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil:
+cdef LLVMValueRef LLVMConstMul(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant):
     global _LLVMConstMul__funptr
     __init_symbol(&_LLVMConstMul__funptr,"LLVMConstMul")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMConstMul__funptr)(LHSConstant,RHSConstant)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMConstMul__funptr)(LHSConstant,RHSConstant)
 
 
 cdef void* _LLVMConstNSWMul__funptr = NULL
-cdef LLVMValueRef LLVMConstNSWMul(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil:
+cdef LLVMValueRef LLVMConstNSWMul(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant):
     global _LLVMConstNSWMul__funptr
     __init_symbol(&_LLVMConstNSWMul__funptr,"LLVMConstNSWMul")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMConstNSWMul__funptr)(LHSConstant,RHSConstant)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMConstNSWMul__funptr)(LHSConstant,RHSConstant)
 
 
 cdef void* _LLVMConstNUWMul__funptr = NULL
-cdef LLVMValueRef LLVMConstNUWMul(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil:
+cdef LLVMValueRef LLVMConstNUWMul(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant):
     global _LLVMConstNUWMul__funptr
     __init_symbol(&_LLVMConstNUWMul__funptr,"LLVMConstNUWMul")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMConstNUWMul__funptr)(LHSConstant,RHSConstant)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMConstNUWMul__funptr)(LHSConstant,RHSConstant)
 
 
 cdef void* _LLVMConstAnd__funptr = NULL
-cdef LLVMValueRef LLVMConstAnd(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil:
+cdef LLVMValueRef LLVMConstAnd(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant):
     global _LLVMConstAnd__funptr
     __init_symbol(&_LLVMConstAnd__funptr,"LLVMConstAnd")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMConstAnd__funptr)(LHSConstant,RHSConstant)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMConstAnd__funptr)(LHSConstant,RHSConstant)
 
 
 cdef void* _LLVMConstOr__funptr = NULL
-cdef LLVMValueRef LLVMConstOr(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil:
+cdef LLVMValueRef LLVMConstOr(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant):
     global _LLVMConstOr__funptr
     __init_symbol(&_LLVMConstOr__funptr,"LLVMConstOr")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMConstOr__funptr)(LHSConstant,RHSConstant)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMConstOr__funptr)(LHSConstant,RHSConstant)
 
 
 cdef void* _LLVMConstXor__funptr = NULL
-cdef LLVMValueRef LLVMConstXor(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil:
+cdef LLVMValueRef LLVMConstXor(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant):
     global _LLVMConstXor__funptr
     __init_symbol(&_LLVMConstXor__funptr,"LLVMConstXor")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMConstXor__funptr)(LHSConstant,RHSConstant)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMConstXor__funptr)(LHSConstant,RHSConstant)
 
 
 cdef void* _LLVMConstICmp__funptr = NULL
-cdef LLVMValueRef LLVMConstICmp(LLVMIntPredicate Predicate,LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil:
+cdef LLVMValueRef LLVMConstICmp(LLVMIntPredicate Predicate,LLVMValueRef LHSConstant,LLVMValueRef RHSConstant):
     global _LLVMConstICmp__funptr
     __init_symbol(&_LLVMConstICmp__funptr,"LLVMConstICmp")
-    return (<LLVMValueRef (*)(LLVMIntPredicate,LLVMValueRef,LLVMValueRef) nogil> _LLVMConstICmp__funptr)(Predicate,LHSConstant,RHSConstant)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMIntPredicate,LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMConstICmp__funptr)(Predicate,LHSConstant,RHSConstant)
 
 
 cdef void* _LLVMConstFCmp__funptr = NULL
-cdef LLVMValueRef LLVMConstFCmp(LLVMRealPredicate Predicate,LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil:
+cdef LLVMValueRef LLVMConstFCmp(LLVMRealPredicate Predicate,LLVMValueRef LHSConstant,LLVMValueRef RHSConstant):
     global _LLVMConstFCmp__funptr
     __init_symbol(&_LLVMConstFCmp__funptr,"LLVMConstFCmp")
-    return (<LLVMValueRef (*)(LLVMRealPredicate,LLVMValueRef,LLVMValueRef) nogil> _LLVMConstFCmp__funptr)(Predicate,LHSConstant,RHSConstant)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMRealPredicate,LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMConstFCmp__funptr)(Predicate,LHSConstant,RHSConstant)
 
 
 cdef void* _LLVMConstShl__funptr = NULL
-cdef LLVMValueRef LLVMConstShl(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil:
+cdef LLVMValueRef LLVMConstShl(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant):
     global _LLVMConstShl__funptr
     __init_symbol(&_LLVMConstShl__funptr,"LLVMConstShl")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMConstShl__funptr)(LHSConstant,RHSConstant)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMConstShl__funptr)(LHSConstant,RHSConstant)
 
 
 cdef void* _LLVMConstLShr__funptr = NULL
-cdef LLVMValueRef LLVMConstLShr(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil:
+cdef LLVMValueRef LLVMConstLShr(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant):
     global _LLVMConstLShr__funptr
     __init_symbol(&_LLVMConstLShr__funptr,"LLVMConstLShr")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMConstLShr__funptr)(LHSConstant,RHSConstant)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMConstLShr__funptr)(LHSConstant,RHSConstant)
 
 
 cdef void* _LLVMConstAShr__funptr = NULL
-cdef LLVMValueRef LLVMConstAShr(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant) nogil:
+cdef LLVMValueRef LLVMConstAShr(LLVMValueRef LHSConstant,LLVMValueRef RHSConstant):
     global _LLVMConstAShr__funptr
     __init_symbol(&_LLVMConstAShr__funptr,"LLVMConstAShr")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMConstAShr__funptr)(LHSConstant,RHSConstant)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMConstAShr__funptr)(LHSConstant,RHSConstant)
 
 
 cdef void* _LLVMConstGEP2__funptr = NULL
-cdef LLVMValueRef LLVMConstGEP2(LLVMTypeRef Ty,LLVMValueRef ConstantVal,LLVMValueRef* ConstantIndices,unsigned int NumIndices) nogil:
+cdef LLVMValueRef LLVMConstGEP2(LLVMTypeRef Ty,LLVMValueRef ConstantVal,LLVMValueRef* ConstantIndices,unsigned int NumIndices):
     global _LLVMConstGEP2__funptr
     __init_symbol(&_LLVMConstGEP2__funptr,"LLVMConstGEP2")
-    return (<LLVMValueRef (*)(LLVMTypeRef,LLVMValueRef,LLVMValueRef*,unsigned int) nogil> _LLVMConstGEP2__funptr)(Ty,ConstantVal,ConstantIndices,NumIndices)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMTypeRef,LLVMValueRef,LLVMValueRef*,unsigned int) noexcept nogil> _LLVMConstGEP2__funptr)(Ty,ConstantVal,ConstantIndices,NumIndices)
 
 
 cdef void* _LLVMConstInBoundsGEP2__funptr = NULL
-cdef LLVMValueRef LLVMConstInBoundsGEP2(LLVMTypeRef Ty,LLVMValueRef ConstantVal,LLVMValueRef* ConstantIndices,unsigned int NumIndices) nogil:
+cdef LLVMValueRef LLVMConstInBoundsGEP2(LLVMTypeRef Ty,LLVMValueRef ConstantVal,LLVMValueRef* ConstantIndices,unsigned int NumIndices):
     global _LLVMConstInBoundsGEP2__funptr
     __init_symbol(&_LLVMConstInBoundsGEP2__funptr,"LLVMConstInBoundsGEP2")
-    return (<LLVMValueRef (*)(LLVMTypeRef,LLVMValueRef,LLVMValueRef*,unsigned int) nogil> _LLVMConstInBoundsGEP2__funptr)(Ty,ConstantVal,ConstantIndices,NumIndices)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMTypeRef,LLVMValueRef,LLVMValueRef*,unsigned int) noexcept nogil> _LLVMConstInBoundsGEP2__funptr)(Ty,ConstantVal,ConstantIndices,NumIndices)
 
 
 cdef void* _LLVMConstTrunc__funptr = NULL
-cdef LLVMValueRef LLVMConstTrunc(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil:
+cdef LLVMValueRef LLVMConstTrunc(LLVMValueRef ConstantVal,LLVMTypeRef ToType):
     global _LLVMConstTrunc__funptr
     __init_symbol(&_LLVMConstTrunc__funptr,"LLVMConstTrunc")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) nogil> _LLVMConstTrunc__funptr)(ConstantVal,ToType)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) noexcept nogil> _LLVMConstTrunc__funptr)(ConstantVal,ToType)
 
 
 cdef void* _LLVMConstSExt__funptr = NULL
-cdef LLVMValueRef LLVMConstSExt(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil:
+cdef LLVMValueRef LLVMConstSExt(LLVMValueRef ConstantVal,LLVMTypeRef ToType):
     global _LLVMConstSExt__funptr
     __init_symbol(&_LLVMConstSExt__funptr,"LLVMConstSExt")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) nogil> _LLVMConstSExt__funptr)(ConstantVal,ToType)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) noexcept nogil> _LLVMConstSExt__funptr)(ConstantVal,ToType)
 
 
 cdef void* _LLVMConstZExt__funptr = NULL
-cdef LLVMValueRef LLVMConstZExt(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil:
+cdef LLVMValueRef LLVMConstZExt(LLVMValueRef ConstantVal,LLVMTypeRef ToType):
     global _LLVMConstZExt__funptr
     __init_symbol(&_LLVMConstZExt__funptr,"LLVMConstZExt")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) nogil> _LLVMConstZExt__funptr)(ConstantVal,ToType)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) noexcept nogil> _LLVMConstZExt__funptr)(ConstantVal,ToType)
 
 
 cdef void* _LLVMConstFPTrunc__funptr = NULL
-cdef LLVMValueRef LLVMConstFPTrunc(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil:
+cdef LLVMValueRef LLVMConstFPTrunc(LLVMValueRef ConstantVal,LLVMTypeRef ToType):
     global _LLVMConstFPTrunc__funptr
     __init_symbol(&_LLVMConstFPTrunc__funptr,"LLVMConstFPTrunc")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) nogil> _LLVMConstFPTrunc__funptr)(ConstantVal,ToType)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) noexcept nogil> _LLVMConstFPTrunc__funptr)(ConstantVal,ToType)
 
 
 cdef void* _LLVMConstFPExt__funptr = NULL
-cdef LLVMValueRef LLVMConstFPExt(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil:
+cdef LLVMValueRef LLVMConstFPExt(LLVMValueRef ConstantVal,LLVMTypeRef ToType):
     global _LLVMConstFPExt__funptr
     __init_symbol(&_LLVMConstFPExt__funptr,"LLVMConstFPExt")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) nogil> _LLVMConstFPExt__funptr)(ConstantVal,ToType)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) noexcept nogil> _LLVMConstFPExt__funptr)(ConstantVal,ToType)
 
 
 cdef void* _LLVMConstUIToFP__funptr = NULL
-cdef LLVMValueRef LLVMConstUIToFP(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil:
+cdef LLVMValueRef LLVMConstUIToFP(LLVMValueRef ConstantVal,LLVMTypeRef ToType):
     global _LLVMConstUIToFP__funptr
     __init_symbol(&_LLVMConstUIToFP__funptr,"LLVMConstUIToFP")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) nogil> _LLVMConstUIToFP__funptr)(ConstantVal,ToType)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) noexcept nogil> _LLVMConstUIToFP__funptr)(ConstantVal,ToType)
 
 
 cdef void* _LLVMConstSIToFP__funptr = NULL
-cdef LLVMValueRef LLVMConstSIToFP(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil:
+cdef LLVMValueRef LLVMConstSIToFP(LLVMValueRef ConstantVal,LLVMTypeRef ToType):
     global _LLVMConstSIToFP__funptr
     __init_symbol(&_LLVMConstSIToFP__funptr,"LLVMConstSIToFP")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) nogil> _LLVMConstSIToFP__funptr)(ConstantVal,ToType)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) noexcept nogil> _LLVMConstSIToFP__funptr)(ConstantVal,ToType)
 
 
 cdef void* _LLVMConstFPToUI__funptr = NULL
-cdef LLVMValueRef LLVMConstFPToUI(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil:
+cdef LLVMValueRef LLVMConstFPToUI(LLVMValueRef ConstantVal,LLVMTypeRef ToType):
     global _LLVMConstFPToUI__funptr
     __init_symbol(&_LLVMConstFPToUI__funptr,"LLVMConstFPToUI")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) nogil> _LLVMConstFPToUI__funptr)(ConstantVal,ToType)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) noexcept nogil> _LLVMConstFPToUI__funptr)(ConstantVal,ToType)
 
 
 cdef void* _LLVMConstFPToSI__funptr = NULL
-cdef LLVMValueRef LLVMConstFPToSI(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil:
+cdef LLVMValueRef LLVMConstFPToSI(LLVMValueRef ConstantVal,LLVMTypeRef ToType):
     global _LLVMConstFPToSI__funptr
     __init_symbol(&_LLVMConstFPToSI__funptr,"LLVMConstFPToSI")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) nogil> _LLVMConstFPToSI__funptr)(ConstantVal,ToType)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) noexcept nogil> _LLVMConstFPToSI__funptr)(ConstantVal,ToType)
 
 
 cdef void* _LLVMConstPtrToInt__funptr = NULL
-cdef LLVMValueRef LLVMConstPtrToInt(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil:
+cdef LLVMValueRef LLVMConstPtrToInt(LLVMValueRef ConstantVal,LLVMTypeRef ToType):
     global _LLVMConstPtrToInt__funptr
     __init_symbol(&_LLVMConstPtrToInt__funptr,"LLVMConstPtrToInt")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) nogil> _LLVMConstPtrToInt__funptr)(ConstantVal,ToType)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) noexcept nogil> _LLVMConstPtrToInt__funptr)(ConstantVal,ToType)
 
 
 cdef void* _LLVMConstIntToPtr__funptr = NULL
-cdef LLVMValueRef LLVMConstIntToPtr(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil:
+cdef LLVMValueRef LLVMConstIntToPtr(LLVMValueRef ConstantVal,LLVMTypeRef ToType):
     global _LLVMConstIntToPtr__funptr
     __init_symbol(&_LLVMConstIntToPtr__funptr,"LLVMConstIntToPtr")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) nogil> _LLVMConstIntToPtr__funptr)(ConstantVal,ToType)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) noexcept nogil> _LLVMConstIntToPtr__funptr)(ConstantVal,ToType)
 
 
 cdef void* _LLVMConstBitCast__funptr = NULL
-cdef LLVMValueRef LLVMConstBitCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil:
+cdef LLVMValueRef LLVMConstBitCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType):
     global _LLVMConstBitCast__funptr
     __init_symbol(&_LLVMConstBitCast__funptr,"LLVMConstBitCast")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) nogil> _LLVMConstBitCast__funptr)(ConstantVal,ToType)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) noexcept nogil> _LLVMConstBitCast__funptr)(ConstantVal,ToType)
 
 
 cdef void* _LLVMConstAddrSpaceCast__funptr = NULL
-cdef LLVMValueRef LLVMConstAddrSpaceCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil:
+cdef LLVMValueRef LLVMConstAddrSpaceCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType):
     global _LLVMConstAddrSpaceCast__funptr
     __init_symbol(&_LLVMConstAddrSpaceCast__funptr,"LLVMConstAddrSpaceCast")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) nogil> _LLVMConstAddrSpaceCast__funptr)(ConstantVal,ToType)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) noexcept nogil> _LLVMConstAddrSpaceCast__funptr)(ConstantVal,ToType)
 
 
 cdef void* _LLVMConstZExtOrBitCast__funptr = NULL
-cdef LLVMValueRef LLVMConstZExtOrBitCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil:
+cdef LLVMValueRef LLVMConstZExtOrBitCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType):
     global _LLVMConstZExtOrBitCast__funptr
     __init_symbol(&_LLVMConstZExtOrBitCast__funptr,"LLVMConstZExtOrBitCast")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) nogil> _LLVMConstZExtOrBitCast__funptr)(ConstantVal,ToType)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) noexcept nogil> _LLVMConstZExtOrBitCast__funptr)(ConstantVal,ToType)
 
 
 cdef void* _LLVMConstSExtOrBitCast__funptr = NULL
-cdef LLVMValueRef LLVMConstSExtOrBitCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil:
+cdef LLVMValueRef LLVMConstSExtOrBitCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType):
     global _LLVMConstSExtOrBitCast__funptr
     __init_symbol(&_LLVMConstSExtOrBitCast__funptr,"LLVMConstSExtOrBitCast")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) nogil> _LLVMConstSExtOrBitCast__funptr)(ConstantVal,ToType)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) noexcept nogil> _LLVMConstSExtOrBitCast__funptr)(ConstantVal,ToType)
 
 
 cdef void* _LLVMConstTruncOrBitCast__funptr = NULL
-cdef LLVMValueRef LLVMConstTruncOrBitCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil:
+cdef LLVMValueRef LLVMConstTruncOrBitCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType):
     global _LLVMConstTruncOrBitCast__funptr
     __init_symbol(&_LLVMConstTruncOrBitCast__funptr,"LLVMConstTruncOrBitCast")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) nogil> _LLVMConstTruncOrBitCast__funptr)(ConstantVal,ToType)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) noexcept nogil> _LLVMConstTruncOrBitCast__funptr)(ConstantVal,ToType)
 
 
 cdef void* _LLVMConstPointerCast__funptr = NULL
-cdef LLVMValueRef LLVMConstPointerCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil:
+cdef LLVMValueRef LLVMConstPointerCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType):
     global _LLVMConstPointerCast__funptr
     __init_symbol(&_LLVMConstPointerCast__funptr,"LLVMConstPointerCast")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) nogil> _LLVMConstPointerCast__funptr)(ConstantVal,ToType)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) noexcept nogil> _LLVMConstPointerCast__funptr)(ConstantVal,ToType)
 
 
 cdef void* _LLVMConstIntCast__funptr = NULL
-cdef LLVMValueRef LLVMConstIntCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType,int isSigned) nogil:
+cdef LLVMValueRef LLVMConstIntCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType,int isSigned):
     global _LLVMConstIntCast__funptr
     __init_symbol(&_LLVMConstIntCast__funptr,"LLVMConstIntCast")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef,int) nogil> _LLVMConstIntCast__funptr)(ConstantVal,ToType,isSigned)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef,int) noexcept nogil> _LLVMConstIntCast__funptr)(ConstantVal,ToType,isSigned)
 
 
 cdef void* _LLVMConstFPCast__funptr = NULL
-cdef LLVMValueRef LLVMConstFPCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType) nogil:
+cdef LLVMValueRef LLVMConstFPCast(LLVMValueRef ConstantVal,LLVMTypeRef ToType):
     global _LLVMConstFPCast__funptr
     __init_symbol(&_LLVMConstFPCast__funptr,"LLVMConstFPCast")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) nogil> _LLVMConstFPCast__funptr)(ConstantVal,ToType)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMTypeRef) noexcept nogil> _LLVMConstFPCast__funptr)(ConstantVal,ToType)
 
 
 cdef void* _LLVMConstSelect__funptr = NULL
-cdef LLVMValueRef LLVMConstSelect(LLVMValueRef ConstantCondition,LLVMValueRef ConstantIfTrue,LLVMValueRef ConstantIfFalse) nogil:
+cdef LLVMValueRef LLVMConstSelect(LLVMValueRef ConstantCondition,LLVMValueRef ConstantIfTrue,LLVMValueRef ConstantIfFalse):
     global _LLVMConstSelect__funptr
     __init_symbol(&_LLVMConstSelect__funptr,"LLVMConstSelect")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef,LLVMValueRef) nogil> _LLVMConstSelect__funptr)(ConstantCondition,ConstantIfTrue,ConstantIfFalse)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMConstSelect__funptr)(ConstantCondition,ConstantIfTrue,ConstantIfFalse)
 
 
 cdef void* _LLVMConstExtractElement__funptr = NULL
-cdef LLVMValueRef LLVMConstExtractElement(LLVMValueRef VectorConstant,LLVMValueRef IndexConstant) nogil:
+cdef LLVMValueRef LLVMConstExtractElement(LLVMValueRef VectorConstant,LLVMValueRef IndexConstant):
     global _LLVMConstExtractElement__funptr
     __init_symbol(&_LLVMConstExtractElement__funptr,"LLVMConstExtractElement")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMConstExtractElement__funptr)(VectorConstant,IndexConstant)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMConstExtractElement__funptr)(VectorConstant,IndexConstant)
 
 
 cdef void* _LLVMConstInsertElement__funptr = NULL
-cdef LLVMValueRef LLVMConstInsertElement(LLVMValueRef VectorConstant,LLVMValueRef ElementValueConstant,LLVMValueRef IndexConstant) nogil:
+cdef LLVMValueRef LLVMConstInsertElement(LLVMValueRef VectorConstant,LLVMValueRef ElementValueConstant,LLVMValueRef IndexConstant):
     global _LLVMConstInsertElement__funptr
     __init_symbol(&_LLVMConstInsertElement__funptr,"LLVMConstInsertElement")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef,LLVMValueRef) nogil> _LLVMConstInsertElement__funptr)(VectorConstant,ElementValueConstant,IndexConstant)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMConstInsertElement__funptr)(VectorConstant,ElementValueConstant,IndexConstant)
 
 
 cdef void* _LLVMConstShuffleVector__funptr = NULL
-cdef LLVMValueRef LLVMConstShuffleVector(LLVMValueRef VectorAConstant,LLVMValueRef VectorBConstant,LLVMValueRef MaskConstant) nogil:
+cdef LLVMValueRef LLVMConstShuffleVector(LLVMValueRef VectorAConstant,LLVMValueRef VectorBConstant,LLVMValueRef MaskConstant):
     global _LLVMConstShuffleVector__funptr
     __init_symbol(&_LLVMConstShuffleVector__funptr,"LLVMConstShuffleVector")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef,LLVMValueRef) nogil> _LLVMConstShuffleVector__funptr)(VectorAConstant,VectorBConstant,MaskConstant)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMConstShuffleVector__funptr)(VectorAConstant,VectorBConstant,MaskConstant)
 
 
 cdef void* _LLVMBlockAddress__funptr = NULL
-cdef LLVMValueRef LLVMBlockAddress(LLVMValueRef F,LLVMBasicBlockRef BB) nogil:
+cdef LLVMValueRef LLVMBlockAddress(LLVMValueRef F,LLVMBasicBlockRef BB):
     global _LLVMBlockAddress__funptr
     __init_symbol(&_LLVMBlockAddress__funptr,"LLVMBlockAddress")
-    return (<LLVMValueRef (*)(LLVMValueRef,LLVMBasicBlockRef) nogil> _LLVMBlockAddress__funptr)(F,BB)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,LLVMBasicBlockRef) noexcept nogil> _LLVMBlockAddress__funptr)(F,BB)
 
 
 cdef void* _LLVMConstInlineAsm__funptr = NULL
 # Deprecated: Use LLVMGetInlineAsm instead. */
-cdef LLVMValueRef LLVMConstInlineAsm(LLVMTypeRef Ty,const char * AsmString,const char * Constraints,int HasSideEffects,int IsAlignStack) nogil:
+cdef LLVMValueRef LLVMConstInlineAsm(LLVMTypeRef Ty,const char * AsmString,const char * Constraints,int HasSideEffects,int IsAlignStack):
     global _LLVMConstInlineAsm__funptr
     __init_symbol(&_LLVMConstInlineAsm__funptr,"LLVMConstInlineAsm")
-    return (<LLVMValueRef (*)(LLVMTypeRef,const char *,const char *,int,int) nogil> _LLVMConstInlineAsm__funptr)(Ty,AsmString,Constraints,HasSideEffects,IsAlignStack)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMTypeRef,const char *,const char *,int,int) noexcept nogil> _LLVMConstInlineAsm__funptr)(Ty,AsmString,Constraints,HasSideEffects,IsAlignStack)
 
 
 cdef void* _LLVMGetGlobalParent__funptr = NULL
@@ -3205,87 +3552,99 @@ cdef void* _LLVMGetGlobalParent__funptr = NULL
 # @see llvm::GlobalValue
 # 
 # @{
-cdef LLVMModuleRef LLVMGetGlobalParent(LLVMValueRef Global) nogil:
+cdef LLVMModuleRef LLVMGetGlobalParent(LLVMValueRef Global):
     global _LLVMGetGlobalParent__funptr
     __init_symbol(&_LLVMGetGlobalParent__funptr,"LLVMGetGlobalParent")
-    return (<LLVMModuleRef (*)(LLVMValueRef) nogil> _LLVMGetGlobalParent__funptr)(Global)
+    with nogil:
+        return (<LLVMModuleRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetGlobalParent__funptr)(Global)
 
 
 cdef void* _LLVMIsDeclaration__funptr = NULL
-cdef int LLVMIsDeclaration(LLVMValueRef Global) nogil:
+cdef int LLVMIsDeclaration(LLVMValueRef Global):
     global _LLVMIsDeclaration__funptr
     __init_symbol(&_LLVMIsDeclaration__funptr,"LLVMIsDeclaration")
-    return (<int (*)(LLVMValueRef) nogil> _LLVMIsDeclaration__funptr)(Global)
+    with nogil:
+        return (<int (*)(LLVMValueRef) noexcept nogil> _LLVMIsDeclaration__funptr)(Global)
 
 
 cdef void* _LLVMGetLinkage__funptr = NULL
-cdef LLVMLinkage LLVMGetLinkage(LLVMValueRef Global) nogil:
+cdef LLVMLinkage LLVMGetLinkage(LLVMValueRef Global):
     global _LLVMGetLinkage__funptr
     __init_symbol(&_LLVMGetLinkage__funptr,"LLVMGetLinkage")
-    return (<LLVMLinkage (*)(LLVMValueRef) nogil> _LLVMGetLinkage__funptr)(Global)
+    with nogil:
+        return (<LLVMLinkage (*)(LLVMValueRef) noexcept nogil> _LLVMGetLinkage__funptr)(Global)
 
 
 cdef void* _LLVMSetLinkage__funptr = NULL
-cdef void LLVMSetLinkage(LLVMValueRef Global,LLVMLinkage Linkage) nogil:
+cdef void LLVMSetLinkage(LLVMValueRef Global,LLVMLinkage Linkage):
     global _LLVMSetLinkage__funptr
     __init_symbol(&_LLVMSetLinkage__funptr,"LLVMSetLinkage")
-    (<void (*)(LLVMValueRef,LLVMLinkage) nogil> _LLVMSetLinkage__funptr)(Global,Linkage)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMLinkage) noexcept nogil> _LLVMSetLinkage__funptr)(Global,Linkage)
 
 
 cdef void* _LLVMGetSection__funptr = NULL
-cdef const char * LLVMGetSection(LLVMValueRef Global) nogil:
+cdef const char * LLVMGetSection(LLVMValueRef Global):
     global _LLVMGetSection__funptr
     __init_symbol(&_LLVMGetSection__funptr,"LLVMGetSection")
-    return (<const char * (*)(LLVMValueRef) nogil> _LLVMGetSection__funptr)(Global)
+    with nogil:
+        return (<const char * (*)(LLVMValueRef) noexcept nogil> _LLVMGetSection__funptr)(Global)
 
 
 cdef void* _LLVMSetSection__funptr = NULL
-cdef void LLVMSetSection(LLVMValueRef Global,const char * Section) nogil:
+cdef void LLVMSetSection(LLVMValueRef Global,const char * Section):
     global _LLVMSetSection__funptr
     __init_symbol(&_LLVMSetSection__funptr,"LLVMSetSection")
-    (<void (*)(LLVMValueRef,const char *) nogil> _LLVMSetSection__funptr)(Global,Section)
+    with nogil:
+        (<void (*)(LLVMValueRef,const char *) noexcept nogil> _LLVMSetSection__funptr)(Global,Section)
 
 
 cdef void* _LLVMGetVisibility__funptr = NULL
-cdef LLVMVisibility LLVMGetVisibility(LLVMValueRef Global) nogil:
+cdef LLVMVisibility LLVMGetVisibility(LLVMValueRef Global):
     global _LLVMGetVisibility__funptr
     __init_symbol(&_LLVMGetVisibility__funptr,"LLVMGetVisibility")
-    return (<LLVMVisibility (*)(LLVMValueRef) nogil> _LLVMGetVisibility__funptr)(Global)
+    with nogil:
+        return (<LLVMVisibility (*)(LLVMValueRef) noexcept nogil> _LLVMGetVisibility__funptr)(Global)
 
 
 cdef void* _LLVMSetVisibility__funptr = NULL
-cdef void LLVMSetVisibility(LLVMValueRef Global,LLVMVisibility Viz) nogil:
+cdef void LLVMSetVisibility(LLVMValueRef Global,LLVMVisibility Viz):
     global _LLVMSetVisibility__funptr
     __init_symbol(&_LLVMSetVisibility__funptr,"LLVMSetVisibility")
-    (<void (*)(LLVMValueRef,LLVMVisibility) nogil> _LLVMSetVisibility__funptr)(Global,Viz)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMVisibility) noexcept nogil> _LLVMSetVisibility__funptr)(Global,Viz)
 
 
 cdef void* _LLVMGetDLLStorageClass__funptr = NULL
-cdef LLVMDLLStorageClass LLVMGetDLLStorageClass(LLVMValueRef Global) nogil:
+cdef LLVMDLLStorageClass LLVMGetDLLStorageClass(LLVMValueRef Global):
     global _LLVMGetDLLStorageClass__funptr
     __init_symbol(&_LLVMGetDLLStorageClass__funptr,"LLVMGetDLLStorageClass")
-    return (<LLVMDLLStorageClass (*)(LLVMValueRef) nogil> _LLVMGetDLLStorageClass__funptr)(Global)
+    with nogil:
+        return (<LLVMDLLStorageClass (*)(LLVMValueRef) noexcept nogil> _LLVMGetDLLStorageClass__funptr)(Global)
 
 
 cdef void* _LLVMSetDLLStorageClass__funptr = NULL
-cdef void LLVMSetDLLStorageClass(LLVMValueRef Global,LLVMDLLStorageClass Class) nogil:
+cdef void LLVMSetDLLStorageClass(LLVMValueRef Global,LLVMDLLStorageClass Class):
     global _LLVMSetDLLStorageClass__funptr
     __init_symbol(&_LLVMSetDLLStorageClass__funptr,"LLVMSetDLLStorageClass")
-    (<void (*)(LLVMValueRef,LLVMDLLStorageClass) nogil> _LLVMSetDLLStorageClass__funptr)(Global,Class)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMDLLStorageClass) noexcept nogil> _LLVMSetDLLStorageClass__funptr)(Global,Class)
 
 
 cdef void* _LLVMGetUnnamedAddress__funptr = NULL
-cdef LLVMUnnamedAddr LLVMGetUnnamedAddress(LLVMValueRef Global) nogil:
+cdef LLVMUnnamedAddr LLVMGetUnnamedAddress(LLVMValueRef Global):
     global _LLVMGetUnnamedAddress__funptr
     __init_symbol(&_LLVMGetUnnamedAddress__funptr,"LLVMGetUnnamedAddress")
-    return (<LLVMUnnamedAddr (*)(LLVMValueRef) nogil> _LLVMGetUnnamedAddress__funptr)(Global)
+    with nogil:
+        return (<LLVMUnnamedAddr (*)(LLVMValueRef) noexcept nogil> _LLVMGetUnnamedAddress__funptr)(Global)
 
 
 cdef void* _LLVMSetUnnamedAddress__funptr = NULL
-cdef void LLVMSetUnnamedAddress(LLVMValueRef Global,LLVMUnnamedAddr UnnamedAddr) nogil:
+cdef void LLVMSetUnnamedAddress(LLVMValueRef Global,LLVMUnnamedAddr UnnamedAddr):
     global _LLVMSetUnnamedAddress__funptr
     __init_symbol(&_LLVMSetUnnamedAddress__funptr,"LLVMSetUnnamedAddress")
-    (<void (*)(LLVMValueRef,LLVMUnnamedAddr) nogil> _LLVMSetUnnamedAddress__funptr)(Global,UnnamedAddr)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMUnnamedAddr) noexcept nogil> _LLVMSetUnnamedAddress__funptr)(Global,UnnamedAddr)
 
 
 cdef void* _LLVMGlobalGetValueType__funptr = NULL
@@ -3294,26 +3653,29 @@ cdef void* _LLVMGlobalGetValueType__funptr = NULL
 # type of a global value which is always a pointer type.
 # 
 # @see llvm::GlobalValue::getValueType()
-cdef LLVMTypeRef LLVMGlobalGetValueType(LLVMValueRef Global) nogil:
+cdef LLVMTypeRef LLVMGlobalGetValueType(LLVMValueRef Global):
     global _LLVMGlobalGetValueType__funptr
     __init_symbol(&_LLVMGlobalGetValueType__funptr,"LLVMGlobalGetValueType")
-    return (<LLVMTypeRef (*)(LLVMValueRef) nogil> _LLVMGlobalGetValueType__funptr)(Global)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMValueRef) noexcept nogil> _LLVMGlobalGetValueType__funptr)(Global)
 
 
 cdef void* _LLVMHasUnnamedAddr__funptr = NULL
 # Deprecated: Use LLVMGetUnnamedAddress instead. */
-cdef int LLVMHasUnnamedAddr(LLVMValueRef Global) nogil:
+cdef int LLVMHasUnnamedAddr(LLVMValueRef Global):
     global _LLVMHasUnnamedAddr__funptr
     __init_symbol(&_LLVMHasUnnamedAddr__funptr,"LLVMHasUnnamedAddr")
-    return (<int (*)(LLVMValueRef) nogil> _LLVMHasUnnamedAddr__funptr)(Global)
+    with nogil:
+        return (<int (*)(LLVMValueRef) noexcept nogil> _LLVMHasUnnamedAddr__funptr)(Global)
 
 
 cdef void* _LLVMSetUnnamedAddr__funptr = NULL
 # Deprecated: Use LLVMSetUnnamedAddress instead. */
-cdef void LLVMSetUnnamedAddr(LLVMValueRef Global,int HasUnnamedAddr) nogil:
+cdef void LLVMSetUnnamedAddr(LLVMValueRef Global,int HasUnnamedAddr):
     global _LLVMSetUnnamedAddr__funptr
     __init_symbol(&_LLVMSetUnnamedAddr__funptr,"LLVMSetUnnamedAddr")
-    (<void (*)(LLVMValueRef,int) nogil> _LLVMSetUnnamedAddr__funptr)(Global,HasUnnamedAddr)
+    with nogil:
+        (<void (*)(LLVMValueRef,int) noexcept nogil> _LLVMSetUnnamedAddr__funptr)(Global,HasUnnamedAddr)
 
 
 cdef void* _LLVMGetAlignment__funptr = NULL
@@ -3325,10 +3687,11 @@ cdef void* _LLVMGetAlignment__funptr = NULL
 # @see llvm::AtomicRMWInst::setAlignment()
 # @see llvm::AtomicCmpXchgInst::setAlignment()
 # @see llvm::GlobalValue::getAlignment()
-cdef unsigned int LLVMGetAlignment(LLVMValueRef V) nogil:
+cdef unsigned int LLVMGetAlignment(LLVMValueRef V):
     global _LLVMGetAlignment__funptr
     __init_symbol(&_LLVMGetAlignment__funptr,"LLVMGetAlignment")
-    return (<unsigned int (*)(LLVMValueRef) nogil> _LLVMGetAlignment__funptr)(V)
+    with nogil:
+        return (<unsigned int (*)(LLVMValueRef) noexcept nogil> _LLVMGetAlignment__funptr)(V)
 
 
 cdef void* _LLVMSetAlignment__funptr = NULL
@@ -3340,10 +3703,11 @@ cdef void* _LLVMSetAlignment__funptr = NULL
 # @see llvm::AtomicRMWInst::setAlignment()
 # @see llvm::AtomicCmpXchgInst::setAlignment()
 # @see llvm::GlobalValue::setAlignment()
-cdef void LLVMSetAlignment(LLVMValueRef V,unsigned int Bytes) nogil:
+cdef void LLVMSetAlignment(LLVMValueRef V,unsigned int Bytes):
     global _LLVMSetAlignment__funptr
     __init_symbol(&_LLVMSetAlignment__funptr,"LLVMSetAlignment")
-    (<void (*)(LLVMValueRef,unsigned int) nogil> _LLVMSetAlignment__funptr)(V,Bytes)
+    with nogil:
+        (<void (*)(LLVMValueRef,unsigned int) noexcept nogil> _LLVMSetAlignment__funptr)(V,Bytes)
 
 
 cdef void* _LLVMGlobalSetMetadata__funptr = NULL
@@ -3352,10 +3716,11 @@ cdef void* _LLVMGlobalSetMetadata__funptr = NULL
 # it already exists for the given kind.
 # 
 # @see llvm::GlobalObject::setMetadata()
-cdef void LLVMGlobalSetMetadata(LLVMValueRef Global,unsigned int Kind,LLVMMetadataRef MD) nogil:
+cdef void LLVMGlobalSetMetadata(LLVMValueRef Global,unsigned int Kind,LLVMMetadataRef MD):
     global _LLVMGlobalSetMetadata__funptr
     __init_symbol(&_LLVMGlobalSetMetadata__funptr,"LLVMGlobalSetMetadata")
-    (<void (*)(LLVMValueRef,unsigned int,LLVMMetadataRef) nogil> _LLVMGlobalSetMetadata__funptr)(Global,Kind,MD)
+    with nogil:
+        (<void (*)(LLVMValueRef,unsigned int,LLVMMetadataRef) noexcept nogil> _LLVMGlobalSetMetadata__funptr)(Global,Kind,MD)
 
 
 cdef void* _LLVMGlobalEraseMetadata__funptr = NULL
@@ -3363,10 +3728,11 @@ cdef void* _LLVMGlobalEraseMetadata__funptr = NULL
 # Erases a metadata attachment of the given kind if it exists.
 # 
 # @see llvm::GlobalObject::eraseMetadata()
-cdef void LLVMGlobalEraseMetadata(LLVMValueRef Global,unsigned int Kind) nogil:
+cdef void LLVMGlobalEraseMetadata(LLVMValueRef Global,unsigned int Kind):
     global _LLVMGlobalEraseMetadata__funptr
     __init_symbol(&_LLVMGlobalEraseMetadata__funptr,"LLVMGlobalEraseMetadata")
-    (<void (*)(LLVMValueRef,unsigned int) nogil> _LLVMGlobalEraseMetadata__funptr)(Global,Kind)
+    with nogil:
+        (<void (*)(LLVMValueRef,unsigned int) noexcept nogil> _LLVMGlobalEraseMetadata__funptr)(Global,Kind)
 
 
 cdef void* _LLVMGlobalClearMetadata__funptr = NULL
@@ -3374,10 +3740,11 @@ cdef void* _LLVMGlobalClearMetadata__funptr = NULL
 # Removes all metadata attachments from this value.
 # 
 # @see llvm::GlobalObject::clearMetadata()
-cdef void LLVMGlobalClearMetadata(LLVMValueRef Global) nogil:
+cdef void LLVMGlobalClearMetadata(LLVMValueRef Global):
     global _LLVMGlobalClearMetadata__funptr
     __init_symbol(&_LLVMGlobalClearMetadata__funptr,"LLVMGlobalClearMetadata")
-    (<void (*)(LLVMValueRef) nogil> _LLVMGlobalClearMetadata__funptr)(Global)
+    with nogil:
+        (<void (*)(LLVMValueRef) noexcept nogil> _LLVMGlobalClearMetadata__funptr)(Global)
 
 
 cdef void* _LLVMGlobalCopyAllMetadata__funptr = NULL
@@ -3387,38 +3754,42 @@ cdef void* _LLVMGlobalCopyAllMetadata__funptr = NULL
 # \c LLVMDisposeValueMetadataEntries.
 # 
 # @see llvm::GlobalObject::getAllMetadata()
-cdef LLVMOpaqueValueMetadataEntry * LLVMGlobalCopyAllMetadata(LLVMValueRef Value,unsigned long * NumEntries) nogil:
+cdef LLVMOpaqueValueMetadataEntry * LLVMGlobalCopyAllMetadata(LLVMValueRef Value,unsigned long * NumEntries):
     global _LLVMGlobalCopyAllMetadata__funptr
     __init_symbol(&_LLVMGlobalCopyAllMetadata__funptr,"LLVMGlobalCopyAllMetadata")
-    return (<LLVMOpaqueValueMetadataEntry * (*)(LLVMValueRef,unsigned long *) nogil> _LLVMGlobalCopyAllMetadata__funptr)(Value,NumEntries)
+    with nogil:
+        return (<LLVMOpaqueValueMetadataEntry * (*)(LLVMValueRef,unsigned long *) noexcept nogil> _LLVMGlobalCopyAllMetadata__funptr)(Value,NumEntries)
 
 
 cdef void* _LLVMDisposeValueMetadataEntries__funptr = NULL
 # 
 # Destroys value metadata entries.
-cdef void LLVMDisposeValueMetadataEntries(LLVMOpaqueValueMetadataEntry * Entries) nogil:
+cdef void LLVMDisposeValueMetadataEntries(LLVMOpaqueValueMetadataEntry * Entries):
     global _LLVMDisposeValueMetadataEntries__funptr
     __init_symbol(&_LLVMDisposeValueMetadataEntries__funptr,"LLVMDisposeValueMetadataEntries")
-    (<void (*)(LLVMOpaqueValueMetadataEntry *) nogil> _LLVMDisposeValueMetadataEntries__funptr)(Entries)
+    with nogil:
+        (<void (*)(LLVMOpaqueValueMetadataEntry *) noexcept nogil> _LLVMDisposeValueMetadataEntries__funptr)(Entries)
 
 
 cdef void* _LLVMValueMetadataEntriesGetKind__funptr = NULL
 # 
 # Returns the kind of a value metadata entry at a specific index.
-cdef unsigned int LLVMValueMetadataEntriesGetKind(LLVMOpaqueValueMetadataEntry * Entries,unsigned int Index) nogil:
+cdef unsigned int LLVMValueMetadataEntriesGetKind(LLVMOpaqueValueMetadataEntry * Entries,unsigned int Index):
     global _LLVMValueMetadataEntriesGetKind__funptr
     __init_symbol(&_LLVMValueMetadataEntriesGetKind__funptr,"LLVMValueMetadataEntriesGetKind")
-    return (<unsigned int (*)(LLVMOpaqueValueMetadataEntry *,unsigned int) nogil> _LLVMValueMetadataEntriesGetKind__funptr)(Entries,Index)
+    with nogil:
+        return (<unsigned int (*)(LLVMOpaqueValueMetadataEntry *,unsigned int) noexcept nogil> _LLVMValueMetadataEntriesGetKind__funptr)(Entries,Index)
 
 
 cdef void* _LLVMValueMetadataEntriesGetMetadata__funptr = NULL
 # 
 # Returns the underlying metadata node of a value metadata entry at a
 # specific index.
-cdef LLVMMetadataRef LLVMValueMetadataEntriesGetMetadata(LLVMOpaqueValueMetadataEntry * Entries,unsigned int Index) nogil:
+cdef LLVMMetadataRef LLVMValueMetadataEntriesGetMetadata(LLVMOpaqueValueMetadataEntry * Entries,unsigned int Index):
     global _LLVMValueMetadataEntriesGetMetadata__funptr
     __init_symbol(&_LLVMValueMetadataEntriesGetMetadata__funptr,"LLVMValueMetadataEntriesGetMetadata")
-    return (<LLVMMetadataRef (*)(LLVMOpaqueValueMetadataEntry *,unsigned int) nogil> _LLVMValueMetadataEntriesGetMetadata__funptr)(Entries,Index)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMOpaqueValueMetadataEntry *,unsigned int) noexcept nogil> _LLVMValueMetadataEntriesGetMetadata__funptr)(Entries,Index)
 
 
 cdef void* _LLVMAddGlobal__funptr = NULL
@@ -3430,129 +3801,147 @@ cdef void* _LLVMAddGlobal__funptr = NULL
 # @see llvm::GlobalVariable
 # 
 # @{
-cdef LLVMValueRef LLVMAddGlobal(LLVMModuleRef M,LLVMTypeRef Ty,const char * Name) nogil:
+cdef LLVMValueRef LLVMAddGlobal(LLVMModuleRef M,LLVMTypeRef Ty,const char * Name):
     global _LLVMAddGlobal__funptr
     __init_symbol(&_LLVMAddGlobal__funptr,"LLVMAddGlobal")
-    return (<LLVMValueRef (*)(LLVMModuleRef,LLVMTypeRef,const char *) nogil> _LLVMAddGlobal__funptr)(M,Ty,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMModuleRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMAddGlobal__funptr)(M,Ty,Name)
 
 
 cdef void* _LLVMAddGlobalInAddressSpace__funptr = NULL
-cdef LLVMValueRef LLVMAddGlobalInAddressSpace(LLVMModuleRef M,LLVMTypeRef Ty,const char * Name,unsigned int AddressSpace) nogil:
+cdef LLVMValueRef LLVMAddGlobalInAddressSpace(LLVMModuleRef M,LLVMTypeRef Ty,const char * Name,unsigned int AddressSpace):
     global _LLVMAddGlobalInAddressSpace__funptr
     __init_symbol(&_LLVMAddGlobalInAddressSpace__funptr,"LLVMAddGlobalInAddressSpace")
-    return (<LLVMValueRef (*)(LLVMModuleRef,LLVMTypeRef,const char *,unsigned int) nogil> _LLVMAddGlobalInAddressSpace__funptr)(M,Ty,Name,AddressSpace)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMModuleRef,LLVMTypeRef,const char *,unsigned int) noexcept nogil> _LLVMAddGlobalInAddressSpace__funptr)(M,Ty,Name,AddressSpace)
 
 
 cdef void* _LLVMGetNamedGlobal__funptr = NULL
-cdef LLVMValueRef LLVMGetNamedGlobal(LLVMModuleRef M,const char * Name) nogil:
+cdef LLVMValueRef LLVMGetNamedGlobal(LLVMModuleRef M,const char * Name):
     global _LLVMGetNamedGlobal__funptr
     __init_symbol(&_LLVMGetNamedGlobal__funptr,"LLVMGetNamedGlobal")
-    return (<LLVMValueRef (*)(LLVMModuleRef,const char *) nogil> _LLVMGetNamedGlobal__funptr)(M,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMModuleRef,const char *) noexcept nogil> _LLVMGetNamedGlobal__funptr)(M,Name)
 
 
 cdef void* _LLVMGetFirstGlobal__funptr = NULL
-cdef LLVMValueRef LLVMGetFirstGlobal(LLVMModuleRef M) nogil:
+cdef LLVMValueRef LLVMGetFirstGlobal(LLVMModuleRef M):
     global _LLVMGetFirstGlobal__funptr
     __init_symbol(&_LLVMGetFirstGlobal__funptr,"LLVMGetFirstGlobal")
-    return (<LLVMValueRef (*)(LLVMModuleRef) nogil> _LLVMGetFirstGlobal__funptr)(M)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMModuleRef) noexcept nogil> _LLVMGetFirstGlobal__funptr)(M)
 
 
 cdef void* _LLVMGetLastGlobal__funptr = NULL
-cdef LLVMValueRef LLVMGetLastGlobal(LLVMModuleRef M) nogil:
+cdef LLVMValueRef LLVMGetLastGlobal(LLVMModuleRef M):
     global _LLVMGetLastGlobal__funptr
     __init_symbol(&_LLVMGetLastGlobal__funptr,"LLVMGetLastGlobal")
-    return (<LLVMValueRef (*)(LLVMModuleRef) nogil> _LLVMGetLastGlobal__funptr)(M)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMModuleRef) noexcept nogil> _LLVMGetLastGlobal__funptr)(M)
 
 
 cdef void* _LLVMGetNextGlobal__funptr = NULL
-cdef LLVMValueRef LLVMGetNextGlobal(LLVMValueRef GlobalVar) nogil:
+cdef LLVMValueRef LLVMGetNextGlobal(LLVMValueRef GlobalVar):
     global _LLVMGetNextGlobal__funptr
     __init_symbol(&_LLVMGetNextGlobal__funptr,"LLVMGetNextGlobal")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMGetNextGlobal__funptr)(GlobalVar)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetNextGlobal__funptr)(GlobalVar)
 
 
 cdef void* _LLVMGetPreviousGlobal__funptr = NULL
-cdef LLVMValueRef LLVMGetPreviousGlobal(LLVMValueRef GlobalVar) nogil:
+cdef LLVMValueRef LLVMGetPreviousGlobal(LLVMValueRef GlobalVar):
     global _LLVMGetPreviousGlobal__funptr
     __init_symbol(&_LLVMGetPreviousGlobal__funptr,"LLVMGetPreviousGlobal")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMGetPreviousGlobal__funptr)(GlobalVar)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetPreviousGlobal__funptr)(GlobalVar)
 
 
 cdef void* _LLVMDeleteGlobal__funptr = NULL
-cdef void LLVMDeleteGlobal(LLVMValueRef GlobalVar) nogil:
+cdef void LLVMDeleteGlobal(LLVMValueRef GlobalVar):
     global _LLVMDeleteGlobal__funptr
     __init_symbol(&_LLVMDeleteGlobal__funptr,"LLVMDeleteGlobal")
-    (<void (*)(LLVMValueRef) nogil> _LLVMDeleteGlobal__funptr)(GlobalVar)
+    with nogil:
+        (<void (*)(LLVMValueRef) noexcept nogil> _LLVMDeleteGlobal__funptr)(GlobalVar)
 
 
 cdef void* _LLVMGetInitializer__funptr = NULL
-cdef LLVMValueRef LLVMGetInitializer(LLVMValueRef GlobalVar) nogil:
+cdef LLVMValueRef LLVMGetInitializer(LLVMValueRef GlobalVar):
     global _LLVMGetInitializer__funptr
     __init_symbol(&_LLVMGetInitializer__funptr,"LLVMGetInitializer")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMGetInitializer__funptr)(GlobalVar)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetInitializer__funptr)(GlobalVar)
 
 
 cdef void* _LLVMSetInitializer__funptr = NULL
-cdef void LLVMSetInitializer(LLVMValueRef GlobalVar,LLVMValueRef ConstantVal) nogil:
+cdef void LLVMSetInitializer(LLVMValueRef GlobalVar,LLVMValueRef ConstantVal):
     global _LLVMSetInitializer__funptr
     __init_symbol(&_LLVMSetInitializer__funptr,"LLVMSetInitializer")
-    (<void (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMSetInitializer__funptr)(GlobalVar,ConstantVal)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMSetInitializer__funptr)(GlobalVar,ConstantVal)
 
 
 cdef void* _LLVMIsThreadLocal__funptr = NULL
-cdef int LLVMIsThreadLocal(LLVMValueRef GlobalVar) nogil:
+cdef int LLVMIsThreadLocal(LLVMValueRef GlobalVar):
     global _LLVMIsThreadLocal__funptr
     __init_symbol(&_LLVMIsThreadLocal__funptr,"LLVMIsThreadLocal")
-    return (<int (*)(LLVMValueRef) nogil> _LLVMIsThreadLocal__funptr)(GlobalVar)
+    with nogil:
+        return (<int (*)(LLVMValueRef) noexcept nogil> _LLVMIsThreadLocal__funptr)(GlobalVar)
 
 
 cdef void* _LLVMSetThreadLocal__funptr = NULL
-cdef void LLVMSetThreadLocal(LLVMValueRef GlobalVar,int IsThreadLocal) nogil:
+cdef void LLVMSetThreadLocal(LLVMValueRef GlobalVar,int IsThreadLocal):
     global _LLVMSetThreadLocal__funptr
     __init_symbol(&_LLVMSetThreadLocal__funptr,"LLVMSetThreadLocal")
-    (<void (*)(LLVMValueRef,int) nogil> _LLVMSetThreadLocal__funptr)(GlobalVar,IsThreadLocal)
+    with nogil:
+        (<void (*)(LLVMValueRef,int) noexcept nogil> _LLVMSetThreadLocal__funptr)(GlobalVar,IsThreadLocal)
 
 
 cdef void* _LLVMIsGlobalConstant__funptr = NULL
-cdef int LLVMIsGlobalConstant(LLVMValueRef GlobalVar) nogil:
+cdef int LLVMIsGlobalConstant(LLVMValueRef GlobalVar):
     global _LLVMIsGlobalConstant__funptr
     __init_symbol(&_LLVMIsGlobalConstant__funptr,"LLVMIsGlobalConstant")
-    return (<int (*)(LLVMValueRef) nogil> _LLVMIsGlobalConstant__funptr)(GlobalVar)
+    with nogil:
+        return (<int (*)(LLVMValueRef) noexcept nogil> _LLVMIsGlobalConstant__funptr)(GlobalVar)
 
 
 cdef void* _LLVMSetGlobalConstant__funptr = NULL
-cdef void LLVMSetGlobalConstant(LLVMValueRef GlobalVar,int IsConstant) nogil:
+cdef void LLVMSetGlobalConstant(LLVMValueRef GlobalVar,int IsConstant):
     global _LLVMSetGlobalConstant__funptr
     __init_symbol(&_LLVMSetGlobalConstant__funptr,"LLVMSetGlobalConstant")
-    (<void (*)(LLVMValueRef,int) nogil> _LLVMSetGlobalConstant__funptr)(GlobalVar,IsConstant)
+    with nogil:
+        (<void (*)(LLVMValueRef,int) noexcept nogil> _LLVMSetGlobalConstant__funptr)(GlobalVar,IsConstant)
 
 
 cdef void* _LLVMGetThreadLocalMode__funptr = NULL
-cdef LLVMThreadLocalMode LLVMGetThreadLocalMode(LLVMValueRef GlobalVar) nogil:
+cdef LLVMThreadLocalMode LLVMGetThreadLocalMode(LLVMValueRef GlobalVar):
     global _LLVMGetThreadLocalMode__funptr
     __init_symbol(&_LLVMGetThreadLocalMode__funptr,"LLVMGetThreadLocalMode")
-    return (<LLVMThreadLocalMode (*)(LLVMValueRef) nogil> _LLVMGetThreadLocalMode__funptr)(GlobalVar)
+    with nogil:
+        return (<LLVMThreadLocalMode (*)(LLVMValueRef) noexcept nogil> _LLVMGetThreadLocalMode__funptr)(GlobalVar)
 
 
 cdef void* _LLVMSetThreadLocalMode__funptr = NULL
-cdef void LLVMSetThreadLocalMode(LLVMValueRef GlobalVar,LLVMThreadLocalMode Mode) nogil:
+cdef void LLVMSetThreadLocalMode(LLVMValueRef GlobalVar,LLVMThreadLocalMode Mode):
     global _LLVMSetThreadLocalMode__funptr
     __init_symbol(&_LLVMSetThreadLocalMode__funptr,"LLVMSetThreadLocalMode")
-    (<void (*)(LLVMValueRef,LLVMThreadLocalMode) nogil> _LLVMSetThreadLocalMode__funptr)(GlobalVar,Mode)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMThreadLocalMode) noexcept nogil> _LLVMSetThreadLocalMode__funptr)(GlobalVar,Mode)
 
 
 cdef void* _LLVMIsExternallyInitialized__funptr = NULL
-cdef int LLVMIsExternallyInitialized(LLVMValueRef GlobalVar) nogil:
+cdef int LLVMIsExternallyInitialized(LLVMValueRef GlobalVar):
     global _LLVMIsExternallyInitialized__funptr
     __init_symbol(&_LLVMIsExternallyInitialized__funptr,"LLVMIsExternallyInitialized")
-    return (<int (*)(LLVMValueRef) nogil> _LLVMIsExternallyInitialized__funptr)(GlobalVar)
+    with nogil:
+        return (<int (*)(LLVMValueRef) noexcept nogil> _LLVMIsExternallyInitialized__funptr)(GlobalVar)
 
 
 cdef void* _LLVMSetExternallyInitialized__funptr = NULL
-cdef void LLVMSetExternallyInitialized(LLVMValueRef GlobalVar,int IsExtInit) nogil:
+cdef void LLVMSetExternallyInitialized(LLVMValueRef GlobalVar,int IsExtInit):
     global _LLVMSetExternallyInitialized__funptr
     __init_symbol(&_LLVMSetExternallyInitialized__funptr,"LLVMSetExternallyInitialized")
-    (<void (*)(LLVMValueRef,int) nogil> _LLVMSetExternallyInitialized__funptr)(GlobalVar,IsExtInit)
+    with nogil:
+        (<void (*)(LLVMValueRef,int) noexcept nogil> _LLVMSetExternallyInitialized__funptr)(GlobalVar,IsExtInit)
 
 
 cdef void* _LLVMAddAlias2__funptr = NULL
@@ -3560,10 +3949,11 @@ cdef void* _LLVMAddAlias2__funptr = NULL
 # Add a GlobalAlias with the given value type, address space and aliasee.
 # 
 # @see llvm::GlobalAlias::create()
-cdef LLVMValueRef LLVMAddAlias2(LLVMModuleRef M,LLVMTypeRef ValueTy,unsigned int AddrSpace,LLVMValueRef Aliasee,const char * Name) nogil:
+cdef LLVMValueRef LLVMAddAlias2(LLVMModuleRef M,LLVMTypeRef ValueTy,unsigned int AddrSpace,LLVMValueRef Aliasee,const char * Name):
     global _LLVMAddAlias2__funptr
     __init_symbol(&_LLVMAddAlias2__funptr,"LLVMAddAlias2")
-    return (<LLVMValueRef (*)(LLVMModuleRef,LLVMTypeRef,unsigned int,LLVMValueRef,const char *) nogil> _LLVMAddAlias2__funptr)(M,ValueTy,AddrSpace,Aliasee,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMModuleRef,LLVMTypeRef,unsigned int,LLVMValueRef,const char *) noexcept nogil> _LLVMAddAlias2__funptr)(M,ValueTy,AddrSpace,Aliasee,Name)
 
 
 cdef void* _LLVMGetNamedGlobalAlias__funptr = NULL
@@ -3573,10 +3963,11 @@ cdef void* _LLVMGetNamedGlobalAlias__funptr = NULL
 # The returned value corresponds to a llvm::GlobalAlias value.
 # 
 # @see llvm::Module::getNamedAlias()
-cdef LLVMValueRef LLVMGetNamedGlobalAlias(LLVMModuleRef M,const char * Name,unsigned long NameLen) nogil:
+cdef LLVMValueRef LLVMGetNamedGlobalAlias(LLVMModuleRef M,const char * Name,unsigned long NameLen):
     global _LLVMGetNamedGlobalAlias__funptr
     __init_symbol(&_LLVMGetNamedGlobalAlias__funptr,"LLVMGetNamedGlobalAlias")
-    return (<LLVMValueRef (*)(LLVMModuleRef,const char *,unsigned long) nogil> _LLVMGetNamedGlobalAlias__funptr)(M,Name,NameLen)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMModuleRef,const char *,unsigned long) noexcept nogil> _LLVMGetNamedGlobalAlias__funptr)(M,Name,NameLen)
 
 
 cdef void* _LLVMGetFirstGlobalAlias__funptr = NULL
@@ -3584,10 +3975,11 @@ cdef void* _LLVMGetFirstGlobalAlias__funptr = NULL
 # Obtain an iterator to the first GlobalAlias in a Module.
 # 
 # @see llvm::Module::alias_begin()
-cdef LLVMValueRef LLVMGetFirstGlobalAlias(LLVMModuleRef M) nogil:
+cdef LLVMValueRef LLVMGetFirstGlobalAlias(LLVMModuleRef M):
     global _LLVMGetFirstGlobalAlias__funptr
     __init_symbol(&_LLVMGetFirstGlobalAlias__funptr,"LLVMGetFirstGlobalAlias")
-    return (<LLVMValueRef (*)(LLVMModuleRef) nogil> _LLVMGetFirstGlobalAlias__funptr)(M)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMModuleRef) noexcept nogil> _LLVMGetFirstGlobalAlias__funptr)(M)
 
 
 cdef void* _LLVMGetLastGlobalAlias__funptr = NULL
@@ -3595,10 +3987,11 @@ cdef void* _LLVMGetLastGlobalAlias__funptr = NULL
 # Obtain an iterator to the last GlobalAlias in a Module.
 # 
 # @see llvm::Module::alias_end()
-cdef LLVMValueRef LLVMGetLastGlobalAlias(LLVMModuleRef M) nogil:
+cdef LLVMValueRef LLVMGetLastGlobalAlias(LLVMModuleRef M):
     global _LLVMGetLastGlobalAlias__funptr
     __init_symbol(&_LLVMGetLastGlobalAlias__funptr,"LLVMGetLastGlobalAlias")
-    return (<LLVMValueRef (*)(LLVMModuleRef) nogil> _LLVMGetLastGlobalAlias__funptr)(M)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMModuleRef) noexcept nogil> _LLVMGetLastGlobalAlias__funptr)(M)
 
 
 cdef void* _LLVMGetNextGlobalAlias__funptr = NULL
@@ -3607,10 +4000,11 @@ cdef void* _LLVMGetNextGlobalAlias__funptr = NULL
 # 
 # Returns NULL if the iterator was already at the end and there are no more
 # global aliases.
-cdef LLVMValueRef LLVMGetNextGlobalAlias(LLVMValueRef GA) nogil:
+cdef LLVMValueRef LLVMGetNextGlobalAlias(LLVMValueRef GA):
     global _LLVMGetNextGlobalAlias__funptr
     __init_symbol(&_LLVMGetNextGlobalAlias__funptr,"LLVMGetNextGlobalAlias")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMGetNextGlobalAlias__funptr)(GA)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetNextGlobalAlias__funptr)(GA)
 
 
 cdef void* _LLVMGetPreviousGlobalAlias__funptr = NULL
@@ -3619,28 +4013,31 @@ cdef void* _LLVMGetPreviousGlobalAlias__funptr = NULL
 # 
 # Returns NULL if the iterator was already at the beginning and there are
 # no previous global aliases.
-cdef LLVMValueRef LLVMGetPreviousGlobalAlias(LLVMValueRef GA) nogil:
+cdef LLVMValueRef LLVMGetPreviousGlobalAlias(LLVMValueRef GA):
     global _LLVMGetPreviousGlobalAlias__funptr
     __init_symbol(&_LLVMGetPreviousGlobalAlias__funptr,"LLVMGetPreviousGlobalAlias")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMGetPreviousGlobalAlias__funptr)(GA)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetPreviousGlobalAlias__funptr)(GA)
 
 
 cdef void* _LLVMAliasGetAliasee__funptr = NULL
 # 
 # Retrieve the target value of an alias.
-cdef LLVMValueRef LLVMAliasGetAliasee(LLVMValueRef Alias) nogil:
+cdef LLVMValueRef LLVMAliasGetAliasee(LLVMValueRef Alias):
     global _LLVMAliasGetAliasee__funptr
     __init_symbol(&_LLVMAliasGetAliasee__funptr,"LLVMAliasGetAliasee")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMAliasGetAliasee__funptr)(Alias)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMAliasGetAliasee__funptr)(Alias)
 
 
 cdef void* _LLVMAliasSetAliasee__funptr = NULL
 # 
 # Set the target value of an alias.
-cdef void LLVMAliasSetAliasee(LLVMValueRef Alias,LLVMValueRef Aliasee) nogil:
+cdef void LLVMAliasSetAliasee(LLVMValueRef Alias,LLVMValueRef Aliasee):
     global _LLVMAliasSetAliasee__funptr
     __init_symbol(&_LLVMAliasSetAliasee__funptr,"LLVMAliasSetAliasee")
-    (<void (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMAliasSetAliasee__funptr)(Alias,Aliasee)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMAliasSetAliasee__funptr)(Alias,Aliasee)
 
 
 cdef void* _LLVMDeleteFunction__funptr = NULL
@@ -3648,10 +4045,11 @@ cdef void* _LLVMDeleteFunction__funptr = NULL
 # Remove a function from its containing module and deletes it.
 # 
 # @see llvm::Function::eraseFromParent()
-cdef void LLVMDeleteFunction(LLVMValueRef Fn) nogil:
+cdef void LLVMDeleteFunction(LLVMValueRef Fn):
     global _LLVMDeleteFunction__funptr
     __init_symbol(&_LLVMDeleteFunction__funptr,"LLVMDeleteFunction")
-    (<void (*)(LLVMValueRef) nogil> _LLVMDeleteFunction__funptr)(Fn)
+    with nogil:
+        (<void (*)(LLVMValueRef) noexcept nogil> _LLVMDeleteFunction__funptr)(Fn)
 
 
 cdef void* _LLVMHasPersonalityFn__funptr = NULL
@@ -3659,10 +4057,11 @@ cdef void* _LLVMHasPersonalityFn__funptr = NULL
 # Check whether the given function has a personality function.
 # 
 # @see llvm::Function::hasPersonalityFn()
-cdef int LLVMHasPersonalityFn(LLVMValueRef Fn) nogil:
+cdef int LLVMHasPersonalityFn(LLVMValueRef Fn):
     global _LLVMHasPersonalityFn__funptr
     __init_symbol(&_LLVMHasPersonalityFn__funptr,"LLVMHasPersonalityFn")
-    return (<int (*)(LLVMValueRef) nogil> _LLVMHasPersonalityFn__funptr)(Fn)
+    with nogil:
+        return (<int (*)(LLVMValueRef) noexcept nogil> _LLVMHasPersonalityFn__funptr)(Fn)
 
 
 cdef void* _LLVMGetPersonalityFn__funptr = NULL
@@ -3670,10 +4069,11 @@ cdef void* _LLVMGetPersonalityFn__funptr = NULL
 # Obtain the personality function attached to the function.
 # 
 # @see llvm::Function::getPersonalityFn()
-cdef LLVMValueRef LLVMGetPersonalityFn(LLVMValueRef Fn) nogil:
+cdef LLVMValueRef LLVMGetPersonalityFn(LLVMValueRef Fn):
     global _LLVMGetPersonalityFn__funptr
     __init_symbol(&_LLVMGetPersonalityFn__funptr,"LLVMGetPersonalityFn")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMGetPersonalityFn__funptr)(Fn)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetPersonalityFn__funptr)(Fn)
 
 
 cdef void* _LLVMSetPersonalityFn__funptr = NULL
@@ -3681,10 +4081,11 @@ cdef void* _LLVMSetPersonalityFn__funptr = NULL
 # Set the personality function attached to the function.
 # 
 # @see llvm::Function::setPersonalityFn()
-cdef void LLVMSetPersonalityFn(LLVMValueRef Fn,LLVMValueRef PersonalityFn) nogil:
+cdef void LLVMSetPersonalityFn(LLVMValueRef Fn,LLVMValueRef PersonalityFn):
     global _LLVMSetPersonalityFn__funptr
     __init_symbol(&_LLVMSetPersonalityFn__funptr,"LLVMSetPersonalityFn")
-    (<void (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMSetPersonalityFn__funptr)(Fn,PersonalityFn)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMSetPersonalityFn__funptr)(Fn,PersonalityFn)
 
 
 cdef void* _LLVMLookupIntrinsicID__funptr = NULL
@@ -3692,10 +4093,11 @@ cdef void* _LLVMLookupIntrinsicID__funptr = NULL
 # Obtain the intrinsic ID number which matches the given function name.
 # 
 # @see llvm::Function::lookupIntrinsicID()
-cdef unsigned int LLVMLookupIntrinsicID(const char * Name,unsigned long NameLen) nogil:
+cdef unsigned int LLVMLookupIntrinsicID(const char * Name,unsigned long NameLen):
     global _LLVMLookupIntrinsicID__funptr
     __init_symbol(&_LLVMLookupIntrinsicID__funptr,"LLVMLookupIntrinsicID")
-    return (<unsigned int (*)(const char *,unsigned long) nogil> _LLVMLookupIntrinsicID__funptr)(Name,NameLen)
+    with nogil:
+        return (<unsigned int (*)(const char *,unsigned long) noexcept nogil> _LLVMLookupIntrinsicID__funptr)(Name,NameLen)
 
 
 cdef void* _LLVMGetIntrinsicID__funptr = NULL
@@ -3703,10 +4105,11 @@ cdef void* _LLVMGetIntrinsicID__funptr = NULL
 # Obtain the ID number from a function instance.
 # 
 # @see llvm::Function::getIntrinsicID()
-cdef unsigned int LLVMGetIntrinsicID(LLVMValueRef Fn) nogil:
+cdef unsigned int LLVMGetIntrinsicID(LLVMValueRef Fn):
     global _LLVMGetIntrinsicID__funptr
     __init_symbol(&_LLVMGetIntrinsicID__funptr,"LLVMGetIntrinsicID")
-    return (<unsigned int (*)(LLVMValueRef) nogil> _LLVMGetIntrinsicID__funptr)(Fn)
+    with nogil:
+        return (<unsigned int (*)(LLVMValueRef) noexcept nogil> _LLVMGetIntrinsicID__funptr)(Fn)
 
 
 cdef void* _LLVMGetIntrinsicDeclaration__funptr = NULL
@@ -3715,10 +4118,11 @@ cdef void* _LLVMGetIntrinsicDeclaration__funptr = NULL
 # parameter types must be provided to uniquely identify an overload.
 # 
 # @see llvm::Intrinsic::getDeclaration()
-cdef LLVMValueRef LLVMGetIntrinsicDeclaration(LLVMModuleRef Mod,unsigned int ID,LLVMTypeRef* ParamTypes,unsigned long ParamCount) nogil:
+cdef LLVMValueRef LLVMGetIntrinsicDeclaration(LLVMModuleRef Mod,unsigned int ID,LLVMTypeRef* ParamTypes,unsigned long ParamCount):
     global _LLVMGetIntrinsicDeclaration__funptr
     __init_symbol(&_LLVMGetIntrinsicDeclaration__funptr,"LLVMGetIntrinsicDeclaration")
-    return (<LLVMValueRef (*)(LLVMModuleRef,unsigned int,LLVMTypeRef*,unsigned long) nogil> _LLVMGetIntrinsicDeclaration__funptr)(Mod,ID,ParamTypes,ParamCount)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMModuleRef,unsigned int,LLVMTypeRef*,unsigned long) noexcept nogil> _LLVMGetIntrinsicDeclaration__funptr)(Mod,ID,ParamTypes,ParamCount)
 
 
 cdef void* _LLVMIntrinsicGetType__funptr = NULL
@@ -3727,10 +4131,11 @@ cdef void* _LLVMIntrinsicGetType__funptr = NULL
 # types must be provided to uniquely identify an overload.
 # 
 # @see llvm::Intrinsic::getType()
-cdef LLVMTypeRef LLVMIntrinsicGetType(LLVMContextRef Ctx,unsigned int ID,LLVMTypeRef* ParamTypes,unsigned long ParamCount) nogil:
+cdef LLVMTypeRef LLVMIntrinsicGetType(LLVMContextRef Ctx,unsigned int ID,LLVMTypeRef* ParamTypes,unsigned long ParamCount):
     global _LLVMIntrinsicGetType__funptr
     __init_symbol(&_LLVMIntrinsicGetType__funptr,"LLVMIntrinsicGetType")
-    return (<LLVMTypeRef (*)(LLVMContextRef,unsigned int,LLVMTypeRef*,unsigned long) nogil> _LLVMIntrinsicGetType__funptr)(Ctx,ID,ParamTypes,ParamCount)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef,unsigned int,LLVMTypeRef*,unsigned long) noexcept nogil> _LLVMIntrinsicGetType__funptr)(Ctx,ID,ParamTypes,ParamCount)
 
 
 cdef void* _LLVMIntrinsicGetName__funptr = NULL
@@ -3738,18 +4143,20 @@ cdef void* _LLVMIntrinsicGetName__funptr = NULL
 # Retrieves the name of an intrinsic.
 # 
 # @see llvm::Intrinsic::getName()
-cdef const char * LLVMIntrinsicGetName(unsigned int ID,unsigned long * NameLength) nogil:
+cdef const char * LLVMIntrinsicGetName(unsigned int ID,unsigned long * NameLength):
     global _LLVMIntrinsicGetName__funptr
     __init_symbol(&_LLVMIntrinsicGetName__funptr,"LLVMIntrinsicGetName")
-    return (<const char * (*)(unsigned int,unsigned long *) nogil> _LLVMIntrinsicGetName__funptr)(ID,NameLength)
+    with nogil:
+        return (<const char * (*)(unsigned int,unsigned long *) noexcept nogil> _LLVMIntrinsicGetName__funptr)(ID,NameLength)
 
 
 cdef void* _LLVMIntrinsicCopyOverloadedName__funptr = NULL
 # Deprecated: Use LLVMIntrinsicCopyOverloadedName2 instead. */
-cdef const char * LLVMIntrinsicCopyOverloadedName(unsigned int ID,LLVMTypeRef* ParamTypes,unsigned long ParamCount,unsigned long * NameLength) nogil:
+cdef const char * LLVMIntrinsicCopyOverloadedName(unsigned int ID,LLVMTypeRef* ParamTypes,unsigned long ParamCount,unsigned long * NameLength):
     global _LLVMIntrinsicCopyOverloadedName__funptr
     __init_symbol(&_LLVMIntrinsicCopyOverloadedName__funptr,"LLVMIntrinsicCopyOverloadedName")
-    return (<const char * (*)(unsigned int,LLVMTypeRef*,unsigned long,unsigned long *) nogil> _LLVMIntrinsicCopyOverloadedName__funptr)(ID,ParamTypes,ParamCount,NameLength)
+    with nogil:
+        return (<const char * (*)(unsigned int,LLVMTypeRef*,unsigned long,unsigned long *) noexcept nogil> _LLVMIntrinsicCopyOverloadedName__funptr)(ID,ParamTypes,ParamCount,NameLength)
 
 
 cdef void* _LLVMIntrinsicCopyOverloadedName2__funptr = NULL
@@ -3763,10 +4170,11 @@ cdef void* _LLVMIntrinsicCopyOverloadedName2__funptr = NULL
 # This version also supports unnamed types.
 # 
 # @see llvm::Intrinsic::getName()
-cdef const char * LLVMIntrinsicCopyOverloadedName2(LLVMModuleRef Mod,unsigned int ID,LLVMTypeRef* ParamTypes,unsigned long ParamCount,unsigned long * NameLength) nogil:
+cdef const char * LLVMIntrinsicCopyOverloadedName2(LLVMModuleRef Mod,unsigned int ID,LLVMTypeRef* ParamTypes,unsigned long ParamCount,unsigned long * NameLength):
     global _LLVMIntrinsicCopyOverloadedName2__funptr
     __init_symbol(&_LLVMIntrinsicCopyOverloadedName2__funptr,"LLVMIntrinsicCopyOverloadedName2")
-    return (<const char * (*)(LLVMModuleRef,unsigned int,LLVMTypeRef*,unsigned long,unsigned long *) nogil> _LLVMIntrinsicCopyOverloadedName2__funptr)(Mod,ID,ParamTypes,ParamCount,NameLength)
+    with nogil:
+        return (<const char * (*)(LLVMModuleRef,unsigned int,LLVMTypeRef*,unsigned long,unsigned long *) noexcept nogil> _LLVMIntrinsicCopyOverloadedName2__funptr)(Mod,ID,ParamTypes,ParamCount,NameLength)
 
 
 cdef void* _LLVMIntrinsicIsOverloaded__funptr = NULL
@@ -3774,10 +4182,11 @@ cdef void* _LLVMIntrinsicIsOverloaded__funptr = NULL
 # Obtain if the intrinsic identified by the given ID is overloaded.
 # 
 # @see llvm::Intrinsic::isOverloaded()
-cdef int LLVMIntrinsicIsOverloaded(unsigned int ID) nogil:
+cdef int LLVMIntrinsicIsOverloaded(unsigned int ID):
     global _LLVMIntrinsicIsOverloaded__funptr
     __init_symbol(&_LLVMIntrinsicIsOverloaded__funptr,"LLVMIntrinsicIsOverloaded")
-    return (<int (*)(unsigned int) nogil> _LLVMIntrinsicIsOverloaded__funptr)(ID)
+    with nogil:
+        return (<int (*)(unsigned int) noexcept nogil> _LLVMIntrinsicIsOverloaded__funptr)(ID)
 
 
 cdef void* _LLVMGetFunctionCallConv__funptr = NULL
@@ -3787,10 +4196,11 @@ cdef void* _LLVMGetFunctionCallConv__funptr = NULL
 # The returned value corresponds to the LLVMCallConv enumeration.
 # 
 # @see llvm::Function::getCallingConv()
-cdef unsigned int LLVMGetFunctionCallConv(LLVMValueRef Fn) nogil:
+cdef unsigned int LLVMGetFunctionCallConv(LLVMValueRef Fn):
     global _LLVMGetFunctionCallConv__funptr
     __init_symbol(&_LLVMGetFunctionCallConv__funptr,"LLVMGetFunctionCallConv")
-    return (<unsigned int (*)(LLVMValueRef) nogil> _LLVMGetFunctionCallConv__funptr)(Fn)
+    with nogil:
+        return (<unsigned int (*)(LLVMValueRef) noexcept nogil> _LLVMGetFunctionCallConv__funptr)(Fn)
 
 
 cdef void* _LLVMSetFunctionCallConv__funptr = NULL
@@ -3801,10 +4211,11 @@ cdef void* _LLVMSetFunctionCallConv__funptr = NULL
 # 
 # @param Fn Function to operate on
 # @param CC LLVMCallConv to set calling convention to
-cdef void LLVMSetFunctionCallConv(LLVMValueRef Fn,unsigned int CC) nogil:
+cdef void LLVMSetFunctionCallConv(LLVMValueRef Fn,unsigned int CC):
     global _LLVMSetFunctionCallConv__funptr
     __init_symbol(&_LLVMSetFunctionCallConv__funptr,"LLVMSetFunctionCallConv")
-    (<void (*)(LLVMValueRef,unsigned int) nogil> _LLVMSetFunctionCallConv__funptr)(Fn,CC)
+    with nogil:
+        (<void (*)(LLVMValueRef,unsigned int) noexcept nogil> _LLVMSetFunctionCallConv__funptr)(Fn,CC)
 
 
 cdef void* _LLVMGetGC__funptr = NULL
@@ -3813,10 +4224,11 @@ cdef void* _LLVMGetGC__funptr = NULL
 # generation.
 # 
 # @see llvm::Function::getGC()
-cdef const char * LLVMGetGC(LLVMValueRef Fn) nogil:
+cdef const char * LLVMGetGC(LLVMValueRef Fn):
     global _LLVMGetGC__funptr
     __init_symbol(&_LLVMGetGC__funptr,"LLVMGetGC")
-    return (<const char * (*)(LLVMValueRef) nogil> _LLVMGetGC__funptr)(Fn)
+    with nogil:
+        return (<const char * (*)(LLVMValueRef) noexcept nogil> _LLVMGetGC__funptr)(Fn)
 
 
 cdef void* _LLVMSetGC__funptr = NULL
@@ -3824,10 +4236,11 @@ cdef void* _LLVMSetGC__funptr = NULL
 # Define the garbage collector to use during code generation.
 # 
 # @see llvm::Function::setGC()
-cdef void LLVMSetGC(LLVMValueRef Fn,const char * Name) nogil:
+cdef void LLVMSetGC(LLVMValueRef Fn,const char * Name):
     global _LLVMSetGC__funptr
     __init_symbol(&_LLVMSetGC__funptr,"LLVMSetGC")
-    (<void (*)(LLVMValueRef,const char *) nogil> _LLVMSetGC__funptr)(Fn,Name)
+    with nogil:
+        (<void (*)(LLVMValueRef,const char *) noexcept nogil> _LLVMSetGC__funptr)(Fn,Name)
 
 
 cdef void* _LLVMAddAttributeAtIndex__funptr = NULL
@@ -3835,62 +4248,70 @@ cdef void* _LLVMAddAttributeAtIndex__funptr = NULL
 # Add an attribute to a function.
 # 
 # @see llvm::Function::addAttribute()
-cdef void LLVMAddAttributeAtIndex(LLVMValueRef F,unsigned int Idx,LLVMAttributeRef A) nogil:
+cdef void LLVMAddAttributeAtIndex(LLVMValueRef F,unsigned int Idx,LLVMAttributeRef A):
     global _LLVMAddAttributeAtIndex__funptr
     __init_symbol(&_LLVMAddAttributeAtIndex__funptr,"LLVMAddAttributeAtIndex")
-    (<void (*)(LLVMValueRef,unsigned int,LLVMAttributeRef) nogil> _LLVMAddAttributeAtIndex__funptr)(F,Idx,A)
+    with nogil:
+        (<void (*)(LLVMValueRef,unsigned int,LLVMAttributeRef) noexcept nogil> _LLVMAddAttributeAtIndex__funptr)(F,Idx,A)
 
 
 cdef void* _LLVMGetAttributeCountAtIndex__funptr = NULL
-cdef unsigned int LLVMGetAttributeCountAtIndex(LLVMValueRef F,unsigned int Idx) nogil:
+cdef unsigned int LLVMGetAttributeCountAtIndex(LLVMValueRef F,unsigned int Idx):
     global _LLVMGetAttributeCountAtIndex__funptr
     __init_symbol(&_LLVMGetAttributeCountAtIndex__funptr,"LLVMGetAttributeCountAtIndex")
-    return (<unsigned int (*)(LLVMValueRef,unsigned int) nogil> _LLVMGetAttributeCountAtIndex__funptr)(F,Idx)
+    with nogil:
+        return (<unsigned int (*)(LLVMValueRef,unsigned int) noexcept nogil> _LLVMGetAttributeCountAtIndex__funptr)(F,Idx)
 
 
 cdef void* _LLVMGetAttributesAtIndex__funptr = NULL
-cdef void LLVMGetAttributesAtIndex(LLVMValueRef F,unsigned int Idx,LLVMAttributeRef* Attrs) nogil:
+cdef void LLVMGetAttributesAtIndex(LLVMValueRef F,unsigned int Idx,LLVMAttributeRef* Attrs):
     global _LLVMGetAttributesAtIndex__funptr
     __init_symbol(&_LLVMGetAttributesAtIndex__funptr,"LLVMGetAttributesAtIndex")
-    (<void (*)(LLVMValueRef,unsigned int,LLVMAttributeRef*) nogil> _LLVMGetAttributesAtIndex__funptr)(F,Idx,Attrs)
+    with nogil:
+        (<void (*)(LLVMValueRef,unsigned int,LLVMAttributeRef*) noexcept nogil> _LLVMGetAttributesAtIndex__funptr)(F,Idx,Attrs)
 
 
 cdef void* _LLVMGetEnumAttributeAtIndex__funptr = NULL
-cdef LLVMAttributeRef LLVMGetEnumAttributeAtIndex(LLVMValueRef F,unsigned int Idx,unsigned int KindID) nogil:
+cdef LLVMAttributeRef LLVMGetEnumAttributeAtIndex(LLVMValueRef F,unsigned int Idx,unsigned int KindID):
     global _LLVMGetEnumAttributeAtIndex__funptr
     __init_symbol(&_LLVMGetEnumAttributeAtIndex__funptr,"LLVMGetEnumAttributeAtIndex")
-    return (<LLVMAttributeRef (*)(LLVMValueRef,unsigned int,unsigned int) nogil> _LLVMGetEnumAttributeAtIndex__funptr)(F,Idx,KindID)
+    with nogil:
+        return (<LLVMAttributeRef (*)(LLVMValueRef,unsigned int,unsigned int) noexcept nogil> _LLVMGetEnumAttributeAtIndex__funptr)(F,Idx,KindID)
 
 
 cdef void* _LLVMGetStringAttributeAtIndex__funptr = NULL
-cdef LLVMAttributeRef LLVMGetStringAttributeAtIndex(LLVMValueRef F,unsigned int Idx,const char * K,unsigned int KLen) nogil:
+cdef LLVMAttributeRef LLVMGetStringAttributeAtIndex(LLVMValueRef F,unsigned int Idx,const char * K,unsigned int KLen):
     global _LLVMGetStringAttributeAtIndex__funptr
     __init_symbol(&_LLVMGetStringAttributeAtIndex__funptr,"LLVMGetStringAttributeAtIndex")
-    return (<LLVMAttributeRef (*)(LLVMValueRef,unsigned int,const char *,unsigned int) nogil> _LLVMGetStringAttributeAtIndex__funptr)(F,Idx,K,KLen)
+    with nogil:
+        return (<LLVMAttributeRef (*)(LLVMValueRef,unsigned int,const char *,unsigned int) noexcept nogil> _LLVMGetStringAttributeAtIndex__funptr)(F,Idx,K,KLen)
 
 
 cdef void* _LLVMRemoveEnumAttributeAtIndex__funptr = NULL
-cdef void LLVMRemoveEnumAttributeAtIndex(LLVMValueRef F,unsigned int Idx,unsigned int KindID) nogil:
+cdef void LLVMRemoveEnumAttributeAtIndex(LLVMValueRef F,unsigned int Idx,unsigned int KindID):
     global _LLVMRemoveEnumAttributeAtIndex__funptr
     __init_symbol(&_LLVMRemoveEnumAttributeAtIndex__funptr,"LLVMRemoveEnumAttributeAtIndex")
-    (<void (*)(LLVMValueRef,unsigned int,unsigned int) nogil> _LLVMRemoveEnumAttributeAtIndex__funptr)(F,Idx,KindID)
+    with nogil:
+        (<void (*)(LLVMValueRef,unsigned int,unsigned int) noexcept nogil> _LLVMRemoveEnumAttributeAtIndex__funptr)(F,Idx,KindID)
 
 
 cdef void* _LLVMRemoveStringAttributeAtIndex__funptr = NULL
-cdef void LLVMRemoveStringAttributeAtIndex(LLVMValueRef F,unsigned int Idx,const char * K,unsigned int KLen) nogil:
+cdef void LLVMRemoveStringAttributeAtIndex(LLVMValueRef F,unsigned int Idx,const char * K,unsigned int KLen):
     global _LLVMRemoveStringAttributeAtIndex__funptr
     __init_symbol(&_LLVMRemoveStringAttributeAtIndex__funptr,"LLVMRemoveStringAttributeAtIndex")
-    (<void (*)(LLVMValueRef,unsigned int,const char *,unsigned int) nogil> _LLVMRemoveStringAttributeAtIndex__funptr)(F,Idx,K,KLen)
+    with nogil:
+        (<void (*)(LLVMValueRef,unsigned int,const char *,unsigned int) noexcept nogil> _LLVMRemoveStringAttributeAtIndex__funptr)(F,Idx,K,KLen)
 
 
 cdef void* _LLVMAddTargetDependentFunctionAttr__funptr = NULL
 # 
 # Add a target-dependent attribute to a function
 # @see llvm::AttrBuilder::addAttribute()
-cdef void LLVMAddTargetDependentFunctionAttr(LLVMValueRef Fn,const char * A,const char * V) nogil:
+cdef void LLVMAddTargetDependentFunctionAttr(LLVMValueRef Fn,const char * A,const char * V):
     global _LLVMAddTargetDependentFunctionAttr__funptr
     __init_symbol(&_LLVMAddTargetDependentFunctionAttr__funptr,"LLVMAddTargetDependentFunctionAttr")
-    (<void (*)(LLVMValueRef,const char *,const char *) nogil> _LLVMAddTargetDependentFunctionAttr__funptr)(Fn,A,V)
+    with nogil:
+        (<void (*)(LLVMValueRef,const char *,const char *) noexcept nogil> _LLVMAddTargetDependentFunctionAttr__funptr)(Fn,A,V)
 
 
 cdef void* _LLVMCountParams__funptr = NULL
@@ -3898,10 +4319,11 @@ cdef void* _LLVMCountParams__funptr = NULL
 # Obtain the number of parameters in a function.
 # 
 # @see llvm::Function::arg_size()
-cdef unsigned int LLVMCountParams(LLVMValueRef Fn) nogil:
+cdef unsigned int LLVMCountParams(LLVMValueRef Fn):
     global _LLVMCountParams__funptr
     __init_symbol(&_LLVMCountParams__funptr,"LLVMCountParams")
-    return (<unsigned int (*)(LLVMValueRef) nogil> _LLVMCountParams__funptr)(Fn)
+    with nogil:
+        return (<unsigned int (*)(LLVMValueRef) noexcept nogil> _LLVMCountParams__funptr)(Fn)
 
 
 cdef void* _LLVMGetParams__funptr = NULL
@@ -3915,10 +4337,11 @@ cdef void* _LLVMGetParams__funptr = NULL
 # instance.
 # 
 # @see llvm::Function::arg_begin()
-cdef void LLVMGetParams(LLVMValueRef Fn,LLVMValueRef* Params) nogil:
+cdef void LLVMGetParams(LLVMValueRef Fn,LLVMValueRef* Params):
     global _LLVMGetParams__funptr
     __init_symbol(&_LLVMGetParams__funptr,"LLVMGetParams")
-    (<void (*)(LLVMValueRef,LLVMValueRef*) nogil> _LLVMGetParams__funptr)(Fn,Params)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMValueRef*) noexcept nogil> _LLVMGetParams__funptr)(Fn,Params)
 
 
 cdef void* _LLVMGetParam__funptr = NULL
@@ -3928,10 +4351,11 @@ cdef void* _LLVMGetParam__funptr = NULL
 # Parameters are indexed from 0.
 # 
 # @see llvm::Function::arg_begin()
-cdef LLVMValueRef LLVMGetParam(LLVMValueRef Fn,unsigned int Index) nogil:
+cdef LLVMValueRef LLVMGetParam(LLVMValueRef Fn,unsigned int Index):
     global _LLVMGetParam__funptr
     __init_symbol(&_LLVMGetParam__funptr,"LLVMGetParam")
-    return (<LLVMValueRef (*)(LLVMValueRef,unsigned int) nogil> _LLVMGetParam__funptr)(Fn,Index)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,unsigned int) noexcept nogil> _LLVMGetParam__funptr)(Fn,Index)
 
 
 cdef void* _LLVMGetParamParent__funptr = NULL
@@ -3943,10 +4367,11 @@ cdef void* _LLVMGetParamParent__funptr = NULL
 # 
 # The returned LLVMValueRef is the llvm::Function to which this
 # argument belongs.
-cdef LLVMValueRef LLVMGetParamParent(LLVMValueRef Inst) nogil:
+cdef LLVMValueRef LLVMGetParamParent(LLVMValueRef Inst):
     global _LLVMGetParamParent__funptr
     __init_symbol(&_LLVMGetParamParent__funptr,"LLVMGetParamParent")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMGetParamParent__funptr)(Inst)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetParamParent__funptr)(Inst)
 
 
 cdef void* _LLVMGetFirstParam__funptr = NULL
@@ -3954,10 +4379,11 @@ cdef void* _LLVMGetFirstParam__funptr = NULL
 # Obtain the first parameter to a function.
 # 
 # @see llvm::Function::arg_begin()
-cdef LLVMValueRef LLVMGetFirstParam(LLVMValueRef Fn) nogil:
+cdef LLVMValueRef LLVMGetFirstParam(LLVMValueRef Fn):
     global _LLVMGetFirstParam__funptr
     __init_symbol(&_LLVMGetFirstParam__funptr,"LLVMGetFirstParam")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMGetFirstParam__funptr)(Fn)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetFirstParam__funptr)(Fn)
 
 
 cdef void* _LLVMGetLastParam__funptr = NULL
@@ -3965,10 +4391,11 @@ cdef void* _LLVMGetLastParam__funptr = NULL
 # Obtain the last parameter to a function.
 # 
 # @see llvm::Function::arg_end()
-cdef LLVMValueRef LLVMGetLastParam(LLVMValueRef Fn) nogil:
+cdef LLVMValueRef LLVMGetLastParam(LLVMValueRef Fn):
     global _LLVMGetLastParam__funptr
     __init_symbol(&_LLVMGetLastParam__funptr,"LLVMGetLastParam")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMGetLastParam__funptr)(Fn)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetLastParam__funptr)(Fn)
 
 
 cdef void* _LLVMGetNextParam__funptr = NULL
@@ -3978,10 +4405,11 @@ cdef void* _LLVMGetNextParam__funptr = NULL
 # This takes an LLVMValueRef obtained from LLVMGetFirstParam() (which is
 # actually a wrapped iterator) and obtains the next parameter from the
 # underlying iterator.
-cdef LLVMValueRef LLVMGetNextParam(LLVMValueRef Arg) nogil:
+cdef LLVMValueRef LLVMGetNextParam(LLVMValueRef Arg):
     global _LLVMGetNextParam__funptr
     __init_symbol(&_LLVMGetNextParam__funptr,"LLVMGetNextParam")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMGetNextParam__funptr)(Arg)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetNextParam__funptr)(Arg)
 
 
 cdef void* _LLVMGetPreviousParam__funptr = NULL
@@ -3989,10 +4417,11 @@ cdef void* _LLVMGetPreviousParam__funptr = NULL
 # Obtain the previous parameter to a function.
 # 
 # This is the opposite of LLVMGetNextParam().
-cdef LLVMValueRef LLVMGetPreviousParam(LLVMValueRef Arg) nogil:
+cdef LLVMValueRef LLVMGetPreviousParam(LLVMValueRef Arg):
     global _LLVMGetPreviousParam__funptr
     __init_symbol(&_LLVMGetPreviousParam__funptr,"LLVMGetPreviousParam")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMGetPreviousParam__funptr)(Arg)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetPreviousParam__funptr)(Arg)
 
 
 cdef void* _LLVMSetParamAlignment__funptr = NULL
@@ -4001,10 +4430,11 @@ cdef void* _LLVMSetParamAlignment__funptr = NULL
 # 
 # @see llvm::Argument::addAttr()
 # @see llvm::AttrBuilder::addAlignmentAttr()
-cdef void LLVMSetParamAlignment(LLVMValueRef Arg,unsigned int Align) nogil:
+cdef void LLVMSetParamAlignment(LLVMValueRef Arg,unsigned int Align):
     global _LLVMSetParamAlignment__funptr
     __init_symbol(&_LLVMSetParamAlignment__funptr,"LLVMSetParamAlignment")
-    (<void (*)(LLVMValueRef,unsigned int) nogil> _LLVMSetParamAlignment__funptr)(Arg,Align)
+    with nogil:
+        (<void (*)(LLVMValueRef,unsigned int) noexcept nogil> _LLVMSetParamAlignment__funptr)(Arg,Align)
 
 
 cdef void* _LLVMAddGlobalIFunc__funptr = NULL
@@ -4012,10 +4442,11 @@ cdef void* _LLVMAddGlobalIFunc__funptr = NULL
 # Add a global indirect function to a module under a specified name.
 # 
 # @see llvm::GlobalIFunc::create()
-cdef LLVMValueRef LLVMAddGlobalIFunc(LLVMModuleRef M,const char * Name,unsigned long NameLen,LLVMTypeRef Ty,unsigned int AddrSpace,LLVMValueRef Resolver) nogil:
+cdef LLVMValueRef LLVMAddGlobalIFunc(LLVMModuleRef M,const char * Name,unsigned long NameLen,LLVMTypeRef Ty,unsigned int AddrSpace,LLVMValueRef Resolver):
     global _LLVMAddGlobalIFunc__funptr
     __init_symbol(&_LLVMAddGlobalIFunc__funptr,"LLVMAddGlobalIFunc")
-    return (<LLVMValueRef (*)(LLVMModuleRef,const char *,unsigned long,LLVMTypeRef,unsigned int,LLVMValueRef) nogil> _LLVMAddGlobalIFunc__funptr)(M,Name,NameLen,Ty,AddrSpace,Resolver)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMModuleRef,const char *,unsigned long,LLVMTypeRef,unsigned int,LLVMValueRef) noexcept nogil> _LLVMAddGlobalIFunc__funptr)(M,Name,NameLen,Ty,AddrSpace,Resolver)
 
 
 cdef void* _LLVMGetNamedGlobalIFunc__funptr = NULL
@@ -4025,10 +4456,11 @@ cdef void* _LLVMGetNamedGlobalIFunc__funptr = NULL
 # The returned value corresponds to a llvm::GlobalIFunc value.
 # 
 # @see llvm::Module::getNamedIFunc()
-cdef LLVMValueRef LLVMGetNamedGlobalIFunc(LLVMModuleRef M,const char * Name,unsigned long NameLen) nogil:
+cdef LLVMValueRef LLVMGetNamedGlobalIFunc(LLVMModuleRef M,const char * Name,unsigned long NameLen):
     global _LLVMGetNamedGlobalIFunc__funptr
     __init_symbol(&_LLVMGetNamedGlobalIFunc__funptr,"LLVMGetNamedGlobalIFunc")
-    return (<LLVMValueRef (*)(LLVMModuleRef,const char *,unsigned long) nogil> _LLVMGetNamedGlobalIFunc__funptr)(M,Name,NameLen)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMModuleRef,const char *,unsigned long) noexcept nogil> _LLVMGetNamedGlobalIFunc__funptr)(M,Name,NameLen)
 
 
 cdef void* _LLVMGetFirstGlobalIFunc__funptr = NULL
@@ -4036,10 +4468,11 @@ cdef void* _LLVMGetFirstGlobalIFunc__funptr = NULL
 # Obtain an iterator to the first GlobalIFunc in a Module.
 # 
 # @see llvm::Module::ifunc_begin()
-cdef LLVMValueRef LLVMGetFirstGlobalIFunc(LLVMModuleRef M) nogil:
+cdef LLVMValueRef LLVMGetFirstGlobalIFunc(LLVMModuleRef M):
     global _LLVMGetFirstGlobalIFunc__funptr
     __init_symbol(&_LLVMGetFirstGlobalIFunc__funptr,"LLVMGetFirstGlobalIFunc")
-    return (<LLVMValueRef (*)(LLVMModuleRef) nogil> _LLVMGetFirstGlobalIFunc__funptr)(M)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMModuleRef) noexcept nogil> _LLVMGetFirstGlobalIFunc__funptr)(M)
 
 
 cdef void* _LLVMGetLastGlobalIFunc__funptr = NULL
@@ -4047,10 +4480,11 @@ cdef void* _LLVMGetLastGlobalIFunc__funptr = NULL
 # Obtain an iterator to the last GlobalIFunc in a Module.
 # 
 # @see llvm::Module::ifunc_end()
-cdef LLVMValueRef LLVMGetLastGlobalIFunc(LLVMModuleRef M) nogil:
+cdef LLVMValueRef LLVMGetLastGlobalIFunc(LLVMModuleRef M):
     global _LLVMGetLastGlobalIFunc__funptr
     __init_symbol(&_LLVMGetLastGlobalIFunc__funptr,"LLVMGetLastGlobalIFunc")
-    return (<LLVMValueRef (*)(LLVMModuleRef) nogil> _LLVMGetLastGlobalIFunc__funptr)(M)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMModuleRef) noexcept nogil> _LLVMGetLastGlobalIFunc__funptr)(M)
 
 
 cdef void* _LLVMGetNextGlobalIFunc__funptr = NULL
@@ -4059,10 +4493,11 @@ cdef void* _LLVMGetNextGlobalIFunc__funptr = NULL
 # 
 # Returns NULL if the iterator was already at the end and there are no more
 # global aliases.
-cdef LLVMValueRef LLVMGetNextGlobalIFunc(LLVMValueRef IFunc) nogil:
+cdef LLVMValueRef LLVMGetNextGlobalIFunc(LLVMValueRef IFunc):
     global _LLVMGetNextGlobalIFunc__funptr
     __init_symbol(&_LLVMGetNextGlobalIFunc__funptr,"LLVMGetNextGlobalIFunc")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMGetNextGlobalIFunc__funptr)(IFunc)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetNextGlobalIFunc__funptr)(IFunc)
 
 
 cdef void* _LLVMGetPreviousGlobalIFunc__funptr = NULL
@@ -4071,10 +4506,11 @@ cdef void* _LLVMGetPreviousGlobalIFunc__funptr = NULL
 # 
 # Returns NULL if the iterator was already at the beginning and there are
 # no previous global aliases.
-cdef LLVMValueRef LLVMGetPreviousGlobalIFunc(LLVMValueRef IFunc) nogil:
+cdef LLVMValueRef LLVMGetPreviousGlobalIFunc(LLVMValueRef IFunc):
     global _LLVMGetPreviousGlobalIFunc__funptr
     __init_symbol(&_LLVMGetPreviousGlobalIFunc__funptr,"LLVMGetPreviousGlobalIFunc")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMGetPreviousGlobalIFunc__funptr)(IFunc)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetPreviousGlobalIFunc__funptr)(IFunc)
 
 
 cdef void* _LLVMGetGlobalIFuncResolver__funptr = NULL
@@ -4083,10 +4519,11 @@ cdef void* _LLVMGetGlobalIFuncResolver__funptr = NULL
 # NULL if it doesn't not exist.
 # 
 # @see llvm::GlobalIFunc::getResolver()
-cdef LLVMValueRef LLVMGetGlobalIFuncResolver(LLVMValueRef IFunc) nogil:
+cdef LLVMValueRef LLVMGetGlobalIFuncResolver(LLVMValueRef IFunc):
     global _LLVMGetGlobalIFuncResolver__funptr
     __init_symbol(&_LLVMGetGlobalIFuncResolver__funptr,"LLVMGetGlobalIFuncResolver")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMGetGlobalIFuncResolver__funptr)(IFunc)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetGlobalIFuncResolver__funptr)(IFunc)
 
 
 cdef void* _LLVMSetGlobalIFuncResolver__funptr = NULL
@@ -4094,10 +4531,11 @@ cdef void* _LLVMSetGlobalIFuncResolver__funptr = NULL
 # Sets the resolver function associated with this indirect function.
 # 
 # @see llvm::GlobalIFunc::setResolver()
-cdef void LLVMSetGlobalIFuncResolver(LLVMValueRef IFunc,LLVMValueRef Resolver) nogil:
+cdef void LLVMSetGlobalIFuncResolver(LLVMValueRef IFunc,LLVMValueRef Resolver):
     global _LLVMSetGlobalIFuncResolver__funptr
     __init_symbol(&_LLVMSetGlobalIFuncResolver__funptr,"LLVMSetGlobalIFuncResolver")
-    (<void (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMSetGlobalIFuncResolver__funptr)(IFunc,Resolver)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMSetGlobalIFuncResolver__funptr)(IFunc,Resolver)
 
 
 cdef void* _LLVMEraseGlobalIFunc__funptr = NULL
@@ -4105,10 +4543,11 @@ cdef void* _LLVMEraseGlobalIFunc__funptr = NULL
 # Remove a global indirect function from its parent module and delete it.
 # 
 # @see llvm::GlobalIFunc::eraseFromParent()
-cdef void LLVMEraseGlobalIFunc(LLVMValueRef IFunc) nogil:
+cdef void LLVMEraseGlobalIFunc(LLVMValueRef IFunc):
     global _LLVMEraseGlobalIFunc__funptr
     __init_symbol(&_LLVMEraseGlobalIFunc__funptr,"LLVMEraseGlobalIFunc")
-    (<void (*)(LLVMValueRef) nogil> _LLVMEraseGlobalIFunc__funptr)(IFunc)
+    with nogil:
+        (<void (*)(LLVMValueRef) noexcept nogil> _LLVMEraseGlobalIFunc__funptr)(IFunc)
 
 
 cdef void* _LLVMRemoveGlobalIFunc__funptr = NULL
@@ -4119,10 +4558,11 @@ cdef void* _LLVMRemoveGlobalIFunc__funptr = NULL
 # keeps it alive.
 # 
 # @see llvm::GlobalIFunc::removeFromParent()
-cdef void LLVMRemoveGlobalIFunc(LLVMValueRef IFunc) nogil:
+cdef void LLVMRemoveGlobalIFunc(LLVMValueRef IFunc):
     global _LLVMRemoveGlobalIFunc__funptr
     __init_symbol(&_LLVMRemoveGlobalIFunc__funptr,"LLVMRemoveGlobalIFunc")
-    (<void (*)(LLVMValueRef) nogil> _LLVMRemoveGlobalIFunc__funptr)(IFunc)
+    with nogil:
+        (<void (*)(LLVMValueRef) noexcept nogil> _LLVMRemoveGlobalIFunc__funptr)(IFunc)
 
 
 cdef void* _LLVMMDStringInContext2__funptr = NULL
@@ -4133,10 +4573,11 @@ cdef void* _LLVMMDStringInContext2__funptr = NULL
 # the responsibility of the caller to free it.
 # 
 # @see llvm::MDString::get()
-cdef LLVMMetadataRef LLVMMDStringInContext2(LLVMContextRef C,const char * Str,unsigned long SLen) nogil:
+cdef LLVMMetadataRef LLVMMDStringInContext2(LLVMContextRef C,const char * Str,unsigned long SLen):
     global _LLVMMDStringInContext2__funptr
     __init_symbol(&_LLVMMDStringInContext2__funptr,"LLVMMDStringInContext2")
-    return (<LLVMMetadataRef (*)(LLVMContextRef,const char *,unsigned long) nogil> _LLVMMDStringInContext2__funptr)(C,Str,SLen)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMContextRef,const char *,unsigned long) noexcept nogil> _LLVMMDStringInContext2__funptr)(C,Str,SLen)
 
 
 cdef void* _LLVMMDNodeInContext2__funptr = NULL
@@ -4144,28 +4585,31 @@ cdef void* _LLVMMDNodeInContext2__funptr = NULL
 # Create an MDNode value with the given array of operands.
 # 
 # @see llvm::MDNode::get()
-cdef LLVMMetadataRef LLVMMDNodeInContext2(LLVMContextRef C,LLVMMetadataRef* MDs,unsigned long Count) nogil:
+cdef LLVMMetadataRef LLVMMDNodeInContext2(LLVMContextRef C,LLVMMetadataRef* MDs,unsigned long Count):
     global _LLVMMDNodeInContext2__funptr
     __init_symbol(&_LLVMMDNodeInContext2__funptr,"LLVMMDNodeInContext2")
-    return (<LLVMMetadataRef (*)(LLVMContextRef,LLVMMetadataRef*,unsigned long) nogil> _LLVMMDNodeInContext2__funptr)(C,MDs,Count)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMContextRef,LLVMMetadataRef*,unsigned long) noexcept nogil> _LLVMMDNodeInContext2__funptr)(C,MDs,Count)
 
 
 cdef void* _LLVMMetadataAsValue__funptr = NULL
 # 
 # Obtain a Metadata as a Value.
-cdef LLVMValueRef LLVMMetadataAsValue(LLVMContextRef C,LLVMMetadataRef MD) nogil:
+cdef LLVMValueRef LLVMMetadataAsValue(LLVMContextRef C,LLVMMetadataRef MD):
     global _LLVMMetadataAsValue__funptr
     __init_symbol(&_LLVMMetadataAsValue__funptr,"LLVMMetadataAsValue")
-    return (<LLVMValueRef (*)(LLVMContextRef,LLVMMetadataRef) nogil> _LLVMMetadataAsValue__funptr)(C,MD)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMContextRef,LLVMMetadataRef) noexcept nogil> _LLVMMetadataAsValue__funptr)(C,MD)
 
 
 cdef void* _LLVMValueAsMetadata__funptr = NULL
 # 
 # Obtain a Value as a Metadata.
-cdef LLVMMetadataRef LLVMValueAsMetadata(LLVMValueRef Val) nogil:
+cdef LLVMMetadataRef LLVMValueAsMetadata(LLVMValueRef Val):
     global _LLVMValueAsMetadata__funptr
     __init_symbol(&_LLVMValueAsMetadata__funptr,"LLVMValueAsMetadata")
-    return (<LLVMMetadataRef (*)(LLVMValueRef) nogil> _LLVMValueAsMetadata__funptr)(Val)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMValueRef) noexcept nogil> _LLVMValueAsMetadata__funptr)(Val)
 
 
 cdef void* _LLVMGetMDString__funptr = NULL
@@ -4175,10 +4619,11 @@ cdef void* _LLVMGetMDString__funptr = NULL
 # @param V Instance to obtain string from.
 # @param Length Memory address which will hold length of returned string.
 # @return String data in MDString.
-cdef const char * LLVMGetMDString(LLVMValueRef V,unsigned int * Length) nogil:
+cdef const char * LLVMGetMDString(LLVMValueRef V,unsigned int * Length):
     global _LLVMGetMDString__funptr
     __init_symbol(&_LLVMGetMDString__funptr,"LLVMGetMDString")
-    return (<const char * (*)(LLVMValueRef,unsigned int *) nogil> _LLVMGetMDString__funptr)(V,Length)
+    with nogil:
+        return (<const char * (*)(LLVMValueRef,unsigned int *) noexcept nogil> _LLVMGetMDString__funptr)(V,Length)
 
 
 cdef void* _LLVMGetMDNodeNumOperands__funptr = NULL
@@ -4187,10 +4632,11 @@ cdef void* _LLVMGetMDNodeNumOperands__funptr = NULL
 # 
 # @param V MDNode to get number of operands from.
 # @return Number of operands of the MDNode.
-cdef unsigned int LLVMGetMDNodeNumOperands(LLVMValueRef V) nogil:
+cdef unsigned int LLVMGetMDNodeNumOperands(LLVMValueRef V):
     global _LLVMGetMDNodeNumOperands__funptr
     __init_symbol(&_LLVMGetMDNodeNumOperands__funptr,"LLVMGetMDNodeNumOperands")
-    return (<unsigned int (*)(LLVMValueRef) nogil> _LLVMGetMDNodeNumOperands__funptr)(V)
+    with nogil:
+        return (<unsigned int (*)(LLVMValueRef) noexcept nogil> _LLVMGetMDNodeNumOperands__funptr)(V)
 
 
 cdef void* _LLVMGetMDNodeOperands__funptr = NULL
@@ -4204,78 +4650,87 @@ cdef void* _LLVMGetMDNodeOperands__funptr = NULL
 # 
 # @param V MDNode to get the operands from.
 # @param Dest Destination array for operands.
-cdef void LLVMGetMDNodeOperands(LLVMValueRef V,LLVMValueRef* Dest) nogil:
+cdef void LLVMGetMDNodeOperands(LLVMValueRef V,LLVMValueRef* Dest):
     global _LLVMGetMDNodeOperands__funptr
     __init_symbol(&_LLVMGetMDNodeOperands__funptr,"LLVMGetMDNodeOperands")
-    (<void (*)(LLVMValueRef,LLVMValueRef*) nogil> _LLVMGetMDNodeOperands__funptr)(V,Dest)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMValueRef*) noexcept nogil> _LLVMGetMDNodeOperands__funptr)(V,Dest)
 
 
 cdef void* _LLVMMDStringInContext__funptr = NULL
 # Deprecated: Use LLVMMDStringInContext2 instead. */
-cdef LLVMValueRef LLVMMDStringInContext(LLVMContextRef C,const char * Str,unsigned int SLen) nogil:
+cdef LLVMValueRef LLVMMDStringInContext(LLVMContextRef C,const char * Str,unsigned int SLen):
     global _LLVMMDStringInContext__funptr
     __init_symbol(&_LLVMMDStringInContext__funptr,"LLVMMDStringInContext")
-    return (<LLVMValueRef (*)(LLVMContextRef,const char *,unsigned int) nogil> _LLVMMDStringInContext__funptr)(C,Str,SLen)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMContextRef,const char *,unsigned int) noexcept nogil> _LLVMMDStringInContext__funptr)(C,Str,SLen)
 
 
 cdef void* _LLVMMDString__funptr = NULL
 # Deprecated: Use LLVMMDStringInContext2 instead. */
-cdef LLVMValueRef LLVMMDString(const char * Str,unsigned int SLen) nogil:
+cdef LLVMValueRef LLVMMDString(const char * Str,unsigned int SLen):
     global _LLVMMDString__funptr
     __init_symbol(&_LLVMMDString__funptr,"LLVMMDString")
-    return (<LLVMValueRef (*)(const char *,unsigned int) nogil> _LLVMMDString__funptr)(Str,SLen)
+    with nogil:
+        return (<LLVMValueRef (*)(const char *,unsigned int) noexcept nogil> _LLVMMDString__funptr)(Str,SLen)
 
 
 cdef void* _LLVMMDNodeInContext__funptr = NULL
 # Deprecated: Use LLVMMDNodeInContext2 instead. */
-cdef LLVMValueRef LLVMMDNodeInContext(LLVMContextRef C,LLVMValueRef* Vals,unsigned int Count) nogil:
+cdef LLVMValueRef LLVMMDNodeInContext(LLVMContextRef C,LLVMValueRef* Vals,unsigned int Count):
     global _LLVMMDNodeInContext__funptr
     __init_symbol(&_LLVMMDNodeInContext__funptr,"LLVMMDNodeInContext")
-    return (<LLVMValueRef (*)(LLVMContextRef,LLVMValueRef*,unsigned int) nogil> _LLVMMDNodeInContext__funptr)(C,Vals,Count)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMContextRef,LLVMValueRef*,unsigned int) noexcept nogil> _LLVMMDNodeInContext__funptr)(C,Vals,Count)
 
 
 cdef void* _LLVMMDNode__funptr = NULL
 # Deprecated: Use LLVMMDNodeInContext2 instead. */
-cdef LLVMValueRef LLVMMDNode(LLVMValueRef* Vals,unsigned int Count) nogil:
+cdef LLVMValueRef LLVMMDNode(LLVMValueRef* Vals,unsigned int Count):
     global _LLVMMDNode__funptr
     __init_symbol(&_LLVMMDNode__funptr,"LLVMMDNode")
-    return (<LLVMValueRef (*)(LLVMValueRef*,unsigned int) nogil> _LLVMMDNode__funptr)(Vals,Count)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef*,unsigned int) noexcept nogil> _LLVMMDNode__funptr)(Vals,Count)
 
 
 cdef void* _LLVMBasicBlockAsValue__funptr = NULL
 # 
 # Convert a basic block instance to a value type.
-cdef LLVMValueRef LLVMBasicBlockAsValue(LLVMBasicBlockRef BB) nogil:
+cdef LLVMValueRef LLVMBasicBlockAsValue(LLVMBasicBlockRef BB):
     global _LLVMBasicBlockAsValue__funptr
     __init_symbol(&_LLVMBasicBlockAsValue__funptr,"LLVMBasicBlockAsValue")
-    return (<LLVMValueRef (*)(LLVMBasicBlockRef) nogil> _LLVMBasicBlockAsValue__funptr)(BB)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBasicBlockRef) noexcept nogil> _LLVMBasicBlockAsValue__funptr)(BB)
 
 
 cdef void* _LLVMValueIsBasicBlock__funptr = NULL
 # 
 # Determine whether an LLVMValueRef is itself a basic block.
-cdef int LLVMValueIsBasicBlock(LLVMValueRef Val) nogil:
+cdef int LLVMValueIsBasicBlock(LLVMValueRef Val):
     global _LLVMValueIsBasicBlock__funptr
     __init_symbol(&_LLVMValueIsBasicBlock__funptr,"LLVMValueIsBasicBlock")
-    return (<int (*)(LLVMValueRef) nogil> _LLVMValueIsBasicBlock__funptr)(Val)
+    with nogil:
+        return (<int (*)(LLVMValueRef) noexcept nogil> _LLVMValueIsBasicBlock__funptr)(Val)
 
 
 cdef void* _LLVMValueAsBasicBlock__funptr = NULL
 # 
 # Convert an LLVMValueRef to an LLVMBasicBlockRef instance.
-cdef LLVMBasicBlockRef LLVMValueAsBasicBlock(LLVMValueRef Val) nogil:
+cdef LLVMBasicBlockRef LLVMValueAsBasicBlock(LLVMValueRef Val):
     global _LLVMValueAsBasicBlock__funptr
     __init_symbol(&_LLVMValueAsBasicBlock__funptr,"LLVMValueAsBasicBlock")
-    return (<LLVMBasicBlockRef (*)(LLVMValueRef) nogil> _LLVMValueAsBasicBlock__funptr)(Val)
+    with nogil:
+        return (<LLVMBasicBlockRef (*)(LLVMValueRef) noexcept nogil> _LLVMValueAsBasicBlock__funptr)(Val)
 
 
 cdef void* _LLVMGetBasicBlockName__funptr = NULL
 # 
 # Obtain the string name of a basic block.
-cdef const char * LLVMGetBasicBlockName(LLVMBasicBlockRef BB) nogil:
+cdef const char * LLVMGetBasicBlockName(LLVMBasicBlockRef BB):
     global _LLVMGetBasicBlockName__funptr
     __init_symbol(&_LLVMGetBasicBlockName__funptr,"LLVMGetBasicBlockName")
-    return (<const char * (*)(LLVMBasicBlockRef) nogil> _LLVMGetBasicBlockName__funptr)(BB)
+    with nogil:
+        return (<const char * (*)(LLVMBasicBlockRef) noexcept nogil> _LLVMGetBasicBlockName__funptr)(BB)
 
 
 cdef void* _LLVMGetBasicBlockParent__funptr = NULL
@@ -4283,10 +4738,11 @@ cdef void* _LLVMGetBasicBlockParent__funptr = NULL
 # Obtain the function to which a basic block belongs.
 # 
 # @see llvm::BasicBlock::getParent()
-cdef LLVMValueRef LLVMGetBasicBlockParent(LLVMBasicBlockRef BB) nogil:
+cdef LLVMValueRef LLVMGetBasicBlockParent(LLVMBasicBlockRef BB):
     global _LLVMGetBasicBlockParent__funptr
     __init_symbol(&_LLVMGetBasicBlockParent__funptr,"LLVMGetBasicBlockParent")
-    return (<LLVMValueRef (*)(LLVMBasicBlockRef) nogil> _LLVMGetBasicBlockParent__funptr)(BB)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBasicBlockRef) noexcept nogil> _LLVMGetBasicBlockParent__funptr)(BB)
 
 
 cdef void* _LLVMGetBasicBlockTerminator__funptr = NULL
@@ -4299,10 +4755,11 @@ cdef void* _LLVMGetBasicBlockTerminator__funptr = NULL
 # The returned LLVMValueRef corresponds to an llvm::Instruction.
 # 
 # @see llvm::BasicBlock::getTerminator()
-cdef LLVMValueRef LLVMGetBasicBlockTerminator(LLVMBasicBlockRef BB) nogil:
+cdef LLVMValueRef LLVMGetBasicBlockTerminator(LLVMBasicBlockRef BB):
     global _LLVMGetBasicBlockTerminator__funptr
     __init_symbol(&_LLVMGetBasicBlockTerminator__funptr,"LLVMGetBasicBlockTerminator")
-    return (<LLVMValueRef (*)(LLVMBasicBlockRef) nogil> _LLVMGetBasicBlockTerminator__funptr)(BB)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBasicBlockRef) noexcept nogil> _LLVMGetBasicBlockTerminator__funptr)(BB)
 
 
 cdef void* _LLVMCountBasicBlocks__funptr = NULL
@@ -4310,10 +4767,11 @@ cdef void* _LLVMCountBasicBlocks__funptr = NULL
 # Obtain the number of basic blocks in a function.
 # 
 # @param Fn Function value to operate on.
-cdef unsigned int LLVMCountBasicBlocks(LLVMValueRef Fn) nogil:
+cdef unsigned int LLVMCountBasicBlocks(LLVMValueRef Fn):
     global _LLVMCountBasicBlocks__funptr
     __init_symbol(&_LLVMCountBasicBlocks__funptr,"LLVMCountBasicBlocks")
-    return (<unsigned int (*)(LLVMValueRef) nogil> _LLVMCountBasicBlocks__funptr)(Fn)
+    with nogil:
+        return (<unsigned int (*)(LLVMValueRef) noexcept nogil> _LLVMCountBasicBlocks__funptr)(Fn)
 
 
 cdef void* _LLVMGetBasicBlocks__funptr = NULL
@@ -4324,10 +4782,11 @@ cdef void* _LLVMGetBasicBlocks__funptr = NULL
 # pointer to a pre-allocated array of LLVMBasicBlockRef of at least
 # LLVMCountBasicBlocks() in length. This array is populated with
 # LLVMBasicBlockRef instances.
-cdef void LLVMGetBasicBlocks(LLVMValueRef Fn,LLVMBasicBlockRef* BasicBlocks) nogil:
+cdef void LLVMGetBasicBlocks(LLVMValueRef Fn,LLVMBasicBlockRef* BasicBlocks):
     global _LLVMGetBasicBlocks__funptr
     __init_symbol(&_LLVMGetBasicBlocks__funptr,"LLVMGetBasicBlocks")
-    (<void (*)(LLVMValueRef,LLVMBasicBlockRef*) nogil> _LLVMGetBasicBlocks__funptr)(Fn,BasicBlocks)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMBasicBlockRef*) noexcept nogil> _LLVMGetBasicBlocks__funptr)(Fn,BasicBlocks)
 
 
 cdef void* _LLVMGetFirstBasicBlock__funptr = NULL
@@ -4338,10 +4797,11 @@ cdef void* _LLVMGetFirstBasicBlock__funptr = NULL
 # eventually call into LLVMGetNextBasicBlock() with it.
 # 
 # @see llvm::Function::begin()
-cdef LLVMBasicBlockRef LLVMGetFirstBasicBlock(LLVMValueRef Fn) nogil:
+cdef LLVMBasicBlockRef LLVMGetFirstBasicBlock(LLVMValueRef Fn):
     global _LLVMGetFirstBasicBlock__funptr
     __init_symbol(&_LLVMGetFirstBasicBlock__funptr,"LLVMGetFirstBasicBlock")
-    return (<LLVMBasicBlockRef (*)(LLVMValueRef) nogil> _LLVMGetFirstBasicBlock__funptr)(Fn)
+    with nogil:
+        return (<LLVMBasicBlockRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetFirstBasicBlock__funptr)(Fn)
 
 
 cdef void* _LLVMGetLastBasicBlock__funptr = NULL
@@ -4349,28 +4809,31 @@ cdef void* _LLVMGetLastBasicBlock__funptr = NULL
 # Obtain the last basic block in a function.
 # 
 # @see llvm::Function::end()
-cdef LLVMBasicBlockRef LLVMGetLastBasicBlock(LLVMValueRef Fn) nogil:
+cdef LLVMBasicBlockRef LLVMGetLastBasicBlock(LLVMValueRef Fn):
     global _LLVMGetLastBasicBlock__funptr
     __init_symbol(&_LLVMGetLastBasicBlock__funptr,"LLVMGetLastBasicBlock")
-    return (<LLVMBasicBlockRef (*)(LLVMValueRef) nogil> _LLVMGetLastBasicBlock__funptr)(Fn)
+    with nogil:
+        return (<LLVMBasicBlockRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetLastBasicBlock__funptr)(Fn)
 
 
 cdef void* _LLVMGetNextBasicBlock__funptr = NULL
 # 
 # Advance a basic block iterator.
-cdef LLVMBasicBlockRef LLVMGetNextBasicBlock(LLVMBasicBlockRef BB) nogil:
+cdef LLVMBasicBlockRef LLVMGetNextBasicBlock(LLVMBasicBlockRef BB):
     global _LLVMGetNextBasicBlock__funptr
     __init_symbol(&_LLVMGetNextBasicBlock__funptr,"LLVMGetNextBasicBlock")
-    return (<LLVMBasicBlockRef (*)(LLVMBasicBlockRef) nogil> _LLVMGetNextBasicBlock__funptr)(BB)
+    with nogil:
+        return (<LLVMBasicBlockRef (*)(LLVMBasicBlockRef) noexcept nogil> _LLVMGetNextBasicBlock__funptr)(BB)
 
 
 cdef void* _LLVMGetPreviousBasicBlock__funptr = NULL
 # 
 # Go backwards in a basic block iterator.
-cdef LLVMBasicBlockRef LLVMGetPreviousBasicBlock(LLVMBasicBlockRef BB) nogil:
+cdef LLVMBasicBlockRef LLVMGetPreviousBasicBlock(LLVMBasicBlockRef BB):
     global _LLVMGetPreviousBasicBlock__funptr
     __init_symbol(&_LLVMGetPreviousBasicBlock__funptr,"LLVMGetPreviousBasicBlock")
-    return (<LLVMBasicBlockRef (*)(LLVMBasicBlockRef) nogil> _LLVMGetPreviousBasicBlock__funptr)(BB)
+    with nogil:
+        return (<LLVMBasicBlockRef (*)(LLVMBasicBlockRef) noexcept nogil> _LLVMGetPreviousBasicBlock__funptr)(BB)
 
 
 cdef void* _LLVMGetEntryBasicBlock__funptr = NULL
@@ -4379,10 +4842,11 @@ cdef void* _LLVMGetEntryBasicBlock__funptr = NULL
 # function.
 # 
 # @see llvm::Function::getEntryBlock()
-cdef LLVMBasicBlockRef LLVMGetEntryBasicBlock(LLVMValueRef Fn) nogil:
+cdef LLVMBasicBlockRef LLVMGetEntryBasicBlock(LLVMValueRef Fn):
     global _LLVMGetEntryBasicBlock__funptr
     __init_symbol(&_LLVMGetEntryBasicBlock__funptr,"LLVMGetEntryBasicBlock")
-    return (<LLVMBasicBlockRef (*)(LLVMValueRef) nogil> _LLVMGetEntryBasicBlock__funptr)(Fn)
+    with nogil:
+        return (<LLVMBasicBlockRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetEntryBasicBlock__funptr)(Fn)
 
 
 cdef void* _LLVMInsertExistingBasicBlockAfterInsertBlock__funptr = NULL
@@ -4392,10 +4856,11 @@ cdef void* _LLVMInsertExistingBasicBlockAfterInsertBlock__funptr = NULL
 # The insertion point must be valid.
 # 
 # @see llvm::Function::BasicBlockListType::insertAfter()
-cdef void LLVMInsertExistingBasicBlockAfterInsertBlock(LLVMBuilderRef Builder,LLVMBasicBlockRef BB) nogil:
+cdef void LLVMInsertExistingBasicBlockAfterInsertBlock(LLVMBuilderRef Builder,LLVMBasicBlockRef BB):
     global _LLVMInsertExistingBasicBlockAfterInsertBlock__funptr
     __init_symbol(&_LLVMInsertExistingBasicBlockAfterInsertBlock__funptr,"LLVMInsertExistingBasicBlockAfterInsertBlock")
-    (<void (*)(LLVMBuilderRef,LLVMBasicBlockRef) nogil> _LLVMInsertExistingBasicBlockAfterInsertBlock__funptr)(Builder,BB)
+    with nogil:
+        (<void (*)(LLVMBuilderRef,LLVMBasicBlockRef) noexcept nogil> _LLVMInsertExistingBasicBlockAfterInsertBlock__funptr)(Builder,BB)
 
 
 cdef void* _LLVMAppendExistingBasicBlock__funptr = NULL
@@ -4403,10 +4868,11 @@ cdef void* _LLVMAppendExistingBasicBlock__funptr = NULL
 # Append the given basic block to the basic block list of the given function.
 # 
 # @see llvm::Function::BasicBlockListType::push_back()
-cdef void LLVMAppendExistingBasicBlock(LLVMValueRef Fn,LLVMBasicBlockRef BB) nogil:
+cdef void LLVMAppendExistingBasicBlock(LLVMValueRef Fn,LLVMBasicBlockRef BB):
     global _LLVMAppendExistingBasicBlock__funptr
     __init_symbol(&_LLVMAppendExistingBasicBlock__funptr,"LLVMAppendExistingBasicBlock")
-    (<void (*)(LLVMValueRef,LLVMBasicBlockRef) nogil> _LLVMAppendExistingBasicBlock__funptr)(Fn,BB)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMBasicBlockRef) noexcept nogil> _LLVMAppendExistingBasicBlock__funptr)(Fn,BB)
 
 
 cdef void* _LLVMCreateBasicBlockInContext__funptr = NULL
@@ -4414,10 +4880,11 @@ cdef void* _LLVMCreateBasicBlockInContext__funptr = NULL
 # Create a new basic block without inserting it into a function.
 # 
 # @see llvm::BasicBlock::Create()
-cdef LLVMBasicBlockRef LLVMCreateBasicBlockInContext(LLVMContextRef C,const char * Name) nogil:
+cdef LLVMBasicBlockRef LLVMCreateBasicBlockInContext(LLVMContextRef C,const char * Name):
     global _LLVMCreateBasicBlockInContext__funptr
     __init_symbol(&_LLVMCreateBasicBlockInContext__funptr,"LLVMCreateBasicBlockInContext")
-    return (<LLVMBasicBlockRef (*)(LLVMContextRef,const char *) nogil> _LLVMCreateBasicBlockInContext__funptr)(C,Name)
+    with nogil:
+        return (<LLVMBasicBlockRef (*)(LLVMContextRef,const char *) noexcept nogil> _LLVMCreateBasicBlockInContext__funptr)(C,Name)
 
 
 cdef void* _LLVMAppendBasicBlockInContext__funptr = NULL
@@ -4425,10 +4892,11 @@ cdef void* _LLVMAppendBasicBlockInContext__funptr = NULL
 # Append a basic block to the end of a function.
 # 
 # @see llvm::BasicBlock::Create()
-cdef LLVMBasicBlockRef LLVMAppendBasicBlockInContext(LLVMContextRef C,LLVMValueRef Fn,const char * Name) nogil:
+cdef LLVMBasicBlockRef LLVMAppendBasicBlockInContext(LLVMContextRef C,LLVMValueRef Fn,const char * Name):
     global _LLVMAppendBasicBlockInContext__funptr
     __init_symbol(&_LLVMAppendBasicBlockInContext__funptr,"LLVMAppendBasicBlockInContext")
-    return (<LLVMBasicBlockRef (*)(LLVMContextRef,LLVMValueRef,const char *) nogil> _LLVMAppendBasicBlockInContext__funptr)(C,Fn,Name)
+    with nogil:
+        return (<LLVMBasicBlockRef (*)(LLVMContextRef,LLVMValueRef,const char *) noexcept nogil> _LLVMAppendBasicBlockInContext__funptr)(C,Fn,Name)
 
 
 cdef void* _LLVMAppendBasicBlock__funptr = NULL
@@ -4437,10 +4905,11 @@ cdef void* _LLVMAppendBasicBlock__funptr = NULL
 # context.
 # 
 # @see llvm::BasicBlock::Create()
-cdef LLVMBasicBlockRef LLVMAppendBasicBlock(LLVMValueRef Fn,const char * Name) nogil:
+cdef LLVMBasicBlockRef LLVMAppendBasicBlock(LLVMValueRef Fn,const char * Name):
     global _LLVMAppendBasicBlock__funptr
     __init_symbol(&_LLVMAppendBasicBlock__funptr,"LLVMAppendBasicBlock")
-    return (<LLVMBasicBlockRef (*)(LLVMValueRef,const char *) nogil> _LLVMAppendBasicBlock__funptr)(Fn,Name)
+    with nogil:
+        return (<LLVMBasicBlockRef (*)(LLVMValueRef,const char *) noexcept nogil> _LLVMAppendBasicBlock__funptr)(Fn,Name)
 
 
 cdef void* _LLVMInsertBasicBlockInContext__funptr = NULL
@@ -4451,10 +4920,11 @@ cdef void* _LLVMInsertBasicBlockInContext__funptr = NULL
 # passed basic block.
 # 
 # @see llvm::BasicBlock::Create()
-cdef LLVMBasicBlockRef LLVMInsertBasicBlockInContext(LLVMContextRef C,LLVMBasicBlockRef BB,const char * Name) nogil:
+cdef LLVMBasicBlockRef LLVMInsertBasicBlockInContext(LLVMContextRef C,LLVMBasicBlockRef BB,const char * Name):
     global _LLVMInsertBasicBlockInContext__funptr
     __init_symbol(&_LLVMInsertBasicBlockInContext__funptr,"LLVMInsertBasicBlockInContext")
-    return (<LLVMBasicBlockRef (*)(LLVMContextRef,LLVMBasicBlockRef,const char *) nogil> _LLVMInsertBasicBlockInContext__funptr)(C,BB,Name)
+    with nogil:
+        return (<LLVMBasicBlockRef (*)(LLVMContextRef,LLVMBasicBlockRef,const char *) noexcept nogil> _LLVMInsertBasicBlockInContext__funptr)(C,BB,Name)
 
 
 cdef void* _LLVMInsertBasicBlock__funptr = NULL
@@ -4462,10 +4932,11 @@ cdef void* _LLVMInsertBasicBlock__funptr = NULL
 # Insert a basic block in a function using the global context.
 # 
 # @see llvm::BasicBlock::Create()
-cdef LLVMBasicBlockRef LLVMInsertBasicBlock(LLVMBasicBlockRef InsertBeforeBB,const char * Name) nogil:
+cdef LLVMBasicBlockRef LLVMInsertBasicBlock(LLVMBasicBlockRef InsertBeforeBB,const char * Name):
     global _LLVMInsertBasicBlock__funptr
     __init_symbol(&_LLVMInsertBasicBlock__funptr,"LLVMInsertBasicBlock")
-    return (<LLVMBasicBlockRef (*)(LLVMBasicBlockRef,const char *) nogil> _LLVMInsertBasicBlock__funptr)(InsertBeforeBB,Name)
+    with nogil:
+        return (<LLVMBasicBlockRef (*)(LLVMBasicBlockRef,const char *) noexcept nogil> _LLVMInsertBasicBlock__funptr)(InsertBeforeBB,Name)
 
 
 cdef void* _LLVMDeleteBasicBlock__funptr = NULL
@@ -4476,10 +4947,11 @@ cdef void* _LLVMDeleteBasicBlock__funptr = NULL
 # the basic block itself.
 # 
 # @see llvm::BasicBlock::eraseFromParent()
-cdef void LLVMDeleteBasicBlock(LLVMBasicBlockRef BB) nogil:
+cdef void LLVMDeleteBasicBlock(LLVMBasicBlockRef BB):
     global _LLVMDeleteBasicBlock__funptr
     __init_symbol(&_LLVMDeleteBasicBlock__funptr,"LLVMDeleteBasicBlock")
-    (<void (*)(LLVMBasicBlockRef) nogil> _LLVMDeleteBasicBlock__funptr)(BB)
+    with nogil:
+        (<void (*)(LLVMBasicBlockRef) noexcept nogil> _LLVMDeleteBasicBlock__funptr)(BB)
 
 
 cdef void* _LLVMRemoveBasicBlockFromParent__funptr = NULL
@@ -4490,10 +4962,11 @@ cdef void* _LLVMRemoveBasicBlockFromParent__funptr = NULL
 # the basic block alive.
 # 
 # @see llvm::BasicBlock::removeFromParent()
-cdef void LLVMRemoveBasicBlockFromParent(LLVMBasicBlockRef BB) nogil:
+cdef void LLVMRemoveBasicBlockFromParent(LLVMBasicBlockRef BB):
     global _LLVMRemoveBasicBlockFromParent__funptr
     __init_symbol(&_LLVMRemoveBasicBlockFromParent__funptr,"LLVMRemoveBasicBlockFromParent")
-    (<void (*)(LLVMBasicBlockRef) nogil> _LLVMRemoveBasicBlockFromParent__funptr)(BB)
+    with nogil:
+        (<void (*)(LLVMBasicBlockRef) noexcept nogil> _LLVMRemoveBasicBlockFromParent__funptr)(BB)
 
 
 cdef void* _LLVMMoveBasicBlockBefore__funptr = NULL
@@ -4501,10 +4974,11 @@ cdef void* _LLVMMoveBasicBlockBefore__funptr = NULL
 # Move a basic block to before another one.
 # 
 # @see llvm::BasicBlock::moveBefore()
-cdef void LLVMMoveBasicBlockBefore(LLVMBasicBlockRef BB,LLVMBasicBlockRef MovePos) nogil:
+cdef void LLVMMoveBasicBlockBefore(LLVMBasicBlockRef BB,LLVMBasicBlockRef MovePos):
     global _LLVMMoveBasicBlockBefore__funptr
     __init_symbol(&_LLVMMoveBasicBlockBefore__funptr,"LLVMMoveBasicBlockBefore")
-    (<void (*)(LLVMBasicBlockRef,LLVMBasicBlockRef) nogil> _LLVMMoveBasicBlockBefore__funptr)(BB,MovePos)
+    with nogil:
+        (<void (*)(LLVMBasicBlockRef,LLVMBasicBlockRef) noexcept nogil> _LLVMMoveBasicBlockBefore__funptr)(BB,MovePos)
 
 
 cdef void* _LLVMMoveBasicBlockAfter__funptr = NULL
@@ -4512,10 +4986,11 @@ cdef void* _LLVMMoveBasicBlockAfter__funptr = NULL
 # Move a basic block to after another one.
 # 
 # @see llvm::BasicBlock::moveAfter()
-cdef void LLVMMoveBasicBlockAfter(LLVMBasicBlockRef BB,LLVMBasicBlockRef MovePos) nogil:
+cdef void LLVMMoveBasicBlockAfter(LLVMBasicBlockRef BB,LLVMBasicBlockRef MovePos):
     global _LLVMMoveBasicBlockAfter__funptr
     __init_symbol(&_LLVMMoveBasicBlockAfter__funptr,"LLVMMoveBasicBlockAfter")
-    (<void (*)(LLVMBasicBlockRef,LLVMBasicBlockRef) nogil> _LLVMMoveBasicBlockAfter__funptr)(BB,MovePos)
+    with nogil:
+        (<void (*)(LLVMBasicBlockRef,LLVMBasicBlockRef) noexcept nogil> _LLVMMoveBasicBlockAfter__funptr)(BB,MovePos)
 
 
 cdef void* _LLVMGetFirstInstruction__funptr = NULL
@@ -4524,10 +4999,11 @@ cdef void* _LLVMGetFirstInstruction__funptr = NULL
 # 
 # The returned LLVMValueRef corresponds to a llvm::Instruction
 # instance.
-cdef LLVMValueRef LLVMGetFirstInstruction(LLVMBasicBlockRef BB) nogil:
+cdef LLVMValueRef LLVMGetFirstInstruction(LLVMBasicBlockRef BB):
     global _LLVMGetFirstInstruction__funptr
     __init_symbol(&_LLVMGetFirstInstruction__funptr,"LLVMGetFirstInstruction")
-    return (<LLVMValueRef (*)(LLVMBasicBlockRef) nogil> _LLVMGetFirstInstruction__funptr)(BB)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBasicBlockRef) noexcept nogil> _LLVMGetFirstInstruction__funptr)(BB)
 
 
 cdef void* _LLVMGetLastInstruction__funptr = NULL
@@ -4535,37 +5011,41 @@ cdef void* _LLVMGetLastInstruction__funptr = NULL
 # Obtain the last instruction in a basic block.
 # 
 # The returned LLVMValueRef corresponds to an LLVM:Instruction.
-cdef LLVMValueRef LLVMGetLastInstruction(LLVMBasicBlockRef BB) nogil:
+cdef LLVMValueRef LLVMGetLastInstruction(LLVMBasicBlockRef BB):
     global _LLVMGetLastInstruction__funptr
     __init_symbol(&_LLVMGetLastInstruction__funptr,"LLVMGetLastInstruction")
-    return (<LLVMValueRef (*)(LLVMBasicBlockRef) nogil> _LLVMGetLastInstruction__funptr)(BB)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBasicBlockRef) noexcept nogil> _LLVMGetLastInstruction__funptr)(BB)
 
 
 cdef void* _LLVMHasMetadata__funptr = NULL
 # 
 # Determine whether an instruction has any metadata attached.
-cdef int LLVMHasMetadata(LLVMValueRef Val) nogil:
+cdef int LLVMHasMetadata(LLVMValueRef Val):
     global _LLVMHasMetadata__funptr
     __init_symbol(&_LLVMHasMetadata__funptr,"LLVMHasMetadata")
-    return (<int (*)(LLVMValueRef) nogil> _LLVMHasMetadata__funptr)(Val)
+    with nogil:
+        return (<int (*)(LLVMValueRef) noexcept nogil> _LLVMHasMetadata__funptr)(Val)
 
 
 cdef void* _LLVMGetMetadata__funptr = NULL
 # 
 # Return metadata associated with an instruction value.
-cdef LLVMValueRef LLVMGetMetadata(LLVMValueRef Val,unsigned int KindID) nogil:
+cdef LLVMValueRef LLVMGetMetadata(LLVMValueRef Val,unsigned int KindID):
     global _LLVMGetMetadata__funptr
     __init_symbol(&_LLVMGetMetadata__funptr,"LLVMGetMetadata")
-    return (<LLVMValueRef (*)(LLVMValueRef,unsigned int) nogil> _LLVMGetMetadata__funptr)(Val,KindID)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,unsigned int) noexcept nogil> _LLVMGetMetadata__funptr)(Val,KindID)
 
 
 cdef void* _LLVMSetMetadata__funptr = NULL
 # 
 # Set metadata associated with an instruction value.
-cdef void LLVMSetMetadata(LLVMValueRef Val,unsigned int KindID,LLVMValueRef Node) nogil:
+cdef void LLVMSetMetadata(LLVMValueRef Val,unsigned int KindID,LLVMValueRef Node):
     global _LLVMSetMetadata__funptr
     __init_symbol(&_LLVMSetMetadata__funptr,"LLVMSetMetadata")
-    (<void (*)(LLVMValueRef,unsigned int,LLVMValueRef) nogil> _LLVMSetMetadata__funptr)(Val,KindID,Node)
+    with nogil:
+        (<void (*)(LLVMValueRef,unsigned int,LLVMValueRef) noexcept nogil> _LLVMSetMetadata__funptr)(Val,KindID,Node)
 
 
 cdef void* _LLVMInstructionGetAllMetadataOtherThanDebugLoc__funptr = NULL
@@ -4574,10 +5054,11 @@ cdef void* _LLVMInstructionGetAllMetadataOtherThanDebugLoc__funptr = NULL
 # all the debug locations.
 # 
 # @see llvm::Instruction::getAllMetadataOtherThanDebugLoc()
-cdef LLVMOpaqueValueMetadataEntry * LLVMInstructionGetAllMetadataOtherThanDebugLoc(LLVMValueRef Instr,unsigned long * NumEntries) nogil:
+cdef LLVMOpaqueValueMetadataEntry * LLVMInstructionGetAllMetadataOtherThanDebugLoc(LLVMValueRef Instr,unsigned long * NumEntries):
     global _LLVMInstructionGetAllMetadataOtherThanDebugLoc__funptr
     __init_symbol(&_LLVMInstructionGetAllMetadataOtherThanDebugLoc__funptr,"LLVMInstructionGetAllMetadataOtherThanDebugLoc")
-    return (<LLVMOpaqueValueMetadataEntry * (*)(LLVMValueRef,unsigned long *) nogil> _LLVMInstructionGetAllMetadataOtherThanDebugLoc__funptr)(Instr,NumEntries)
+    with nogil:
+        return (<LLVMOpaqueValueMetadataEntry * (*)(LLVMValueRef,unsigned long *) noexcept nogil> _LLVMInstructionGetAllMetadataOtherThanDebugLoc__funptr)(Instr,NumEntries)
 
 
 cdef void* _LLVMGetInstructionParent__funptr = NULL
@@ -4585,10 +5066,11 @@ cdef void* _LLVMGetInstructionParent__funptr = NULL
 # Obtain the basic block to which an instruction belongs.
 # 
 # @see llvm::Instruction::getParent()
-cdef LLVMBasicBlockRef LLVMGetInstructionParent(LLVMValueRef Inst) nogil:
+cdef LLVMBasicBlockRef LLVMGetInstructionParent(LLVMValueRef Inst):
     global _LLVMGetInstructionParent__funptr
     __init_symbol(&_LLVMGetInstructionParent__funptr,"LLVMGetInstructionParent")
-    return (<LLVMBasicBlockRef (*)(LLVMValueRef) nogil> _LLVMGetInstructionParent__funptr)(Inst)
+    with nogil:
+        return (<LLVMBasicBlockRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetInstructionParent__funptr)(Inst)
 
 
 cdef void* _LLVMGetNextInstruction__funptr = NULL
@@ -4599,10 +5081,11 @@ cdef void* _LLVMGetNextInstruction__funptr = NULL
 # 
 # If this is the last instruction in a basic block, NULL will be
 # returned.
-cdef LLVMValueRef LLVMGetNextInstruction(LLVMValueRef Inst) nogil:
+cdef LLVMValueRef LLVMGetNextInstruction(LLVMValueRef Inst):
     global _LLVMGetNextInstruction__funptr
     __init_symbol(&_LLVMGetNextInstruction__funptr,"LLVMGetNextInstruction")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMGetNextInstruction__funptr)(Inst)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetNextInstruction__funptr)(Inst)
 
 
 cdef void* _LLVMGetPreviousInstruction__funptr = NULL
@@ -4611,10 +5094,11 @@ cdef void* _LLVMGetPreviousInstruction__funptr = NULL
 # 
 # If the instruction is the first instruction in a basic block, NULL
 # will be returned.
-cdef LLVMValueRef LLVMGetPreviousInstruction(LLVMValueRef Inst) nogil:
+cdef LLVMValueRef LLVMGetPreviousInstruction(LLVMValueRef Inst):
     global _LLVMGetPreviousInstruction__funptr
     __init_symbol(&_LLVMGetPreviousInstruction__funptr,"LLVMGetPreviousInstruction")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMGetPreviousInstruction__funptr)(Inst)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetPreviousInstruction__funptr)(Inst)
 
 
 cdef void* _LLVMInstructionRemoveFromParent__funptr = NULL
@@ -4625,10 +5109,11 @@ cdef void* _LLVMInstructionRemoveFromParent__funptr = NULL
 # block but is kept alive.
 # 
 # @see llvm::Instruction::removeFromParent()
-cdef void LLVMInstructionRemoveFromParent(LLVMValueRef Inst) nogil:
+cdef void LLVMInstructionRemoveFromParent(LLVMValueRef Inst):
     global _LLVMInstructionRemoveFromParent__funptr
     __init_symbol(&_LLVMInstructionRemoveFromParent__funptr,"LLVMInstructionRemoveFromParent")
-    (<void (*)(LLVMValueRef) nogil> _LLVMInstructionRemoveFromParent__funptr)(Inst)
+    with nogil:
+        (<void (*)(LLVMValueRef) noexcept nogil> _LLVMInstructionRemoveFromParent__funptr)(Inst)
 
 
 cdef void* _LLVMInstructionEraseFromParent__funptr = NULL
@@ -4639,10 +5124,11 @@ cdef void* _LLVMInstructionEraseFromParent__funptr = NULL
 # block and then deleted.
 # 
 # @see llvm::Instruction::eraseFromParent()
-cdef void LLVMInstructionEraseFromParent(LLVMValueRef Inst) nogil:
+cdef void LLVMInstructionEraseFromParent(LLVMValueRef Inst):
     global _LLVMInstructionEraseFromParent__funptr
     __init_symbol(&_LLVMInstructionEraseFromParent__funptr,"LLVMInstructionEraseFromParent")
-    (<void (*)(LLVMValueRef) nogil> _LLVMInstructionEraseFromParent__funptr)(Inst)
+    with nogil:
+        (<void (*)(LLVMValueRef) noexcept nogil> _LLVMInstructionEraseFromParent__funptr)(Inst)
 
 
 cdef void* _LLVMDeleteInstruction__funptr = NULL
@@ -4653,10 +5139,11 @@ cdef void* _LLVMDeleteInstruction__funptr = NULL
 # removed from its containing building block.
 # 
 # @see llvm::Value::deleteValue()
-cdef void LLVMDeleteInstruction(LLVMValueRef Inst) nogil:
+cdef void LLVMDeleteInstruction(LLVMValueRef Inst):
     global _LLVMDeleteInstruction__funptr
     __init_symbol(&_LLVMDeleteInstruction__funptr,"LLVMDeleteInstruction")
-    (<void (*)(LLVMValueRef) nogil> _LLVMDeleteInstruction__funptr)(Inst)
+    with nogil:
+        (<void (*)(LLVMValueRef) noexcept nogil> _LLVMDeleteInstruction__funptr)(Inst)
 
 
 cdef void* _LLVMGetInstructionOpcode__funptr = NULL
@@ -4664,10 +5151,11 @@ cdef void* _LLVMGetInstructionOpcode__funptr = NULL
 # Obtain the code opcode for an individual instruction.
 # 
 # @see llvm::Instruction::getOpCode()
-cdef LLVMOpcode LLVMGetInstructionOpcode(LLVMValueRef Inst) nogil:
+cdef LLVMOpcode LLVMGetInstructionOpcode(LLVMValueRef Inst):
     global _LLVMGetInstructionOpcode__funptr
     __init_symbol(&_LLVMGetInstructionOpcode__funptr,"LLVMGetInstructionOpcode")
-    return (<LLVMOpcode (*)(LLVMValueRef) nogil> _LLVMGetInstructionOpcode__funptr)(Inst)
+    with nogil:
+        return (<LLVMOpcode (*)(LLVMValueRef) noexcept nogil> _LLVMGetInstructionOpcode__funptr)(Inst)
 
 
 cdef void* _LLVMGetICmpPredicate__funptr = NULL
@@ -4678,10 +5166,11 @@ cdef void* _LLVMGetICmpPredicate__funptr = NULL
 # or llvm::ConstantExpr whose opcode is llvm::Instruction::ICmp.
 # 
 # @see llvm::ICmpInst::getPredicate()
-cdef LLVMIntPredicate LLVMGetICmpPredicate(LLVMValueRef Inst) nogil:
+cdef LLVMIntPredicate LLVMGetICmpPredicate(LLVMValueRef Inst):
     global _LLVMGetICmpPredicate__funptr
     __init_symbol(&_LLVMGetICmpPredicate__funptr,"LLVMGetICmpPredicate")
-    return (<LLVMIntPredicate (*)(LLVMValueRef) nogil> _LLVMGetICmpPredicate__funptr)(Inst)
+    with nogil:
+        return (<LLVMIntPredicate (*)(LLVMValueRef) noexcept nogil> _LLVMGetICmpPredicate__funptr)(Inst)
 
 
 cdef void* _LLVMGetFCmpPredicate__funptr = NULL
@@ -4692,10 +5181,11 @@ cdef void* _LLVMGetFCmpPredicate__funptr = NULL
 # or llvm::ConstantExpr whose opcode is llvm::Instruction::FCmp.
 # 
 # @see llvm::FCmpInst::getPredicate()
-cdef LLVMRealPredicate LLVMGetFCmpPredicate(LLVMValueRef Inst) nogil:
+cdef LLVMRealPredicate LLVMGetFCmpPredicate(LLVMValueRef Inst):
     global _LLVMGetFCmpPredicate__funptr
     __init_symbol(&_LLVMGetFCmpPredicate__funptr,"LLVMGetFCmpPredicate")
-    return (<LLVMRealPredicate (*)(LLVMValueRef) nogil> _LLVMGetFCmpPredicate__funptr)(Inst)
+    with nogil:
+        return (<LLVMRealPredicate (*)(LLVMValueRef) noexcept nogil> _LLVMGetFCmpPredicate__funptr)(Inst)
 
 
 cdef void* _LLVMInstructionClone__funptr = NULL
@@ -4706,10 +5196,11 @@ cdef void* _LLVMInstructionClone__funptr = NULL
 #   * The instruction has no name
 # 
 # @see llvm::Instruction::clone()
-cdef LLVMValueRef LLVMInstructionClone(LLVMValueRef Inst) nogil:
+cdef LLVMValueRef LLVMInstructionClone(LLVMValueRef Inst):
     global _LLVMInstructionClone__funptr
     __init_symbol(&_LLVMInstructionClone__funptr,"LLVMInstructionClone")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMInstructionClone__funptr)(Inst)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMInstructionClone__funptr)(Inst)
 
 
 cdef void* _LLVMIsATerminatorInst__funptr = NULL
@@ -4719,10 +5210,11 @@ cdef void* _LLVMIsATerminatorInst__funptr = NULL
 # underlying C++ type.
 # 
 # @see llvm::Instruction::isTerminator()
-cdef LLVMValueRef LLVMIsATerminatorInst(LLVMValueRef Inst) nogil:
+cdef LLVMValueRef LLVMIsATerminatorInst(LLVMValueRef Inst):
     global _LLVMIsATerminatorInst__funptr
     __init_symbol(&_LLVMIsATerminatorInst__funptr,"LLVMIsATerminatorInst")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMIsATerminatorInst__funptr)(Inst)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMIsATerminatorInst__funptr)(Inst)
 
 
 cdef void* _LLVMGetNumArgOperands__funptr = NULL
@@ -4735,10 +5227,11 @@ cdef void* _LLVMGetNumArgOperands__funptr = NULL
 # @see llvm::CallInst::getNumArgOperands()
 # @see llvm::InvokeInst::getNumArgOperands()
 # @see llvm::FuncletPadInst::getNumArgOperands()
-cdef unsigned int LLVMGetNumArgOperands(LLVMValueRef Instr) nogil:
+cdef unsigned int LLVMGetNumArgOperands(LLVMValueRef Instr):
     global _LLVMGetNumArgOperands__funptr
     __init_symbol(&_LLVMGetNumArgOperands__funptr,"LLVMGetNumArgOperands")
-    return (<unsigned int (*)(LLVMValueRef) nogil> _LLVMGetNumArgOperands__funptr)(Instr)
+    with nogil:
+        return (<unsigned int (*)(LLVMValueRef) noexcept nogil> _LLVMGetNumArgOperands__funptr)(Instr)
 
 
 cdef void* _LLVMSetInstructionCallConv__funptr = NULL
@@ -4750,10 +5243,11 @@ cdef void* _LLVMSetInstructionCallConv__funptr = NULL
 # 
 # @see llvm::CallInst::setCallingConv()
 # @see llvm::InvokeInst::setCallingConv()
-cdef void LLVMSetInstructionCallConv(LLVMValueRef Instr,unsigned int CC) nogil:
+cdef void LLVMSetInstructionCallConv(LLVMValueRef Instr,unsigned int CC):
     global _LLVMSetInstructionCallConv__funptr
     __init_symbol(&_LLVMSetInstructionCallConv__funptr,"LLVMSetInstructionCallConv")
-    (<void (*)(LLVMValueRef,unsigned int) nogil> _LLVMSetInstructionCallConv__funptr)(Instr,CC)
+    with nogil:
+        (<void (*)(LLVMValueRef,unsigned int) noexcept nogil> _LLVMSetInstructionCallConv__funptr)(Instr,CC)
 
 
 cdef void* _LLVMGetInstructionCallConv__funptr = NULL
@@ -4764,66 +5258,75 @@ cdef void* _LLVMGetInstructionCallConv__funptr = NULL
 # usage.
 # 
 # @see LLVMSetInstructionCallConv()
-cdef unsigned int LLVMGetInstructionCallConv(LLVMValueRef Instr) nogil:
+cdef unsigned int LLVMGetInstructionCallConv(LLVMValueRef Instr):
     global _LLVMGetInstructionCallConv__funptr
     __init_symbol(&_LLVMGetInstructionCallConv__funptr,"LLVMGetInstructionCallConv")
-    return (<unsigned int (*)(LLVMValueRef) nogil> _LLVMGetInstructionCallConv__funptr)(Instr)
+    with nogil:
+        return (<unsigned int (*)(LLVMValueRef) noexcept nogil> _LLVMGetInstructionCallConv__funptr)(Instr)
 
 
 cdef void* _LLVMSetInstrParamAlignment__funptr = NULL
-cdef void LLVMSetInstrParamAlignment(LLVMValueRef Instr,unsigned int Idx,unsigned int Align) nogil:
+cdef void LLVMSetInstrParamAlignment(LLVMValueRef Instr,unsigned int Idx,unsigned int Align):
     global _LLVMSetInstrParamAlignment__funptr
     __init_symbol(&_LLVMSetInstrParamAlignment__funptr,"LLVMSetInstrParamAlignment")
-    (<void (*)(LLVMValueRef,unsigned int,unsigned int) nogil> _LLVMSetInstrParamAlignment__funptr)(Instr,Idx,Align)
+    with nogil:
+        (<void (*)(LLVMValueRef,unsigned int,unsigned int) noexcept nogil> _LLVMSetInstrParamAlignment__funptr)(Instr,Idx,Align)
 
 
 cdef void* _LLVMAddCallSiteAttribute__funptr = NULL
-cdef void LLVMAddCallSiteAttribute(LLVMValueRef C,unsigned int Idx,LLVMAttributeRef A) nogil:
+cdef void LLVMAddCallSiteAttribute(LLVMValueRef C,unsigned int Idx,LLVMAttributeRef A):
     global _LLVMAddCallSiteAttribute__funptr
     __init_symbol(&_LLVMAddCallSiteAttribute__funptr,"LLVMAddCallSiteAttribute")
-    (<void (*)(LLVMValueRef,unsigned int,LLVMAttributeRef) nogil> _LLVMAddCallSiteAttribute__funptr)(C,Idx,A)
+    with nogil:
+        (<void (*)(LLVMValueRef,unsigned int,LLVMAttributeRef) noexcept nogil> _LLVMAddCallSiteAttribute__funptr)(C,Idx,A)
 
 
 cdef void* _LLVMGetCallSiteAttributeCount__funptr = NULL
-cdef unsigned int LLVMGetCallSiteAttributeCount(LLVMValueRef C,unsigned int Idx) nogil:
+cdef unsigned int LLVMGetCallSiteAttributeCount(LLVMValueRef C,unsigned int Idx):
     global _LLVMGetCallSiteAttributeCount__funptr
     __init_symbol(&_LLVMGetCallSiteAttributeCount__funptr,"LLVMGetCallSiteAttributeCount")
-    return (<unsigned int (*)(LLVMValueRef,unsigned int) nogil> _LLVMGetCallSiteAttributeCount__funptr)(C,Idx)
+    with nogil:
+        return (<unsigned int (*)(LLVMValueRef,unsigned int) noexcept nogil> _LLVMGetCallSiteAttributeCount__funptr)(C,Idx)
 
 
 cdef void* _LLVMGetCallSiteAttributes__funptr = NULL
-cdef void LLVMGetCallSiteAttributes(LLVMValueRef C,unsigned int Idx,LLVMAttributeRef* Attrs) nogil:
+cdef void LLVMGetCallSiteAttributes(LLVMValueRef C,unsigned int Idx,LLVMAttributeRef* Attrs):
     global _LLVMGetCallSiteAttributes__funptr
     __init_symbol(&_LLVMGetCallSiteAttributes__funptr,"LLVMGetCallSiteAttributes")
-    (<void (*)(LLVMValueRef,unsigned int,LLVMAttributeRef*) nogil> _LLVMGetCallSiteAttributes__funptr)(C,Idx,Attrs)
+    with nogil:
+        (<void (*)(LLVMValueRef,unsigned int,LLVMAttributeRef*) noexcept nogil> _LLVMGetCallSiteAttributes__funptr)(C,Idx,Attrs)
 
 
 cdef void* _LLVMGetCallSiteEnumAttribute__funptr = NULL
-cdef LLVMAttributeRef LLVMGetCallSiteEnumAttribute(LLVMValueRef C,unsigned int Idx,unsigned int KindID) nogil:
+cdef LLVMAttributeRef LLVMGetCallSiteEnumAttribute(LLVMValueRef C,unsigned int Idx,unsigned int KindID):
     global _LLVMGetCallSiteEnumAttribute__funptr
     __init_symbol(&_LLVMGetCallSiteEnumAttribute__funptr,"LLVMGetCallSiteEnumAttribute")
-    return (<LLVMAttributeRef (*)(LLVMValueRef,unsigned int,unsigned int) nogil> _LLVMGetCallSiteEnumAttribute__funptr)(C,Idx,KindID)
+    with nogil:
+        return (<LLVMAttributeRef (*)(LLVMValueRef,unsigned int,unsigned int) noexcept nogil> _LLVMGetCallSiteEnumAttribute__funptr)(C,Idx,KindID)
 
 
 cdef void* _LLVMGetCallSiteStringAttribute__funptr = NULL
-cdef LLVMAttributeRef LLVMGetCallSiteStringAttribute(LLVMValueRef C,unsigned int Idx,const char * K,unsigned int KLen) nogil:
+cdef LLVMAttributeRef LLVMGetCallSiteStringAttribute(LLVMValueRef C,unsigned int Idx,const char * K,unsigned int KLen):
     global _LLVMGetCallSiteStringAttribute__funptr
     __init_symbol(&_LLVMGetCallSiteStringAttribute__funptr,"LLVMGetCallSiteStringAttribute")
-    return (<LLVMAttributeRef (*)(LLVMValueRef,unsigned int,const char *,unsigned int) nogil> _LLVMGetCallSiteStringAttribute__funptr)(C,Idx,K,KLen)
+    with nogil:
+        return (<LLVMAttributeRef (*)(LLVMValueRef,unsigned int,const char *,unsigned int) noexcept nogil> _LLVMGetCallSiteStringAttribute__funptr)(C,Idx,K,KLen)
 
 
 cdef void* _LLVMRemoveCallSiteEnumAttribute__funptr = NULL
-cdef void LLVMRemoveCallSiteEnumAttribute(LLVMValueRef C,unsigned int Idx,unsigned int KindID) nogil:
+cdef void LLVMRemoveCallSiteEnumAttribute(LLVMValueRef C,unsigned int Idx,unsigned int KindID):
     global _LLVMRemoveCallSiteEnumAttribute__funptr
     __init_symbol(&_LLVMRemoveCallSiteEnumAttribute__funptr,"LLVMRemoveCallSiteEnumAttribute")
-    (<void (*)(LLVMValueRef,unsigned int,unsigned int) nogil> _LLVMRemoveCallSiteEnumAttribute__funptr)(C,Idx,KindID)
+    with nogil:
+        (<void (*)(LLVMValueRef,unsigned int,unsigned int) noexcept nogil> _LLVMRemoveCallSiteEnumAttribute__funptr)(C,Idx,KindID)
 
 
 cdef void* _LLVMRemoveCallSiteStringAttribute__funptr = NULL
-cdef void LLVMRemoveCallSiteStringAttribute(LLVMValueRef C,unsigned int Idx,const char * K,unsigned int KLen) nogil:
+cdef void LLVMRemoveCallSiteStringAttribute(LLVMValueRef C,unsigned int Idx,const char * K,unsigned int KLen):
     global _LLVMRemoveCallSiteStringAttribute__funptr
     __init_symbol(&_LLVMRemoveCallSiteStringAttribute__funptr,"LLVMRemoveCallSiteStringAttribute")
-    (<void (*)(LLVMValueRef,unsigned int,const char *,unsigned int) nogil> _LLVMRemoveCallSiteStringAttribute__funptr)(C,Idx,K,KLen)
+    with nogil:
+        (<void (*)(LLVMValueRef,unsigned int,const char *,unsigned int) noexcept nogil> _LLVMRemoveCallSiteStringAttribute__funptr)(C,Idx,K,KLen)
 
 
 cdef void* _LLVMGetCalledFunctionType__funptr = NULL
@@ -4831,10 +5334,11 @@ cdef void* _LLVMGetCalledFunctionType__funptr = NULL
 # Obtain the function type called by this instruction.
 # 
 # @see llvm::CallBase::getFunctionType()
-cdef LLVMTypeRef LLVMGetCalledFunctionType(LLVMValueRef C) nogil:
+cdef LLVMTypeRef LLVMGetCalledFunctionType(LLVMValueRef C):
     global _LLVMGetCalledFunctionType__funptr
     __init_symbol(&_LLVMGetCalledFunctionType__funptr,"LLVMGetCalledFunctionType")
-    return (<LLVMTypeRef (*)(LLVMValueRef) nogil> _LLVMGetCalledFunctionType__funptr)(C)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetCalledFunctionType__funptr)(C)
 
 
 cdef void* _LLVMGetCalledValue__funptr = NULL
@@ -4846,10 +5350,11 @@ cdef void* _LLVMGetCalledValue__funptr = NULL
 # 
 # @see llvm::CallInst::getCalledOperand()
 # @see llvm::InvokeInst::getCalledOperand()
-cdef LLVMValueRef LLVMGetCalledValue(LLVMValueRef Instr) nogil:
+cdef LLVMValueRef LLVMGetCalledValue(LLVMValueRef Instr):
     global _LLVMGetCalledValue__funptr
     __init_symbol(&_LLVMGetCalledValue__funptr,"LLVMGetCalledValue")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMGetCalledValue__funptr)(Instr)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetCalledValue__funptr)(Instr)
 
 
 cdef void* _LLVMIsTailCall__funptr = NULL
@@ -4859,10 +5364,11 @@ cdef void* _LLVMIsTailCall__funptr = NULL
 # This only works on llvm::CallInst instructions.
 # 
 # @see llvm::CallInst::isTailCall()
-cdef int LLVMIsTailCall(LLVMValueRef CallInst) nogil:
+cdef int LLVMIsTailCall(LLVMValueRef CallInst):
     global _LLVMIsTailCall__funptr
     __init_symbol(&_LLVMIsTailCall__funptr,"LLVMIsTailCall")
-    return (<int (*)(LLVMValueRef) nogil> _LLVMIsTailCall__funptr)(CallInst)
+    with nogil:
+        return (<int (*)(LLVMValueRef) noexcept nogil> _LLVMIsTailCall__funptr)(CallInst)
 
 
 cdef void* _LLVMSetTailCall__funptr = NULL
@@ -4872,10 +5378,11 @@ cdef void* _LLVMSetTailCall__funptr = NULL
 # This only works on llvm::CallInst instructions.
 # 
 # @see llvm::CallInst::setTailCall()
-cdef void LLVMSetTailCall(LLVMValueRef CallInst,int IsTailCall) nogil:
+cdef void LLVMSetTailCall(LLVMValueRef CallInst,int IsTailCall):
     global _LLVMSetTailCall__funptr
     __init_symbol(&_LLVMSetTailCall__funptr,"LLVMSetTailCall")
-    (<void (*)(LLVMValueRef,int) nogil> _LLVMSetTailCall__funptr)(CallInst,IsTailCall)
+    with nogil:
+        (<void (*)(LLVMValueRef,int) noexcept nogil> _LLVMSetTailCall__funptr)(CallInst,IsTailCall)
 
 
 cdef void* _LLVMGetNormalDest__funptr = NULL
@@ -4885,10 +5392,11 @@ cdef void* _LLVMGetNormalDest__funptr = NULL
 # This only works on llvm::InvokeInst instructions.
 # 
 # @see llvm::InvokeInst::getNormalDest()
-cdef LLVMBasicBlockRef LLVMGetNormalDest(LLVMValueRef InvokeInst) nogil:
+cdef LLVMBasicBlockRef LLVMGetNormalDest(LLVMValueRef InvokeInst):
     global _LLVMGetNormalDest__funptr
     __init_symbol(&_LLVMGetNormalDest__funptr,"LLVMGetNormalDest")
-    return (<LLVMBasicBlockRef (*)(LLVMValueRef) nogil> _LLVMGetNormalDest__funptr)(InvokeInst)
+    with nogil:
+        return (<LLVMBasicBlockRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetNormalDest__funptr)(InvokeInst)
 
 
 cdef void* _LLVMGetUnwindDest__funptr = NULL
@@ -4901,10 +5409,11 @@ cdef void* _LLVMGetUnwindDest__funptr = NULL
 # @see llvm::InvokeInst::getUnwindDest()
 # @see llvm::CleanupReturnInst::getUnwindDest()
 # @see llvm::CatchSwitchInst::getUnwindDest()
-cdef LLVMBasicBlockRef LLVMGetUnwindDest(LLVMValueRef InvokeInst) nogil:
+cdef LLVMBasicBlockRef LLVMGetUnwindDest(LLVMValueRef InvokeInst):
     global _LLVMGetUnwindDest__funptr
     __init_symbol(&_LLVMGetUnwindDest__funptr,"LLVMGetUnwindDest")
-    return (<LLVMBasicBlockRef (*)(LLVMValueRef) nogil> _LLVMGetUnwindDest__funptr)(InvokeInst)
+    with nogil:
+        return (<LLVMBasicBlockRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetUnwindDest__funptr)(InvokeInst)
 
 
 cdef void* _LLVMSetNormalDest__funptr = NULL
@@ -4914,10 +5423,11 @@ cdef void* _LLVMSetNormalDest__funptr = NULL
 # This only works on llvm::InvokeInst instructions.
 # 
 # @see llvm::InvokeInst::setNormalDest()
-cdef void LLVMSetNormalDest(LLVMValueRef InvokeInst,LLVMBasicBlockRef B) nogil:
+cdef void LLVMSetNormalDest(LLVMValueRef InvokeInst,LLVMBasicBlockRef B):
     global _LLVMSetNormalDest__funptr
     __init_symbol(&_LLVMSetNormalDest__funptr,"LLVMSetNormalDest")
-    (<void (*)(LLVMValueRef,LLVMBasicBlockRef) nogil> _LLVMSetNormalDest__funptr)(InvokeInst,B)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMBasicBlockRef) noexcept nogil> _LLVMSetNormalDest__funptr)(InvokeInst,B)
 
 
 cdef void* _LLVMSetUnwindDest__funptr = NULL
@@ -4930,10 +5440,11 @@ cdef void* _LLVMSetUnwindDest__funptr = NULL
 # @see llvm::InvokeInst::setUnwindDest()
 # @see llvm::CleanupReturnInst::setUnwindDest()
 # @see llvm::CatchSwitchInst::setUnwindDest()
-cdef void LLVMSetUnwindDest(LLVMValueRef InvokeInst,LLVMBasicBlockRef B) nogil:
+cdef void LLVMSetUnwindDest(LLVMValueRef InvokeInst,LLVMBasicBlockRef B):
     global _LLVMSetUnwindDest__funptr
     __init_symbol(&_LLVMSetUnwindDest__funptr,"LLVMSetUnwindDest")
-    (<void (*)(LLVMValueRef,LLVMBasicBlockRef) nogil> _LLVMSetUnwindDest__funptr)(InvokeInst,B)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMBasicBlockRef) noexcept nogil> _LLVMSetUnwindDest__funptr)(InvokeInst,B)
 
 
 cdef void* _LLVMGetNumSuccessors__funptr = NULL
@@ -4941,10 +5452,11 @@ cdef void* _LLVMGetNumSuccessors__funptr = NULL
 # Return the number of successors that this terminator has.
 # 
 # @see llvm::Instruction::getNumSuccessors
-cdef unsigned int LLVMGetNumSuccessors(LLVMValueRef Term) nogil:
+cdef unsigned int LLVMGetNumSuccessors(LLVMValueRef Term):
     global _LLVMGetNumSuccessors__funptr
     __init_symbol(&_LLVMGetNumSuccessors__funptr,"LLVMGetNumSuccessors")
-    return (<unsigned int (*)(LLVMValueRef) nogil> _LLVMGetNumSuccessors__funptr)(Term)
+    with nogil:
+        return (<unsigned int (*)(LLVMValueRef) noexcept nogil> _LLVMGetNumSuccessors__funptr)(Term)
 
 
 cdef void* _LLVMGetSuccessor__funptr = NULL
@@ -4952,10 +5464,11 @@ cdef void* _LLVMGetSuccessor__funptr = NULL
 # Return the specified successor.
 # 
 # @see llvm::Instruction::getSuccessor
-cdef LLVMBasicBlockRef LLVMGetSuccessor(LLVMValueRef Term,unsigned int i) nogil:
+cdef LLVMBasicBlockRef LLVMGetSuccessor(LLVMValueRef Term,unsigned int i):
     global _LLVMGetSuccessor__funptr
     __init_symbol(&_LLVMGetSuccessor__funptr,"LLVMGetSuccessor")
-    return (<LLVMBasicBlockRef (*)(LLVMValueRef,unsigned int) nogil> _LLVMGetSuccessor__funptr)(Term,i)
+    with nogil:
+        return (<LLVMBasicBlockRef (*)(LLVMValueRef,unsigned int) noexcept nogil> _LLVMGetSuccessor__funptr)(Term,i)
 
 
 cdef void* _LLVMSetSuccessor__funptr = NULL
@@ -4963,10 +5476,11 @@ cdef void* _LLVMSetSuccessor__funptr = NULL
 # Update the specified successor to point at the provided block.
 # 
 # @see llvm::Instruction::setSuccessor
-cdef void LLVMSetSuccessor(LLVMValueRef Term,unsigned int i,LLVMBasicBlockRef block) nogil:
+cdef void LLVMSetSuccessor(LLVMValueRef Term,unsigned int i,LLVMBasicBlockRef block):
     global _LLVMSetSuccessor__funptr
     __init_symbol(&_LLVMSetSuccessor__funptr,"LLVMSetSuccessor")
-    (<void (*)(LLVMValueRef,unsigned int,LLVMBasicBlockRef) nogil> _LLVMSetSuccessor__funptr)(Term,i,block)
+    with nogil:
+        (<void (*)(LLVMValueRef,unsigned int,LLVMBasicBlockRef) noexcept nogil> _LLVMSetSuccessor__funptr)(Term,i,block)
 
 
 cdef void* _LLVMIsConditional__funptr = NULL
@@ -4976,10 +5490,11 @@ cdef void* _LLVMIsConditional__funptr = NULL
 # This only works on llvm::BranchInst instructions.
 # 
 # @see llvm::BranchInst::isConditional
-cdef int LLVMIsConditional(LLVMValueRef Branch) nogil:
+cdef int LLVMIsConditional(LLVMValueRef Branch):
     global _LLVMIsConditional__funptr
     __init_symbol(&_LLVMIsConditional__funptr,"LLVMIsConditional")
-    return (<int (*)(LLVMValueRef) nogil> _LLVMIsConditional__funptr)(Branch)
+    with nogil:
+        return (<int (*)(LLVMValueRef) noexcept nogil> _LLVMIsConditional__funptr)(Branch)
 
 
 cdef void* _LLVMGetCondition__funptr = NULL
@@ -4989,10 +5504,11 @@ cdef void* _LLVMGetCondition__funptr = NULL
 # This only works on llvm::BranchInst instructions.
 # 
 # @see llvm::BranchInst::getCondition
-cdef LLVMValueRef LLVMGetCondition(LLVMValueRef Branch) nogil:
+cdef LLVMValueRef LLVMGetCondition(LLVMValueRef Branch):
     global _LLVMGetCondition__funptr
     __init_symbol(&_LLVMGetCondition__funptr,"LLVMGetCondition")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMGetCondition__funptr)(Branch)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetCondition__funptr)(Branch)
 
 
 cdef void* _LLVMSetCondition__funptr = NULL
@@ -5002,10 +5518,11 @@ cdef void* _LLVMSetCondition__funptr = NULL
 # This only works on llvm::BranchInst instructions.
 # 
 # @see llvm::BranchInst::setCondition
-cdef void LLVMSetCondition(LLVMValueRef Branch,LLVMValueRef Cond) nogil:
+cdef void LLVMSetCondition(LLVMValueRef Branch,LLVMValueRef Cond):
     global _LLVMSetCondition__funptr
     __init_symbol(&_LLVMSetCondition__funptr,"LLVMSetCondition")
-    (<void (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMSetCondition__funptr)(Branch,Cond)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMSetCondition__funptr)(Branch,Cond)
 
 
 cdef void* _LLVMGetSwitchDefaultDest__funptr = NULL
@@ -5015,101 +5532,112 @@ cdef void* _LLVMGetSwitchDefaultDest__funptr = NULL
 # This only works on llvm::SwitchInst instructions.
 # 
 # @see llvm::SwitchInst::getDefaultDest()
-cdef LLVMBasicBlockRef LLVMGetSwitchDefaultDest(LLVMValueRef SwitchInstr) nogil:
+cdef LLVMBasicBlockRef LLVMGetSwitchDefaultDest(LLVMValueRef SwitchInstr):
     global _LLVMGetSwitchDefaultDest__funptr
     __init_symbol(&_LLVMGetSwitchDefaultDest__funptr,"LLVMGetSwitchDefaultDest")
-    return (<LLVMBasicBlockRef (*)(LLVMValueRef) nogil> _LLVMGetSwitchDefaultDest__funptr)(SwitchInstr)
+    with nogil:
+        return (<LLVMBasicBlockRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetSwitchDefaultDest__funptr)(SwitchInstr)
 
 
 cdef void* _LLVMGetAllocatedType__funptr = NULL
 # 
 # Obtain the type that is being allocated by the alloca instruction.
-cdef LLVMTypeRef LLVMGetAllocatedType(LLVMValueRef Alloca) nogil:
+cdef LLVMTypeRef LLVMGetAllocatedType(LLVMValueRef Alloca):
     global _LLVMGetAllocatedType__funptr
     __init_symbol(&_LLVMGetAllocatedType__funptr,"LLVMGetAllocatedType")
-    return (<LLVMTypeRef (*)(LLVMValueRef) nogil> _LLVMGetAllocatedType__funptr)(Alloca)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetAllocatedType__funptr)(Alloca)
 
 
 cdef void* _LLVMIsInBounds__funptr = NULL
 # 
 # Check whether the given GEP operator is inbounds.
-cdef int LLVMIsInBounds(LLVMValueRef GEP) nogil:
+cdef int LLVMIsInBounds(LLVMValueRef GEP):
     global _LLVMIsInBounds__funptr
     __init_symbol(&_LLVMIsInBounds__funptr,"LLVMIsInBounds")
-    return (<int (*)(LLVMValueRef) nogil> _LLVMIsInBounds__funptr)(GEP)
+    with nogil:
+        return (<int (*)(LLVMValueRef) noexcept nogil> _LLVMIsInBounds__funptr)(GEP)
 
 
 cdef void* _LLVMSetIsInBounds__funptr = NULL
 # 
 # Set the given GEP instruction to be inbounds or not.
-cdef void LLVMSetIsInBounds(LLVMValueRef GEP,int InBounds) nogil:
+cdef void LLVMSetIsInBounds(LLVMValueRef GEP,int InBounds):
     global _LLVMSetIsInBounds__funptr
     __init_symbol(&_LLVMSetIsInBounds__funptr,"LLVMSetIsInBounds")
-    (<void (*)(LLVMValueRef,int) nogil> _LLVMSetIsInBounds__funptr)(GEP,InBounds)
+    with nogil:
+        (<void (*)(LLVMValueRef,int) noexcept nogil> _LLVMSetIsInBounds__funptr)(GEP,InBounds)
 
 
 cdef void* _LLVMGetGEPSourceElementType__funptr = NULL
 # 
 # Get the source element type of the given GEP operator.
-cdef LLVMTypeRef LLVMGetGEPSourceElementType(LLVMValueRef GEP) nogil:
+cdef LLVMTypeRef LLVMGetGEPSourceElementType(LLVMValueRef GEP):
     global _LLVMGetGEPSourceElementType__funptr
     __init_symbol(&_LLVMGetGEPSourceElementType__funptr,"LLVMGetGEPSourceElementType")
-    return (<LLVMTypeRef (*)(LLVMValueRef) nogil> _LLVMGetGEPSourceElementType__funptr)(GEP)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetGEPSourceElementType__funptr)(GEP)
 
 
 cdef void* _LLVMAddIncoming__funptr = NULL
 # 
 # Add an incoming value to the end of a PHI list.
-cdef void LLVMAddIncoming(LLVMValueRef PhiNode,LLVMValueRef* IncomingValues,LLVMBasicBlockRef* IncomingBlocks,unsigned int Count) nogil:
+cdef void LLVMAddIncoming(LLVMValueRef PhiNode,LLVMValueRef* IncomingValues,LLVMBasicBlockRef* IncomingBlocks,unsigned int Count):
     global _LLVMAddIncoming__funptr
     __init_symbol(&_LLVMAddIncoming__funptr,"LLVMAddIncoming")
-    (<void (*)(LLVMValueRef,LLVMValueRef*,LLVMBasicBlockRef*,unsigned int) nogil> _LLVMAddIncoming__funptr)(PhiNode,IncomingValues,IncomingBlocks,Count)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMValueRef*,LLVMBasicBlockRef*,unsigned int) noexcept nogil> _LLVMAddIncoming__funptr)(PhiNode,IncomingValues,IncomingBlocks,Count)
 
 
 cdef void* _LLVMCountIncoming__funptr = NULL
 # 
 # Obtain the number of incoming basic blocks to a PHI node.
-cdef unsigned int LLVMCountIncoming(LLVMValueRef PhiNode) nogil:
+cdef unsigned int LLVMCountIncoming(LLVMValueRef PhiNode):
     global _LLVMCountIncoming__funptr
     __init_symbol(&_LLVMCountIncoming__funptr,"LLVMCountIncoming")
-    return (<unsigned int (*)(LLVMValueRef) nogil> _LLVMCountIncoming__funptr)(PhiNode)
+    with nogil:
+        return (<unsigned int (*)(LLVMValueRef) noexcept nogil> _LLVMCountIncoming__funptr)(PhiNode)
 
 
 cdef void* _LLVMGetIncomingValue__funptr = NULL
 # 
 # Obtain an incoming value to a PHI node as an LLVMValueRef.
-cdef LLVMValueRef LLVMGetIncomingValue(LLVMValueRef PhiNode,unsigned int Index) nogil:
+cdef LLVMValueRef LLVMGetIncomingValue(LLVMValueRef PhiNode,unsigned int Index):
     global _LLVMGetIncomingValue__funptr
     __init_symbol(&_LLVMGetIncomingValue__funptr,"LLVMGetIncomingValue")
-    return (<LLVMValueRef (*)(LLVMValueRef,unsigned int) nogil> _LLVMGetIncomingValue__funptr)(PhiNode,Index)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,unsigned int) noexcept nogil> _LLVMGetIncomingValue__funptr)(PhiNode,Index)
 
 
 cdef void* _LLVMGetIncomingBlock__funptr = NULL
 # 
 # Obtain an incoming value to a PHI node as an LLVMBasicBlockRef.
-cdef LLVMBasicBlockRef LLVMGetIncomingBlock(LLVMValueRef PhiNode,unsigned int Index) nogil:
+cdef LLVMBasicBlockRef LLVMGetIncomingBlock(LLVMValueRef PhiNode,unsigned int Index):
     global _LLVMGetIncomingBlock__funptr
     __init_symbol(&_LLVMGetIncomingBlock__funptr,"LLVMGetIncomingBlock")
-    return (<LLVMBasicBlockRef (*)(LLVMValueRef,unsigned int) nogil> _LLVMGetIncomingBlock__funptr)(PhiNode,Index)
+    with nogil:
+        return (<LLVMBasicBlockRef (*)(LLVMValueRef,unsigned int) noexcept nogil> _LLVMGetIncomingBlock__funptr)(PhiNode,Index)
 
 
 cdef void* _LLVMGetNumIndices__funptr = NULL
 # 
 # Obtain the number of indices.
 # NB: This also works on GEP operators.
-cdef unsigned int LLVMGetNumIndices(LLVMValueRef Inst) nogil:
+cdef unsigned int LLVMGetNumIndices(LLVMValueRef Inst):
     global _LLVMGetNumIndices__funptr
     __init_symbol(&_LLVMGetNumIndices__funptr,"LLVMGetNumIndices")
-    return (<unsigned int (*)(LLVMValueRef) nogil> _LLVMGetNumIndices__funptr)(Inst)
+    with nogil:
+        return (<unsigned int (*)(LLVMValueRef) noexcept nogil> _LLVMGetNumIndices__funptr)(Inst)
 
 
 cdef void* _LLVMGetIndices__funptr = NULL
 # 
 # Obtain the indices as an array.
-cdef const unsigned int * LLVMGetIndices(LLVMValueRef Inst) nogil:
+cdef const unsigned int * LLVMGetIndices(LLVMValueRef Inst):
     global _LLVMGetIndices__funptr
     __init_symbol(&_LLVMGetIndices__funptr,"LLVMGetIndices")
-    return (<const unsigned int * (*)(LLVMValueRef) nogil> _LLVMGetIndices__funptr)(Inst)
+    with nogil:
+        return (<const unsigned int * (*)(LLVMValueRef) noexcept nogil> _LLVMGetIndices__funptr)(Inst)
 
 
 cdef void* _LLVMCreateBuilderInContext__funptr = NULL
@@ -5120,73 +5648,83 @@ cdef void* _LLVMCreateBuilderInContext__funptr = NULL
 # the exclusive means of building instructions using the C interface.
 # 
 # @{
-cdef LLVMBuilderRef LLVMCreateBuilderInContext(LLVMContextRef C) nogil:
+cdef LLVMBuilderRef LLVMCreateBuilderInContext(LLVMContextRef C):
     global _LLVMCreateBuilderInContext__funptr
     __init_symbol(&_LLVMCreateBuilderInContext__funptr,"LLVMCreateBuilderInContext")
-    return (<LLVMBuilderRef (*)(LLVMContextRef) nogil> _LLVMCreateBuilderInContext__funptr)(C)
+    with nogil:
+        return (<LLVMBuilderRef (*)(LLVMContextRef) noexcept nogil> _LLVMCreateBuilderInContext__funptr)(C)
 
 
 cdef void* _LLVMCreateBuilder__funptr = NULL
-cdef LLVMBuilderRef LLVMCreateBuilder() nogil:
+cdef LLVMBuilderRef LLVMCreateBuilder():
     global _LLVMCreateBuilder__funptr
     __init_symbol(&_LLVMCreateBuilder__funptr,"LLVMCreateBuilder")
-    return (<LLVMBuilderRef (*)() nogil> _LLVMCreateBuilder__funptr)()
+    with nogil:
+        return (<LLVMBuilderRef (*)() noexcept nogil> _LLVMCreateBuilder__funptr)()
 
 
 cdef void* _LLVMPositionBuilder__funptr = NULL
-cdef void LLVMPositionBuilder(LLVMBuilderRef Builder,LLVMBasicBlockRef Block,LLVMValueRef Instr) nogil:
+cdef void LLVMPositionBuilder(LLVMBuilderRef Builder,LLVMBasicBlockRef Block,LLVMValueRef Instr):
     global _LLVMPositionBuilder__funptr
     __init_symbol(&_LLVMPositionBuilder__funptr,"LLVMPositionBuilder")
-    (<void (*)(LLVMBuilderRef,LLVMBasicBlockRef,LLVMValueRef) nogil> _LLVMPositionBuilder__funptr)(Builder,Block,Instr)
+    with nogil:
+        (<void (*)(LLVMBuilderRef,LLVMBasicBlockRef,LLVMValueRef) noexcept nogil> _LLVMPositionBuilder__funptr)(Builder,Block,Instr)
 
 
 cdef void* _LLVMPositionBuilderBefore__funptr = NULL
-cdef void LLVMPositionBuilderBefore(LLVMBuilderRef Builder,LLVMValueRef Instr) nogil:
+cdef void LLVMPositionBuilderBefore(LLVMBuilderRef Builder,LLVMValueRef Instr):
     global _LLVMPositionBuilderBefore__funptr
     __init_symbol(&_LLVMPositionBuilderBefore__funptr,"LLVMPositionBuilderBefore")
-    (<void (*)(LLVMBuilderRef,LLVMValueRef) nogil> _LLVMPositionBuilderBefore__funptr)(Builder,Instr)
+    with nogil:
+        (<void (*)(LLVMBuilderRef,LLVMValueRef) noexcept nogil> _LLVMPositionBuilderBefore__funptr)(Builder,Instr)
 
 
 cdef void* _LLVMPositionBuilderAtEnd__funptr = NULL
-cdef void LLVMPositionBuilderAtEnd(LLVMBuilderRef Builder,LLVMBasicBlockRef Block) nogil:
+cdef void LLVMPositionBuilderAtEnd(LLVMBuilderRef Builder,LLVMBasicBlockRef Block):
     global _LLVMPositionBuilderAtEnd__funptr
     __init_symbol(&_LLVMPositionBuilderAtEnd__funptr,"LLVMPositionBuilderAtEnd")
-    (<void (*)(LLVMBuilderRef,LLVMBasicBlockRef) nogil> _LLVMPositionBuilderAtEnd__funptr)(Builder,Block)
+    with nogil:
+        (<void (*)(LLVMBuilderRef,LLVMBasicBlockRef) noexcept nogil> _LLVMPositionBuilderAtEnd__funptr)(Builder,Block)
 
 
 cdef void* _LLVMGetInsertBlock__funptr = NULL
-cdef LLVMBasicBlockRef LLVMGetInsertBlock(LLVMBuilderRef Builder) nogil:
+cdef LLVMBasicBlockRef LLVMGetInsertBlock(LLVMBuilderRef Builder):
     global _LLVMGetInsertBlock__funptr
     __init_symbol(&_LLVMGetInsertBlock__funptr,"LLVMGetInsertBlock")
-    return (<LLVMBasicBlockRef (*)(LLVMBuilderRef) nogil> _LLVMGetInsertBlock__funptr)(Builder)
+    with nogil:
+        return (<LLVMBasicBlockRef (*)(LLVMBuilderRef) noexcept nogil> _LLVMGetInsertBlock__funptr)(Builder)
 
 
 cdef void* _LLVMClearInsertionPosition__funptr = NULL
-cdef void LLVMClearInsertionPosition(LLVMBuilderRef Builder) nogil:
+cdef void LLVMClearInsertionPosition(LLVMBuilderRef Builder):
     global _LLVMClearInsertionPosition__funptr
     __init_symbol(&_LLVMClearInsertionPosition__funptr,"LLVMClearInsertionPosition")
-    (<void (*)(LLVMBuilderRef) nogil> _LLVMClearInsertionPosition__funptr)(Builder)
+    with nogil:
+        (<void (*)(LLVMBuilderRef) noexcept nogil> _LLVMClearInsertionPosition__funptr)(Builder)
 
 
 cdef void* _LLVMInsertIntoBuilder__funptr = NULL
-cdef void LLVMInsertIntoBuilder(LLVMBuilderRef Builder,LLVMValueRef Instr) nogil:
+cdef void LLVMInsertIntoBuilder(LLVMBuilderRef Builder,LLVMValueRef Instr):
     global _LLVMInsertIntoBuilder__funptr
     __init_symbol(&_LLVMInsertIntoBuilder__funptr,"LLVMInsertIntoBuilder")
-    (<void (*)(LLVMBuilderRef,LLVMValueRef) nogil> _LLVMInsertIntoBuilder__funptr)(Builder,Instr)
+    with nogil:
+        (<void (*)(LLVMBuilderRef,LLVMValueRef) noexcept nogil> _LLVMInsertIntoBuilder__funptr)(Builder,Instr)
 
 
 cdef void* _LLVMInsertIntoBuilderWithName__funptr = NULL
-cdef void LLVMInsertIntoBuilderWithName(LLVMBuilderRef Builder,LLVMValueRef Instr,const char * Name) nogil:
+cdef void LLVMInsertIntoBuilderWithName(LLVMBuilderRef Builder,LLVMValueRef Instr,const char * Name):
     global _LLVMInsertIntoBuilderWithName__funptr
     __init_symbol(&_LLVMInsertIntoBuilderWithName__funptr,"LLVMInsertIntoBuilderWithName")
-    (<void (*)(LLVMBuilderRef,LLVMValueRef,const char *) nogil> _LLVMInsertIntoBuilderWithName__funptr)(Builder,Instr,Name)
+    with nogil:
+        (<void (*)(LLVMBuilderRef,LLVMValueRef,const char *) noexcept nogil> _LLVMInsertIntoBuilderWithName__funptr)(Builder,Instr,Name)
 
 
 cdef void* _LLVMDisposeBuilder__funptr = NULL
-cdef void LLVMDisposeBuilder(LLVMBuilderRef Builder) nogil:
+cdef void LLVMDisposeBuilder(LLVMBuilderRef Builder):
     global _LLVMDisposeBuilder__funptr
     __init_symbol(&_LLVMDisposeBuilder__funptr,"LLVMDisposeBuilder")
-    (<void (*)(LLVMBuilderRef) nogil> _LLVMDisposeBuilder__funptr)(Builder)
+    with nogil:
+        (<void (*)(LLVMBuilderRef) noexcept nogil> _LLVMDisposeBuilder__funptr)(Builder)
 
 
 cdef void* _LLVMGetCurrentDebugLocation2__funptr = NULL
@@ -5194,10 +5732,11 @@ cdef void* _LLVMGetCurrentDebugLocation2__funptr = NULL
 # Get location information used by debugging information.
 # 
 # @see llvm::IRBuilder::getCurrentDebugLocation()
-cdef LLVMMetadataRef LLVMGetCurrentDebugLocation2(LLVMBuilderRef Builder) nogil:
+cdef LLVMMetadataRef LLVMGetCurrentDebugLocation2(LLVMBuilderRef Builder):
     global _LLVMGetCurrentDebugLocation2__funptr
     __init_symbol(&_LLVMGetCurrentDebugLocation2__funptr,"LLVMGetCurrentDebugLocation2")
-    return (<LLVMMetadataRef (*)(LLVMBuilderRef) nogil> _LLVMGetCurrentDebugLocation2__funptr)(Builder)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMBuilderRef) noexcept nogil> _LLVMGetCurrentDebugLocation2__funptr)(Builder)
 
 
 cdef void* _LLVMSetCurrentDebugLocation2__funptr = NULL
@@ -5207,10 +5746,11 @@ cdef void* _LLVMSetCurrentDebugLocation2__funptr = NULL
 # To clear the location metadata of the given instruction, pass NULL to \p Loc.
 # 
 # @see llvm::IRBuilder::SetCurrentDebugLocation()
-cdef void LLVMSetCurrentDebugLocation2(LLVMBuilderRef Builder,LLVMMetadataRef Loc) nogil:
+cdef void LLVMSetCurrentDebugLocation2(LLVMBuilderRef Builder,LLVMMetadataRef Loc):
     global _LLVMSetCurrentDebugLocation2__funptr
     __init_symbol(&_LLVMSetCurrentDebugLocation2__funptr,"LLVMSetCurrentDebugLocation2")
-    (<void (*)(LLVMBuilderRef,LLVMMetadataRef) nogil> _LLVMSetCurrentDebugLocation2__funptr)(Builder,Loc)
+    with nogil:
+        (<void (*)(LLVMBuilderRef,LLVMMetadataRef) noexcept nogil> _LLVMSetCurrentDebugLocation2__funptr)(Builder,Loc)
 
 
 cdef void* _LLVMSetInstDebugLocation__funptr = NULL
@@ -5223,10 +5763,11 @@ cdef void* _LLVMSetInstDebugLocation__funptr = NULL
 #             LLVMAddMetadataToInst.
 # 
 # @see llvm::IRBuilder::SetInstDebugLocation()
-cdef void LLVMSetInstDebugLocation(LLVMBuilderRef Builder,LLVMValueRef Inst) nogil:
+cdef void LLVMSetInstDebugLocation(LLVMBuilderRef Builder,LLVMValueRef Inst):
     global _LLVMSetInstDebugLocation__funptr
     __init_symbol(&_LLVMSetInstDebugLocation__funptr,"LLVMSetInstDebugLocation")
-    (<void (*)(LLVMBuilderRef,LLVMValueRef) nogil> _LLVMSetInstDebugLocation__funptr)(Builder,Inst)
+    with nogil:
+        (<void (*)(LLVMBuilderRef,LLVMValueRef) noexcept nogil> _LLVMSetInstDebugLocation__funptr)(Builder,Inst)
 
 
 cdef void* _LLVMAddMetadataToInst__funptr = NULL
@@ -5234,10 +5775,11 @@ cdef void* _LLVMAddMetadataToInst__funptr = NULL
 # Adds the metadata registered with the given builder to the given instruction.
 # 
 # @see llvm::IRBuilder::AddMetadataToInst()
-cdef void LLVMAddMetadataToInst(LLVMBuilderRef Builder,LLVMValueRef Inst) nogil:
+cdef void LLVMAddMetadataToInst(LLVMBuilderRef Builder,LLVMValueRef Inst):
     global _LLVMAddMetadataToInst__funptr
     __init_symbol(&_LLVMAddMetadataToInst__funptr,"LLVMAddMetadataToInst")
-    (<void (*)(LLVMBuilderRef,LLVMValueRef) nogil> _LLVMAddMetadataToInst__funptr)(Builder,Inst)
+    with nogil:
+        (<void (*)(LLVMBuilderRef,LLVMValueRef) noexcept nogil> _LLVMAddMetadataToInst__funptr)(Builder,Inst)
 
 
 cdef void* _LLVMBuilderGetDefaultFPMathTag__funptr = NULL
@@ -5245,10 +5787,11 @@ cdef void* _LLVMBuilderGetDefaultFPMathTag__funptr = NULL
 # Get the dafult floating-point math metadata for a given builder.
 # 
 # @see llvm::IRBuilder::getDefaultFPMathTag()
-cdef LLVMMetadataRef LLVMBuilderGetDefaultFPMathTag(LLVMBuilderRef Builder) nogil:
+cdef LLVMMetadataRef LLVMBuilderGetDefaultFPMathTag(LLVMBuilderRef Builder):
     global _LLVMBuilderGetDefaultFPMathTag__funptr
     __init_symbol(&_LLVMBuilderGetDefaultFPMathTag__funptr,"LLVMBuilderGetDefaultFPMathTag")
-    return (<LLVMMetadataRef (*)(LLVMBuilderRef) nogil> _LLVMBuilderGetDefaultFPMathTag__funptr)(Builder)
+    with nogil:
+        return (<LLVMMetadataRef (*)(LLVMBuilderRef) noexcept nogil> _LLVMBuilderGetDefaultFPMathTag__funptr)(Builder)
 
 
 cdef void* _LLVMBuilderSetDefaultFPMathTag__funptr = NULL
@@ -5258,205 +5801,233 @@ cdef void* _LLVMBuilderSetDefaultFPMathTag__funptr = NULL
 # To clear the metadata, pass NULL to \p FPMathTag.
 # 
 # @see llvm::IRBuilder::setDefaultFPMathTag()
-cdef void LLVMBuilderSetDefaultFPMathTag(LLVMBuilderRef Builder,LLVMMetadataRef FPMathTag) nogil:
+cdef void LLVMBuilderSetDefaultFPMathTag(LLVMBuilderRef Builder,LLVMMetadataRef FPMathTag):
     global _LLVMBuilderSetDefaultFPMathTag__funptr
     __init_symbol(&_LLVMBuilderSetDefaultFPMathTag__funptr,"LLVMBuilderSetDefaultFPMathTag")
-    (<void (*)(LLVMBuilderRef,LLVMMetadataRef) nogil> _LLVMBuilderSetDefaultFPMathTag__funptr)(Builder,FPMathTag)
+    with nogil:
+        (<void (*)(LLVMBuilderRef,LLVMMetadataRef) noexcept nogil> _LLVMBuilderSetDefaultFPMathTag__funptr)(Builder,FPMathTag)
 
 
 cdef void* _LLVMSetCurrentDebugLocation__funptr = NULL
 # 
 # Deprecated: Passing the NULL location will crash.
 # Use LLVMGetCurrentDebugLocation2 instead.
-cdef void LLVMSetCurrentDebugLocation(LLVMBuilderRef Builder,LLVMValueRef L) nogil:
+cdef void LLVMSetCurrentDebugLocation(LLVMBuilderRef Builder,LLVMValueRef L):
     global _LLVMSetCurrentDebugLocation__funptr
     __init_symbol(&_LLVMSetCurrentDebugLocation__funptr,"LLVMSetCurrentDebugLocation")
-    (<void (*)(LLVMBuilderRef,LLVMValueRef) nogil> _LLVMSetCurrentDebugLocation__funptr)(Builder,L)
+    with nogil:
+        (<void (*)(LLVMBuilderRef,LLVMValueRef) noexcept nogil> _LLVMSetCurrentDebugLocation__funptr)(Builder,L)
 
 
 cdef void* _LLVMGetCurrentDebugLocation__funptr = NULL
 # 
 # Deprecated: Returning the NULL location will crash.
 # Use LLVMGetCurrentDebugLocation2 instead.
-cdef LLVMValueRef LLVMGetCurrentDebugLocation(LLVMBuilderRef Builder) nogil:
+cdef LLVMValueRef LLVMGetCurrentDebugLocation(LLVMBuilderRef Builder):
     global _LLVMGetCurrentDebugLocation__funptr
     __init_symbol(&_LLVMGetCurrentDebugLocation__funptr,"LLVMGetCurrentDebugLocation")
-    return (<LLVMValueRef (*)(LLVMBuilderRef) nogil> _LLVMGetCurrentDebugLocation__funptr)(Builder)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef) noexcept nogil> _LLVMGetCurrentDebugLocation__funptr)(Builder)
 
 
 cdef void* _LLVMBuildRetVoid__funptr = NULL
-cdef LLVMValueRef LLVMBuildRetVoid(LLVMBuilderRef arg0) nogil:
+cdef LLVMValueRef LLVMBuildRetVoid(LLVMBuilderRef arg0):
     global _LLVMBuildRetVoid__funptr
     __init_symbol(&_LLVMBuildRetVoid__funptr,"LLVMBuildRetVoid")
-    return (<LLVMValueRef (*)(LLVMBuilderRef) nogil> _LLVMBuildRetVoid__funptr)(arg0)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef) noexcept nogil> _LLVMBuildRetVoid__funptr)(arg0)
 
 
 cdef void* _LLVMBuildRet__funptr = NULL
-cdef LLVMValueRef LLVMBuildRet(LLVMBuilderRef arg0,LLVMValueRef V) nogil:
+cdef LLVMValueRef LLVMBuildRet(LLVMBuilderRef arg0,LLVMValueRef V):
     global _LLVMBuildRet__funptr
     __init_symbol(&_LLVMBuildRet__funptr,"LLVMBuildRet")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef) nogil> _LLVMBuildRet__funptr)(arg0,V)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef) noexcept nogil> _LLVMBuildRet__funptr)(arg0,V)
 
 
 cdef void* _LLVMBuildAggregateRet__funptr = NULL
-cdef LLVMValueRef LLVMBuildAggregateRet(LLVMBuilderRef arg0,LLVMValueRef* RetVals,unsigned int N) nogil:
+cdef LLVMValueRef LLVMBuildAggregateRet(LLVMBuilderRef arg0,LLVMValueRef* RetVals,unsigned int N):
     global _LLVMBuildAggregateRet__funptr
     __init_symbol(&_LLVMBuildAggregateRet__funptr,"LLVMBuildAggregateRet")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef*,unsigned int) nogil> _LLVMBuildAggregateRet__funptr)(arg0,RetVals,N)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef*,unsigned int) noexcept nogil> _LLVMBuildAggregateRet__funptr)(arg0,RetVals,N)
 
 
 cdef void* _LLVMBuildBr__funptr = NULL
-cdef LLVMValueRef LLVMBuildBr(LLVMBuilderRef arg0,LLVMBasicBlockRef Dest) nogil:
+cdef LLVMValueRef LLVMBuildBr(LLVMBuilderRef arg0,LLVMBasicBlockRef Dest):
     global _LLVMBuildBr__funptr
     __init_symbol(&_LLVMBuildBr__funptr,"LLVMBuildBr")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMBasicBlockRef) nogil> _LLVMBuildBr__funptr)(arg0,Dest)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMBasicBlockRef) noexcept nogil> _LLVMBuildBr__funptr)(arg0,Dest)
 
 
 cdef void* _LLVMBuildCondBr__funptr = NULL
-cdef LLVMValueRef LLVMBuildCondBr(LLVMBuilderRef arg0,LLVMValueRef If,LLVMBasicBlockRef Then,LLVMBasicBlockRef Else) nogil:
+cdef LLVMValueRef LLVMBuildCondBr(LLVMBuilderRef arg0,LLVMValueRef If,LLVMBasicBlockRef Then,LLVMBasicBlockRef Else):
     global _LLVMBuildCondBr__funptr
     __init_symbol(&_LLVMBuildCondBr__funptr,"LLVMBuildCondBr")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMBasicBlockRef,LLVMBasicBlockRef) nogil> _LLVMBuildCondBr__funptr)(arg0,If,Then,Else)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMBasicBlockRef,LLVMBasicBlockRef) noexcept nogil> _LLVMBuildCondBr__funptr)(arg0,If,Then,Else)
 
 
 cdef void* _LLVMBuildSwitch__funptr = NULL
-cdef LLVMValueRef LLVMBuildSwitch(LLVMBuilderRef arg0,LLVMValueRef V,LLVMBasicBlockRef Else,unsigned int NumCases) nogil:
+cdef LLVMValueRef LLVMBuildSwitch(LLVMBuilderRef arg0,LLVMValueRef V,LLVMBasicBlockRef Else,unsigned int NumCases):
     global _LLVMBuildSwitch__funptr
     __init_symbol(&_LLVMBuildSwitch__funptr,"LLVMBuildSwitch")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMBasicBlockRef,unsigned int) nogil> _LLVMBuildSwitch__funptr)(arg0,V,Else,NumCases)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMBasicBlockRef,unsigned int) noexcept nogil> _LLVMBuildSwitch__funptr)(arg0,V,Else,NumCases)
 
 
 cdef void* _LLVMBuildIndirectBr__funptr = NULL
-cdef LLVMValueRef LLVMBuildIndirectBr(LLVMBuilderRef B,LLVMValueRef Addr,unsigned int NumDests) nogil:
+cdef LLVMValueRef LLVMBuildIndirectBr(LLVMBuilderRef B,LLVMValueRef Addr,unsigned int NumDests):
     global _LLVMBuildIndirectBr__funptr
     __init_symbol(&_LLVMBuildIndirectBr__funptr,"LLVMBuildIndirectBr")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,unsigned int) nogil> _LLVMBuildIndirectBr__funptr)(B,Addr,NumDests)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,unsigned int) noexcept nogil> _LLVMBuildIndirectBr__funptr)(B,Addr,NumDests)
 
 
 cdef void* _LLVMBuildInvoke2__funptr = NULL
-cdef LLVMValueRef LLVMBuildInvoke2(LLVMBuilderRef arg0,LLVMTypeRef Ty,LLVMValueRef Fn,LLVMValueRef* Args,unsigned int NumArgs,LLVMBasicBlockRef Then,LLVMBasicBlockRef Catch,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildInvoke2(LLVMBuilderRef arg0,LLVMTypeRef Ty,LLVMValueRef Fn,LLVMValueRef* Args,unsigned int NumArgs,LLVMBasicBlockRef Then,LLVMBasicBlockRef Catch,const char * Name):
     global _LLVMBuildInvoke2__funptr
     __init_symbol(&_LLVMBuildInvoke2__funptr,"LLVMBuildInvoke2")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,LLVMValueRef,LLVMValueRef*,unsigned int,LLVMBasicBlockRef,LLVMBasicBlockRef,const char *) nogil> _LLVMBuildInvoke2__funptr)(arg0,Ty,Fn,Args,NumArgs,Then,Catch,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,LLVMValueRef,LLVMValueRef*,unsigned int,LLVMBasicBlockRef,LLVMBasicBlockRef,const char *) noexcept nogil> _LLVMBuildInvoke2__funptr)(arg0,Ty,Fn,Args,NumArgs,Then,Catch,Name)
 
 
 cdef void* _LLVMBuildUnreachable__funptr = NULL
-cdef LLVMValueRef LLVMBuildUnreachable(LLVMBuilderRef arg0) nogil:
+cdef LLVMValueRef LLVMBuildUnreachable(LLVMBuilderRef arg0):
     global _LLVMBuildUnreachable__funptr
     __init_symbol(&_LLVMBuildUnreachable__funptr,"LLVMBuildUnreachable")
-    return (<LLVMValueRef (*)(LLVMBuilderRef) nogil> _LLVMBuildUnreachable__funptr)(arg0)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef) noexcept nogil> _LLVMBuildUnreachable__funptr)(arg0)
 
 
 cdef void* _LLVMBuildResume__funptr = NULL
-cdef LLVMValueRef LLVMBuildResume(LLVMBuilderRef B,LLVMValueRef Exn) nogil:
+cdef LLVMValueRef LLVMBuildResume(LLVMBuilderRef B,LLVMValueRef Exn):
     global _LLVMBuildResume__funptr
     __init_symbol(&_LLVMBuildResume__funptr,"LLVMBuildResume")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef) nogil> _LLVMBuildResume__funptr)(B,Exn)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef) noexcept nogil> _LLVMBuildResume__funptr)(B,Exn)
 
 
 cdef void* _LLVMBuildLandingPad__funptr = NULL
-cdef LLVMValueRef LLVMBuildLandingPad(LLVMBuilderRef B,LLVMTypeRef Ty,LLVMValueRef PersFn,unsigned int NumClauses,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildLandingPad(LLVMBuilderRef B,LLVMTypeRef Ty,LLVMValueRef PersFn,unsigned int NumClauses,const char * Name):
     global _LLVMBuildLandingPad__funptr
     __init_symbol(&_LLVMBuildLandingPad__funptr,"LLVMBuildLandingPad")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,LLVMValueRef,unsigned int,const char *) nogil> _LLVMBuildLandingPad__funptr)(B,Ty,PersFn,NumClauses,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,LLVMValueRef,unsigned int,const char *) noexcept nogil> _LLVMBuildLandingPad__funptr)(B,Ty,PersFn,NumClauses,Name)
 
 
 cdef void* _LLVMBuildCleanupRet__funptr = NULL
-cdef LLVMValueRef LLVMBuildCleanupRet(LLVMBuilderRef B,LLVMValueRef CatchPad,LLVMBasicBlockRef BB) nogil:
+cdef LLVMValueRef LLVMBuildCleanupRet(LLVMBuilderRef B,LLVMValueRef CatchPad,LLVMBasicBlockRef BB):
     global _LLVMBuildCleanupRet__funptr
     __init_symbol(&_LLVMBuildCleanupRet__funptr,"LLVMBuildCleanupRet")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMBasicBlockRef) nogil> _LLVMBuildCleanupRet__funptr)(B,CatchPad,BB)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMBasicBlockRef) noexcept nogil> _LLVMBuildCleanupRet__funptr)(B,CatchPad,BB)
 
 
 cdef void* _LLVMBuildCatchRet__funptr = NULL
-cdef LLVMValueRef LLVMBuildCatchRet(LLVMBuilderRef B,LLVMValueRef CatchPad,LLVMBasicBlockRef BB) nogil:
+cdef LLVMValueRef LLVMBuildCatchRet(LLVMBuilderRef B,LLVMValueRef CatchPad,LLVMBasicBlockRef BB):
     global _LLVMBuildCatchRet__funptr
     __init_symbol(&_LLVMBuildCatchRet__funptr,"LLVMBuildCatchRet")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMBasicBlockRef) nogil> _LLVMBuildCatchRet__funptr)(B,CatchPad,BB)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMBasicBlockRef) noexcept nogil> _LLVMBuildCatchRet__funptr)(B,CatchPad,BB)
 
 
 cdef void* _LLVMBuildCatchPad__funptr = NULL
-cdef LLVMValueRef LLVMBuildCatchPad(LLVMBuilderRef B,LLVMValueRef ParentPad,LLVMValueRef* Args,unsigned int NumArgs,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildCatchPad(LLVMBuilderRef B,LLVMValueRef ParentPad,LLVMValueRef* Args,unsigned int NumArgs,const char * Name):
     global _LLVMBuildCatchPad__funptr
     __init_symbol(&_LLVMBuildCatchPad__funptr,"LLVMBuildCatchPad")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef*,unsigned int,const char *) nogil> _LLVMBuildCatchPad__funptr)(B,ParentPad,Args,NumArgs,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef*,unsigned int,const char *) noexcept nogil> _LLVMBuildCatchPad__funptr)(B,ParentPad,Args,NumArgs,Name)
 
 
 cdef void* _LLVMBuildCleanupPad__funptr = NULL
-cdef LLVMValueRef LLVMBuildCleanupPad(LLVMBuilderRef B,LLVMValueRef ParentPad,LLVMValueRef* Args,unsigned int NumArgs,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildCleanupPad(LLVMBuilderRef B,LLVMValueRef ParentPad,LLVMValueRef* Args,unsigned int NumArgs,const char * Name):
     global _LLVMBuildCleanupPad__funptr
     __init_symbol(&_LLVMBuildCleanupPad__funptr,"LLVMBuildCleanupPad")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef*,unsigned int,const char *) nogil> _LLVMBuildCleanupPad__funptr)(B,ParentPad,Args,NumArgs,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef*,unsigned int,const char *) noexcept nogil> _LLVMBuildCleanupPad__funptr)(B,ParentPad,Args,NumArgs,Name)
 
 
 cdef void* _LLVMBuildCatchSwitch__funptr = NULL
-cdef LLVMValueRef LLVMBuildCatchSwitch(LLVMBuilderRef B,LLVMValueRef ParentPad,LLVMBasicBlockRef UnwindBB,unsigned int NumHandlers,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildCatchSwitch(LLVMBuilderRef B,LLVMValueRef ParentPad,LLVMBasicBlockRef UnwindBB,unsigned int NumHandlers,const char * Name):
     global _LLVMBuildCatchSwitch__funptr
     __init_symbol(&_LLVMBuildCatchSwitch__funptr,"LLVMBuildCatchSwitch")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMBasicBlockRef,unsigned int,const char *) nogil> _LLVMBuildCatchSwitch__funptr)(B,ParentPad,UnwindBB,NumHandlers,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMBasicBlockRef,unsigned int,const char *) noexcept nogil> _LLVMBuildCatchSwitch__funptr)(B,ParentPad,UnwindBB,NumHandlers,Name)
 
 
 cdef void* _LLVMAddCase__funptr = NULL
-cdef void LLVMAddCase(LLVMValueRef Switch,LLVMValueRef OnVal,LLVMBasicBlockRef Dest) nogil:
+cdef void LLVMAddCase(LLVMValueRef Switch,LLVMValueRef OnVal,LLVMBasicBlockRef Dest):
     global _LLVMAddCase__funptr
     __init_symbol(&_LLVMAddCase__funptr,"LLVMAddCase")
-    (<void (*)(LLVMValueRef,LLVMValueRef,LLVMBasicBlockRef) nogil> _LLVMAddCase__funptr)(Switch,OnVal,Dest)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMValueRef,LLVMBasicBlockRef) noexcept nogil> _LLVMAddCase__funptr)(Switch,OnVal,Dest)
 
 
 cdef void* _LLVMAddDestination__funptr = NULL
-cdef void LLVMAddDestination(LLVMValueRef IndirectBr,LLVMBasicBlockRef Dest) nogil:
+cdef void LLVMAddDestination(LLVMValueRef IndirectBr,LLVMBasicBlockRef Dest):
     global _LLVMAddDestination__funptr
     __init_symbol(&_LLVMAddDestination__funptr,"LLVMAddDestination")
-    (<void (*)(LLVMValueRef,LLVMBasicBlockRef) nogil> _LLVMAddDestination__funptr)(IndirectBr,Dest)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMBasicBlockRef) noexcept nogil> _LLVMAddDestination__funptr)(IndirectBr,Dest)
 
 
 cdef void* _LLVMGetNumClauses__funptr = NULL
-cdef unsigned int LLVMGetNumClauses(LLVMValueRef LandingPad) nogil:
+cdef unsigned int LLVMGetNumClauses(LLVMValueRef LandingPad):
     global _LLVMGetNumClauses__funptr
     __init_symbol(&_LLVMGetNumClauses__funptr,"LLVMGetNumClauses")
-    return (<unsigned int (*)(LLVMValueRef) nogil> _LLVMGetNumClauses__funptr)(LandingPad)
+    with nogil:
+        return (<unsigned int (*)(LLVMValueRef) noexcept nogil> _LLVMGetNumClauses__funptr)(LandingPad)
 
 
 cdef void* _LLVMGetClause__funptr = NULL
-cdef LLVMValueRef LLVMGetClause(LLVMValueRef LandingPad,unsigned int Idx) nogil:
+cdef LLVMValueRef LLVMGetClause(LLVMValueRef LandingPad,unsigned int Idx):
     global _LLVMGetClause__funptr
     __init_symbol(&_LLVMGetClause__funptr,"LLVMGetClause")
-    return (<LLVMValueRef (*)(LLVMValueRef,unsigned int) nogil> _LLVMGetClause__funptr)(LandingPad,Idx)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,unsigned int) noexcept nogil> _LLVMGetClause__funptr)(LandingPad,Idx)
 
 
 cdef void* _LLVMAddClause__funptr = NULL
-cdef void LLVMAddClause(LLVMValueRef LandingPad,LLVMValueRef ClauseVal) nogil:
+cdef void LLVMAddClause(LLVMValueRef LandingPad,LLVMValueRef ClauseVal):
     global _LLVMAddClause__funptr
     __init_symbol(&_LLVMAddClause__funptr,"LLVMAddClause")
-    (<void (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMAddClause__funptr)(LandingPad,ClauseVal)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMAddClause__funptr)(LandingPad,ClauseVal)
 
 
 cdef void* _LLVMIsCleanup__funptr = NULL
-cdef int LLVMIsCleanup(LLVMValueRef LandingPad) nogil:
+cdef int LLVMIsCleanup(LLVMValueRef LandingPad):
     global _LLVMIsCleanup__funptr
     __init_symbol(&_LLVMIsCleanup__funptr,"LLVMIsCleanup")
-    return (<int (*)(LLVMValueRef) nogil> _LLVMIsCleanup__funptr)(LandingPad)
+    with nogil:
+        return (<int (*)(LLVMValueRef) noexcept nogil> _LLVMIsCleanup__funptr)(LandingPad)
 
 
 cdef void* _LLVMSetCleanup__funptr = NULL
-cdef void LLVMSetCleanup(LLVMValueRef LandingPad,int Val) nogil:
+cdef void LLVMSetCleanup(LLVMValueRef LandingPad,int Val):
     global _LLVMSetCleanup__funptr
     __init_symbol(&_LLVMSetCleanup__funptr,"LLVMSetCleanup")
-    (<void (*)(LLVMValueRef,int) nogil> _LLVMSetCleanup__funptr)(LandingPad,Val)
+    with nogil:
+        (<void (*)(LLVMValueRef,int) noexcept nogil> _LLVMSetCleanup__funptr)(LandingPad,Val)
 
 
 cdef void* _LLVMAddHandler__funptr = NULL
-cdef void LLVMAddHandler(LLVMValueRef CatchSwitch,LLVMBasicBlockRef Dest) nogil:
+cdef void LLVMAddHandler(LLVMValueRef CatchSwitch,LLVMBasicBlockRef Dest):
     global _LLVMAddHandler__funptr
     __init_symbol(&_LLVMAddHandler__funptr,"LLVMAddHandler")
-    (<void (*)(LLVMValueRef,LLVMBasicBlockRef) nogil> _LLVMAddHandler__funptr)(CatchSwitch,Dest)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMBasicBlockRef) noexcept nogil> _LLVMAddHandler__funptr)(CatchSwitch,Dest)
 
 
 cdef void* _LLVMGetNumHandlers__funptr = NULL
-cdef unsigned int LLVMGetNumHandlers(LLVMValueRef CatchSwitch) nogil:
+cdef unsigned int LLVMGetNumHandlers(LLVMValueRef CatchSwitch):
     global _LLVMGetNumHandlers__funptr
     __init_symbol(&_LLVMGetNumHandlers__funptr,"LLVMGetNumHandlers")
-    return (<unsigned int (*)(LLVMValueRef) nogil> _LLVMGetNumHandlers__funptr)(CatchSwitch)
+    with nogil:
+        return (<unsigned int (*)(LLVMValueRef) noexcept nogil> _LLVMGetNumHandlers__funptr)(CatchSwitch)
 
 
 cdef void* _LLVMGetHandlers__funptr = NULL
@@ -5470,24 +6041,27 @@ cdef void* _LLVMGetHandlers__funptr = NULL
 # 
 # @param CatchSwitch The catchswitch instruction to operate on.
 # @param Handlers Memory address of an array to be filled with basic blocks.
-cdef void LLVMGetHandlers(LLVMValueRef CatchSwitch,LLVMBasicBlockRef* Handlers) nogil:
+cdef void LLVMGetHandlers(LLVMValueRef CatchSwitch,LLVMBasicBlockRef* Handlers):
     global _LLVMGetHandlers__funptr
     __init_symbol(&_LLVMGetHandlers__funptr,"LLVMGetHandlers")
-    (<void (*)(LLVMValueRef,LLVMBasicBlockRef*) nogil> _LLVMGetHandlers__funptr)(CatchSwitch,Handlers)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMBasicBlockRef*) noexcept nogil> _LLVMGetHandlers__funptr)(CatchSwitch,Handlers)
 
 
 cdef void* _LLVMGetArgOperand__funptr = NULL
-cdef LLVMValueRef LLVMGetArgOperand(LLVMValueRef Funclet,unsigned int i) nogil:
+cdef LLVMValueRef LLVMGetArgOperand(LLVMValueRef Funclet,unsigned int i):
     global _LLVMGetArgOperand__funptr
     __init_symbol(&_LLVMGetArgOperand__funptr,"LLVMGetArgOperand")
-    return (<LLVMValueRef (*)(LLVMValueRef,unsigned int) nogil> _LLVMGetArgOperand__funptr)(Funclet,i)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef,unsigned int) noexcept nogil> _LLVMGetArgOperand__funptr)(Funclet,i)
 
 
 cdef void* _LLVMSetArgOperand__funptr = NULL
-cdef void LLVMSetArgOperand(LLVMValueRef Funclet,unsigned int i,LLVMValueRef value) nogil:
+cdef void LLVMSetArgOperand(LLVMValueRef Funclet,unsigned int i,LLVMValueRef value):
     global _LLVMSetArgOperand__funptr
     __init_symbol(&_LLVMSetArgOperand__funptr,"LLVMSetArgOperand")
-    (<void (*)(LLVMValueRef,unsigned int,LLVMValueRef) nogil> _LLVMSetArgOperand__funptr)(Funclet,i,value)
+    with nogil:
+        (<void (*)(LLVMValueRef,unsigned int,LLVMValueRef) noexcept nogil> _LLVMSetArgOperand__funptr)(Funclet,i,value)
 
 
 cdef void* _LLVMGetParentCatchSwitch__funptr = NULL
@@ -5497,10 +6071,11 @@ cdef void* _LLVMGetParentCatchSwitch__funptr = NULL
 # This only works on llvm::CatchPadInst instructions.
 # 
 # @see llvm::CatchPadInst::getCatchSwitch()
-cdef LLVMValueRef LLVMGetParentCatchSwitch(LLVMValueRef CatchPad) nogil:
+cdef LLVMValueRef LLVMGetParentCatchSwitch(LLVMValueRef CatchPad):
     global _LLVMGetParentCatchSwitch__funptr
     __init_symbol(&_LLVMGetParentCatchSwitch__funptr,"LLVMGetParentCatchSwitch")
-    return (<LLVMValueRef (*)(LLVMValueRef) nogil> _LLVMGetParentCatchSwitch__funptr)(CatchPad)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMValueRef) noexcept nogil> _LLVMGetParentCatchSwitch__funptr)(CatchPad)
 
 
 cdef void* _LLVMSetParentCatchSwitch__funptr = NULL
@@ -5510,248 +6085,283 @@ cdef void* _LLVMSetParentCatchSwitch__funptr = NULL
 # This only works on llvm::CatchPadInst instructions.
 # 
 # @see llvm::CatchPadInst::setCatchSwitch()
-cdef void LLVMSetParentCatchSwitch(LLVMValueRef CatchPad,LLVMValueRef CatchSwitch) nogil:
+cdef void LLVMSetParentCatchSwitch(LLVMValueRef CatchPad,LLVMValueRef CatchSwitch):
     global _LLVMSetParentCatchSwitch__funptr
     __init_symbol(&_LLVMSetParentCatchSwitch__funptr,"LLVMSetParentCatchSwitch")
-    (<void (*)(LLVMValueRef,LLVMValueRef) nogil> _LLVMSetParentCatchSwitch__funptr)(CatchPad,CatchSwitch)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMSetParentCatchSwitch__funptr)(CatchPad,CatchSwitch)
 
 
 cdef void* _LLVMBuildAdd__funptr = NULL
-cdef LLVMValueRef LLVMBuildAdd(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildAdd(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildAdd__funptr
     __init_symbol(&_LLVMBuildAdd__funptr,"LLVMBuildAdd")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildAdd__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildAdd__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildNSWAdd__funptr = NULL
-cdef LLVMValueRef LLVMBuildNSWAdd(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildNSWAdd(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildNSWAdd__funptr
     __init_symbol(&_LLVMBuildNSWAdd__funptr,"LLVMBuildNSWAdd")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildNSWAdd__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildNSWAdd__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildNUWAdd__funptr = NULL
-cdef LLVMValueRef LLVMBuildNUWAdd(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildNUWAdd(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildNUWAdd__funptr
     __init_symbol(&_LLVMBuildNUWAdd__funptr,"LLVMBuildNUWAdd")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildNUWAdd__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildNUWAdd__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildFAdd__funptr = NULL
-cdef LLVMValueRef LLVMBuildFAdd(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildFAdd(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildFAdd__funptr
     __init_symbol(&_LLVMBuildFAdd__funptr,"LLVMBuildFAdd")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildFAdd__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildFAdd__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildSub__funptr = NULL
-cdef LLVMValueRef LLVMBuildSub(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildSub(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildSub__funptr
     __init_symbol(&_LLVMBuildSub__funptr,"LLVMBuildSub")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildSub__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildSub__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildNSWSub__funptr = NULL
-cdef LLVMValueRef LLVMBuildNSWSub(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildNSWSub(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildNSWSub__funptr
     __init_symbol(&_LLVMBuildNSWSub__funptr,"LLVMBuildNSWSub")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildNSWSub__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildNSWSub__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildNUWSub__funptr = NULL
-cdef LLVMValueRef LLVMBuildNUWSub(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildNUWSub(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildNUWSub__funptr
     __init_symbol(&_LLVMBuildNUWSub__funptr,"LLVMBuildNUWSub")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildNUWSub__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildNUWSub__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildFSub__funptr = NULL
-cdef LLVMValueRef LLVMBuildFSub(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildFSub(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildFSub__funptr
     __init_symbol(&_LLVMBuildFSub__funptr,"LLVMBuildFSub")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildFSub__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildFSub__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildMul__funptr = NULL
-cdef LLVMValueRef LLVMBuildMul(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildMul(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildMul__funptr
     __init_symbol(&_LLVMBuildMul__funptr,"LLVMBuildMul")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildMul__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildMul__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildNSWMul__funptr = NULL
-cdef LLVMValueRef LLVMBuildNSWMul(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildNSWMul(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildNSWMul__funptr
     __init_symbol(&_LLVMBuildNSWMul__funptr,"LLVMBuildNSWMul")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildNSWMul__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildNSWMul__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildNUWMul__funptr = NULL
-cdef LLVMValueRef LLVMBuildNUWMul(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildNUWMul(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildNUWMul__funptr
     __init_symbol(&_LLVMBuildNUWMul__funptr,"LLVMBuildNUWMul")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildNUWMul__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildNUWMul__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildFMul__funptr = NULL
-cdef LLVMValueRef LLVMBuildFMul(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildFMul(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildFMul__funptr
     __init_symbol(&_LLVMBuildFMul__funptr,"LLVMBuildFMul")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildFMul__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildFMul__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildUDiv__funptr = NULL
-cdef LLVMValueRef LLVMBuildUDiv(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildUDiv(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildUDiv__funptr
     __init_symbol(&_LLVMBuildUDiv__funptr,"LLVMBuildUDiv")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildUDiv__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildUDiv__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildExactUDiv__funptr = NULL
-cdef LLVMValueRef LLVMBuildExactUDiv(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildExactUDiv(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildExactUDiv__funptr
     __init_symbol(&_LLVMBuildExactUDiv__funptr,"LLVMBuildExactUDiv")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildExactUDiv__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildExactUDiv__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildSDiv__funptr = NULL
-cdef LLVMValueRef LLVMBuildSDiv(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildSDiv(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildSDiv__funptr
     __init_symbol(&_LLVMBuildSDiv__funptr,"LLVMBuildSDiv")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildSDiv__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildSDiv__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildExactSDiv__funptr = NULL
-cdef LLVMValueRef LLVMBuildExactSDiv(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildExactSDiv(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildExactSDiv__funptr
     __init_symbol(&_LLVMBuildExactSDiv__funptr,"LLVMBuildExactSDiv")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildExactSDiv__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildExactSDiv__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildFDiv__funptr = NULL
-cdef LLVMValueRef LLVMBuildFDiv(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildFDiv(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildFDiv__funptr
     __init_symbol(&_LLVMBuildFDiv__funptr,"LLVMBuildFDiv")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildFDiv__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildFDiv__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildURem__funptr = NULL
-cdef LLVMValueRef LLVMBuildURem(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildURem(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildURem__funptr
     __init_symbol(&_LLVMBuildURem__funptr,"LLVMBuildURem")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildURem__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildURem__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildSRem__funptr = NULL
-cdef LLVMValueRef LLVMBuildSRem(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildSRem(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildSRem__funptr
     __init_symbol(&_LLVMBuildSRem__funptr,"LLVMBuildSRem")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildSRem__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildSRem__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildFRem__funptr = NULL
-cdef LLVMValueRef LLVMBuildFRem(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildFRem(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildFRem__funptr
     __init_symbol(&_LLVMBuildFRem__funptr,"LLVMBuildFRem")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildFRem__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildFRem__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildShl__funptr = NULL
-cdef LLVMValueRef LLVMBuildShl(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildShl(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildShl__funptr
     __init_symbol(&_LLVMBuildShl__funptr,"LLVMBuildShl")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildShl__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildShl__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildLShr__funptr = NULL
-cdef LLVMValueRef LLVMBuildLShr(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildLShr(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildLShr__funptr
     __init_symbol(&_LLVMBuildLShr__funptr,"LLVMBuildLShr")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildLShr__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildLShr__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildAShr__funptr = NULL
-cdef LLVMValueRef LLVMBuildAShr(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildAShr(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildAShr__funptr
     __init_symbol(&_LLVMBuildAShr__funptr,"LLVMBuildAShr")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildAShr__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildAShr__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildAnd__funptr = NULL
-cdef LLVMValueRef LLVMBuildAnd(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildAnd(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildAnd__funptr
     __init_symbol(&_LLVMBuildAnd__funptr,"LLVMBuildAnd")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildAnd__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildAnd__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildOr__funptr = NULL
-cdef LLVMValueRef LLVMBuildOr(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildOr(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildOr__funptr
     __init_symbol(&_LLVMBuildOr__funptr,"LLVMBuildOr")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildOr__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildOr__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildXor__funptr = NULL
-cdef LLVMValueRef LLVMBuildXor(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildXor(LLVMBuilderRef arg0,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildXor__funptr
     __init_symbol(&_LLVMBuildXor__funptr,"LLVMBuildXor")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildXor__funptr)(arg0,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildXor__funptr)(arg0,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildBinOp__funptr = NULL
-cdef LLVMValueRef LLVMBuildBinOp(LLVMBuilderRef B,LLVMOpcode Op,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildBinOp(LLVMBuilderRef B,LLVMOpcode Op,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildBinOp__funptr
     __init_symbol(&_LLVMBuildBinOp__funptr,"LLVMBuildBinOp")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMOpcode,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildBinOp__funptr)(B,Op,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMOpcode,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildBinOp__funptr)(B,Op,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildNeg__funptr = NULL
-cdef LLVMValueRef LLVMBuildNeg(LLVMBuilderRef arg0,LLVMValueRef V,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildNeg(LLVMBuilderRef arg0,LLVMValueRef V,const char * Name):
     global _LLVMBuildNeg__funptr
     __init_symbol(&_LLVMBuildNeg__funptr,"LLVMBuildNeg")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,const char *) nogil> _LLVMBuildNeg__funptr)(arg0,V,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildNeg__funptr)(arg0,V,Name)
 
 
 cdef void* _LLVMBuildNSWNeg__funptr = NULL
-cdef LLVMValueRef LLVMBuildNSWNeg(LLVMBuilderRef B,LLVMValueRef V,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildNSWNeg(LLVMBuilderRef B,LLVMValueRef V,const char * Name):
     global _LLVMBuildNSWNeg__funptr
     __init_symbol(&_LLVMBuildNSWNeg__funptr,"LLVMBuildNSWNeg")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,const char *) nogil> _LLVMBuildNSWNeg__funptr)(B,V,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildNSWNeg__funptr)(B,V,Name)
 
 
 cdef void* _LLVMBuildNUWNeg__funptr = NULL
-cdef LLVMValueRef LLVMBuildNUWNeg(LLVMBuilderRef B,LLVMValueRef V,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildNUWNeg(LLVMBuilderRef B,LLVMValueRef V,const char * Name):
     global _LLVMBuildNUWNeg__funptr
     __init_symbol(&_LLVMBuildNUWNeg__funptr,"LLVMBuildNUWNeg")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,const char *) nogil> _LLVMBuildNUWNeg__funptr)(B,V,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildNUWNeg__funptr)(B,V,Name)
 
 
 cdef void* _LLVMBuildFNeg__funptr = NULL
-cdef LLVMValueRef LLVMBuildFNeg(LLVMBuilderRef arg0,LLVMValueRef V,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildFNeg(LLVMBuilderRef arg0,LLVMValueRef V,const char * Name):
     global _LLVMBuildFNeg__funptr
     __init_symbol(&_LLVMBuildFNeg__funptr,"LLVMBuildFNeg")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,const char *) nogil> _LLVMBuildFNeg__funptr)(arg0,V,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildFNeg__funptr)(arg0,V,Name)
 
 
 cdef void* _LLVMBuildNot__funptr = NULL
-cdef LLVMValueRef LLVMBuildNot(LLVMBuilderRef arg0,LLVMValueRef V,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildNot(LLVMBuilderRef arg0,LLVMValueRef V,const char * Name):
     global _LLVMBuildNot__funptr
     __init_symbol(&_LLVMBuildNot__funptr,"LLVMBuildNot")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,const char *) nogil> _LLVMBuildNot__funptr)(arg0,V,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildNot__funptr)(arg0,V,Name)
 
 
 cdef void* _LLVMBuildMalloc__funptr = NULL
-cdef LLVMValueRef LLVMBuildMalloc(LLVMBuilderRef arg0,LLVMTypeRef Ty,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildMalloc(LLVMBuilderRef arg0,LLVMTypeRef Ty,const char * Name):
     global _LLVMBuildMalloc__funptr
     __init_symbol(&_LLVMBuildMalloc__funptr,"LLVMBuildMalloc")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,const char *) nogil> _LLVMBuildMalloc__funptr)(arg0,Ty,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildMalloc__funptr)(arg0,Ty,Name)
 
 
 cdef void* _LLVMBuildArrayMalloc__funptr = NULL
-cdef LLVMValueRef LLVMBuildArrayMalloc(LLVMBuilderRef arg0,LLVMTypeRef Ty,LLVMValueRef Val,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildArrayMalloc(LLVMBuilderRef arg0,LLVMTypeRef Ty,LLVMValueRef Val,const char * Name):
     global _LLVMBuildArrayMalloc__funptr
     __init_symbol(&_LLVMBuildArrayMalloc__funptr,"LLVMBuildArrayMalloc")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,LLVMValueRef,const char *) nogil> _LLVMBuildArrayMalloc__funptr)(arg0,Ty,Val,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildArrayMalloc__funptr)(arg0,Ty,Val,Name)
 
 
 cdef void* _LLVMBuildMemSet__funptr = NULL
@@ -5760,10 +6370,11 @@ cdef void* _LLVMBuildMemSet__funptr = NULL
 # specified value.
 # 
 # @see llvm::IRRBuilder::CreateMemSet()
-cdef LLVMValueRef LLVMBuildMemSet(LLVMBuilderRef B,LLVMValueRef Ptr,LLVMValueRef Val,LLVMValueRef Len,unsigned int Align) nogil:
+cdef LLVMValueRef LLVMBuildMemSet(LLVMBuilderRef B,LLVMValueRef Ptr,LLVMValueRef Val,LLVMValueRef Len,unsigned int Align):
     global _LLVMBuildMemSet__funptr
     __init_symbol(&_LLVMBuildMemSet__funptr,"LLVMBuildMemSet")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,LLVMValueRef,unsigned int) nogil> _LLVMBuildMemSet__funptr)(B,Ptr,Val,Len,Align)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,LLVMValueRef,unsigned int) noexcept nogil> _LLVMBuildMemSet__funptr)(B,Ptr,Val,Len,Align)
 
 
 cdef void* _LLVMBuildMemCpy__funptr = NULL
@@ -5771,10 +6382,11 @@ cdef void* _LLVMBuildMemCpy__funptr = NULL
 # Creates and inserts a memcpy between the specified pointers.
 # 
 # @see llvm::IRRBuilder::CreateMemCpy()
-cdef LLVMValueRef LLVMBuildMemCpy(LLVMBuilderRef B,LLVMValueRef Dst,unsigned int DstAlign,LLVMValueRef Src,unsigned int SrcAlign,LLVMValueRef Size) nogil:
+cdef LLVMValueRef LLVMBuildMemCpy(LLVMBuilderRef B,LLVMValueRef Dst,unsigned int DstAlign,LLVMValueRef Src,unsigned int SrcAlign,LLVMValueRef Size):
     global _LLVMBuildMemCpy__funptr
     __init_symbol(&_LLVMBuildMemCpy__funptr,"LLVMBuildMemCpy")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,unsigned int,LLVMValueRef,unsigned int,LLVMValueRef) nogil> _LLVMBuildMemCpy__funptr)(B,Dst,DstAlign,Src,SrcAlign,Size)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,unsigned int,LLVMValueRef,unsigned int,LLVMValueRef) noexcept nogil> _LLVMBuildMemCpy__funptr)(B,Dst,DstAlign,Src,SrcAlign,Size)
 
 
 cdef void* _LLVMBuildMemMove__funptr = NULL
@@ -5782,436 +6394,497 @@ cdef void* _LLVMBuildMemMove__funptr = NULL
 # Creates and inserts a memmove between the specified pointers.
 # 
 # @see llvm::IRRBuilder::CreateMemMove()
-cdef LLVMValueRef LLVMBuildMemMove(LLVMBuilderRef B,LLVMValueRef Dst,unsigned int DstAlign,LLVMValueRef Src,unsigned int SrcAlign,LLVMValueRef Size) nogil:
+cdef LLVMValueRef LLVMBuildMemMove(LLVMBuilderRef B,LLVMValueRef Dst,unsigned int DstAlign,LLVMValueRef Src,unsigned int SrcAlign,LLVMValueRef Size):
     global _LLVMBuildMemMove__funptr
     __init_symbol(&_LLVMBuildMemMove__funptr,"LLVMBuildMemMove")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,unsigned int,LLVMValueRef,unsigned int,LLVMValueRef) nogil> _LLVMBuildMemMove__funptr)(B,Dst,DstAlign,Src,SrcAlign,Size)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,unsigned int,LLVMValueRef,unsigned int,LLVMValueRef) noexcept nogil> _LLVMBuildMemMove__funptr)(B,Dst,DstAlign,Src,SrcAlign,Size)
 
 
 cdef void* _LLVMBuildAlloca__funptr = NULL
-cdef LLVMValueRef LLVMBuildAlloca(LLVMBuilderRef arg0,LLVMTypeRef Ty,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildAlloca(LLVMBuilderRef arg0,LLVMTypeRef Ty,const char * Name):
     global _LLVMBuildAlloca__funptr
     __init_symbol(&_LLVMBuildAlloca__funptr,"LLVMBuildAlloca")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,const char *) nogil> _LLVMBuildAlloca__funptr)(arg0,Ty,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildAlloca__funptr)(arg0,Ty,Name)
 
 
 cdef void* _LLVMBuildArrayAlloca__funptr = NULL
-cdef LLVMValueRef LLVMBuildArrayAlloca(LLVMBuilderRef arg0,LLVMTypeRef Ty,LLVMValueRef Val,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildArrayAlloca(LLVMBuilderRef arg0,LLVMTypeRef Ty,LLVMValueRef Val,const char * Name):
     global _LLVMBuildArrayAlloca__funptr
     __init_symbol(&_LLVMBuildArrayAlloca__funptr,"LLVMBuildArrayAlloca")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,LLVMValueRef,const char *) nogil> _LLVMBuildArrayAlloca__funptr)(arg0,Ty,Val,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildArrayAlloca__funptr)(arg0,Ty,Val,Name)
 
 
 cdef void* _LLVMBuildFree__funptr = NULL
-cdef LLVMValueRef LLVMBuildFree(LLVMBuilderRef arg0,LLVMValueRef PointerVal) nogil:
+cdef LLVMValueRef LLVMBuildFree(LLVMBuilderRef arg0,LLVMValueRef PointerVal):
     global _LLVMBuildFree__funptr
     __init_symbol(&_LLVMBuildFree__funptr,"LLVMBuildFree")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef) nogil> _LLVMBuildFree__funptr)(arg0,PointerVal)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef) noexcept nogil> _LLVMBuildFree__funptr)(arg0,PointerVal)
 
 
 cdef void* _LLVMBuildLoad2__funptr = NULL
-cdef LLVMValueRef LLVMBuildLoad2(LLVMBuilderRef arg0,LLVMTypeRef Ty,LLVMValueRef PointerVal,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildLoad2(LLVMBuilderRef arg0,LLVMTypeRef Ty,LLVMValueRef PointerVal,const char * Name):
     global _LLVMBuildLoad2__funptr
     __init_symbol(&_LLVMBuildLoad2__funptr,"LLVMBuildLoad2")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,LLVMValueRef,const char *) nogil> _LLVMBuildLoad2__funptr)(arg0,Ty,PointerVal,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildLoad2__funptr)(arg0,Ty,PointerVal,Name)
 
 
 cdef void* _LLVMBuildStore__funptr = NULL
-cdef LLVMValueRef LLVMBuildStore(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMValueRef Ptr) nogil:
+cdef LLVMValueRef LLVMBuildStore(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMValueRef Ptr):
     global _LLVMBuildStore__funptr
     __init_symbol(&_LLVMBuildStore__funptr,"LLVMBuildStore")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef) nogil> _LLVMBuildStore__funptr)(arg0,Val,Ptr)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef) noexcept nogil> _LLVMBuildStore__funptr)(arg0,Val,Ptr)
 
 
 cdef void* _LLVMBuildGEP2__funptr = NULL
-cdef LLVMValueRef LLVMBuildGEP2(LLVMBuilderRef B,LLVMTypeRef Ty,LLVMValueRef Pointer,LLVMValueRef* Indices,unsigned int NumIndices,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildGEP2(LLVMBuilderRef B,LLVMTypeRef Ty,LLVMValueRef Pointer,LLVMValueRef* Indices,unsigned int NumIndices,const char * Name):
     global _LLVMBuildGEP2__funptr
     __init_symbol(&_LLVMBuildGEP2__funptr,"LLVMBuildGEP2")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,LLVMValueRef,LLVMValueRef*,unsigned int,const char *) nogil> _LLVMBuildGEP2__funptr)(B,Ty,Pointer,Indices,NumIndices,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,LLVMValueRef,LLVMValueRef*,unsigned int,const char *) noexcept nogil> _LLVMBuildGEP2__funptr)(B,Ty,Pointer,Indices,NumIndices,Name)
 
 
 cdef void* _LLVMBuildInBoundsGEP2__funptr = NULL
-cdef LLVMValueRef LLVMBuildInBoundsGEP2(LLVMBuilderRef B,LLVMTypeRef Ty,LLVMValueRef Pointer,LLVMValueRef* Indices,unsigned int NumIndices,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildInBoundsGEP2(LLVMBuilderRef B,LLVMTypeRef Ty,LLVMValueRef Pointer,LLVMValueRef* Indices,unsigned int NumIndices,const char * Name):
     global _LLVMBuildInBoundsGEP2__funptr
     __init_symbol(&_LLVMBuildInBoundsGEP2__funptr,"LLVMBuildInBoundsGEP2")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,LLVMValueRef,LLVMValueRef*,unsigned int,const char *) nogil> _LLVMBuildInBoundsGEP2__funptr)(B,Ty,Pointer,Indices,NumIndices,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,LLVMValueRef,LLVMValueRef*,unsigned int,const char *) noexcept nogil> _LLVMBuildInBoundsGEP2__funptr)(B,Ty,Pointer,Indices,NumIndices,Name)
 
 
 cdef void* _LLVMBuildStructGEP2__funptr = NULL
-cdef LLVMValueRef LLVMBuildStructGEP2(LLVMBuilderRef B,LLVMTypeRef Ty,LLVMValueRef Pointer,unsigned int Idx,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildStructGEP2(LLVMBuilderRef B,LLVMTypeRef Ty,LLVMValueRef Pointer,unsigned int Idx,const char * Name):
     global _LLVMBuildStructGEP2__funptr
     __init_symbol(&_LLVMBuildStructGEP2__funptr,"LLVMBuildStructGEP2")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,LLVMValueRef,unsigned int,const char *) nogil> _LLVMBuildStructGEP2__funptr)(B,Ty,Pointer,Idx,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,LLVMValueRef,unsigned int,const char *) noexcept nogil> _LLVMBuildStructGEP2__funptr)(B,Ty,Pointer,Idx,Name)
 
 
 cdef void* _LLVMBuildGlobalString__funptr = NULL
-cdef LLVMValueRef LLVMBuildGlobalString(LLVMBuilderRef B,const char * Str,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildGlobalString(LLVMBuilderRef B,const char * Str,const char * Name):
     global _LLVMBuildGlobalString__funptr
     __init_symbol(&_LLVMBuildGlobalString__funptr,"LLVMBuildGlobalString")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,const char *,const char *) nogil> _LLVMBuildGlobalString__funptr)(B,Str,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,const char *,const char *) noexcept nogil> _LLVMBuildGlobalString__funptr)(B,Str,Name)
 
 
 cdef void* _LLVMBuildGlobalStringPtr__funptr = NULL
-cdef LLVMValueRef LLVMBuildGlobalStringPtr(LLVMBuilderRef B,const char * Str,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildGlobalStringPtr(LLVMBuilderRef B,const char * Str,const char * Name):
     global _LLVMBuildGlobalStringPtr__funptr
     __init_symbol(&_LLVMBuildGlobalStringPtr__funptr,"LLVMBuildGlobalStringPtr")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,const char *,const char *) nogil> _LLVMBuildGlobalStringPtr__funptr)(B,Str,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,const char *,const char *) noexcept nogil> _LLVMBuildGlobalStringPtr__funptr)(B,Str,Name)
 
 
 cdef void* _LLVMGetVolatile__funptr = NULL
-cdef int LLVMGetVolatile(LLVMValueRef MemoryAccessInst) nogil:
+cdef int LLVMGetVolatile(LLVMValueRef MemoryAccessInst):
     global _LLVMGetVolatile__funptr
     __init_symbol(&_LLVMGetVolatile__funptr,"LLVMGetVolatile")
-    return (<int (*)(LLVMValueRef) nogil> _LLVMGetVolatile__funptr)(MemoryAccessInst)
+    with nogil:
+        return (<int (*)(LLVMValueRef) noexcept nogil> _LLVMGetVolatile__funptr)(MemoryAccessInst)
 
 
 cdef void* _LLVMSetVolatile__funptr = NULL
-cdef void LLVMSetVolatile(LLVMValueRef MemoryAccessInst,int IsVolatile) nogil:
+cdef void LLVMSetVolatile(LLVMValueRef MemoryAccessInst,int IsVolatile):
     global _LLVMSetVolatile__funptr
     __init_symbol(&_LLVMSetVolatile__funptr,"LLVMSetVolatile")
-    (<void (*)(LLVMValueRef,int) nogil> _LLVMSetVolatile__funptr)(MemoryAccessInst,IsVolatile)
+    with nogil:
+        (<void (*)(LLVMValueRef,int) noexcept nogil> _LLVMSetVolatile__funptr)(MemoryAccessInst,IsVolatile)
 
 
 cdef void* _LLVMGetWeak__funptr = NULL
-cdef int LLVMGetWeak(LLVMValueRef CmpXchgInst) nogil:
+cdef int LLVMGetWeak(LLVMValueRef CmpXchgInst):
     global _LLVMGetWeak__funptr
     __init_symbol(&_LLVMGetWeak__funptr,"LLVMGetWeak")
-    return (<int (*)(LLVMValueRef) nogil> _LLVMGetWeak__funptr)(CmpXchgInst)
+    with nogil:
+        return (<int (*)(LLVMValueRef) noexcept nogil> _LLVMGetWeak__funptr)(CmpXchgInst)
 
 
 cdef void* _LLVMSetWeak__funptr = NULL
-cdef void LLVMSetWeak(LLVMValueRef CmpXchgInst,int IsWeak) nogil:
+cdef void LLVMSetWeak(LLVMValueRef CmpXchgInst,int IsWeak):
     global _LLVMSetWeak__funptr
     __init_symbol(&_LLVMSetWeak__funptr,"LLVMSetWeak")
-    (<void (*)(LLVMValueRef,int) nogil> _LLVMSetWeak__funptr)(CmpXchgInst,IsWeak)
+    with nogil:
+        (<void (*)(LLVMValueRef,int) noexcept nogil> _LLVMSetWeak__funptr)(CmpXchgInst,IsWeak)
 
 
 cdef void* _LLVMGetOrdering__funptr = NULL
-cdef LLVMAtomicOrdering LLVMGetOrdering(LLVMValueRef MemoryAccessInst) nogil:
+cdef LLVMAtomicOrdering LLVMGetOrdering(LLVMValueRef MemoryAccessInst):
     global _LLVMGetOrdering__funptr
     __init_symbol(&_LLVMGetOrdering__funptr,"LLVMGetOrdering")
-    return (<LLVMAtomicOrdering (*)(LLVMValueRef) nogil> _LLVMGetOrdering__funptr)(MemoryAccessInst)
+    with nogil:
+        return (<LLVMAtomicOrdering (*)(LLVMValueRef) noexcept nogil> _LLVMGetOrdering__funptr)(MemoryAccessInst)
 
 
 cdef void* _LLVMSetOrdering__funptr = NULL
-cdef void LLVMSetOrdering(LLVMValueRef MemoryAccessInst,LLVMAtomicOrdering Ordering) nogil:
+cdef void LLVMSetOrdering(LLVMValueRef MemoryAccessInst,LLVMAtomicOrdering Ordering):
     global _LLVMSetOrdering__funptr
     __init_symbol(&_LLVMSetOrdering__funptr,"LLVMSetOrdering")
-    (<void (*)(LLVMValueRef,LLVMAtomicOrdering) nogil> _LLVMSetOrdering__funptr)(MemoryAccessInst,Ordering)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMAtomicOrdering) noexcept nogil> _LLVMSetOrdering__funptr)(MemoryAccessInst,Ordering)
 
 
 cdef void* _LLVMGetAtomicRMWBinOp__funptr = NULL
-cdef LLVMAtomicRMWBinOp LLVMGetAtomicRMWBinOp(LLVMValueRef AtomicRMWInst) nogil:
+cdef LLVMAtomicRMWBinOp LLVMGetAtomicRMWBinOp(LLVMValueRef AtomicRMWInst):
     global _LLVMGetAtomicRMWBinOp__funptr
     __init_symbol(&_LLVMGetAtomicRMWBinOp__funptr,"LLVMGetAtomicRMWBinOp")
-    return (<LLVMAtomicRMWBinOp (*)(LLVMValueRef) nogil> _LLVMGetAtomicRMWBinOp__funptr)(AtomicRMWInst)
+    with nogil:
+        return (<LLVMAtomicRMWBinOp (*)(LLVMValueRef) noexcept nogil> _LLVMGetAtomicRMWBinOp__funptr)(AtomicRMWInst)
 
 
 cdef void* _LLVMSetAtomicRMWBinOp__funptr = NULL
-cdef void LLVMSetAtomicRMWBinOp(LLVMValueRef AtomicRMWInst,LLVMAtomicRMWBinOp BinOp) nogil:
+cdef void LLVMSetAtomicRMWBinOp(LLVMValueRef AtomicRMWInst,LLVMAtomicRMWBinOp BinOp):
     global _LLVMSetAtomicRMWBinOp__funptr
     __init_symbol(&_LLVMSetAtomicRMWBinOp__funptr,"LLVMSetAtomicRMWBinOp")
-    (<void (*)(LLVMValueRef,LLVMAtomicRMWBinOp) nogil> _LLVMSetAtomicRMWBinOp__funptr)(AtomicRMWInst,BinOp)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMAtomicRMWBinOp) noexcept nogil> _LLVMSetAtomicRMWBinOp__funptr)(AtomicRMWInst,BinOp)
 
 
 cdef void* _LLVMBuildTrunc__funptr = NULL
-cdef LLVMValueRef LLVMBuildTrunc(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildTrunc(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name):
     global _LLVMBuildTrunc__funptr
     __init_symbol(&_LLVMBuildTrunc__funptr,"LLVMBuildTrunc")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) nogil> _LLVMBuildTrunc__funptr)(arg0,Val,DestTy,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildTrunc__funptr)(arg0,Val,DestTy,Name)
 
 
 cdef void* _LLVMBuildZExt__funptr = NULL
-cdef LLVMValueRef LLVMBuildZExt(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildZExt(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name):
     global _LLVMBuildZExt__funptr
     __init_symbol(&_LLVMBuildZExt__funptr,"LLVMBuildZExt")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) nogil> _LLVMBuildZExt__funptr)(arg0,Val,DestTy,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildZExt__funptr)(arg0,Val,DestTy,Name)
 
 
 cdef void* _LLVMBuildSExt__funptr = NULL
-cdef LLVMValueRef LLVMBuildSExt(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildSExt(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name):
     global _LLVMBuildSExt__funptr
     __init_symbol(&_LLVMBuildSExt__funptr,"LLVMBuildSExt")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) nogil> _LLVMBuildSExt__funptr)(arg0,Val,DestTy,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildSExt__funptr)(arg0,Val,DestTy,Name)
 
 
 cdef void* _LLVMBuildFPToUI__funptr = NULL
-cdef LLVMValueRef LLVMBuildFPToUI(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildFPToUI(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name):
     global _LLVMBuildFPToUI__funptr
     __init_symbol(&_LLVMBuildFPToUI__funptr,"LLVMBuildFPToUI")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) nogil> _LLVMBuildFPToUI__funptr)(arg0,Val,DestTy,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildFPToUI__funptr)(arg0,Val,DestTy,Name)
 
 
 cdef void* _LLVMBuildFPToSI__funptr = NULL
-cdef LLVMValueRef LLVMBuildFPToSI(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildFPToSI(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name):
     global _LLVMBuildFPToSI__funptr
     __init_symbol(&_LLVMBuildFPToSI__funptr,"LLVMBuildFPToSI")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) nogil> _LLVMBuildFPToSI__funptr)(arg0,Val,DestTy,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildFPToSI__funptr)(arg0,Val,DestTy,Name)
 
 
 cdef void* _LLVMBuildUIToFP__funptr = NULL
-cdef LLVMValueRef LLVMBuildUIToFP(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildUIToFP(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name):
     global _LLVMBuildUIToFP__funptr
     __init_symbol(&_LLVMBuildUIToFP__funptr,"LLVMBuildUIToFP")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) nogil> _LLVMBuildUIToFP__funptr)(arg0,Val,DestTy,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildUIToFP__funptr)(arg0,Val,DestTy,Name)
 
 
 cdef void* _LLVMBuildSIToFP__funptr = NULL
-cdef LLVMValueRef LLVMBuildSIToFP(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildSIToFP(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name):
     global _LLVMBuildSIToFP__funptr
     __init_symbol(&_LLVMBuildSIToFP__funptr,"LLVMBuildSIToFP")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) nogil> _LLVMBuildSIToFP__funptr)(arg0,Val,DestTy,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildSIToFP__funptr)(arg0,Val,DestTy,Name)
 
 
 cdef void* _LLVMBuildFPTrunc__funptr = NULL
-cdef LLVMValueRef LLVMBuildFPTrunc(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildFPTrunc(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name):
     global _LLVMBuildFPTrunc__funptr
     __init_symbol(&_LLVMBuildFPTrunc__funptr,"LLVMBuildFPTrunc")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) nogil> _LLVMBuildFPTrunc__funptr)(arg0,Val,DestTy,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildFPTrunc__funptr)(arg0,Val,DestTy,Name)
 
 
 cdef void* _LLVMBuildFPExt__funptr = NULL
-cdef LLVMValueRef LLVMBuildFPExt(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildFPExt(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name):
     global _LLVMBuildFPExt__funptr
     __init_symbol(&_LLVMBuildFPExt__funptr,"LLVMBuildFPExt")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) nogil> _LLVMBuildFPExt__funptr)(arg0,Val,DestTy,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildFPExt__funptr)(arg0,Val,DestTy,Name)
 
 
 cdef void* _LLVMBuildPtrToInt__funptr = NULL
-cdef LLVMValueRef LLVMBuildPtrToInt(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildPtrToInt(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name):
     global _LLVMBuildPtrToInt__funptr
     __init_symbol(&_LLVMBuildPtrToInt__funptr,"LLVMBuildPtrToInt")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) nogil> _LLVMBuildPtrToInt__funptr)(arg0,Val,DestTy,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildPtrToInt__funptr)(arg0,Val,DestTy,Name)
 
 
 cdef void* _LLVMBuildIntToPtr__funptr = NULL
-cdef LLVMValueRef LLVMBuildIntToPtr(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildIntToPtr(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name):
     global _LLVMBuildIntToPtr__funptr
     __init_symbol(&_LLVMBuildIntToPtr__funptr,"LLVMBuildIntToPtr")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) nogil> _LLVMBuildIntToPtr__funptr)(arg0,Val,DestTy,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildIntToPtr__funptr)(arg0,Val,DestTy,Name)
 
 
 cdef void* _LLVMBuildBitCast__funptr = NULL
-cdef LLVMValueRef LLVMBuildBitCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildBitCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name):
     global _LLVMBuildBitCast__funptr
     __init_symbol(&_LLVMBuildBitCast__funptr,"LLVMBuildBitCast")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) nogil> _LLVMBuildBitCast__funptr)(arg0,Val,DestTy,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildBitCast__funptr)(arg0,Val,DestTy,Name)
 
 
 cdef void* _LLVMBuildAddrSpaceCast__funptr = NULL
-cdef LLVMValueRef LLVMBuildAddrSpaceCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildAddrSpaceCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name):
     global _LLVMBuildAddrSpaceCast__funptr
     __init_symbol(&_LLVMBuildAddrSpaceCast__funptr,"LLVMBuildAddrSpaceCast")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) nogil> _LLVMBuildAddrSpaceCast__funptr)(arg0,Val,DestTy,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildAddrSpaceCast__funptr)(arg0,Val,DestTy,Name)
 
 
 cdef void* _LLVMBuildZExtOrBitCast__funptr = NULL
-cdef LLVMValueRef LLVMBuildZExtOrBitCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildZExtOrBitCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name):
     global _LLVMBuildZExtOrBitCast__funptr
     __init_symbol(&_LLVMBuildZExtOrBitCast__funptr,"LLVMBuildZExtOrBitCast")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) nogil> _LLVMBuildZExtOrBitCast__funptr)(arg0,Val,DestTy,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildZExtOrBitCast__funptr)(arg0,Val,DestTy,Name)
 
 
 cdef void* _LLVMBuildSExtOrBitCast__funptr = NULL
-cdef LLVMValueRef LLVMBuildSExtOrBitCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildSExtOrBitCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name):
     global _LLVMBuildSExtOrBitCast__funptr
     __init_symbol(&_LLVMBuildSExtOrBitCast__funptr,"LLVMBuildSExtOrBitCast")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) nogil> _LLVMBuildSExtOrBitCast__funptr)(arg0,Val,DestTy,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildSExtOrBitCast__funptr)(arg0,Val,DestTy,Name)
 
 
 cdef void* _LLVMBuildTruncOrBitCast__funptr = NULL
-cdef LLVMValueRef LLVMBuildTruncOrBitCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildTruncOrBitCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name):
     global _LLVMBuildTruncOrBitCast__funptr
     __init_symbol(&_LLVMBuildTruncOrBitCast__funptr,"LLVMBuildTruncOrBitCast")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) nogil> _LLVMBuildTruncOrBitCast__funptr)(arg0,Val,DestTy,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildTruncOrBitCast__funptr)(arg0,Val,DestTy,Name)
 
 
 cdef void* _LLVMBuildCast__funptr = NULL
-cdef LLVMValueRef LLVMBuildCast(LLVMBuilderRef B,LLVMOpcode Op,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildCast(LLVMBuilderRef B,LLVMOpcode Op,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name):
     global _LLVMBuildCast__funptr
     __init_symbol(&_LLVMBuildCast__funptr,"LLVMBuildCast")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMOpcode,LLVMValueRef,LLVMTypeRef,const char *) nogil> _LLVMBuildCast__funptr)(B,Op,Val,DestTy,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMOpcode,LLVMValueRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildCast__funptr)(B,Op,Val,DestTy,Name)
 
 
 cdef void* _LLVMBuildPointerCast__funptr = NULL
-cdef LLVMValueRef LLVMBuildPointerCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildPointerCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name):
     global _LLVMBuildPointerCast__funptr
     __init_symbol(&_LLVMBuildPointerCast__funptr,"LLVMBuildPointerCast")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) nogil> _LLVMBuildPointerCast__funptr)(arg0,Val,DestTy,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildPointerCast__funptr)(arg0,Val,DestTy,Name)
 
 
 cdef void* _LLVMBuildIntCast2__funptr = NULL
-cdef LLVMValueRef LLVMBuildIntCast2(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,int IsSigned,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildIntCast2(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,int IsSigned,const char * Name):
     global _LLVMBuildIntCast2__funptr
     __init_symbol(&_LLVMBuildIntCast2__funptr,"LLVMBuildIntCast2")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,int,const char *) nogil> _LLVMBuildIntCast2__funptr)(arg0,Val,DestTy,IsSigned,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,int,const char *) noexcept nogil> _LLVMBuildIntCast2__funptr)(arg0,Val,DestTy,IsSigned,Name)
 
 
 cdef void* _LLVMBuildFPCast__funptr = NULL
-cdef LLVMValueRef LLVMBuildFPCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildFPCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name):
     global _LLVMBuildFPCast__funptr
     __init_symbol(&_LLVMBuildFPCast__funptr,"LLVMBuildFPCast")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) nogil> _LLVMBuildFPCast__funptr)(arg0,Val,DestTy,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildFPCast__funptr)(arg0,Val,DestTy,Name)
 
 
 cdef void* _LLVMBuildIntCast__funptr = NULL
 # Deprecated: This cast is always signed. Use LLVMBuildIntCast2 instead. */
-cdef LLVMValueRef LLVMBuildIntCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildIntCast(LLVMBuilderRef arg0,LLVMValueRef Val,LLVMTypeRef DestTy,const char * Name):
     global _LLVMBuildIntCast__funptr
     __init_symbol(&_LLVMBuildIntCast__funptr,"LLVMBuildIntCast")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) nogil> _LLVMBuildIntCast__funptr)(arg0,Val,DestTy,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildIntCast__funptr)(arg0,Val,DestTy,Name)
 
 
 cdef void* _LLVMGetCastOpcode__funptr = NULL
-cdef LLVMOpcode LLVMGetCastOpcode(LLVMValueRef Src,int SrcIsSigned,LLVMTypeRef DestTy,int DestIsSigned) nogil:
+cdef LLVMOpcode LLVMGetCastOpcode(LLVMValueRef Src,int SrcIsSigned,LLVMTypeRef DestTy,int DestIsSigned):
     global _LLVMGetCastOpcode__funptr
     __init_symbol(&_LLVMGetCastOpcode__funptr,"LLVMGetCastOpcode")
-    return (<LLVMOpcode (*)(LLVMValueRef,int,LLVMTypeRef,int) nogil> _LLVMGetCastOpcode__funptr)(Src,SrcIsSigned,DestTy,DestIsSigned)
+    with nogil:
+        return (<LLVMOpcode (*)(LLVMValueRef,int,LLVMTypeRef,int) noexcept nogil> _LLVMGetCastOpcode__funptr)(Src,SrcIsSigned,DestTy,DestIsSigned)
 
 
 cdef void* _LLVMBuildICmp__funptr = NULL
-cdef LLVMValueRef LLVMBuildICmp(LLVMBuilderRef arg0,LLVMIntPredicate Op,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildICmp(LLVMBuilderRef arg0,LLVMIntPredicate Op,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildICmp__funptr
     __init_symbol(&_LLVMBuildICmp__funptr,"LLVMBuildICmp")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMIntPredicate,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildICmp__funptr)(arg0,Op,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMIntPredicate,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildICmp__funptr)(arg0,Op,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildFCmp__funptr = NULL
-cdef LLVMValueRef LLVMBuildFCmp(LLVMBuilderRef arg0,LLVMRealPredicate Op,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildFCmp(LLVMBuilderRef arg0,LLVMRealPredicate Op,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildFCmp__funptr
     __init_symbol(&_LLVMBuildFCmp__funptr,"LLVMBuildFCmp")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMRealPredicate,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildFCmp__funptr)(arg0,Op,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMRealPredicate,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildFCmp__funptr)(arg0,Op,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildPhi__funptr = NULL
-cdef LLVMValueRef LLVMBuildPhi(LLVMBuilderRef arg0,LLVMTypeRef Ty,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildPhi(LLVMBuilderRef arg0,LLVMTypeRef Ty,const char * Name):
     global _LLVMBuildPhi__funptr
     __init_symbol(&_LLVMBuildPhi__funptr,"LLVMBuildPhi")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,const char *) nogil> _LLVMBuildPhi__funptr)(arg0,Ty,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildPhi__funptr)(arg0,Ty,Name)
 
 
 cdef void* _LLVMBuildCall2__funptr = NULL
-cdef LLVMValueRef LLVMBuildCall2(LLVMBuilderRef arg0,LLVMTypeRef arg1,LLVMValueRef Fn,LLVMValueRef* Args,unsigned int NumArgs,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildCall2(LLVMBuilderRef arg0,LLVMTypeRef arg1,LLVMValueRef Fn,LLVMValueRef* Args,unsigned int NumArgs,const char * Name):
     global _LLVMBuildCall2__funptr
     __init_symbol(&_LLVMBuildCall2__funptr,"LLVMBuildCall2")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,LLVMValueRef,LLVMValueRef*,unsigned int,const char *) nogil> _LLVMBuildCall2__funptr)(arg0,arg1,Fn,Args,NumArgs,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,LLVMValueRef,LLVMValueRef*,unsigned int,const char *) noexcept nogil> _LLVMBuildCall2__funptr)(arg0,arg1,Fn,Args,NumArgs,Name)
 
 
 cdef void* _LLVMBuildSelect__funptr = NULL
-cdef LLVMValueRef LLVMBuildSelect(LLVMBuilderRef arg0,LLVMValueRef If,LLVMValueRef Then,LLVMValueRef Else,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildSelect(LLVMBuilderRef arg0,LLVMValueRef If,LLVMValueRef Then,LLVMValueRef Else,const char * Name):
     global _LLVMBuildSelect__funptr
     __init_symbol(&_LLVMBuildSelect__funptr,"LLVMBuildSelect")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildSelect__funptr)(arg0,If,Then,Else,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildSelect__funptr)(arg0,If,Then,Else,Name)
 
 
 cdef void* _LLVMBuildVAArg__funptr = NULL
-cdef LLVMValueRef LLVMBuildVAArg(LLVMBuilderRef arg0,LLVMValueRef List,LLVMTypeRef Ty,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildVAArg(LLVMBuilderRef arg0,LLVMValueRef List,LLVMTypeRef Ty,const char * Name):
     global _LLVMBuildVAArg__funptr
     __init_symbol(&_LLVMBuildVAArg__funptr,"LLVMBuildVAArg")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) nogil> _LLVMBuildVAArg__funptr)(arg0,List,Ty,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMTypeRef,const char *) noexcept nogil> _LLVMBuildVAArg__funptr)(arg0,List,Ty,Name)
 
 
 cdef void* _LLVMBuildExtractElement__funptr = NULL
-cdef LLVMValueRef LLVMBuildExtractElement(LLVMBuilderRef arg0,LLVMValueRef VecVal,LLVMValueRef Index,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildExtractElement(LLVMBuilderRef arg0,LLVMValueRef VecVal,LLVMValueRef Index,const char * Name):
     global _LLVMBuildExtractElement__funptr
     __init_symbol(&_LLVMBuildExtractElement__funptr,"LLVMBuildExtractElement")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildExtractElement__funptr)(arg0,VecVal,Index,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildExtractElement__funptr)(arg0,VecVal,Index,Name)
 
 
 cdef void* _LLVMBuildInsertElement__funptr = NULL
-cdef LLVMValueRef LLVMBuildInsertElement(LLVMBuilderRef arg0,LLVMValueRef VecVal,LLVMValueRef EltVal,LLVMValueRef Index,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildInsertElement(LLVMBuilderRef arg0,LLVMValueRef VecVal,LLVMValueRef EltVal,LLVMValueRef Index,const char * Name):
     global _LLVMBuildInsertElement__funptr
     __init_symbol(&_LLVMBuildInsertElement__funptr,"LLVMBuildInsertElement")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildInsertElement__funptr)(arg0,VecVal,EltVal,Index,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildInsertElement__funptr)(arg0,VecVal,EltVal,Index,Name)
 
 
 cdef void* _LLVMBuildShuffleVector__funptr = NULL
-cdef LLVMValueRef LLVMBuildShuffleVector(LLVMBuilderRef arg0,LLVMValueRef V1,LLVMValueRef V2,LLVMValueRef Mask,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildShuffleVector(LLVMBuilderRef arg0,LLVMValueRef V1,LLVMValueRef V2,LLVMValueRef Mask,const char * Name):
     global _LLVMBuildShuffleVector__funptr
     __init_symbol(&_LLVMBuildShuffleVector__funptr,"LLVMBuildShuffleVector")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildShuffleVector__funptr)(arg0,V1,V2,Mask,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildShuffleVector__funptr)(arg0,V1,V2,Mask,Name)
 
 
 cdef void* _LLVMBuildExtractValue__funptr = NULL
-cdef LLVMValueRef LLVMBuildExtractValue(LLVMBuilderRef arg0,LLVMValueRef AggVal,unsigned int Index,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildExtractValue(LLVMBuilderRef arg0,LLVMValueRef AggVal,unsigned int Index,const char * Name):
     global _LLVMBuildExtractValue__funptr
     __init_symbol(&_LLVMBuildExtractValue__funptr,"LLVMBuildExtractValue")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,unsigned int,const char *) nogil> _LLVMBuildExtractValue__funptr)(arg0,AggVal,Index,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,unsigned int,const char *) noexcept nogil> _LLVMBuildExtractValue__funptr)(arg0,AggVal,Index,Name)
 
 
 cdef void* _LLVMBuildInsertValue__funptr = NULL
-cdef LLVMValueRef LLVMBuildInsertValue(LLVMBuilderRef arg0,LLVMValueRef AggVal,LLVMValueRef EltVal,unsigned int Index,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildInsertValue(LLVMBuilderRef arg0,LLVMValueRef AggVal,LLVMValueRef EltVal,unsigned int Index,const char * Name):
     global _LLVMBuildInsertValue__funptr
     __init_symbol(&_LLVMBuildInsertValue__funptr,"LLVMBuildInsertValue")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,unsigned int,const char *) nogil> _LLVMBuildInsertValue__funptr)(arg0,AggVal,EltVal,Index,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,unsigned int,const char *) noexcept nogil> _LLVMBuildInsertValue__funptr)(arg0,AggVal,EltVal,Index,Name)
 
 
 cdef void* _LLVMBuildFreeze__funptr = NULL
-cdef LLVMValueRef LLVMBuildFreeze(LLVMBuilderRef arg0,LLVMValueRef Val,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildFreeze(LLVMBuilderRef arg0,LLVMValueRef Val,const char * Name):
     global _LLVMBuildFreeze__funptr
     __init_symbol(&_LLVMBuildFreeze__funptr,"LLVMBuildFreeze")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,const char *) nogil> _LLVMBuildFreeze__funptr)(arg0,Val,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildFreeze__funptr)(arg0,Val,Name)
 
 
 cdef void* _LLVMBuildIsNull__funptr = NULL
-cdef LLVMValueRef LLVMBuildIsNull(LLVMBuilderRef arg0,LLVMValueRef Val,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildIsNull(LLVMBuilderRef arg0,LLVMValueRef Val,const char * Name):
     global _LLVMBuildIsNull__funptr
     __init_symbol(&_LLVMBuildIsNull__funptr,"LLVMBuildIsNull")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,const char *) nogil> _LLVMBuildIsNull__funptr)(arg0,Val,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildIsNull__funptr)(arg0,Val,Name)
 
 
 cdef void* _LLVMBuildIsNotNull__funptr = NULL
-cdef LLVMValueRef LLVMBuildIsNotNull(LLVMBuilderRef arg0,LLVMValueRef Val,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildIsNotNull(LLVMBuilderRef arg0,LLVMValueRef Val,const char * Name):
     global _LLVMBuildIsNotNull__funptr
     __init_symbol(&_LLVMBuildIsNotNull__funptr,"LLVMBuildIsNotNull")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,const char *) nogil> _LLVMBuildIsNotNull__funptr)(arg0,Val,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildIsNotNull__funptr)(arg0,Val,Name)
 
 
 cdef void* _LLVMBuildPtrDiff2__funptr = NULL
-cdef LLVMValueRef LLVMBuildPtrDiff2(LLVMBuilderRef arg0,LLVMTypeRef ElemTy,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildPtrDiff2(LLVMBuilderRef arg0,LLVMTypeRef ElemTy,LLVMValueRef LHS,LLVMValueRef RHS,const char * Name):
     global _LLVMBuildPtrDiff2__funptr
     __init_symbol(&_LLVMBuildPtrDiff2__funptr,"LLVMBuildPtrDiff2")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,LLVMValueRef,LLVMValueRef,const char *) nogil> _LLVMBuildPtrDiff2__funptr)(arg0,ElemTy,LHS,RHS,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMTypeRef,LLVMValueRef,LLVMValueRef,const char *) noexcept nogil> _LLVMBuildPtrDiff2__funptr)(arg0,ElemTy,LHS,RHS,Name)
 
 
 cdef void* _LLVMBuildFence__funptr = NULL
-cdef LLVMValueRef LLVMBuildFence(LLVMBuilderRef B,LLVMAtomicOrdering ordering,int singleThread,const char * Name) nogil:
+cdef LLVMValueRef LLVMBuildFence(LLVMBuilderRef B,LLVMAtomicOrdering ordering,int singleThread,const char * Name):
     global _LLVMBuildFence__funptr
     __init_symbol(&_LLVMBuildFence__funptr,"LLVMBuildFence")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMAtomicOrdering,int,const char *) nogil> _LLVMBuildFence__funptr)(B,ordering,singleThread,Name)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMAtomicOrdering,int,const char *) noexcept nogil> _LLVMBuildFence__funptr)(B,ordering,singleThread,Name)
 
 
 cdef void* _LLVMBuildAtomicRMW__funptr = NULL
-cdef LLVMValueRef LLVMBuildAtomicRMW(LLVMBuilderRef B,LLVMAtomicRMWBinOp op,LLVMValueRef PTR,LLVMValueRef Val,LLVMAtomicOrdering ordering,int singleThread) nogil:
+cdef LLVMValueRef LLVMBuildAtomicRMW(LLVMBuilderRef B,LLVMAtomicRMWBinOp op,LLVMValueRef PTR,LLVMValueRef Val,LLVMAtomicOrdering ordering,int singleThread):
     global _LLVMBuildAtomicRMW__funptr
     __init_symbol(&_LLVMBuildAtomicRMW__funptr,"LLVMBuildAtomicRMW")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMAtomicRMWBinOp,LLVMValueRef,LLVMValueRef,LLVMAtomicOrdering,int) nogil> _LLVMBuildAtomicRMW__funptr)(B,op,PTR,Val,ordering,singleThread)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMAtomicRMWBinOp,LLVMValueRef,LLVMValueRef,LLVMAtomicOrdering,int) noexcept nogil> _LLVMBuildAtomicRMW__funptr)(B,op,PTR,Val,ordering,singleThread)
 
 
 cdef void* _LLVMBuildAtomicCmpXchg__funptr = NULL
-cdef LLVMValueRef LLVMBuildAtomicCmpXchg(LLVMBuilderRef B,LLVMValueRef Ptr,LLVMValueRef Cmp,LLVMValueRef New,LLVMAtomicOrdering SuccessOrdering,LLVMAtomicOrdering FailureOrdering,int SingleThread) nogil:
+cdef LLVMValueRef LLVMBuildAtomicCmpXchg(LLVMBuilderRef B,LLVMValueRef Ptr,LLVMValueRef Cmp,LLVMValueRef New,LLVMAtomicOrdering SuccessOrdering,LLVMAtomicOrdering FailureOrdering,int SingleThread):
     global _LLVMBuildAtomicCmpXchg__funptr
     __init_symbol(&_LLVMBuildAtomicCmpXchg__funptr,"LLVMBuildAtomicCmpXchg")
-    return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,LLVMValueRef,LLVMAtomicOrdering,LLVMAtomicOrdering,int) nogil> _LLVMBuildAtomicCmpXchg__funptr)(B,Ptr,Cmp,New,SuccessOrdering,FailureOrdering,SingleThread)
+    with nogil:
+        return (<LLVMValueRef (*)(LLVMBuilderRef,LLVMValueRef,LLVMValueRef,LLVMValueRef,LLVMAtomicOrdering,LLVMAtomicOrdering,int) noexcept nogil> _LLVMBuildAtomicCmpXchg__funptr)(B,Ptr,Cmp,New,SuccessOrdering,FailureOrdering,SingleThread)
 
 
 cdef void* _LLVMGetNumMaskElements__funptr = NULL
 # 
 # Get the number of elements in the mask of a ShuffleVector instruction.
-cdef unsigned int LLVMGetNumMaskElements(LLVMValueRef ShuffleVectorInst) nogil:
+cdef unsigned int LLVMGetNumMaskElements(LLVMValueRef ShuffleVectorInst):
     global _LLVMGetNumMaskElements__funptr
     __init_symbol(&_LLVMGetNumMaskElements__funptr,"LLVMGetNumMaskElements")
-    return (<unsigned int (*)(LLVMValueRef) nogil> _LLVMGetNumMaskElements__funptr)(ShuffleVectorInst)
+    with nogil:
+        return (<unsigned int (*)(LLVMValueRef) noexcept nogil> _LLVMGetNumMaskElements__funptr)(ShuffleVectorInst)
 
 
 cdef void* _LLVMGetUndefMaskElem__funptr = NULL
 # 
 # \returns a constant that specifies that the result of a \c ShuffleVectorInst
 # is undefined.
-cdef int LLVMGetUndefMaskElem() nogil:
+cdef int LLVMGetUndefMaskElem():
     global _LLVMGetUndefMaskElem__funptr
     __init_symbol(&_LLVMGetUndefMaskElem__funptr,"LLVMGetUndefMaskElem")
-    return (<int (*)() nogil> _LLVMGetUndefMaskElem__funptr)()
+    with nogil:
+        return (<int (*)() noexcept nogil> _LLVMGetUndefMaskElem__funptr)()
 
 
 cdef void* _LLVMGetMaskValue__funptr = NULL
@@ -6221,71 +6894,80 @@ cdef void* _LLVMGetMaskValue__funptr = NULL
 # 
 # \Returns the result of \c LLVMGetUndefMaskElem() if the mask value is undef
 # at that position.
-cdef int LLVMGetMaskValue(LLVMValueRef ShuffleVectorInst,unsigned int Elt) nogil:
+cdef int LLVMGetMaskValue(LLVMValueRef ShuffleVectorInst,unsigned int Elt):
     global _LLVMGetMaskValue__funptr
     __init_symbol(&_LLVMGetMaskValue__funptr,"LLVMGetMaskValue")
-    return (<int (*)(LLVMValueRef,unsigned int) nogil> _LLVMGetMaskValue__funptr)(ShuffleVectorInst,Elt)
+    with nogil:
+        return (<int (*)(LLVMValueRef,unsigned int) noexcept nogil> _LLVMGetMaskValue__funptr)(ShuffleVectorInst,Elt)
 
 
 cdef void* _LLVMIsAtomicSingleThread__funptr = NULL
-cdef int LLVMIsAtomicSingleThread(LLVMValueRef AtomicInst) nogil:
+cdef int LLVMIsAtomicSingleThread(LLVMValueRef AtomicInst):
     global _LLVMIsAtomicSingleThread__funptr
     __init_symbol(&_LLVMIsAtomicSingleThread__funptr,"LLVMIsAtomicSingleThread")
-    return (<int (*)(LLVMValueRef) nogil> _LLVMIsAtomicSingleThread__funptr)(AtomicInst)
+    with nogil:
+        return (<int (*)(LLVMValueRef) noexcept nogil> _LLVMIsAtomicSingleThread__funptr)(AtomicInst)
 
 
 cdef void* _LLVMSetAtomicSingleThread__funptr = NULL
-cdef void LLVMSetAtomicSingleThread(LLVMValueRef AtomicInst,int SingleThread) nogil:
+cdef void LLVMSetAtomicSingleThread(LLVMValueRef AtomicInst,int SingleThread):
     global _LLVMSetAtomicSingleThread__funptr
     __init_symbol(&_LLVMSetAtomicSingleThread__funptr,"LLVMSetAtomicSingleThread")
-    (<void (*)(LLVMValueRef,int) nogil> _LLVMSetAtomicSingleThread__funptr)(AtomicInst,SingleThread)
+    with nogil:
+        (<void (*)(LLVMValueRef,int) noexcept nogil> _LLVMSetAtomicSingleThread__funptr)(AtomicInst,SingleThread)
 
 
 cdef void* _LLVMGetCmpXchgSuccessOrdering__funptr = NULL
-cdef LLVMAtomicOrdering LLVMGetCmpXchgSuccessOrdering(LLVMValueRef CmpXchgInst) nogil:
+cdef LLVMAtomicOrdering LLVMGetCmpXchgSuccessOrdering(LLVMValueRef CmpXchgInst):
     global _LLVMGetCmpXchgSuccessOrdering__funptr
     __init_symbol(&_LLVMGetCmpXchgSuccessOrdering__funptr,"LLVMGetCmpXchgSuccessOrdering")
-    return (<LLVMAtomicOrdering (*)(LLVMValueRef) nogil> _LLVMGetCmpXchgSuccessOrdering__funptr)(CmpXchgInst)
+    with nogil:
+        return (<LLVMAtomicOrdering (*)(LLVMValueRef) noexcept nogil> _LLVMGetCmpXchgSuccessOrdering__funptr)(CmpXchgInst)
 
 
 cdef void* _LLVMSetCmpXchgSuccessOrdering__funptr = NULL
-cdef void LLVMSetCmpXchgSuccessOrdering(LLVMValueRef CmpXchgInst,LLVMAtomicOrdering Ordering) nogil:
+cdef void LLVMSetCmpXchgSuccessOrdering(LLVMValueRef CmpXchgInst,LLVMAtomicOrdering Ordering):
     global _LLVMSetCmpXchgSuccessOrdering__funptr
     __init_symbol(&_LLVMSetCmpXchgSuccessOrdering__funptr,"LLVMSetCmpXchgSuccessOrdering")
-    (<void (*)(LLVMValueRef,LLVMAtomicOrdering) nogil> _LLVMSetCmpXchgSuccessOrdering__funptr)(CmpXchgInst,Ordering)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMAtomicOrdering) noexcept nogil> _LLVMSetCmpXchgSuccessOrdering__funptr)(CmpXchgInst,Ordering)
 
 
 cdef void* _LLVMGetCmpXchgFailureOrdering__funptr = NULL
-cdef LLVMAtomicOrdering LLVMGetCmpXchgFailureOrdering(LLVMValueRef CmpXchgInst) nogil:
+cdef LLVMAtomicOrdering LLVMGetCmpXchgFailureOrdering(LLVMValueRef CmpXchgInst):
     global _LLVMGetCmpXchgFailureOrdering__funptr
     __init_symbol(&_LLVMGetCmpXchgFailureOrdering__funptr,"LLVMGetCmpXchgFailureOrdering")
-    return (<LLVMAtomicOrdering (*)(LLVMValueRef) nogil> _LLVMGetCmpXchgFailureOrdering__funptr)(CmpXchgInst)
+    with nogil:
+        return (<LLVMAtomicOrdering (*)(LLVMValueRef) noexcept nogil> _LLVMGetCmpXchgFailureOrdering__funptr)(CmpXchgInst)
 
 
 cdef void* _LLVMSetCmpXchgFailureOrdering__funptr = NULL
-cdef void LLVMSetCmpXchgFailureOrdering(LLVMValueRef CmpXchgInst,LLVMAtomicOrdering Ordering) nogil:
+cdef void LLVMSetCmpXchgFailureOrdering(LLVMValueRef CmpXchgInst,LLVMAtomicOrdering Ordering):
     global _LLVMSetCmpXchgFailureOrdering__funptr
     __init_symbol(&_LLVMSetCmpXchgFailureOrdering__funptr,"LLVMSetCmpXchgFailureOrdering")
-    (<void (*)(LLVMValueRef,LLVMAtomicOrdering) nogil> _LLVMSetCmpXchgFailureOrdering__funptr)(CmpXchgInst,Ordering)
+    with nogil:
+        (<void (*)(LLVMValueRef,LLVMAtomicOrdering) noexcept nogil> _LLVMSetCmpXchgFailureOrdering__funptr)(CmpXchgInst,Ordering)
 
 
 cdef void* _LLVMCreateModuleProviderForExistingModule__funptr = NULL
 # 
 # Changes the type of M so it can be passed to FunctionPassManagers and the
 # JIT.  They take ModuleProviders for historical reasons.
-cdef LLVMModuleProviderRef LLVMCreateModuleProviderForExistingModule(LLVMModuleRef M) nogil:
+cdef LLVMModuleProviderRef LLVMCreateModuleProviderForExistingModule(LLVMModuleRef M):
     global _LLVMCreateModuleProviderForExistingModule__funptr
     __init_symbol(&_LLVMCreateModuleProviderForExistingModule__funptr,"LLVMCreateModuleProviderForExistingModule")
-    return (<LLVMModuleProviderRef (*)(LLVMModuleRef) nogil> _LLVMCreateModuleProviderForExistingModule__funptr)(M)
+    with nogil:
+        return (<LLVMModuleProviderRef (*)(LLVMModuleRef) noexcept nogil> _LLVMCreateModuleProviderForExistingModule__funptr)(M)
 
 
 cdef void* _LLVMDisposeModuleProvider__funptr = NULL
 # 
 # Destroys the module M.
-cdef void LLVMDisposeModuleProvider(LLVMModuleProviderRef M) nogil:
+cdef void LLVMDisposeModuleProvider(LLVMModuleProviderRef M):
     global _LLVMDisposeModuleProvider__funptr
     __init_symbol(&_LLVMDisposeModuleProvider__funptr,"LLVMDisposeModuleProvider")
-    (<void (*)(LLVMModuleProviderRef) nogil> _LLVMDisposeModuleProvider__funptr)(M)
+    with nogil:
+        (<void (*)(LLVMModuleProviderRef) noexcept nogil> _LLVMDisposeModuleProvider__funptr)(M)
 
 
 cdef void* _LLVMCreateMemoryBufferWithContentsOfFile__funptr = NULL
@@ -6293,71 +6975,80 @@ cdef void* _LLVMCreateMemoryBufferWithContentsOfFile__funptr = NULL
 # @defgroup LLVMCCoreMemoryBuffers Memory Buffers
 # 
 # @{
-cdef int LLVMCreateMemoryBufferWithContentsOfFile(const char * Path,LLVMMemoryBufferRef* OutMemBuf,char ** OutMessage) nogil:
+cdef int LLVMCreateMemoryBufferWithContentsOfFile(const char * Path,LLVMMemoryBufferRef* OutMemBuf,char ** OutMessage):
     global _LLVMCreateMemoryBufferWithContentsOfFile__funptr
     __init_symbol(&_LLVMCreateMemoryBufferWithContentsOfFile__funptr,"LLVMCreateMemoryBufferWithContentsOfFile")
-    return (<int (*)(const char *,LLVMMemoryBufferRef*,char **) nogil> _LLVMCreateMemoryBufferWithContentsOfFile__funptr)(Path,OutMemBuf,OutMessage)
+    with nogil:
+        return (<int (*)(const char *,LLVMMemoryBufferRef*,char **) noexcept nogil> _LLVMCreateMemoryBufferWithContentsOfFile__funptr)(Path,OutMemBuf,OutMessage)
 
 
 cdef void* _LLVMCreateMemoryBufferWithSTDIN__funptr = NULL
-cdef int LLVMCreateMemoryBufferWithSTDIN(LLVMMemoryBufferRef* OutMemBuf,char ** OutMessage) nogil:
+cdef int LLVMCreateMemoryBufferWithSTDIN(LLVMMemoryBufferRef* OutMemBuf,char ** OutMessage):
     global _LLVMCreateMemoryBufferWithSTDIN__funptr
     __init_symbol(&_LLVMCreateMemoryBufferWithSTDIN__funptr,"LLVMCreateMemoryBufferWithSTDIN")
-    return (<int (*)(LLVMMemoryBufferRef*,char **) nogil> _LLVMCreateMemoryBufferWithSTDIN__funptr)(OutMemBuf,OutMessage)
+    with nogil:
+        return (<int (*)(LLVMMemoryBufferRef*,char **) noexcept nogil> _LLVMCreateMemoryBufferWithSTDIN__funptr)(OutMemBuf,OutMessage)
 
 
 cdef void* _LLVMCreateMemoryBufferWithMemoryRange__funptr = NULL
-cdef LLVMMemoryBufferRef LLVMCreateMemoryBufferWithMemoryRange(const char * InputData,unsigned long InputDataLength,const char * BufferName,int RequiresNullTerminator) nogil:
+cdef LLVMMemoryBufferRef LLVMCreateMemoryBufferWithMemoryRange(const char * InputData,unsigned long InputDataLength,const char * BufferName,int RequiresNullTerminator):
     global _LLVMCreateMemoryBufferWithMemoryRange__funptr
     __init_symbol(&_LLVMCreateMemoryBufferWithMemoryRange__funptr,"LLVMCreateMemoryBufferWithMemoryRange")
-    return (<LLVMMemoryBufferRef (*)(const char *,unsigned long,const char *,int) nogil> _LLVMCreateMemoryBufferWithMemoryRange__funptr)(InputData,InputDataLength,BufferName,RequiresNullTerminator)
+    with nogil:
+        return (<LLVMMemoryBufferRef (*)(const char *,unsigned long,const char *,int) noexcept nogil> _LLVMCreateMemoryBufferWithMemoryRange__funptr)(InputData,InputDataLength,BufferName,RequiresNullTerminator)
 
 
 cdef void* _LLVMCreateMemoryBufferWithMemoryRangeCopy__funptr = NULL
-cdef LLVMMemoryBufferRef LLVMCreateMemoryBufferWithMemoryRangeCopy(const char * InputData,unsigned long InputDataLength,const char * BufferName) nogil:
+cdef LLVMMemoryBufferRef LLVMCreateMemoryBufferWithMemoryRangeCopy(const char * InputData,unsigned long InputDataLength,const char * BufferName):
     global _LLVMCreateMemoryBufferWithMemoryRangeCopy__funptr
     __init_symbol(&_LLVMCreateMemoryBufferWithMemoryRangeCopy__funptr,"LLVMCreateMemoryBufferWithMemoryRangeCopy")
-    return (<LLVMMemoryBufferRef (*)(const char *,unsigned long,const char *) nogil> _LLVMCreateMemoryBufferWithMemoryRangeCopy__funptr)(InputData,InputDataLength,BufferName)
+    with nogil:
+        return (<LLVMMemoryBufferRef (*)(const char *,unsigned long,const char *) noexcept nogil> _LLVMCreateMemoryBufferWithMemoryRangeCopy__funptr)(InputData,InputDataLength,BufferName)
 
 
 cdef void* _LLVMGetBufferStart__funptr = NULL
-cdef const char * LLVMGetBufferStart(LLVMMemoryBufferRef MemBuf) nogil:
+cdef const char * LLVMGetBufferStart(LLVMMemoryBufferRef MemBuf):
     global _LLVMGetBufferStart__funptr
     __init_symbol(&_LLVMGetBufferStart__funptr,"LLVMGetBufferStart")
-    return (<const char * (*)(LLVMMemoryBufferRef) nogil> _LLVMGetBufferStart__funptr)(MemBuf)
+    with nogil:
+        return (<const char * (*)(LLVMMemoryBufferRef) noexcept nogil> _LLVMGetBufferStart__funptr)(MemBuf)
 
 
 cdef void* _LLVMGetBufferSize__funptr = NULL
-cdef unsigned long LLVMGetBufferSize(LLVMMemoryBufferRef MemBuf) nogil:
+cdef unsigned long LLVMGetBufferSize(LLVMMemoryBufferRef MemBuf):
     global _LLVMGetBufferSize__funptr
     __init_symbol(&_LLVMGetBufferSize__funptr,"LLVMGetBufferSize")
-    return (<unsigned long (*)(LLVMMemoryBufferRef) nogil> _LLVMGetBufferSize__funptr)(MemBuf)
+    with nogil:
+        return (<unsigned long (*)(LLVMMemoryBufferRef) noexcept nogil> _LLVMGetBufferSize__funptr)(MemBuf)
 
 
 cdef void* _LLVMDisposeMemoryBuffer__funptr = NULL
-cdef void LLVMDisposeMemoryBuffer(LLVMMemoryBufferRef MemBuf) nogil:
+cdef void LLVMDisposeMemoryBuffer(LLVMMemoryBufferRef MemBuf):
     global _LLVMDisposeMemoryBuffer__funptr
     __init_symbol(&_LLVMDisposeMemoryBuffer__funptr,"LLVMDisposeMemoryBuffer")
-    (<void (*)(LLVMMemoryBufferRef) nogil> _LLVMDisposeMemoryBuffer__funptr)(MemBuf)
+    with nogil:
+        (<void (*)(LLVMMemoryBufferRef) noexcept nogil> _LLVMDisposeMemoryBuffer__funptr)(MemBuf)
 
 
 cdef void* _LLVMGetGlobalPassRegistry__funptr = NULL
 # Return the global pass registry, for use with initialization functions.
 # @see llvm::PassRegistry::getPassRegistry
-cdef LLVMPassRegistryRef LLVMGetGlobalPassRegistry() nogil:
+cdef LLVMPassRegistryRef LLVMGetGlobalPassRegistry():
     global _LLVMGetGlobalPassRegistry__funptr
     __init_symbol(&_LLVMGetGlobalPassRegistry__funptr,"LLVMGetGlobalPassRegistry")
-    return (<LLVMPassRegistryRef (*)() nogil> _LLVMGetGlobalPassRegistry__funptr)()
+    with nogil:
+        return (<LLVMPassRegistryRef (*)() noexcept nogil> _LLVMGetGlobalPassRegistry__funptr)()
 
 
 cdef void* _LLVMCreatePassManager__funptr = NULL
 # Constructs a new whole-module pass pipeline. This type of pipeline is
 # suitable for link-time optimization and whole-module transformations.
 # @see llvm::PassManager::PassManager
-cdef LLVMPassManagerRef LLVMCreatePassManager() nogil:
+cdef LLVMPassManagerRef LLVMCreatePassManager():
     global _LLVMCreatePassManager__funptr
     __init_symbol(&_LLVMCreatePassManager__funptr,"LLVMCreatePassManager")
-    return (<LLVMPassManagerRef (*)() nogil> _LLVMCreatePassManager__funptr)()
+    with nogil:
+        return (<LLVMPassManagerRef (*)() noexcept nogil> _LLVMCreatePassManager__funptr)()
 
 
 cdef void* _LLVMCreateFunctionPassManagerForModule__funptr = NULL
@@ -6365,18 +7056,20 @@ cdef void* _LLVMCreateFunctionPassManagerForModule__funptr = NULL
 # provider. It does not take ownership of the module provider. This type of
 # pipeline is suitable for code generation and JIT compilation tasks.
 # @see llvm::FunctionPassManager::FunctionPassManager
-cdef LLVMPassManagerRef LLVMCreateFunctionPassManagerForModule(LLVMModuleRef M) nogil:
+cdef LLVMPassManagerRef LLVMCreateFunctionPassManagerForModule(LLVMModuleRef M):
     global _LLVMCreateFunctionPassManagerForModule__funptr
     __init_symbol(&_LLVMCreateFunctionPassManagerForModule__funptr,"LLVMCreateFunctionPassManagerForModule")
-    return (<LLVMPassManagerRef (*)(LLVMModuleRef) nogil> _LLVMCreateFunctionPassManagerForModule__funptr)(M)
+    with nogil:
+        return (<LLVMPassManagerRef (*)(LLVMModuleRef) noexcept nogil> _LLVMCreateFunctionPassManagerForModule__funptr)(M)
 
 
 cdef void* _LLVMCreateFunctionPassManager__funptr = NULL
 # Deprecated: Use LLVMCreateFunctionPassManagerForModule instead. */
-cdef LLVMPassManagerRef LLVMCreateFunctionPassManager(LLVMModuleProviderRef MP) nogil:
+cdef LLVMPassManagerRef LLVMCreateFunctionPassManager(LLVMModuleProviderRef MP):
     global _LLVMCreateFunctionPassManager__funptr
     __init_symbol(&_LLVMCreateFunctionPassManager__funptr,"LLVMCreateFunctionPassManager")
-    return (<LLVMPassManagerRef (*)(LLVMModuleProviderRef) nogil> _LLVMCreateFunctionPassManager__funptr)(MP)
+    with nogil:
+        return (<LLVMPassManagerRef (*)(LLVMModuleProviderRef) noexcept nogil> _LLVMCreateFunctionPassManager__funptr)(MP)
 
 
 cdef void* _LLVMRunPassManager__funptr = NULL
@@ -6384,20 +7077,22 @@ cdef void* _LLVMRunPassManager__funptr = NULL
 # passes scheduled in the pass manager. Returns 1 if any of the passes
 # modified the module, 0 otherwise.
 # @see llvm::PassManager::run(Module&)
-cdef int LLVMRunPassManager(LLVMPassManagerRef PM,LLVMModuleRef M) nogil:
+cdef int LLVMRunPassManager(LLVMPassManagerRef PM,LLVMModuleRef M):
     global _LLVMRunPassManager__funptr
     __init_symbol(&_LLVMRunPassManager__funptr,"LLVMRunPassManager")
-    return (<int (*)(LLVMPassManagerRef,LLVMModuleRef) nogil> _LLVMRunPassManager__funptr)(PM,M)
+    with nogil:
+        return (<int (*)(LLVMPassManagerRef,LLVMModuleRef) noexcept nogil> _LLVMRunPassManager__funptr)(PM,M)
 
 
 cdef void* _LLVMInitializeFunctionPassManager__funptr = NULL
 # Initializes all of the function passes scheduled in the function pass
 # manager. Returns 1 if any of the passes modified the module, 0 otherwise.
 # @see llvm::FunctionPassManager::doInitialization
-cdef int LLVMInitializeFunctionPassManager(LLVMPassManagerRef FPM) nogil:
+cdef int LLVMInitializeFunctionPassManager(LLVMPassManagerRef FPM):
     global _LLVMInitializeFunctionPassManager__funptr
     __init_symbol(&_LLVMInitializeFunctionPassManager__funptr,"LLVMInitializeFunctionPassManager")
-    return (<int (*)(LLVMPassManagerRef) nogil> _LLVMInitializeFunctionPassManager__funptr)(FPM)
+    with nogil:
+        return (<int (*)(LLVMPassManagerRef) noexcept nogil> _LLVMInitializeFunctionPassManager__funptr)(FPM)
 
 
 cdef void* _LLVMRunFunctionPassManager__funptr = NULL
@@ -6405,55 +7100,61 @@ cdef void* _LLVMRunFunctionPassManager__funptr = NULL
 # on the provided function. Returns 1 if any of the passes modified the
 # function, false otherwise.
 # @see llvm::FunctionPassManager::run(Function&)
-cdef int LLVMRunFunctionPassManager(LLVMPassManagerRef FPM,LLVMValueRef F) nogil:
+cdef int LLVMRunFunctionPassManager(LLVMPassManagerRef FPM,LLVMValueRef F):
     global _LLVMRunFunctionPassManager__funptr
     __init_symbol(&_LLVMRunFunctionPassManager__funptr,"LLVMRunFunctionPassManager")
-    return (<int (*)(LLVMPassManagerRef,LLVMValueRef) nogil> _LLVMRunFunctionPassManager__funptr)(FPM,F)
+    with nogil:
+        return (<int (*)(LLVMPassManagerRef,LLVMValueRef) noexcept nogil> _LLVMRunFunctionPassManager__funptr)(FPM,F)
 
 
 cdef void* _LLVMFinalizeFunctionPassManager__funptr = NULL
 # Finalizes all of the function passes scheduled in the function pass
 # manager. Returns 1 if any of the passes modified the module, 0 otherwise.
 # @see llvm::FunctionPassManager::doFinalization
-cdef int LLVMFinalizeFunctionPassManager(LLVMPassManagerRef FPM) nogil:
+cdef int LLVMFinalizeFunctionPassManager(LLVMPassManagerRef FPM):
     global _LLVMFinalizeFunctionPassManager__funptr
     __init_symbol(&_LLVMFinalizeFunctionPassManager__funptr,"LLVMFinalizeFunctionPassManager")
-    return (<int (*)(LLVMPassManagerRef) nogil> _LLVMFinalizeFunctionPassManager__funptr)(FPM)
+    with nogil:
+        return (<int (*)(LLVMPassManagerRef) noexcept nogil> _LLVMFinalizeFunctionPassManager__funptr)(FPM)
 
 
 cdef void* _LLVMDisposePassManager__funptr = NULL
 # Frees the memory of a pass pipeline. For function pipelines, does not free
 # the module provider.
 # @see llvm::PassManagerBase::~PassManagerBase.
-cdef void LLVMDisposePassManager(LLVMPassManagerRef PM) nogil:
+cdef void LLVMDisposePassManager(LLVMPassManagerRef PM):
     global _LLVMDisposePassManager__funptr
     __init_symbol(&_LLVMDisposePassManager__funptr,"LLVMDisposePassManager")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMDisposePassManager__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMDisposePassManager__funptr)(PM)
 
 
 cdef void* _LLVMStartMultithreaded__funptr = NULL
 # Deprecated: Multi-threading can only be enabled/disabled with the compile
 # time define LLVM_ENABLE_THREADS.  This function always returns
 # LLVMIsMultithreaded().
-cdef int LLVMStartMultithreaded() nogil:
+cdef int LLVMStartMultithreaded():
     global _LLVMStartMultithreaded__funptr
     __init_symbol(&_LLVMStartMultithreaded__funptr,"LLVMStartMultithreaded")
-    return (<int (*)() nogil> _LLVMStartMultithreaded__funptr)()
+    with nogil:
+        return (<int (*)() noexcept nogil> _LLVMStartMultithreaded__funptr)()
 
 
 cdef void* _LLVMStopMultithreaded__funptr = NULL
 # Deprecated: Multi-threading can only be enabled/disabled with the compile
 # time define LLVM_ENABLE_THREADS.
-cdef void LLVMStopMultithreaded() nogil:
+cdef void LLVMStopMultithreaded():
     global _LLVMStopMultithreaded__funptr
     __init_symbol(&_LLVMStopMultithreaded__funptr,"LLVMStopMultithreaded")
-    (<void (*)() nogil> _LLVMStopMultithreaded__funptr)()
+    with nogil:
+        (<void (*)() noexcept nogil> _LLVMStopMultithreaded__funptr)()
 
 
 cdef void* _LLVMIsMultithreaded__funptr = NULL
 # Check whether LLVM is executing in thread-safe mode or not.
 # @see llvm::llvm_is_multithreaded
-cdef int LLVMIsMultithreaded() nogil:
+cdef int LLVMIsMultithreaded():
     global _LLVMIsMultithreaded__funptr
     __init_symbol(&_LLVMIsMultithreaded__funptr,"LLVMIsMultithreaded")
-    return (<int (*)() nogil> _LLVMIsMultithreaded__funptr)()
+    with nogil:
+        return (<int (*)() noexcept nogil> _LLVMIsMultithreaded__funptr)()

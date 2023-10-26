@@ -33,16 +33,16 @@ cdef extern from "llvm-c/Analysis.h":
         LLVMReturnStatusAction
 
 
-cdef int LLVMVerifyModule(LLVMModuleRef M,LLVMVerifierFailureAction Action,char ** OutMessage) nogil
+cdef int LLVMVerifyModule(LLVMModuleRef M,LLVMVerifierFailureAction Action,char ** OutMessage)
 
 
 
-cdef int LLVMVerifyFunction(LLVMValueRef Fn,LLVMVerifierFailureAction Action) nogil
+cdef int LLVMVerifyFunction(LLVMValueRef Fn,LLVMVerifierFailureAction Action)
 
 
 
-cdef void LLVMViewFunctionCFG(LLVMValueRef Fn) nogil
+cdef void LLVMViewFunctionCFG(LLVMValueRef Fn)
 
 
 
-cdef void LLVMViewFunctionCFGOnly(LLVMValueRef Fn) nogil
+cdef void LLVMViewFunctionCFGOnly(LLVMValueRef Fn)

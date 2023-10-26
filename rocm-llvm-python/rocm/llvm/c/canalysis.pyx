@@ -25,44 +25,51 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMVerifyModule__funptr = NULL
-cdef int LLVMVerifyModule(LLVMModuleRef M,LLVMVerifierFailureAction Action,char ** OutMessage) nogil:
+cdef int LLVMVerifyModule(LLVMModuleRef M,LLVMVerifierFailureAction Action,char ** OutMessage):
     global _LLVMVerifyModule__funptr
     __init_symbol(&_LLVMVerifyModule__funptr,"LLVMVerifyModule")
-    return (<int (*)(LLVMModuleRef,LLVMVerifierFailureAction,char **) nogil> _LLVMVerifyModule__funptr)(M,Action,OutMessage)
+    with nogil:
+        return (<int (*)(LLVMModuleRef,LLVMVerifierFailureAction,char **) noexcept nogil> _LLVMVerifyModule__funptr)(M,Action,OutMessage)
 
 
 cdef void* _LLVMVerifyFunction__funptr = NULL
-cdef int LLVMVerifyFunction(LLVMValueRef Fn,LLVMVerifierFailureAction Action) nogil:
+cdef int LLVMVerifyFunction(LLVMValueRef Fn,LLVMVerifierFailureAction Action):
     global _LLVMVerifyFunction__funptr
     __init_symbol(&_LLVMVerifyFunction__funptr,"LLVMVerifyFunction")
-    return (<int (*)(LLVMValueRef,LLVMVerifierFailureAction) nogil> _LLVMVerifyFunction__funptr)(Fn,Action)
+    with nogil:
+        return (<int (*)(LLVMValueRef,LLVMVerifierFailureAction) noexcept nogil> _LLVMVerifyFunction__funptr)(Fn,Action)
 
 
 cdef void* _LLVMViewFunctionCFG__funptr = NULL
-cdef void LLVMViewFunctionCFG(LLVMValueRef Fn) nogil:
+cdef void LLVMViewFunctionCFG(LLVMValueRef Fn):
     global _LLVMViewFunctionCFG__funptr
     __init_symbol(&_LLVMViewFunctionCFG__funptr,"LLVMViewFunctionCFG")
-    (<void (*)(LLVMValueRef) nogil> _LLVMViewFunctionCFG__funptr)(Fn)
+    with nogil:
+        (<void (*)(LLVMValueRef) noexcept nogil> _LLVMViewFunctionCFG__funptr)(Fn)
 
 
 cdef void* _LLVMViewFunctionCFGOnly__funptr = NULL
-cdef void LLVMViewFunctionCFGOnly(LLVMValueRef Fn) nogil:
+cdef void LLVMViewFunctionCFGOnly(LLVMValueRef Fn):
     global _LLVMViewFunctionCFGOnly__funptr
     __init_symbol(&_LLVMViewFunctionCFGOnly__funptr,"LLVMViewFunctionCFGOnly")
-    (<void (*)(LLVMValueRef) nogil> _LLVMViewFunctionCFGOnly__funptr)(Fn)
+    with nogil:
+        (<void (*)(LLVMValueRef) noexcept nogil> _LLVMViewFunctionCFGOnly__funptr)(Fn)

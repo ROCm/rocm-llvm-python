@@ -25,19 +25,22 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMParseBitcode__funptr = NULL
@@ -46,31 +49,35 @@ cdef void* _LLVMParseBitcode__funptr = NULL
 # @ingroup LLVMC
 # 
 # @{
-cdef int LLVMParseBitcode(LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutModule,char ** OutMessage) nogil:
+cdef int LLVMParseBitcode(LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutModule,char ** OutMessage):
     global _LLVMParseBitcode__funptr
     __init_symbol(&_LLVMParseBitcode__funptr,"LLVMParseBitcode")
-    return (<int (*)(LLVMMemoryBufferRef,LLVMModuleRef*,char **) nogil> _LLVMParseBitcode__funptr)(MemBuf,OutModule,OutMessage)
+    with nogil:
+        return (<int (*)(LLVMMemoryBufferRef,LLVMModuleRef*,char **) noexcept nogil> _LLVMParseBitcode__funptr)(MemBuf,OutModule,OutMessage)
 
 
 cdef void* _LLVMParseBitcode2__funptr = NULL
-cdef int LLVMParseBitcode2(LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutModule) nogil:
+cdef int LLVMParseBitcode2(LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutModule):
     global _LLVMParseBitcode2__funptr
     __init_symbol(&_LLVMParseBitcode2__funptr,"LLVMParseBitcode2")
-    return (<int (*)(LLVMMemoryBufferRef,LLVMModuleRef*) nogil> _LLVMParseBitcode2__funptr)(MemBuf,OutModule)
+    with nogil:
+        return (<int (*)(LLVMMemoryBufferRef,LLVMModuleRef*) noexcept nogil> _LLVMParseBitcode2__funptr)(MemBuf,OutModule)
 
 
 cdef void* _LLVMParseBitcodeInContext__funptr = NULL
-cdef int LLVMParseBitcodeInContext(LLVMContextRef ContextRef,LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutModule,char ** OutMessage) nogil:
+cdef int LLVMParseBitcodeInContext(LLVMContextRef ContextRef,LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutModule,char ** OutMessage):
     global _LLVMParseBitcodeInContext__funptr
     __init_symbol(&_LLVMParseBitcodeInContext__funptr,"LLVMParseBitcodeInContext")
-    return (<int (*)(LLVMContextRef,LLVMMemoryBufferRef,LLVMModuleRef*,char **) nogil> _LLVMParseBitcodeInContext__funptr)(ContextRef,MemBuf,OutModule,OutMessage)
+    with nogil:
+        return (<int (*)(LLVMContextRef,LLVMMemoryBufferRef,LLVMModuleRef*,char **) noexcept nogil> _LLVMParseBitcodeInContext__funptr)(ContextRef,MemBuf,OutModule,OutMessage)
 
 
 cdef void* _LLVMParseBitcodeInContext2__funptr = NULL
-cdef int LLVMParseBitcodeInContext2(LLVMContextRef ContextRef,LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutModule) nogil:
+cdef int LLVMParseBitcodeInContext2(LLVMContextRef ContextRef,LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutModule):
     global _LLVMParseBitcodeInContext2__funptr
     __init_symbol(&_LLVMParseBitcodeInContext2__funptr,"LLVMParseBitcodeInContext2")
-    return (<int (*)(LLVMContextRef,LLVMMemoryBufferRef,LLVMModuleRef*) nogil> _LLVMParseBitcodeInContext2__funptr)(ContextRef,MemBuf,OutModule)
+    with nogil:
+        return (<int (*)(LLVMContextRef,LLVMMemoryBufferRef,LLVMModuleRef*) noexcept nogil> _LLVMParseBitcodeInContext2__funptr)(ContextRef,MemBuf,OutModule)
 
 
 cdef void* _LLVMGetBitcodeModuleInContext__funptr = NULL
@@ -78,10 +85,11 @@ cdef void* _LLVMGetBitcodeModuleInContext__funptr = NULL
 # a module provider which performs lazy deserialization. Returns 0 on success.
 # Optionally returns a human-readable error message via OutMessage.
 # This is deprecated. Use LLVMGetBitcodeModuleInContext2.
-cdef int LLVMGetBitcodeModuleInContext(LLVMContextRef ContextRef,LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutM,char ** OutMessage) nogil:
+cdef int LLVMGetBitcodeModuleInContext(LLVMContextRef ContextRef,LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutM,char ** OutMessage):
     global _LLVMGetBitcodeModuleInContext__funptr
     __init_symbol(&_LLVMGetBitcodeModuleInContext__funptr,"LLVMGetBitcodeModuleInContext")
-    return (<int (*)(LLVMContextRef,LLVMMemoryBufferRef,LLVMModuleRef*,char **) nogil> _LLVMGetBitcodeModuleInContext__funptr)(ContextRef,MemBuf,OutM,OutMessage)
+    with nogil:
+        return (<int (*)(LLVMContextRef,LLVMMemoryBufferRef,LLVMModuleRef*,char **) noexcept nogil> _LLVMGetBitcodeModuleInContext__funptr)(ContextRef,MemBuf,OutM,OutMessage)
 
 
 cdef void* _LLVMGetBitcodeModuleInContext2__funptr = NULL
@@ -92,21 +100,24 @@ cdef void* _LLVMGetBitcodeModuleInContext2__funptr = NULL
 # 
 # Takes ownership of \p MemBuf if (and only if) the module was read
 # successfully.
-cdef int LLVMGetBitcodeModuleInContext2(LLVMContextRef ContextRef,LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutM) nogil:
+cdef int LLVMGetBitcodeModuleInContext2(LLVMContextRef ContextRef,LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutM):
     global _LLVMGetBitcodeModuleInContext2__funptr
     __init_symbol(&_LLVMGetBitcodeModuleInContext2__funptr,"LLVMGetBitcodeModuleInContext2")
-    return (<int (*)(LLVMContextRef,LLVMMemoryBufferRef,LLVMModuleRef*) nogil> _LLVMGetBitcodeModuleInContext2__funptr)(ContextRef,MemBuf,OutM)
+    with nogil:
+        return (<int (*)(LLVMContextRef,LLVMMemoryBufferRef,LLVMModuleRef*) noexcept nogil> _LLVMGetBitcodeModuleInContext2__funptr)(ContextRef,MemBuf,OutM)
 
 
 cdef void* _LLVMGetBitcodeModule__funptr = NULL
-cdef int LLVMGetBitcodeModule(LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutM,char ** OutMessage) nogil:
+cdef int LLVMGetBitcodeModule(LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutM,char ** OutMessage):
     global _LLVMGetBitcodeModule__funptr
     __init_symbol(&_LLVMGetBitcodeModule__funptr,"LLVMGetBitcodeModule")
-    return (<int (*)(LLVMMemoryBufferRef,LLVMModuleRef*,char **) nogil> _LLVMGetBitcodeModule__funptr)(MemBuf,OutM,OutMessage)
+    with nogil:
+        return (<int (*)(LLVMMemoryBufferRef,LLVMModuleRef*,char **) noexcept nogil> _LLVMGetBitcodeModule__funptr)(MemBuf,OutM,OutMessage)
 
 
 cdef void* _LLVMGetBitcodeModule2__funptr = NULL
-cdef int LLVMGetBitcodeModule2(LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutM) nogil:
+cdef int LLVMGetBitcodeModule2(LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutM):
     global _LLVMGetBitcodeModule2__funptr
     __init_symbol(&_LLVMGetBitcodeModule2__funptr,"LLVMGetBitcodeModule2")
-    return (<int (*)(LLVMMemoryBufferRef,LLVMModuleRef*) nogil> _LLVMGetBitcodeModule2__funptr)(MemBuf,OutM)
+    with nogil:
+        return (<int (*)(LLVMMemoryBufferRef,LLVMModuleRef*) noexcept nogil> _LLVMGetBitcodeModule2__funptr)(MemBuf,OutM)

@@ -32,40 +32,40 @@ from rocm.llvm.c.ctypes cimport *
 # This module contains routines used to initialize the LLVM system.
 # 
 # @{
-cdef void LLVMInitializeCore(LLVMPassRegistryRef R) nogil
+cdef void LLVMInitializeCore(LLVMPassRegistryRef R)
 
 
 
-cdef void LLVMInitializeTransformUtils(LLVMPassRegistryRef R) nogil
+cdef void LLVMInitializeTransformUtils(LLVMPassRegistryRef R)
 
 
 
-cdef void LLVMInitializeScalarOpts(LLVMPassRegistryRef R) nogil
+cdef void LLVMInitializeScalarOpts(LLVMPassRegistryRef R)
 
 
 
-cdef void LLVMInitializeVectorization(LLVMPassRegistryRef R) nogil
+cdef void LLVMInitializeVectorization(LLVMPassRegistryRef R)
 
 
 
-cdef void LLVMInitializeInstCombine(LLVMPassRegistryRef R) nogil
+cdef void LLVMInitializeInstCombine(LLVMPassRegistryRef R)
 
 
 
-cdef void LLVMInitializeIPO(LLVMPassRegistryRef R) nogil
+cdef void LLVMInitializeIPO(LLVMPassRegistryRef R)
 
 
 
-cdef void LLVMInitializeAnalysis(LLVMPassRegistryRef R) nogil
+cdef void LLVMInitializeAnalysis(LLVMPassRegistryRef R)
 
 
 
-cdef void LLVMInitializeIPA(LLVMPassRegistryRef R) nogil
+cdef void LLVMInitializeIPA(LLVMPassRegistryRef R)
 
 
 
-cdef void LLVMInitializeCodeGen(LLVMPassRegistryRef R) nogil
+cdef void LLVMInitializeCodeGen(LLVMPassRegistryRef R)
 
 
 
-cdef void LLVMInitializeTarget(LLVMPassRegistryRef R) nogil
+cdef void LLVMInitializeTarget(LLVMPassRegistryRef R)

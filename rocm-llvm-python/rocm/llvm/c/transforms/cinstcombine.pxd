@@ -26,4 +26,4 @@ from libc.stdint cimport *
 ctypedef bint _Bool # bool is not a reserved keyword in C, _Bool is
 from rocm.llvm.c.ctypes cimport *
 # See llvm::createInstructionCombiningPass function. */
-cdef void LLVMAddInstructionCombiningPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddInstructionCombiningPass(LLVMPassManagerRef PM)

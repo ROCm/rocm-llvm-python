@@ -25,19 +25,22 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMRunPasses__funptr = NULL
@@ -49,10 +52,11 @@ cdef void* _LLVMRunPasses__funptr = NULL
 # manager. Individual passes may be specified, separated by commas. Full
 # pipelines may also be invoked using `default<O3>` and friends. See opt for
 # full reference of the Passes format.
-cdef LLVMErrorRef LLVMRunPasses(LLVMModuleRef M,const char * Passes,LLVMTargetMachineRef TM,LLVMPassBuilderOptionsRef Options) nogil:
+cdef LLVMErrorRef LLVMRunPasses(LLVMModuleRef M,const char * Passes,LLVMTargetMachineRef TM,LLVMPassBuilderOptionsRef Options):
     global _LLVMRunPasses__funptr
     __init_symbol(&_LLVMRunPasses__funptr,"LLVMRunPasses")
-    return (<LLVMErrorRef (*)(LLVMModuleRef,const char *,LLVMTargetMachineRef,LLVMPassBuilderOptionsRef) nogil> _LLVMRunPasses__funptr)(M,Passes,TM,Options)
+    with nogil:
+        return (<LLVMErrorRef (*)(LLVMModuleRef,const char *,LLVMTargetMachineRef,LLVMPassBuilderOptionsRef) noexcept nogil> _LLVMRunPasses__funptr)(M,Passes,TM,Options)
 
 
 cdef void* _LLVMCreatePassBuilderOptions__funptr = NULL
@@ -62,98 +66,111 @@ cdef void* _LLVMCreatePassBuilderOptions__funptr = NULL
 # Ownership of the returned instance is given to the client, and they are
 # responsible for it. The client should call LLVMDisposePassBuilderOptions
 # to free the pass builder options.
-cdef LLVMPassBuilderOptionsRef LLVMCreatePassBuilderOptions() nogil:
+cdef LLVMPassBuilderOptionsRef LLVMCreatePassBuilderOptions():
     global _LLVMCreatePassBuilderOptions__funptr
     __init_symbol(&_LLVMCreatePassBuilderOptions__funptr,"LLVMCreatePassBuilderOptions")
-    return (<LLVMPassBuilderOptionsRef (*)() nogil> _LLVMCreatePassBuilderOptions__funptr)()
+    with nogil:
+        return (<LLVMPassBuilderOptionsRef (*)() noexcept nogil> _LLVMCreatePassBuilderOptions__funptr)()
 
 
 cdef void* _LLVMPassBuilderOptionsSetVerifyEach__funptr = NULL
 # 
 # Toggle adding the VerifierPass for the PassBuilder, ensuring all functions
 # inside the module is valid.
-cdef void LLVMPassBuilderOptionsSetVerifyEach(LLVMPassBuilderOptionsRef Options,int VerifyEach) nogil:
+cdef void LLVMPassBuilderOptionsSetVerifyEach(LLVMPassBuilderOptionsRef Options,int VerifyEach):
     global _LLVMPassBuilderOptionsSetVerifyEach__funptr
     __init_symbol(&_LLVMPassBuilderOptionsSetVerifyEach__funptr,"LLVMPassBuilderOptionsSetVerifyEach")
-    (<void (*)(LLVMPassBuilderOptionsRef,int) nogil> _LLVMPassBuilderOptionsSetVerifyEach__funptr)(Options,VerifyEach)
+    with nogil:
+        (<void (*)(LLVMPassBuilderOptionsRef,int) noexcept nogil> _LLVMPassBuilderOptionsSetVerifyEach__funptr)(Options,VerifyEach)
 
 
 cdef void* _LLVMPassBuilderOptionsSetDebugLogging__funptr = NULL
 # 
 # Toggle debug logging when running the PassBuilder
-cdef void LLVMPassBuilderOptionsSetDebugLogging(LLVMPassBuilderOptionsRef Options,int DebugLogging) nogil:
+cdef void LLVMPassBuilderOptionsSetDebugLogging(LLVMPassBuilderOptionsRef Options,int DebugLogging):
     global _LLVMPassBuilderOptionsSetDebugLogging__funptr
     __init_symbol(&_LLVMPassBuilderOptionsSetDebugLogging__funptr,"LLVMPassBuilderOptionsSetDebugLogging")
-    (<void (*)(LLVMPassBuilderOptionsRef,int) nogil> _LLVMPassBuilderOptionsSetDebugLogging__funptr)(Options,DebugLogging)
+    with nogil:
+        (<void (*)(LLVMPassBuilderOptionsRef,int) noexcept nogil> _LLVMPassBuilderOptionsSetDebugLogging__funptr)(Options,DebugLogging)
 
 
 cdef void* _LLVMPassBuilderOptionsSetLoopInterleaving__funptr = NULL
-cdef void LLVMPassBuilderOptionsSetLoopInterleaving(LLVMPassBuilderOptionsRef Options,int LoopInterleaving) nogil:
+cdef void LLVMPassBuilderOptionsSetLoopInterleaving(LLVMPassBuilderOptionsRef Options,int LoopInterleaving):
     global _LLVMPassBuilderOptionsSetLoopInterleaving__funptr
     __init_symbol(&_LLVMPassBuilderOptionsSetLoopInterleaving__funptr,"LLVMPassBuilderOptionsSetLoopInterleaving")
-    (<void (*)(LLVMPassBuilderOptionsRef,int) nogil> _LLVMPassBuilderOptionsSetLoopInterleaving__funptr)(Options,LoopInterleaving)
+    with nogil:
+        (<void (*)(LLVMPassBuilderOptionsRef,int) noexcept nogil> _LLVMPassBuilderOptionsSetLoopInterleaving__funptr)(Options,LoopInterleaving)
 
 
 cdef void* _LLVMPassBuilderOptionsSetLoopVectorization__funptr = NULL
-cdef void LLVMPassBuilderOptionsSetLoopVectorization(LLVMPassBuilderOptionsRef Options,int LoopVectorization) nogil:
+cdef void LLVMPassBuilderOptionsSetLoopVectorization(LLVMPassBuilderOptionsRef Options,int LoopVectorization):
     global _LLVMPassBuilderOptionsSetLoopVectorization__funptr
     __init_symbol(&_LLVMPassBuilderOptionsSetLoopVectorization__funptr,"LLVMPassBuilderOptionsSetLoopVectorization")
-    (<void (*)(LLVMPassBuilderOptionsRef,int) nogil> _LLVMPassBuilderOptionsSetLoopVectorization__funptr)(Options,LoopVectorization)
+    with nogil:
+        (<void (*)(LLVMPassBuilderOptionsRef,int) noexcept nogil> _LLVMPassBuilderOptionsSetLoopVectorization__funptr)(Options,LoopVectorization)
 
 
 cdef void* _LLVMPassBuilderOptionsSetSLPVectorization__funptr = NULL
-cdef void LLVMPassBuilderOptionsSetSLPVectorization(LLVMPassBuilderOptionsRef Options,int SLPVectorization) nogil:
+cdef void LLVMPassBuilderOptionsSetSLPVectorization(LLVMPassBuilderOptionsRef Options,int SLPVectorization):
     global _LLVMPassBuilderOptionsSetSLPVectorization__funptr
     __init_symbol(&_LLVMPassBuilderOptionsSetSLPVectorization__funptr,"LLVMPassBuilderOptionsSetSLPVectorization")
-    (<void (*)(LLVMPassBuilderOptionsRef,int) nogil> _LLVMPassBuilderOptionsSetSLPVectorization__funptr)(Options,SLPVectorization)
+    with nogil:
+        (<void (*)(LLVMPassBuilderOptionsRef,int) noexcept nogil> _LLVMPassBuilderOptionsSetSLPVectorization__funptr)(Options,SLPVectorization)
 
 
 cdef void* _LLVMPassBuilderOptionsSetLoopUnrolling__funptr = NULL
-cdef void LLVMPassBuilderOptionsSetLoopUnrolling(LLVMPassBuilderOptionsRef Options,int LoopUnrolling) nogil:
+cdef void LLVMPassBuilderOptionsSetLoopUnrolling(LLVMPassBuilderOptionsRef Options,int LoopUnrolling):
     global _LLVMPassBuilderOptionsSetLoopUnrolling__funptr
     __init_symbol(&_LLVMPassBuilderOptionsSetLoopUnrolling__funptr,"LLVMPassBuilderOptionsSetLoopUnrolling")
-    (<void (*)(LLVMPassBuilderOptionsRef,int) nogil> _LLVMPassBuilderOptionsSetLoopUnrolling__funptr)(Options,LoopUnrolling)
+    with nogil:
+        (<void (*)(LLVMPassBuilderOptionsRef,int) noexcept nogil> _LLVMPassBuilderOptionsSetLoopUnrolling__funptr)(Options,LoopUnrolling)
 
 
 cdef void* _LLVMPassBuilderOptionsSetForgetAllSCEVInLoopUnroll__funptr = NULL
-cdef void LLVMPassBuilderOptionsSetForgetAllSCEVInLoopUnroll(LLVMPassBuilderOptionsRef Options,int ForgetAllSCEVInLoopUnroll) nogil:
+cdef void LLVMPassBuilderOptionsSetForgetAllSCEVInLoopUnroll(LLVMPassBuilderOptionsRef Options,int ForgetAllSCEVInLoopUnroll):
     global _LLVMPassBuilderOptionsSetForgetAllSCEVInLoopUnroll__funptr
     __init_symbol(&_LLVMPassBuilderOptionsSetForgetAllSCEVInLoopUnroll__funptr,"LLVMPassBuilderOptionsSetForgetAllSCEVInLoopUnroll")
-    (<void (*)(LLVMPassBuilderOptionsRef,int) nogil> _LLVMPassBuilderOptionsSetForgetAllSCEVInLoopUnroll__funptr)(Options,ForgetAllSCEVInLoopUnroll)
+    with nogil:
+        (<void (*)(LLVMPassBuilderOptionsRef,int) noexcept nogil> _LLVMPassBuilderOptionsSetForgetAllSCEVInLoopUnroll__funptr)(Options,ForgetAllSCEVInLoopUnroll)
 
 
 cdef void* _LLVMPassBuilderOptionsSetLicmMssaOptCap__funptr = NULL
-cdef void LLVMPassBuilderOptionsSetLicmMssaOptCap(LLVMPassBuilderOptionsRef Options,unsigned int LicmMssaOptCap) nogil:
+cdef void LLVMPassBuilderOptionsSetLicmMssaOptCap(LLVMPassBuilderOptionsRef Options,unsigned int LicmMssaOptCap):
     global _LLVMPassBuilderOptionsSetLicmMssaOptCap__funptr
     __init_symbol(&_LLVMPassBuilderOptionsSetLicmMssaOptCap__funptr,"LLVMPassBuilderOptionsSetLicmMssaOptCap")
-    (<void (*)(LLVMPassBuilderOptionsRef,unsigned int) nogil> _LLVMPassBuilderOptionsSetLicmMssaOptCap__funptr)(Options,LicmMssaOptCap)
+    with nogil:
+        (<void (*)(LLVMPassBuilderOptionsRef,unsigned int) noexcept nogil> _LLVMPassBuilderOptionsSetLicmMssaOptCap__funptr)(Options,LicmMssaOptCap)
 
 
 cdef void* _LLVMPassBuilderOptionsSetLicmMssaNoAccForPromotionCap__funptr = NULL
-cdef void LLVMPassBuilderOptionsSetLicmMssaNoAccForPromotionCap(LLVMPassBuilderOptionsRef Options,unsigned int LicmMssaNoAccForPromotionCap) nogil:
+cdef void LLVMPassBuilderOptionsSetLicmMssaNoAccForPromotionCap(LLVMPassBuilderOptionsRef Options,unsigned int LicmMssaNoAccForPromotionCap):
     global _LLVMPassBuilderOptionsSetLicmMssaNoAccForPromotionCap__funptr
     __init_symbol(&_LLVMPassBuilderOptionsSetLicmMssaNoAccForPromotionCap__funptr,"LLVMPassBuilderOptionsSetLicmMssaNoAccForPromotionCap")
-    (<void (*)(LLVMPassBuilderOptionsRef,unsigned int) nogil> _LLVMPassBuilderOptionsSetLicmMssaNoAccForPromotionCap__funptr)(Options,LicmMssaNoAccForPromotionCap)
+    with nogil:
+        (<void (*)(LLVMPassBuilderOptionsRef,unsigned int) noexcept nogil> _LLVMPassBuilderOptionsSetLicmMssaNoAccForPromotionCap__funptr)(Options,LicmMssaNoAccForPromotionCap)
 
 
 cdef void* _LLVMPassBuilderOptionsSetCallGraphProfile__funptr = NULL
-cdef void LLVMPassBuilderOptionsSetCallGraphProfile(LLVMPassBuilderOptionsRef Options,int CallGraphProfile) nogil:
+cdef void LLVMPassBuilderOptionsSetCallGraphProfile(LLVMPassBuilderOptionsRef Options,int CallGraphProfile):
     global _LLVMPassBuilderOptionsSetCallGraphProfile__funptr
     __init_symbol(&_LLVMPassBuilderOptionsSetCallGraphProfile__funptr,"LLVMPassBuilderOptionsSetCallGraphProfile")
-    (<void (*)(LLVMPassBuilderOptionsRef,int) nogil> _LLVMPassBuilderOptionsSetCallGraphProfile__funptr)(Options,CallGraphProfile)
+    with nogil:
+        (<void (*)(LLVMPassBuilderOptionsRef,int) noexcept nogil> _LLVMPassBuilderOptionsSetCallGraphProfile__funptr)(Options,CallGraphProfile)
 
 
 cdef void* _LLVMPassBuilderOptionsSetMergeFunctions__funptr = NULL
-cdef void LLVMPassBuilderOptionsSetMergeFunctions(LLVMPassBuilderOptionsRef Options,int MergeFunctions) nogil:
+cdef void LLVMPassBuilderOptionsSetMergeFunctions(LLVMPassBuilderOptionsRef Options,int MergeFunctions):
     global _LLVMPassBuilderOptionsSetMergeFunctions__funptr
     __init_symbol(&_LLVMPassBuilderOptionsSetMergeFunctions__funptr,"LLVMPassBuilderOptionsSetMergeFunctions")
-    (<void (*)(LLVMPassBuilderOptionsRef,int) nogil> _LLVMPassBuilderOptionsSetMergeFunctions__funptr)(Options,MergeFunctions)
+    with nogil:
+        (<void (*)(LLVMPassBuilderOptionsRef,int) noexcept nogil> _LLVMPassBuilderOptionsSetMergeFunctions__funptr)(Options,MergeFunctions)
 
 
 cdef void* _LLVMDisposePassBuilderOptions__funptr = NULL
 # 
 # Dispose of a heap-allocated PassBuilderOptions instance
-cdef void LLVMDisposePassBuilderOptions(LLVMPassBuilderOptionsRef Options) nogil:
+cdef void LLVMDisposePassBuilderOptions(LLVMPassBuilderOptionsRef Options):
     global _LLVMDisposePassBuilderOptions__funptr
     __init_symbol(&_LLVMDisposePassBuilderOptions__funptr,"LLVMDisposePassBuilderOptions")
-    (<void (*)(LLVMPassBuilderOptionsRef) nogil> _LLVMDisposePassBuilderOptions__funptr)(Options)
+    with nogil:
+        (<void (*)(LLVMPassBuilderOptionsRef) noexcept nogil> _LLVMDisposePassBuilderOptions__funptr)(Options)

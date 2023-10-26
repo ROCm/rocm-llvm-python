@@ -34,22 +34,6 @@ cdef extern from "llvm/Config/llvm-config.h":
 
     cdef const char * LLVM_HOST_TRIPLE
 
-cdef const char * LLVM_NATIVE_ARCH = "X86"
-
-cdef const char * LLVM_NATIVE_ASMPARSER = "LLVMInitializeX86AsmParser"
-
-cdef const char * LLVM_NATIVE_ASMPRINTER = "LLVMInitializeX86AsmPrinter"
-
-cdef const char * LLVM_NATIVE_DISASSEMBLER = "LLVMInitializeX86Disassembler"
-
-cdef const char * LLVM_NATIVE_TARGET = "LLVMInitializeX86Target"
-
-cdef const char * LLVM_NATIVE_TARGETINFO = "LLVMInitializeX86TargetInfo"
-
-cdef const char * LLVM_NATIVE_TARGETMC = "LLVMInitializeX86TargetMC"
-
-cdef extern from "llvm/Config/llvm-config.h":
-
     cdef bint LLVM_ON_UNIX
 
     cdef bint LLVM_USE_INTEL_JITEVENTS

@@ -26,17 +26,17 @@ from libc.stdint cimport *
 ctypedef bint _Bool # bool is not a reserved keyword in C, _Bool is
 from rocm.llvm.c.ctypes cimport *
 # Writes a module to the specified path. Returns 0 on success. */
-cdef int LLVMWriteBitcodeToFile(LLVMModuleRef M,const char * Path) nogil
+cdef int LLVMWriteBitcodeToFile(LLVMModuleRef M,const char * Path)
 
 
 # Writes a module to an open file descriptor. Returns 0 on success. */
-cdef int LLVMWriteBitcodeToFD(LLVMModuleRef M,int FD,int ShouldClose,int Unbuffered) nogil
+cdef int LLVMWriteBitcodeToFD(LLVMModuleRef M,int FD,int ShouldClose,int Unbuffered)
 
 
 # Deprecated for LLVMWriteBitcodeToFD. Writes a module to an open file
 # descriptor. Returns 0 on success. Closes the Handle.
-cdef int LLVMWriteBitcodeToFileHandle(LLVMModuleRef M,int Handle) nogil
+cdef int LLVMWriteBitcodeToFileHandle(LLVMModuleRef M,int Handle)
 
 
 # Writes a module to a new memory buffer and returns it. */
-cdef LLVMMemoryBufferRef LLVMWriteBitcodeToMemoryBuffer(LLVMModuleRef M) nogil
+cdef LLVMMemoryBufferRef LLVMWriteBitcodeToMemoryBuffer(LLVMModuleRef M)

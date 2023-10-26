@@ -25,119 +25,132 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMInitializeAllTargetInfos__funptr = NULL
 # LLVMInitializeAllTargetInfos - The main program should call this function if
 # it wants access to all available targets that LLVM is configured to
 # support.
-cdef void LLVMInitializeAllTargetInfos() nogil:
+cdef void LLVMInitializeAllTargetInfos():
     global _LLVMInitializeAllTargetInfos__funptr
     __init_symbol(&_LLVMInitializeAllTargetInfos__funptr,"LLVMInitializeAllTargetInfos")
-    (<void (*)() nogil> _LLVMInitializeAllTargetInfos__funptr)()
+    with nogil:
+        (<void (*)() noexcept nogil> _LLVMInitializeAllTargetInfos__funptr)()
 
 
 cdef void* _LLVMInitializeAllTargets__funptr = NULL
 # LLVMInitializeAllTargets - The main program should call this function if it
 # wants to link in all available targets that LLVM is configured to
 # support.
-cdef void LLVMInitializeAllTargets() nogil:
+cdef void LLVMInitializeAllTargets():
     global _LLVMInitializeAllTargets__funptr
     __init_symbol(&_LLVMInitializeAllTargets__funptr,"LLVMInitializeAllTargets")
-    (<void (*)() nogil> _LLVMInitializeAllTargets__funptr)()
+    with nogil:
+        (<void (*)() noexcept nogil> _LLVMInitializeAllTargets__funptr)()
 
 
 cdef void* _LLVMInitializeAllTargetMCs__funptr = NULL
 # LLVMInitializeAllTargetMCs - The main program should call this function if
 # it wants access to all available target MC that LLVM is configured to
 # support.
-cdef void LLVMInitializeAllTargetMCs() nogil:
+cdef void LLVMInitializeAllTargetMCs():
     global _LLVMInitializeAllTargetMCs__funptr
     __init_symbol(&_LLVMInitializeAllTargetMCs__funptr,"LLVMInitializeAllTargetMCs")
-    (<void (*)() nogil> _LLVMInitializeAllTargetMCs__funptr)()
+    with nogil:
+        (<void (*)() noexcept nogil> _LLVMInitializeAllTargetMCs__funptr)()
 
 
 cdef void* _LLVMInitializeAllAsmPrinters__funptr = NULL
 # LLVMInitializeAllAsmPrinters - The main program should call this function if
 # it wants all asm printers that LLVM is configured to support, to make them
 # available via the TargetRegistry.
-cdef void LLVMInitializeAllAsmPrinters() nogil:
+cdef void LLVMInitializeAllAsmPrinters():
     global _LLVMInitializeAllAsmPrinters__funptr
     __init_symbol(&_LLVMInitializeAllAsmPrinters__funptr,"LLVMInitializeAllAsmPrinters")
-    (<void (*)() nogil> _LLVMInitializeAllAsmPrinters__funptr)()
+    with nogil:
+        (<void (*)() noexcept nogil> _LLVMInitializeAllAsmPrinters__funptr)()
 
 
 cdef void* _LLVMInitializeAllAsmParsers__funptr = NULL
 # LLVMInitializeAllAsmParsers - The main program should call this function if
 # it wants all asm parsers that LLVM is configured to support, to make them
 # available via the TargetRegistry.
-cdef void LLVMInitializeAllAsmParsers() nogil:
+cdef void LLVMInitializeAllAsmParsers():
     global _LLVMInitializeAllAsmParsers__funptr
     __init_symbol(&_LLVMInitializeAllAsmParsers__funptr,"LLVMInitializeAllAsmParsers")
-    (<void (*)() nogil> _LLVMInitializeAllAsmParsers__funptr)()
+    with nogil:
+        (<void (*)() noexcept nogil> _LLVMInitializeAllAsmParsers__funptr)()
 
 
 cdef void* _LLVMInitializeAllDisassemblers__funptr = NULL
 # LLVMInitializeAllDisassemblers - The main program should call this function
 # if it wants all disassemblers that LLVM is configured to support, to make
 # them available via the TargetRegistry.
-cdef void LLVMInitializeAllDisassemblers() nogil:
+cdef void LLVMInitializeAllDisassemblers():
     global _LLVMInitializeAllDisassemblers__funptr
     __init_symbol(&_LLVMInitializeAllDisassemblers__funptr,"LLVMInitializeAllDisassemblers")
-    (<void (*)() nogil> _LLVMInitializeAllDisassemblers__funptr)()
+    with nogil:
+        (<void (*)() noexcept nogil> _LLVMInitializeAllDisassemblers__funptr)()
 
 
 cdef void* _LLVMInitializeNativeTarget__funptr = NULL
 # LLVMInitializeNativeTarget - The main program should call this function to
 # initialize the native target corresponding to the host.  This is useful
 # for JIT applications to ensure that the target gets linked in correctly.
-cdef int LLVMInitializeNativeTarget() nogil:
+cdef int LLVMInitializeNativeTarget():
     global _LLVMInitializeNativeTarget__funptr
     __init_symbol(&_LLVMInitializeNativeTarget__funptr,"LLVMInitializeNativeTarget")
-    return (<int (*)() nogil> _LLVMInitializeNativeTarget__funptr)()
+    with nogil:
+        return (<int (*)() noexcept nogil> _LLVMInitializeNativeTarget__funptr)()
 
 
 cdef void* _LLVMInitializeNativeAsmParser__funptr = NULL
 # LLVMInitializeNativeTargetAsmParser - The main program should call this
 # function to initialize the parser for the native target corresponding to the
 # host.
-cdef int LLVMInitializeNativeAsmParser() nogil:
+cdef int LLVMInitializeNativeAsmParser():
     global _LLVMInitializeNativeAsmParser__funptr
     __init_symbol(&_LLVMInitializeNativeAsmParser__funptr,"LLVMInitializeNativeAsmParser")
-    return (<int (*)() nogil> _LLVMInitializeNativeAsmParser__funptr)()
+    with nogil:
+        return (<int (*)() noexcept nogil> _LLVMInitializeNativeAsmParser__funptr)()
 
 
 cdef void* _LLVMInitializeNativeAsmPrinter__funptr = NULL
 # LLVMInitializeNativeTargetAsmPrinter - The main program should call this
 # function to initialize the printer for the native target corresponding to
 # the host.
-cdef int LLVMInitializeNativeAsmPrinter() nogil:
+cdef int LLVMInitializeNativeAsmPrinter():
     global _LLVMInitializeNativeAsmPrinter__funptr
     __init_symbol(&_LLVMInitializeNativeAsmPrinter__funptr,"LLVMInitializeNativeAsmPrinter")
-    return (<int (*)() nogil> _LLVMInitializeNativeAsmPrinter__funptr)()
+    with nogil:
+        return (<int (*)() noexcept nogil> _LLVMInitializeNativeAsmPrinter__funptr)()
 
 
 cdef void* _LLVMInitializeNativeDisassembler__funptr = NULL
 # LLVMInitializeNativeTargetDisassembler - The main program should call this
 # function to initialize the disassembler for the native target corresponding
 # to the host.
-cdef int LLVMInitializeNativeDisassembler() nogil:
+cdef int LLVMInitializeNativeDisassembler():
     global _LLVMInitializeNativeDisassembler__funptr
     __init_symbol(&_LLVMInitializeNativeDisassembler__funptr,"LLVMInitializeNativeDisassembler")
-    return (<int (*)() nogil> _LLVMInitializeNativeDisassembler__funptr)()
+    with nogil:
+        return (<int (*)() noexcept nogil> _LLVMInitializeNativeDisassembler__funptr)()
 
 
 cdef void* _LLVMGetModuleDataLayout__funptr = NULL
@@ -145,10 +158,11 @@ cdef void* _LLVMGetModuleDataLayout__funptr = NULL
 # Obtain the data layout for a module.
 # 
 # @see Module::getDataLayout()
-cdef LLVMTargetDataRef LLVMGetModuleDataLayout(LLVMModuleRef M) nogil:
+cdef LLVMTargetDataRef LLVMGetModuleDataLayout(LLVMModuleRef M):
     global _LLVMGetModuleDataLayout__funptr
     __init_symbol(&_LLVMGetModuleDataLayout__funptr,"LLVMGetModuleDataLayout")
-    return (<LLVMTargetDataRef (*)(LLVMModuleRef) nogil> _LLVMGetModuleDataLayout__funptr)(M)
+    with nogil:
+        return (<LLVMTargetDataRef (*)(LLVMModuleRef) noexcept nogil> _LLVMGetModuleDataLayout__funptr)(M)
 
 
 cdef void* _LLVMSetModuleDataLayout__funptr = NULL
@@ -156,193 +170,214 @@ cdef void* _LLVMSetModuleDataLayout__funptr = NULL
 # Set the data layout for a module.
 # 
 # @see Module::setDataLayout()
-cdef void LLVMSetModuleDataLayout(LLVMModuleRef M,LLVMTargetDataRef DL) nogil:
+cdef void LLVMSetModuleDataLayout(LLVMModuleRef M,LLVMTargetDataRef DL):
     global _LLVMSetModuleDataLayout__funptr
     __init_symbol(&_LLVMSetModuleDataLayout__funptr,"LLVMSetModuleDataLayout")
-    (<void (*)(LLVMModuleRef,LLVMTargetDataRef) nogil> _LLVMSetModuleDataLayout__funptr)(M,DL)
+    with nogil:
+        (<void (*)(LLVMModuleRef,LLVMTargetDataRef) noexcept nogil> _LLVMSetModuleDataLayout__funptr)(M,DL)
 
 
 cdef void* _LLVMCreateTargetData__funptr = NULL
 # Creates target data from a target layout string.
 # See the constructor llvm::DataLayout::DataLayout.
-cdef LLVMTargetDataRef LLVMCreateTargetData(const char * StringRep) nogil:
+cdef LLVMTargetDataRef LLVMCreateTargetData(const char * StringRep):
     global _LLVMCreateTargetData__funptr
     __init_symbol(&_LLVMCreateTargetData__funptr,"LLVMCreateTargetData")
-    return (<LLVMTargetDataRef (*)(const char *) nogil> _LLVMCreateTargetData__funptr)(StringRep)
+    with nogil:
+        return (<LLVMTargetDataRef (*)(const char *) noexcept nogil> _LLVMCreateTargetData__funptr)(StringRep)
 
 
 cdef void* _LLVMDisposeTargetData__funptr = NULL
 # Deallocates a TargetData.
 # See the destructor llvm::DataLayout::~DataLayout.
-cdef void LLVMDisposeTargetData(LLVMTargetDataRef TD) nogil:
+cdef void LLVMDisposeTargetData(LLVMTargetDataRef TD):
     global _LLVMDisposeTargetData__funptr
     __init_symbol(&_LLVMDisposeTargetData__funptr,"LLVMDisposeTargetData")
-    (<void (*)(LLVMTargetDataRef) nogil> _LLVMDisposeTargetData__funptr)(TD)
+    with nogil:
+        (<void (*)(LLVMTargetDataRef) noexcept nogil> _LLVMDisposeTargetData__funptr)(TD)
 
 
 cdef void* _LLVMAddTargetLibraryInfo__funptr = NULL
 # Adds target library information to a pass manager. This does not take
 # ownership of the target library info.
 # See the method llvm::PassManagerBase::add.
-cdef void LLVMAddTargetLibraryInfo(LLVMTargetLibraryInfoRef TLI,LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddTargetLibraryInfo(LLVMTargetLibraryInfoRef TLI,LLVMPassManagerRef PM):
     global _LLVMAddTargetLibraryInfo__funptr
     __init_symbol(&_LLVMAddTargetLibraryInfo__funptr,"LLVMAddTargetLibraryInfo")
-    (<void (*)(LLVMTargetLibraryInfoRef,LLVMPassManagerRef) nogil> _LLVMAddTargetLibraryInfo__funptr)(TLI,PM)
+    with nogil:
+        (<void (*)(LLVMTargetLibraryInfoRef,LLVMPassManagerRef) noexcept nogil> _LLVMAddTargetLibraryInfo__funptr)(TLI,PM)
 
 
 cdef void* _LLVMCopyStringRepOfTargetData__funptr = NULL
 # Converts target data to a target layout string. The string must be disposed
 # with LLVMDisposeMessage.
 # See the constructor llvm::DataLayout::DataLayout.
-cdef char * LLVMCopyStringRepOfTargetData(LLVMTargetDataRef TD) nogil:
+cdef char * LLVMCopyStringRepOfTargetData(LLVMTargetDataRef TD):
     global _LLVMCopyStringRepOfTargetData__funptr
     __init_symbol(&_LLVMCopyStringRepOfTargetData__funptr,"LLVMCopyStringRepOfTargetData")
-    return (<char * (*)(LLVMTargetDataRef) nogil> _LLVMCopyStringRepOfTargetData__funptr)(TD)
+    with nogil:
+        return (<char * (*)(LLVMTargetDataRef) noexcept nogil> _LLVMCopyStringRepOfTargetData__funptr)(TD)
 
 
 cdef void* _LLVMByteOrder__funptr = NULL
 # Returns the byte order of a target, either LLVMBigEndian or
 # LLVMLittleEndian.
 # See the method llvm::DataLayout::isLittleEndian.
-cdef LLVMByteOrdering LLVMByteOrder(LLVMTargetDataRef TD) nogil:
+cdef LLVMByteOrdering LLVMByteOrder(LLVMTargetDataRef TD):
     global _LLVMByteOrder__funptr
     __init_symbol(&_LLVMByteOrder__funptr,"LLVMByteOrder")
-    return (<LLVMByteOrdering (*)(LLVMTargetDataRef) nogil> _LLVMByteOrder__funptr)(TD)
+    with nogil:
+        return (<LLVMByteOrdering (*)(LLVMTargetDataRef) noexcept nogil> _LLVMByteOrder__funptr)(TD)
 
 
 cdef void* _LLVMPointerSize__funptr = NULL
 # Returns the pointer size in bytes for a target.
 # See the method llvm::DataLayout::getPointerSize.
-cdef unsigned int LLVMPointerSize(LLVMTargetDataRef TD) nogil:
+cdef unsigned int LLVMPointerSize(LLVMTargetDataRef TD):
     global _LLVMPointerSize__funptr
     __init_symbol(&_LLVMPointerSize__funptr,"LLVMPointerSize")
-    return (<unsigned int (*)(LLVMTargetDataRef) nogil> _LLVMPointerSize__funptr)(TD)
+    with nogil:
+        return (<unsigned int (*)(LLVMTargetDataRef) noexcept nogil> _LLVMPointerSize__funptr)(TD)
 
 
 cdef void* _LLVMPointerSizeForAS__funptr = NULL
 # Returns the pointer size in bytes for a target for a specified
 # address space.
 # See the method llvm::DataLayout::getPointerSize.
-cdef unsigned int LLVMPointerSizeForAS(LLVMTargetDataRef TD,unsigned int AS) nogil:
+cdef unsigned int LLVMPointerSizeForAS(LLVMTargetDataRef TD,unsigned int AS):
     global _LLVMPointerSizeForAS__funptr
     __init_symbol(&_LLVMPointerSizeForAS__funptr,"LLVMPointerSizeForAS")
-    return (<unsigned int (*)(LLVMTargetDataRef,unsigned int) nogil> _LLVMPointerSizeForAS__funptr)(TD,AS)
+    with nogil:
+        return (<unsigned int (*)(LLVMTargetDataRef,unsigned int) noexcept nogil> _LLVMPointerSizeForAS__funptr)(TD,AS)
 
 
 cdef void* _LLVMIntPtrType__funptr = NULL
 # Returns the integer type that is the same size as a pointer on a target.
 # See the method llvm::DataLayout::getIntPtrType.
-cdef LLVMTypeRef LLVMIntPtrType(LLVMTargetDataRef TD) nogil:
+cdef LLVMTypeRef LLVMIntPtrType(LLVMTargetDataRef TD):
     global _LLVMIntPtrType__funptr
     __init_symbol(&_LLVMIntPtrType__funptr,"LLVMIntPtrType")
-    return (<LLVMTypeRef (*)(LLVMTargetDataRef) nogil> _LLVMIntPtrType__funptr)(TD)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMTargetDataRef) noexcept nogil> _LLVMIntPtrType__funptr)(TD)
 
 
 cdef void* _LLVMIntPtrTypeForAS__funptr = NULL
 # Returns the integer type that is the same size as a pointer on a target.
 # This version allows the address space to be specified.
 # See the method llvm::DataLayout::getIntPtrType.
-cdef LLVMTypeRef LLVMIntPtrTypeForAS(LLVMTargetDataRef TD,unsigned int AS) nogil:
+cdef LLVMTypeRef LLVMIntPtrTypeForAS(LLVMTargetDataRef TD,unsigned int AS):
     global _LLVMIntPtrTypeForAS__funptr
     __init_symbol(&_LLVMIntPtrTypeForAS__funptr,"LLVMIntPtrTypeForAS")
-    return (<LLVMTypeRef (*)(LLVMTargetDataRef,unsigned int) nogil> _LLVMIntPtrTypeForAS__funptr)(TD,AS)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMTargetDataRef,unsigned int) noexcept nogil> _LLVMIntPtrTypeForAS__funptr)(TD,AS)
 
 
 cdef void* _LLVMIntPtrTypeInContext__funptr = NULL
 # Returns the integer type that is the same size as a pointer on a target.
 # See the method llvm::DataLayout::getIntPtrType.
-cdef LLVMTypeRef LLVMIntPtrTypeInContext(LLVMContextRef C,LLVMTargetDataRef TD) nogil:
+cdef LLVMTypeRef LLVMIntPtrTypeInContext(LLVMContextRef C,LLVMTargetDataRef TD):
     global _LLVMIntPtrTypeInContext__funptr
     __init_symbol(&_LLVMIntPtrTypeInContext__funptr,"LLVMIntPtrTypeInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef,LLVMTargetDataRef) nogil> _LLVMIntPtrTypeInContext__funptr)(C,TD)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef,LLVMTargetDataRef) noexcept nogil> _LLVMIntPtrTypeInContext__funptr)(C,TD)
 
 
 cdef void* _LLVMIntPtrTypeForASInContext__funptr = NULL
 # Returns the integer type that is the same size as a pointer on a target.
 # This version allows the address space to be specified.
 # See the method llvm::DataLayout::getIntPtrType.
-cdef LLVMTypeRef LLVMIntPtrTypeForASInContext(LLVMContextRef C,LLVMTargetDataRef TD,unsigned int AS) nogil:
+cdef LLVMTypeRef LLVMIntPtrTypeForASInContext(LLVMContextRef C,LLVMTargetDataRef TD,unsigned int AS):
     global _LLVMIntPtrTypeForASInContext__funptr
     __init_symbol(&_LLVMIntPtrTypeForASInContext__funptr,"LLVMIntPtrTypeForASInContext")
-    return (<LLVMTypeRef (*)(LLVMContextRef,LLVMTargetDataRef,unsigned int) nogil> _LLVMIntPtrTypeForASInContext__funptr)(C,TD,AS)
+    with nogil:
+        return (<LLVMTypeRef (*)(LLVMContextRef,LLVMTargetDataRef,unsigned int) noexcept nogil> _LLVMIntPtrTypeForASInContext__funptr)(C,TD,AS)
 
 
 cdef void* _LLVMSizeOfTypeInBits__funptr = NULL
 # Computes the size of a type in bytes for a target.
 # See the method llvm::DataLayout::getTypeSizeInBits.
-cdef unsigned long long LLVMSizeOfTypeInBits(LLVMTargetDataRef TD,LLVMTypeRef Ty) nogil:
+cdef unsigned long long LLVMSizeOfTypeInBits(LLVMTargetDataRef TD,LLVMTypeRef Ty):
     global _LLVMSizeOfTypeInBits__funptr
     __init_symbol(&_LLVMSizeOfTypeInBits__funptr,"LLVMSizeOfTypeInBits")
-    return (<unsigned long long (*)(LLVMTargetDataRef,LLVMTypeRef) nogil> _LLVMSizeOfTypeInBits__funptr)(TD,Ty)
+    with nogil:
+        return (<unsigned long long (*)(LLVMTargetDataRef,LLVMTypeRef) noexcept nogil> _LLVMSizeOfTypeInBits__funptr)(TD,Ty)
 
 
 cdef void* _LLVMStoreSizeOfType__funptr = NULL
 # Computes the storage size of a type in bytes for a target.
 # See the method llvm::DataLayout::getTypeStoreSize.
-cdef unsigned long long LLVMStoreSizeOfType(LLVMTargetDataRef TD,LLVMTypeRef Ty) nogil:
+cdef unsigned long long LLVMStoreSizeOfType(LLVMTargetDataRef TD,LLVMTypeRef Ty):
     global _LLVMStoreSizeOfType__funptr
     __init_symbol(&_LLVMStoreSizeOfType__funptr,"LLVMStoreSizeOfType")
-    return (<unsigned long long (*)(LLVMTargetDataRef,LLVMTypeRef) nogil> _LLVMStoreSizeOfType__funptr)(TD,Ty)
+    with nogil:
+        return (<unsigned long long (*)(LLVMTargetDataRef,LLVMTypeRef) noexcept nogil> _LLVMStoreSizeOfType__funptr)(TD,Ty)
 
 
 cdef void* _LLVMABISizeOfType__funptr = NULL
 # Computes the ABI size of a type in bytes for a target.
 # See the method llvm::DataLayout::getTypeAllocSize.
-cdef unsigned long long LLVMABISizeOfType(LLVMTargetDataRef TD,LLVMTypeRef Ty) nogil:
+cdef unsigned long long LLVMABISizeOfType(LLVMTargetDataRef TD,LLVMTypeRef Ty):
     global _LLVMABISizeOfType__funptr
     __init_symbol(&_LLVMABISizeOfType__funptr,"LLVMABISizeOfType")
-    return (<unsigned long long (*)(LLVMTargetDataRef,LLVMTypeRef) nogil> _LLVMABISizeOfType__funptr)(TD,Ty)
+    with nogil:
+        return (<unsigned long long (*)(LLVMTargetDataRef,LLVMTypeRef) noexcept nogil> _LLVMABISizeOfType__funptr)(TD,Ty)
 
 
 cdef void* _LLVMABIAlignmentOfType__funptr = NULL
 # Computes the ABI alignment of a type in bytes for a target.
 # See the method llvm::DataLayout::getTypeABISize.
-cdef unsigned int LLVMABIAlignmentOfType(LLVMTargetDataRef TD,LLVMTypeRef Ty) nogil:
+cdef unsigned int LLVMABIAlignmentOfType(LLVMTargetDataRef TD,LLVMTypeRef Ty):
     global _LLVMABIAlignmentOfType__funptr
     __init_symbol(&_LLVMABIAlignmentOfType__funptr,"LLVMABIAlignmentOfType")
-    return (<unsigned int (*)(LLVMTargetDataRef,LLVMTypeRef) nogil> _LLVMABIAlignmentOfType__funptr)(TD,Ty)
+    with nogil:
+        return (<unsigned int (*)(LLVMTargetDataRef,LLVMTypeRef) noexcept nogil> _LLVMABIAlignmentOfType__funptr)(TD,Ty)
 
 
 cdef void* _LLVMCallFrameAlignmentOfType__funptr = NULL
 # Computes the call frame alignment of a type in bytes for a target.
 # See the method llvm::DataLayout::getTypeABISize.
-cdef unsigned int LLVMCallFrameAlignmentOfType(LLVMTargetDataRef TD,LLVMTypeRef Ty) nogil:
+cdef unsigned int LLVMCallFrameAlignmentOfType(LLVMTargetDataRef TD,LLVMTypeRef Ty):
     global _LLVMCallFrameAlignmentOfType__funptr
     __init_symbol(&_LLVMCallFrameAlignmentOfType__funptr,"LLVMCallFrameAlignmentOfType")
-    return (<unsigned int (*)(LLVMTargetDataRef,LLVMTypeRef) nogil> _LLVMCallFrameAlignmentOfType__funptr)(TD,Ty)
+    with nogil:
+        return (<unsigned int (*)(LLVMTargetDataRef,LLVMTypeRef) noexcept nogil> _LLVMCallFrameAlignmentOfType__funptr)(TD,Ty)
 
 
 cdef void* _LLVMPreferredAlignmentOfType__funptr = NULL
 # Computes the preferred alignment of a type in bytes for a target.
 # See the method llvm::DataLayout::getTypeABISize.
-cdef unsigned int LLVMPreferredAlignmentOfType(LLVMTargetDataRef TD,LLVMTypeRef Ty) nogil:
+cdef unsigned int LLVMPreferredAlignmentOfType(LLVMTargetDataRef TD,LLVMTypeRef Ty):
     global _LLVMPreferredAlignmentOfType__funptr
     __init_symbol(&_LLVMPreferredAlignmentOfType__funptr,"LLVMPreferredAlignmentOfType")
-    return (<unsigned int (*)(LLVMTargetDataRef,LLVMTypeRef) nogil> _LLVMPreferredAlignmentOfType__funptr)(TD,Ty)
+    with nogil:
+        return (<unsigned int (*)(LLVMTargetDataRef,LLVMTypeRef) noexcept nogil> _LLVMPreferredAlignmentOfType__funptr)(TD,Ty)
 
 
 cdef void* _LLVMPreferredAlignmentOfGlobal__funptr = NULL
 # Computes the preferred alignment of a global variable in bytes for a target.
 # See the method llvm::DataLayout::getPreferredAlignment.
-cdef unsigned int LLVMPreferredAlignmentOfGlobal(LLVMTargetDataRef TD,LLVMValueRef GlobalVar) nogil:
+cdef unsigned int LLVMPreferredAlignmentOfGlobal(LLVMTargetDataRef TD,LLVMValueRef GlobalVar):
     global _LLVMPreferredAlignmentOfGlobal__funptr
     __init_symbol(&_LLVMPreferredAlignmentOfGlobal__funptr,"LLVMPreferredAlignmentOfGlobal")
-    return (<unsigned int (*)(LLVMTargetDataRef,LLVMValueRef) nogil> _LLVMPreferredAlignmentOfGlobal__funptr)(TD,GlobalVar)
+    with nogil:
+        return (<unsigned int (*)(LLVMTargetDataRef,LLVMValueRef) noexcept nogil> _LLVMPreferredAlignmentOfGlobal__funptr)(TD,GlobalVar)
 
 
 cdef void* _LLVMElementAtOffset__funptr = NULL
 # Computes the structure element that contains the byte offset for a target.
 # See the method llvm::StructLayout::getElementContainingOffset.
-cdef unsigned int LLVMElementAtOffset(LLVMTargetDataRef TD,LLVMTypeRef StructTy,unsigned long long Offset) nogil:
+cdef unsigned int LLVMElementAtOffset(LLVMTargetDataRef TD,LLVMTypeRef StructTy,unsigned long long Offset):
     global _LLVMElementAtOffset__funptr
     __init_symbol(&_LLVMElementAtOffset__funptr,"LLVMElementAtOffset")
-    return (<unsigned int (*)(LLVMTargetDataRef,LLVMTypeRef,unsigned long long) nogil> _LLVMElementAtOffset__funptr)(TD,StructTy,Offset)
+    with nogil:
+        return (<unsigned int (*)(LLVMTargetDataRef,LLVMTypeRef,unsigned long long) noexcept nogil> _LLVMElementAtOffset__funptr)(TD,StructTy,Offset)
 
 
 cdef void* _LLVMOffsetOfElement__funptr = NULL
 # Computes the byte offset of the indexed struct element for a target.
 # See the method llvm::StructLayout::getElementContainingOffset.
-cdef unsigned long long LLVMOffsetOfElement(LLVMTargetDataRef TD,LLVMTypeRef StructTy,unsigned int Element) nogil:
+cdef unsigned long long LLVMOffsetOfElement(LLVMTargetDataRef TD,LLVMTypeRef StructTy,unsigned int Element):
     global _LLVMOffsetOfElement__funptr
     __init_symbol(&_LLVMOffsetOfElement__funptr,"LLVMOffsetOfElement")
-    return (<unsigned long long (*)(LLVMTargetDataRef,LLVMTypeRef,unsigned int) nogil> _LLVMOffsetOfElement__funptr)(TD,StructTy,Element)
+    with nogil:
+        return (<unsigned long long (*)(LLVMTargetDataRef,LLVMTypeRef,unsigned int) noexcept nogil> _LLVMOffsetOfElement__funptr)(TD,StructTy,Element)

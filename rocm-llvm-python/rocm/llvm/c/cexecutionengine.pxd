@@ -32,11 +32,11 @@ from rocm.llvm.c.ctypes cimport *
 # @ingroup LLVMC
 # 
 # @{
-cdef void LLVMLinkInMCJIT() nogil
+cdef void LLVMLinkInMCJIT()
 
 
 
-cdef void LLVMLinkInInterpreter() nogil
+cdef void LLVMLinkInInterpreter()
 
 
 cdef extern from "llvm-c/ExecutionEngine.h":
@@ -64,51 +64,51 @@ cdef extern from "llvm-c/ExecutionEngine.h":
         LLVMMCJITMemoryManagerRef MCJMM
 
 
-cdef LLVMGenericValueRef LLVMCreateGenericValueOfInt(LLVMTypeRef Ty,unsigned long long N,int IsSigned) nogil
+cdef LLVMGenericValueRef LLVMCreateGenericValueOfInt(LLVMTypeRef Ty,unsigned long long N,int IsSigned)
 
 
 
-cdef LLVMGenericValueRef LLVMCreateGenericValueOfPointer(void * P) nogil
+cdef LLVMGenericValueRef LLVMCreateGenericValueOfPointer(void * P)
 
 
 
-cdef LLVMGenericValueRef LLVMCreateGenericValueOfFloat(LLVMTypeRef Ty,double N) nogil
+cdef LLVMGenericValueRef LLVMCreateGenericValueOfFloat(LLVMTypeRef Ty,double N)
 
 
 
-cdef unsigned int LLVMGenericValueIntWidth(LLVMGenericValueRef GenValRef) nogil
+cdef unsigned int LLVMGenericValueIntWidth(LLVMGenericValueRef GenValRef)
 
 
 
-cdef unsigned long long LLVMGenericValueToInt(LLVMGenericValueRef GenVal,int IsSigned) nogil
+cdef unsigned long long LLVMGenericValueToInt(LLVMGenericValueRef GenVal,int IsSigned)
 
 
 
-cdef void * LLVMGenericValueToPointer(LLVMGenericValueRef GenVal) nogil
+cdef void * LLVMGenericValueToPointer(LLVMGenericValueRef GenVal)
 
 
 
-cdef double LLVMGenericValueToFloat(LLVMTypeRef TyRef,LLVMGenericValueRef GenVal) nogil
+cdef double LLVMGenericValueToFloat(LLVMTypeRef TyRef,LLVMGenericValueRef GenVal)
 
 
 
-cdef void LLVMDisposeGenericValue(LLVMGenericValueRef GenVal) nogil
+cdef void LLVMDisposeGenericValue(LLVMGenericValueRef GenVal)
 
 
 
-cdef int LLVMCreateExecutionEngineForModule(LLVMExecutionEngineRef* OutEE,LLVMModuleRef M,char ** OutError) nogil
+cdef int LLVMCreateExecutionEngineForModule(LLVMExecutionEngineRef* OutEE,LLVMModuleRef M,char ** OutError)
 
 
 
-cdef int LLVMCreateInterpreterForModule(LLVMExecutionEngineRef* OutInterp,LLVMModuleRef M,char ** OutError) nogil
+cdef int LLVMCreateInterpreterForModule(LLVMExecutionEngineRef* OutInterp,LLVMModuleRef M,char ** OutError)
 
 
 
-cdef int LLVMCreateJITCompilerForModule(LLVMExecutionEngineRef* OutJIT,LLVMModuleRef M,unsigned int OptLevel,char ** OutError) nogil
+cdef int LLVMCreateJITCompilerForModule(LLVMExecutionEngineRef* OutJIT,LLVMModuleRef M,unsigned int OptLevel,char ** OutError)
 
 
 
-cdef void LLVMInitializeMCJITCompilerOptions(LLVMMCJITCompilerOptions * Options,unsigned long SizeOfOptions) nogil
+cdef void LLVMInitializeMCJITCompilerOptions(LLVMMCJITCompilerOptions * Options,unsigned long SizeOfOptions)
 
 
 # 
@@ -127,76 +127,76 @@ cdef void LLVMInitializeMCJITCompilerOptions(LLVMMCJITCompilerOptions * Options,
 # Note that this is also correct, though possibly suboptimal:
 # 
 # LLVMCreateMCJITCompilerForModule(&jit, mod, 0, 0, &error);
-cdef int LLVMCreateMCJITCompilerForModule(LLVMExecutionEngineRef* OutJIT,LLVMModuleRef M,LLVMMCJITCompilerOptions * Options,unsigned long SizeOfOptions,char ** OutError) nogil
+cdef int LLVMCreateMCJITCompilerForModule(LLVMExecutionEngineRef* OutJIT,LLVMModuleRef M,LLVMMCJITCompilerOptions * Options,unsigned long SizeOfOptions,char ** OutError)
 
 
 
-cdef void LLVMDisposeExecutionEngine(LLVMExecutionEngineRef EE) nogil
+cdef void LLVMDisposeExecutionEngine(LLVMExecutionEngineRef EE)
 
 
 
-cdef void LLVMRunStaticConstructors(LLVMExecutionEngineRef EE) nogil
+cdef void LLVMRunStaticConstructors(LLVMExecutionEngineRef EE)
 
 
 
-cdef void LLVMRunStaticDestructors(LLVMExecutionEngineRef EE) nogil
+cdef void LLVMRunStaticDestructors(LLVMExecutionEngineRef EE)
 
 
 
-cdef int LLVMRunFunctionAsMain(LLVMExecutionEngineRef EE,LLVMValueRef F,unsigned int ArgC,const char *const * ArgV,const char *const * EnvP) nogil
+cdef int LLVMRunFunctionAsMain(LLVMExecutionEngineRef EE,LLVMValueRef F,unsigned int ArgC,const char *const * ArgV,const char *const * EnvP)
 
 
 
-cdef LLVMGenericValueRef LLVMRunFunction(LLVMExecutionEngineRef EE,LLVMValueRef F,unsigned int NumArgs,LLVMGenericValueRef* Args) nogil
+cdef LLVMGenericValueRef LLVMRunFunction(LLVMExecutionEngineRef EE,LLVMValueRef F,unsigned int NumArgs,LLVMGenericValueRef* Args)
 
 
 
-cdef void LLVMFreeMachineCodeForFunction(LLVMExecutionEngineRef EE,LLVMValueRef F) nogil
+cdef void LLVMFreeMachineCodeForFunction(LLVMExecutionEngineRef EE,LLVMValueRef F)
 
 
 
-cdef void LLVMAddModule(LLVMExecutionEngineRef EE,LLVMModuleRef M) nogil
+cdef void LLVMAddModule(LLVMExecutionEngineRef EE,LLVMModuleRef M)
 
 
 
-cdef int LLVMRemoveModule(LLVMExecutionEngineRef EE,LLVMModuleRef M,LLVMModuleRef* OutMod,char ** OutError) nogil
+cdef int LLVMRemoveModule(LLVMExecutionEngineRef EE,LLVMModuleRef M,LLVMModuleRef* OutMod,char ** OutError)
 
 
 
-cdef int LLVMFindFunction(LLVMExecutionEngineRef EE,const char * Name,LLVMValueRef* OutFn) nogil
+cdef int LLVMFindFunction(LLVMExecutionEngineRef EE,const char * Name,LLVMValueRef* OutFn)
 
 
 
-cdef void * LLVMRecompileAndRelinkFunction(LLVMExecutionEngineRef EE,LLVMValueRef Fn) nogil
+cdef void * LLVMRecompileAndRelinkFunction(LLVMExecutionEngineRef EE,LLVMValueRef Fn)
 
 
 
-cdef LLVMTargetDataRef LLVMGetExecutionEngineTargetData(LLVMExecutionEngineRef EE) nogil
+cdef LLVMTargetDataRef LLVMGetExecutionEngineTargetData(LLVMExecutionEngineRef EE)
 
 
 
-cdef LLVMTargetMachineRef LLVMGetExecutionEngineTargetMachine(LLVMExecutionEngineRef EE) nogil
+cdef LLVMTargetMachineRef LLVMGetExecutionEngineTargetMachine(LLVMExecutionEngineRef EE)
 
 
 
-cdef void LLVMAddGlobalMapping(LLVMExecutionEngineRef EE,LLVMValueRef Global,void * Addr) nogil
+cdef void LLVMAddGlobalMapping(LLVMExecutionEngineRef EE,LLVMValueRef Global,void * Addr)
 
 
 
-cdef void * LLVMGetPointerToGlobal(LLVMExecutionEngineRef EE,LLVMValueRef Global) nogil
+cdef void * LLVMGetPointerToGlobal(LLVMExecutionEngineRef EE,LLVMValueRef Global)
 
 
 
-cdef unsigned long LLVMGetGlobalValueAddress(LLVMExecutionEngineRef EE,const char * Name) nogil
+cdef unsigned long LLVMGetGlobalValueAddress(LLVMExecutionEngineRef EE,const char * Name)
 
 
 
-cdef unsigned long LLVMGetFunctionAddress(LLVMExecutionEngineRef EE,const char * Name) nogil
+cdef unsigned long LLVMGetFunctionAddress(LLVMExecutionEngineRef EE,const char * Name)
 
 
 # Returns true on error, false on success. If true is returned then the error
 # message is copied to OutStr and cleared in the ExecutionEngine instance.
-cdef int LLVMExecutionEngineGetErrMsg(LLVMExecutionEngineRef EE,char ** OutError) nogil
+cdef int LLVMExecutionEngineGetErrMsg(LLVMExecutionEngineRef EE,char ** OutError)
 
 
 cdef extern from "llvm-c/ExecutionEngine.h":
@@ -223,20 +223,20 @@ cdef LLVMMCJITMemoryManagerRef LLVMCreateSimpleMCJITMemoryManager(void * Opaque,
 
 
 
-cdef void LLVMDisposeMCJITMemoryManager(LLVMMCJITMemoryManagerRef MM) nogil
+cdef void LLVMDisposeMCJITMemoryManager(LLVMMCJITMemoryManagerRef MM)
 
 
 
-cdef LLVMJITEventListenerRef LLVMCreateGDBRegistrationListener() nogil
+cdef LLVMJITEventListenerRef LLVMCreateGDBRegistrationListener()
 
 
 
-cdef LLVMJITEventListenerRef LLVMCreateIntelJITEventListener() nogil
+cdef LLVMJITEventListenerRef LLVMCreateIntelJITEventListener()
 
 
 
-cdef LLVMJITEventListenerRef LLVMCreateOProfileJITEventListener() nogil
+cdef LLVMJITEventListenerRef LLVMCreateOProfileJITEventListener()
 
 
 
-cdef LLVMJITEventListenerRef LLVMCreatePerfJITEventListener() nogil
+cdef LLVMJITEventListenerRef LLVMCreatePerfJITEventListener()

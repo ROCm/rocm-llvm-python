@@ -25,19 +25,22 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMLinkInMCJIT__funptr = NULL
@@ -46,101 +49,115 @@ cdef void* _LLVMLinkInMCJIT__funptr = NULL
 # @ingroup LLVMC
 # 
 # @{
-cdef void LLVMLinkInMCJIT() nogil:
+cdef void LLVMLinkInMCJIT():
     global _LLVMLinkInMCJIT__funptr
     __init_symbol(&_LLVMLinkInMCJIT__funptr,"LLVMLinkInMCJIT")
-    (<void (*)() nogil> _LLVMLinkInMCJIT__funptr)()
+    with nogil:
+        (<void (*)() noexcept nogil> _LLVMLinkInMCJIT__funptr)()
 
 
 cdef void* _LLVMLinkInInterpreter__funptr = NULL
-cdef void LLVMLinkInInterpreter() nogil:
+cdef void LLVMLinkInInterpreter():
     global _LLVMLinkInInterpreter__funptr
     __init_symbol(&_LLVMLinkInInterpreter__funptr,"LLVMLinkInInterpreter")
-    (<void (*)() nogil> _LLVMLinkInInterpreter__funptr)()
+    with nogil:
+        (<void (*)() noexcept nogil> _LLVMLinkInInterpreter__funptr)()
 
 
 cdef void* _LLVMCreateGenericValueOfInt__funptr = NULL
-cdef LLVMGenericValueRef LLVMCreateGenericValueOfInt(LLVMTypeRef Ty,unsigned long long N,int IsSigned) nogil:
+cdef LLVMGenericValueRef LLVMCreateGenericValueOfInt(LLVMTypeRef Ty,unsigned long long N,int IsSigned):
     global _LLVMCreateGenericValueOfInt__funptr
     __init_symbol(&_LLVMCreateGenericValueOfInt__funptr,"LLVMCreateGenericValueOfInt")
-    return (<LLVMGenericValueRef (*)(LLVMTypeRef,unsigned long long,int) nogil> _LLVMCreateGenericValueOfInt__funptr)(Ty,N,IsSigned)
+    with nogil:
+        return (<LLVMGenericValueRef (*)(LLVMTypeRef,unsigned long long,int) noexcept nogil> _LLVMCreateGenericValueOfInt__funptr)(Ty,N,IsSigned)
 
 
 cdef void* _LLVMCreateGenericValueOfPointer__funptr = NULL
-cdef LLVMGenericValueRef LLVMCreateGenericValueOfPointer(void * P) nogil:
+cdef LLVMGenericValueRef LLVMCreateGenericValueOfPointer(void * P):
     global _LLVMCreateGenericValueOfPointer__funptr
     __init_symbol(&_LLVMCreateGenericValueOfPointer__funptr,"LLVMCreateGenericValueOfPointer")
-    return (<LLVMGenericValueRef (*)(void *) nogil> _LLVMCreateGenericValueOfPointer__funptr)(P)
+    with nogil:
+        return (<LLVMGenericValueRef (*)(void *) noexcept nogil> _LLVMCreateGenericValueOfPointer__funptr)(P)
 
 
 cdef void* _LLVMCreateGenericValueOfFloat__funptr = NULL
-cdef LLVMGenericValueRef LLVMCreateGenericValueOfFloat(LLVMTypeRef Ty,double N) nogil:
+cdef LLVMGenericValueRef LLVMCreateGenericValueOfFloat(LLVMTypeRef Ty,double N):
     global _LLVMCreateGenericValueOfFloat__funptr
     __init_symbol(&_LLVMCreateGenericValueOfFloat__funptr,"LLVMCreateGenericValueOfFloat")
-    return (<LLVMGenericValueRef (*)(LLVMTypeRef,double) nogil> _LLVMCreateGenericValueOfFloat__funptr)(Ty,N)
+    with nogil:
+        return (<LLVMGenericValueRef (*)(LLVMTypeRef,double) noexcept nogil> _LLVMCreateGenericValueOfFloat__funptr)(Ty,N)
 
 
 cdef void* _LLVMGenericValueIntWidth__funptr = NULL
-cdef unsigned int LLVMGenericValueIntWidth(LLVMGenericValueRef GenValRef) nogil:
+cdef unsigned int LLVMGenericValueIntWidth(LLVMGenericValueRef GenValRef):
     global _LLVMGenericValueIntWidth__funptr
     __init_symbol(&_LLVMGenericValueIntWidth__funptr,"LLVMGenericValueIntWidth")
-    return (<unsigned int (*)(LLVMGenericValueRef) nogil> _LLVMGenericValueIntWidth__funptr)(GenValRef)
+    with nogil:
+        return (<unsigned int (*)(LLVMGenericValueRef) noexcept nogil> _LLVMGenericValueIntWidth__funptr)(GenValRef)
 
 
 cdef void* _LLVMGenericValueToInt__funptr = NULL
-cdef unsigned long long LLVMGenericValueToInt(LLVMGenericValueRef GenVal,int IsSigned) nogil:
+cdef unsigned long long LLVMGenericValueToInt(LLVMGenericValueRef GenVal,int IsSigned):
     global _LLVMGenericValueToInt__funptr
     __init_symbol(&_LLVMGenericValueToInt__funptr,"LLVMGenericValueToInt")
-    return (<unsigned long long (*)(LLVMGenericValueRef,int) nogil> _LLVMGenericValueToInt__funptr)(GenVal,IsSigned)
+    with nogil:
+        return (<unsigned long long (*)(LLVMGenericValueRef,int) noexcept nogil> _LLVMGenericValueToInt__funptr)(GenVal,IsSigned)
 
 
 cdef void* _LLVMGenericValueToPointer__funptr = NULL
-cdef void * LLVMGenericValueToPointer(LLVMGenericValueRef GenVal) nogil:
+cdef void * LLVMGenericValueToPointer(LLVMGenericValueRef GenVal):
     global _LLVMGenericValueToPointer__funptr
     __init_symbol(&_LLVMGenericValueToPointer__funptr,"LLVMGenericValueToPointer")
-    return (<void * (*)(LLVMGenericValueRef) nogil> _LLVMGenericValueToPointer__funptr)(GenVal)
+    with nogil:
+        return (<void * (*)(LLVMGenericValueRef) noexcept nogil> _LLVMGenericValueToPointer__funptr)(GenVal)
 
 
 cdef void* _LLVMGenericValueToFloat__funptr = NULL
-cdef double LLVMGenericValueToFloat(LLVMTypeRef TyRef,LLVMGenericValueRef GenVal) nogil:
+cdef double LLVMGenericValueToFloat(LLVMTypeRef TyRef,LLVMGenericValueRef GenVal):
     global _LLVMGenericValueToFloat__funptr
     __init_symbol(&_LLVMGenericValueToFloat__funptr,"LLVMGenericValueToFloat")
-    return (<double (*)(LLVMTypeRef,LLVMGenericValueRef) nogil> _LLVMGenericValueToFloat__funptr)(TyRef,GenVal)
+    with nogil:
+        return (<double (*)(LLVMTypeRef,LLVMGenericValueRef) noexcept nogil> _LLVMGenericValueToFloat__funptr)(TyRef,GenVal)
 
 
 cdef void* _LLVMDisposeGenericValue__funptr = NULL
-cdef void LLVMDisposeGenericValue(LLVMGenericValueRef GenVal) nogil:
+cdef void LLVMDisposeGenericValue(LLVMGenericValueRef GenVal):
     global _LLVMDisposeGenericValue__funptr
     __init_symbol(&_LLVMDisposeGenericValue__funptr,"LLVMDisposeGenericValue")
-    (<void (*)(LLVMGenericValueRef) nogil> _LLVMDisposeGenericValue__funptr)(GenVal)
+    with nogil:
+        (<void (*)(LLVMGenericValueRef) noexcept nogil> _LLVMDisposeGenericValue__funptr)(GenVal)
 
 
 cdef void* _LLVMCreateExecutionEngineForModule__funptr = NULL
-cdef int LLVMCreateExecutionEngineForModule(LLVMExecutionEngineRef* OutEE,LLVMModuleRef M,char ** OutError) nogil:
+cdef int LLVMCreateExecutionEngineForModule(LLVMExecutionEngineRef* OutEE,LLVMModuleRef M,char ** OutError):
     global _LLVMCreateExecutionEngineForModule__funptr
     __init_symbol(&_LLVMCreateExecutionEngineForModule__funptr,"LLVMCreateExecutionEngineForModule")
-    return (<int (*)(LLVMExecutionEngineRef*,LLVMModuleRef,char **) nogil> _LLVMCreateExecutionEngineForModule__funptr)(OutEE,M,OutError)
+    with nogil:
+        return (<int (*)(LLVMExecutionEngineRef*,LLVMModuleRef,char **) noexcept nogil> _LLVMCreateExecutionEngineForModule__funptr)(OutEE,M,OutError)
 
 
 cdef void* _LLVMCreateInterpreterForModule__funptr = NULL
-cdef int LLVMCreateInterpreterForModule(LLVMExecutionEngineRef* OutInterp,LLVMModuleRef M,char ** OutError) nogil:
+cdef int LLVMCreateInterpreterForModule(LLVMExecutionEngineRef* OutInterp,LLVMModuleRef M,char ** OutError):
     global _LLVMCreateInterpreterForModule__funptr
     __init_symbol(&_LLVMCreateInterpreterForModule__funptr,"LLVMCreateInterpreterForModule")
-    return (<int (*)(LLVMExecutionEngineRef*,LLVMModuleRef,char **) nogil> _LLVMCreateInterpreterForModule__funptr)(OutInterp,M,OutError)
+    with nogil:
+        return (<int (*)(LLVMExecutionEngineRef*,LLVMModuleRef,char **) noexcept nogil> _LLVMCreateInterpreterForModule__funptr)(OutInterp,M,OutError)
 
 
 cdef void* _LLVMCreateJITCompilerForModule__funptr = NULL
-cdef int LLVMCreateJITCompilerForModule(LLVMExecutionEngineRef* OutJIT,LLVMModuleRef M,unsigned int OptLevel,char ** OutError) nogil:
+cdef int LLVMCreateJITCompilerForModule(LLVMExecutionEngineRef* OutJIT,LLVMModuleRef M,unsigned int OptLevel,char ** OutError):
     global _LLVMCreateJITCompilerForModule__funptr
     __init_symbol(&_LLVMCreateJITCompilerForModule__funptr,"LLVMCreateJITCompilerForModule")
-    return (<int (*)(LLVMExecutionEngineRef*,LLVMModuleRef,unsigned int,char **) nogil> _LLVMCreateJITCompilerForModule__funptr)(OutJIT,M,OptLevel,OutError)
+    with nogil:
+        return (<int (*)(LLVMExecutionEngineRef*,LLVMModuleRef,unsigned int,char **) noexcept nogil> _LLVMCreateJITCompilerForModule__funptr)(OutJIT,M,OptLevel,OutError)
 
 
 cdef void* _LLVMInitializeMCJITCompilerOptions__funptr = NULL
-cdef void LLVMInitializeMCJITCompilerOptions(LLVMMCJITCompilerOptions * Options,unsigned long SizeOfOptions) nogil:
+cdef void LLVMInitializeMCJITCompilerOptions(LLVMMCJITCompilerOptions * Options,unsigned long SizeOfOptions):
     global _LLVMInitializeMCJITCompilerOptions__funptr
     __init_symbol(&_LLVMInitializeMCJITCompilerOptions__funptr,"LLVMInitializeMCJITCompilerOptions")
-    (<void (*)(LLVMMCJITCompilerOptions *,unsigned long) nogil> _LLVMInitializeMCJITCompilerOptions__funptr)(Options,SizeOfOptions)
+    with nogil:
+        (<void (*)(LLVMMCJITCompilerOptions *,unsigned long) noexcept nogil> _LLVMInitializeMCJITCompilerOptions__funptr)(Options,SizeOfOptions)
 
 
 cdef void* _LLVMCreateMCJITCompilerForModule__funptr = NULL
@@ -160,131 +177,149 @@ cdef void* _LLVMCreateMCJITCompilerForModule__funptr = NULL
 # Note that this is also correct, though possibly suboptimal:
 # 
 # LLVMCreateMCJITCompilerForModule(&jit, mod, 0, 0, &error);
-cdef int LLVMCreateMCJITCompilerForModule(LLVMExecutionEngineRef* OutJIT,LLVMModuleRef M,LLVMMCJITCompilerOptions * Options,unsigned long SizeOfOptions,char ** OutError) nogil:
+cdef int LLVMCreateMCJITCompilerForModule(LLVMExecutionEngineRef* OutJIT,LLVMModuleRef M,LLVMMCJITCompilerOptions * Options,unsigned long SizeOfOptions,char ** OutError):
     global _LLVMCreateMCJITCompilerForModule__funptr
     __init_symbol(&_LLVMCreateMCJITCompilerForModule__funptr,"LLVMCreateMCJITCompilerForModule")
-    return (<int (*)(LLVMExecutionEngineRef*,LLVMModuleRef,LLVMMCJITCompilerOptions *,unsigned long,char **) nogil> _LLVMCreateMCJITCompilerForModule__funptr)(OutJIT,M,Options,SizeOfOptions,OutError)
+    with nogil:
+        return (<int (*)(LLVMExecutionEngineRef*,LLVMModuleRef,LLVMMCJITCompilerOptions *,unsigned long,char **) noexcept nogil> _LLVMCreateMCJITCompilerForModule__funptr)(OutJIT,M,Options,SizeOfOptions,OutError)
 
 
 cdef void* _LLVMDisposeExecutionEngine__funptr = NULL
-cdef void LLVMDisposeExecutionEngine(LLVMExecutionEngineRef EE) nogil:
+cdef void LLVMDisposeExecutionEngine(LLVMExecutionEngineRef EE):
     global _LLVMDisposeExecutionEngine__funptr
     __init_symbol(&_LLVMDisposeExecutionEngine__funptr,"LLVMDisposeExecutionEngine")
-    (<void (*)(LLVMExecutionEngineRef) nogil> _LLVMDisposeExecutionEngine__funptr)(EE)
+    with nogil:
+        (<void (*)(LLVMExecutionEngineRef) noexcept nogil> _LLVMDisposeExecutionEngine__funptr)(EE)
 
 
 cdef void* _LLVMRunStaticConstructors__funptr = NULL
-cdef void LLVMRunStaticConstructors(LLVMExecutionEngineRef EE) nogil:
+cdef void LLVMRunStaticConstructors(LLVMExecutionEngineRef EE):
     global _LLVMRunStaticConstructors__funptr
     __init_symbol(&_LLVMRunStaticConstructors__funptr,"LLVMRunStaticConstructors")
-    (<void (*)(LLVMExecutionEngineRef) nogil> _LLVMRunStaticConstructors__funptr)(EE)
+    with nogil:
+        (<void (*)(LLVMExecutionEngineRef) noexcept nogil> _LLVMRunStaticConstructors__funptr)(EE)
 
 
 cdef void* _LLVMRunStaticDestructors__funptr = NULL
-cdef void LLVMRunStaticDestructors(LLVMExecutionEngineRef EE) nogil:
+cdef void LLVMRunStaticDestructors(LLVMExecutionEngineRef EE):
     global _LLVMRunStaticDestructors__funptr
     __init_symbol(&_LLVMRunStaticDestructors__funptr,"LLVMRunStaticDestructors")
-    (<void (*)(LLVMExecutionEngineRef) nogil> _LLVMRunStaticDestructors__funptr)(EE)
+    with nogil:
+        (<void (*)(LLVMExecutionEngineRef) noexcept nogil> _LLVMRunStaticDestructors__funptr)(EE)
 
 
 cdef void* _LLVMRunFunctionAsMain__funptr = NULL
-cdef int LLVMRunFunctionAsMain(LLVMExecutionEngineRef EE,LLVMValueRef F,unsigned int ArgC,const char *const * ArgV,const char *const * EnvP) nogil:
+cdef int LLVMRunFunctionAsMain(LLVMExecutionEngineRef EE,LLVMValueRef F,unsigned int ArgC,const char *const * ArgV,const char *const * EnvP):
     global _LLVMRunFunctionAsMain__funptr
     __init_symbol(&_LLVMRunFunctionAsMain__funptr,"LLVMRunFunctionAsMain")
-    return (<int (*)(LLVMExecutionEngineRef,LLVMValueRef,unsigned int,const char *const *,const char *const *) nogil> _LLVMRunFunctionAsMain__funptr)(EE,F,ArgC,ArgV,EnvP)
+    with nogil:
+        return (<int (*)(LLVMExecutionEngineRef,LLVMValueRef,unsigned int,const char *const *,const char *const *) noexcept nogil> _LLVMRunFunctionAsMain__funptr)(EE,F,ArgC,ArgV,EnvP)
 
 
 cdef void* _LLVMRunFunction__funptr = NULL
-cdef LLVMGenericValueRef LLVMRunFunction(LLVMExecutionEngineRef EE,LLVMValueRef F,unsigned int NumArgs,LLVMGenericValueRef* Args) nogil:
+cdef LLVMGenericValueRef LLVMRunFunction(LLVMExecutionEngineRef EE,LLVMValueRef F,unsigned int NumArgs,LLVMGenericValueRef* Args):
     global _LLVMRunFunction__funptr
     __init_symbol(&_LLVMRunFunction__funptr,"LLVMRunFunction")
-    return (<LLVMGenericValueRef (*)(LLVMExecutionEngineRef,LLVMValueRef,unsigned int,LLVMGenericValueRef*) nogil> _LLVMRunFunction__funptr)(EE,F,NumArgs,Args)
+    with nogil:
+        return (<LLVMGenericValueRef (*)(LLVMExecutionEngineRef,LLVMValueRef,unsigned int,LLVMGenericValueRef*) noexcept nogil> _LLVMRunFunction__funptr)(EE,F,NumArgs,Args)
 
 
 cdef void* _LLVMFreeMachineCodeForFunction__funptr = NULL
-cdef void LLVMFreeMachineCodeForFunction(LLVMExecutionEngineRef EE,LLVMValueRef F) nogil:
+cdef void LLVMFreeMachineCodeForFunction(LLVMExecutionEngineRef EE,LLVMValueRef F):
     global _LLVMFreeMachineCodeForFunction__funptr
     __init_symbol(&_LLVMFreeMachineCodeForFunction__funptr,"LLVMFreeMachineCodeForFunction")
-    (<void (*)(LLVMExecutionEngineRef,LLVMValueRef) nogil> _LLVMFreeMachineCodeForFunction__funptr)(EE,F)
+    with nogil:
+        (<void (*)(LLVMExecutionEngineRef,LLVMValueRef) noexcept nogil> _LLVMFreeMachineCodeForFunction__funptr)(EE,F)
 
 
 cdef void* _LLVMAddModule__funptr = NULL
-cdef void LLVMAddModule(LLVMExecutionEngineRef EE,LLVMModuleRef M) nogil:
+cdef void LLVMAddModule(LLVMExecutionEngineRef EE,LLVMModuleRef M):
     global _LLVMAddModule__funptr
     __init_symbol(&_LLVMAddModule__funptr,"LLVMAddModule")
-    (<void (*)(LLVMExecutionEngineRef,LLVMModuleRef) nogil> _LLVMAddModule__funptr)(EE,M)
+    with nogil:
+        (<void (*)(LLVMExecutionEngineRef,LLVMModuleRef) noexcept nogil> _LLVMAddModule__funptr)(EE,M)
 
 
 cdef void* _LLVMRemoveModule__funptr = NULL
-cdef int LLVMRemoveModule(LLVMExecutionEngineRef EE,LLVMModuleRef M,LLVMModuleRef* OutMod,char ** OutError) nogil:
+cdef int LLVMRemoveModule(LLVMExecutionEngineRef EE,LLVMModuleRef M,LLVMModuleRef* OutMod,char ** OutError):
     global _LLVMRemoveModule__funptr
     __init_symbol(&_LLVMRemoveModule__funptr,"LLVMRemoveModule")
-    return (<int (*)(LLVMExecutionEngineRef,LLVMModuleRef,LLVMModuleRef*,char **) nogil> _LLVMRemoveModule__funptr)(EE,M,OutMod,OutError)
+    with nogil:
+        return (<int (*)(LLVMExecutionEngineRef,LLVMModuleRef,LLVMModuleRef*,char **) noexcept nogil> _LLVMRemoveModule__funptr)(EE,M,OutMod,OutError)
 
 
 cdef void* _LLVMFindFunction__funptr = NULL
-cdef int LLVMFindFunction(LLVMExecutionEngineRef EE,const char * Name,LLVMValueRef* OutFn) nogil:
+cdef int LLVMFindFunction(LLVMExecutionEngineRef EE,const char * Name,LLVMValueRef* OutFn):
     global _LLVMFindFunction__funptr
     __init_symbol(&_LLVMFindFunction__funptr,"LLVMFindFunction")
-    return (<int (*)(LLVMExecutionEngineRef,const char *,LLVMValueRef*) nogil> _LLVMFindFunction__funptr)(EE,Name,OutFn)
+    with nogil:
+        return (<int (*)(LLVMExecutionEngineRef,const char *,LLVMValueRef*) noexcept nogil> _LLVMFindFunction__funptr)(EE,Name,OutFn)
 
 
 cdef void* _LLVMRecompileAndRelinkFunction__funptr = NULL
-cdef void * LLVMRecompileAndRelinkFunction(LLVMExecutionEngineRef EE,LLVMValueRef Fn) nogil:
+cdef void * LLVMRecompileAndRelinkFunction(LLVMExecutionEngineRef EE,LLVMValueRef Fn):
     global _LLVMRecompileAndRelinkFunction__funptr
     __init_symbol(&_LLVMRecompileAndRelinkFunction__funptr,"LLVMRecompileAndRelinkFunction")
-    return (<void * (*)(LLVMExecutionEngineRef,LLVMValueRef) nogil> _LLVMRecompileAndRelinkFunction__funptr)(EE,Fn)
+    with nogil:
+        return (<void * (*)(LLVMExecutionEngineRef,LLVMValueRef) noexcept nogil> _LLVMRecompileAndRelinkFunction__funptr)(EE,Fn)
 
 
 cdef void* _LLVMGetExecutionEngineTargetData__funptr = NULL
-cdef LLVMTargetDataRef LLVMGetExecutionEngineTargetData(LLVMExecutionEngineRef EE) nogil:
+cdef LLVMTargetDataRef LLVMGetExecutionEngineTargetData(LLVMExecutionEngineRef EE):
     global _LLVMGetExecutionEngineTargetData__funptr
     __init_symbol(&_LLVMGetExecutionEngineTargetData__funptr,"LLVMGetExecutionEngineTargetData")
-    return (<LLVMTargetDataRef (*)(LLVMExecutionEngineRef) nogil> _LLVMGetExecutionEngineTargetData__funptr)(EE)
+    with nogil:
+        return (<LLVMTargetDataRef (*)(LLVMExecutionEngineRef) noexcept nogil> _LLVMGetExecutionEngineTargetData__funptr)(EE)
 
 
 cdef void* _LLVMGetExecutionEngineTargetMachine__funptr = NULL
-cdef LLVMTargetMachineRef LLVMGetExecutionEngineTargetMachine(LLVMExecutionEngineRef EE) nogil:
+cdef LLVMTargetMachineRef LLVMGetExecutionEngineTargetMachine(LLVMExecutionEngineRef EE):
     global _LLVMGetExecutionEngineTargetMachine__funptr
     __init_symbol(&_LLVMGetExecutionEngineTargetMachine__funptr,"LLVMGetExecutionEngineTargetMachine")
-    return (<LLVMTargetMachineRef (*)(LLVMExecutionEngineRef) nogil> _LLVMGetExecutionEngineTargetMachine__funptr)(EE)
+    with nogil:
+        return (<LLVMTargetMachineRef (*)(LLVMExecutionEngineRef) noexcept nogil> _LLVMGetExecutionEngineTargetMachine__funptr)(EE)
 
 
 cdef void* _LLVMAddGlobalMapping__funptr = NULL
-cdef void LLVMAddGlobalMapping(LLVMExecutionEngineRef EE,LLVMValueRef Global,void * Addr) nogil:
+cdef void LLVMAddGlobalMapping(LLVMExecutionEngineRef EE,LLVMValueRef Global,void * Addr):
     global _LLVMAddGlobalMapping__funptr
     __init_symbol(&_LLVMAddGlobalMapping__funptr,"LLVMAddGlobalMapping")
-    (<void (*)(LLVMExecutionEngineRef,LLVMValueRef,void *) nogil> _LLVMAddGlobalMapping__funptr)(EE,Global,Addr)
+    with nogil:
+        (<void (*)(LLVMExecutionEngineRef,LLVMValueRef,void *) noexcept nogil> _LLVMAddGlobalMapping__funptr)(EE,Global,Addr)
 
 
 cdef void* _LLVMGetPointerToGlobal__funptr = NULL
-cdef void * LLVMGetPointerToGlobal(LLVMExecutionEngineRef EE,LLVMValueRef Global) nogil:
+cdef void * LLVMGetPointerToGlobal(LLVMExecutionEngineRef EE,LLVMValueRef Global):
     global _LLVMGetPointerToGlobal__funptr
     __init_symbol(&_LLVMGetPointerToGlobal__funptr,"LLVMGetPointerToGlobal")
-    return (<void * (*)(LLVMExecutionEngineRef,LLVMValueRef) nogil> _LLVMGetPointerToGlobal__funptr)(EE,Global)
+    with nogil:
+        return (<void * (*)(LLVMExecutionEngineRef,LLVMValueRef) noexcept nogil> _LLVMGetPointerToGlobal__funptr)(EE,Global)
 
 
 cdef void* _LLVMGetGlobalValueAddress__funptr = NULL
-cdef unsigned long LLVMGetGlobalValueAddress(LLVMExecutionEngineRef EE,const char * Name) nogil:
+cdef unsigned long LLVMGetGlobalValueAddress(LLVMExecutionEngineRef EE,const char * Name):
     global _LLVMGetGlobalValueAddress__funptr
     __init_symbol(&_LLVMGetGlobalValueAddress__funptr,"LLVMGetGlobalValueAddress")
-    return (<unsigned long (*)(LLVMExecutionEngineRef,const char *) nogil> _LLVMGetGlobalValueAddress__funptr)(EE,Name)
+    with nogil:
+        return (<unsigned long (*)(LLVMExecutionEngineRef,const char *) noexcept nogil> _LLVMGetGlobalValueAddress__funptr)(EE,Name)
 
 
 cdef void* _LLVMGetFunctionAddress__funptr = NULL
-cdef unsigned long LLVMGetFunctionAddress(LLVMExecutionEngineRef EE,const char * Name) nogil:
+cdef unsigned long LLVMGetFunctionAddress(LLVMExecutionEngineRef EE,const char * Name):
     global _LLVMGetFunctionAddress__funptr
     __init_symbol(&_LLVMGetFunctionAddress__funptr,"LLVMGetFunctionAddress")
-    return (<unsigned long (*)(LLVMExecutionEngineRef,const char *) nogil> _LLVMGetFunctionAddress__funptr)(EE,Name)
+    with nogil:
+        return (<unsigned long (*)(LLVMExecutionEngineRef,const char *) noexcept nogil> _LLVMGetFunctionAddress__funptr)(EE,Name)
 
 
 cdef void* _LLVMExecutionEngineGetErrMsg__funptr = NULL
 # Returns true on error, false on success. If true is returned then the error
 # message is copied to OutStr and cleared in the ExecutionEngine instance.
-cdef int LLVMExecutionEngineGetErrMsg(LLVMExecutionEngineRef EE,char ** OutError) nogil:
+cdef int LLVMExecutionEngineGetErrMsg(LLVMExecutionEngineRef EE,char ** OutError):
     global _LLVMExecutionEngineGetErrMsg__funptr
     __init_symbol(&_LLVMExecutionEngineGetErrMsg__funptr,"LLVMExecutionEngineGetErrMsg")
-    return (<int (*)(LLVMExecutionEngineRef,char **) nogil> _LLVMExecutionEngineGetErrMsg__funptr)(EE,OutError)
+    with nogil:
+        return (<int (*)(LLVMExecutionEngineRef,char **) noexcept nogil> _LLVMExecutionEngineGetErrMsg__funptr)(EE,OutError)
 
 
 cdef void* _LLVMCreateSimpleMCJITMemoryManager__funptr = NULL
@@ -301,39 +336,45 @@ cdef void* _LLVMCreateSimpleMCJITMemoryManager__funptr = NULL
 cdef LLVMMCJITMemoryManagerRef LLVMCreateSimpleMCJITMemoryManager(void * Opaque,LLVMMemoryManagerAllocateCodeSectionCallback AllocateCodeSection,LLVMMemoryManagerAllocateDataSectionCallback AllocateDataSection,LLVMMemoryManagerFinalizeMemoryCallback FinalizeMemory,LLVMMemoryManagerDestroyCallback Destroy):
     global _LLVMCreateSimpleMCJITMemoryManager__funptr
     __init_symbol(&_LLVMCreateSimpleMCJITMemoryManager__funptr,"LLVMCreateSimpleMCJITMemoryManager")
-    return (<LLVMMCJITMemoryManagerRef (*)(void *,LLVMMemoryManagerAllocateCodeSectionCallback,LLVMMemoryManagerAllocateDataSectionCallback,LLVMMemoryManagerFinalizeMemoryCallback,LLVMMemoryManagerDestroyCallback)> _LLVMCreateSimpleMCJITMemoryManager__funptr)(Opaque,AllocateCodeSection,AllocateDataSection,FinalizeMemory,Destroy)
+    with nogil:
+        return (<LLVMMCJITMemoryManagerRef (*)(void *,LLVMMemoryManagerAllocateCodeSectionCallback,LLVMMemoryManagerAllocateDataSectionCallback,LLVMMemoryManagerFinalizeMemoryCallback,LLVMMemoryManagerDestroyCallback) noexcept nogil> _LLVMCreateSimpleMCJITMemoryManager__funptr)(Opaque,AllocateCodeSection,AllocateDataSection,FinalizeMemory,Destroy)
 
 
 cdef void* _LLVMDisposeMCJITMemoryManager__funptr = NULL
-cdef void LLVMDisposeMCJITMemoryManager(LLVMMCJITMemoryManagerRef MM) nogil:
+cdef void LLVMDisposeMCJITMemoryManager(LLVMMCJITMemoryManagerRef MM):
     global _LLVMDisposeMCJITMemoryManager__funptr
     __init_symbol(&_LLVMDisposeMCJITMemoryManager__funptr,"LLVMDisposeMCJITMemoryManager")
-    (<void (*)(LLVMMCJITMemoryManagerRef) nogil> _LLVMDisposeMCJITMemoryManager__funptr)(MM)
+    with nogil:
+        (<void (*)(LLVMMCJITMemoryManagerRef) noexcept nogil> _LLVMDisposeMCJITMemoryManager__funptr)(MM)
 
 
 cdef void* _LLVMCreateGDBRegistrationListener__funptr = NULL
-cdef LLVMJITEventListenerRef LLVMCreateGDBRegistrationListener() nogil:
+cdef LLVMJITEventListenerRef LLVMCreateGDBRegistrationListener():
     global _LLVMCreateGDBRegistrationListener__funptr
     __init_symbol(&_LLVMCreateGDBRegistrationListener__funptr,"LLVMCreateGDBRegistrationListener")
-    return (<LLVMJITEventListenerRef (*)() nogil> _LLVMCreateGDBRegistrationListener__funptr)()
+    with nogil:
+        return (<LLVMJITEventListenerRef (*)() noexcept nogil> _LLVMCreateGDBRegistrationListener__funptr)()
 
 
 cdef void* _LLVMCreateIntelJITEventListener__funptr = NULL
-cdef LLVMJITEventListenerRef LLVMCreateIntelJITEventListener() nogil:
+cdef LLVMJITEventListenerRef LLVMCreateIntelJITEventListener():
     global _LLVMCreateIntelJITEventListener__funptr
     __init_symbol(&_LLVMCreateIntelJITEventListener__funptr,"LLVMCreateIntelJITEventListener")
-    return (<LLVMJITEventListenerRef (*)() nogil> _LLVMCreateIntelJITEventListener__funptr)()
+    with nogil:
+        return (<LLVMJITEventListenerRef (*)() noexcept nogil> _LLVMCreateIntelJITEventListener__funptr)()
 
 
 cdef void* _LLVMCreateOProfileJITEventListener__funptr = NULL
-cdef LLVMJITEventListenerRef LLVMCreateOProfileJITEventListener() nogil:
+cdef LLVMJITEventListenerRef LLVMCreateOProfileJITEventListener():
     global _LLVMCreateOProfileJITEventListener__funptr
     __init_symbol(&_LLVMCreateOProfileJITEventListener__funptr,"LLVMCreateOProfileJITEventListener")
-    return (<LLVMJITEventListenerRef (*)() nogil> _LLVMCreateOProfileJITEventListener__funptr)()
+    with nogil:
+        return (<LLVMJITEventListenerRef (*)() noexcept nogil> _LLVMCreateOProfileJITEventListener__funptr)()
 
 
 cdef void* _LLVMCreatePerfJITEventListener__funptr = NULL
-cdef LLVMJITEventListenerRef LLVMCreatePerfJITEventListener() nogil:
+cdef LLVMJITEventListenerRef LLVMCreatePerfJITEventListener():
     global _LLVMCreatePerfJITEventListener__funptr
     __init_symbol(&_LLVMCreatePerfJITEventListener__funptr,"LLVMCreatePerfJITEventListener")
-    return (<LLVMJITEventListenerRef (*)() nogil> _LLVMCreatePerfJITEventListener__funptr)()
+    with nogil:
+        return (<LLVMJITEventListenerRef (*)() noexcept nogil> _LLVMCreatePerfJITEventListener__funptr)()

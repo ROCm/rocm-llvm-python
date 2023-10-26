@@ -33,7 +33,6 @@ import cython
 import ctypes
 import enum
 
-from rocm.llvm.c.disassemblertypes import LLVMDisasmContextRef
 
 @cython.embedsignature(True)
 def LLVMCreateDisasm(const char * TripleName, object DisInfo, int TagType, object GetOpInfo, object SymbolLookUp):

@@ -41,36 +41,36 @@ cdef extern from "llvm-c/blake3.h":
         unsigned char[1760] cv_stack
 
 
-cdef const char * llvm_blake3_version() nogil
+cdef const char * llvm_blake3_version()
 
 
 
-cdef void llvm_blake3_hasher_init(llvm_blake3_hasher * self) nogil
+cdef void llvm_blake3_hasher_init(llvm_blake3_hasher * self)
 
 
 
-cdef void llvm_blake3_hasher_init_keyed(llvm_blake3_hasher * self,const unsigned char[32] key) nogil
+cdef void llvm_blake3_hasher_init_keyed(llvm_blake3_hasher * self,const unsigned char[32] key)
 
 
 
-cdef void llvm_blake3_hasher_init_derive_key(llvm_blake3_hasher * self,const char * context) nogil
+cdef void llvm_blake3_hasher_init_derive_key(llvm_blake3_hasher * self,const char * context)
 
 
 
-cdef void llvm_blake3_hasher_init_derive_key_raw(llvm_blake3_hasher * self,const void * context,unsigned long context_len) nogil
+cdef void llvm_blake3_hasher_init_derive_key_raw(llvm_blake3_hasher * self,const void * context,unsigned long context_len)
 
 
 
-cdef void llvm_blake3_hasher_update(llvm_blake3_hasher * self,const void * input,unsigned long input_len) nogil
+cdef void llvm_blake3_hasher_update(llvm_blake3_hasher * self,const void * input,unsigned long input_len)
 
 
 
-cdef void llvm_blake3_hasher_finalize(llvm_blake3_hasher * self,unsigned char * out,unsigned long out_len) nogil
+cdef void llvm_blake3_hasher_finalize(llvm_blake3_hasher * self,unsigned char * out,unsigned long out_len)
 
 
 
-cdef void llvm_blake3_hasher_finalize_seek(llvm_blake3_hasher * self,unsigned long seek,unsigned char * out,unsigned long out_len) nogil
+cdef void llvm_blake3_hasher_finalize_seek(llvm_blake3_hasher * self,unsigned long seek,unsigned char * out,unsigned long out_len)
 
 
 
-cdef void llvm_blake3_hasher_reset(llvm_blake3_hasher * self) nogil
+cdef void llvm_blake3_hasher_reset(llvm_blake3_hasher * self)

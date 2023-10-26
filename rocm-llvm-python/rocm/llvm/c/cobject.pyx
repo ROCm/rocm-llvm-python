@@ -25,19 +25,22 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMCreateBinary__funptr = NULL
@@ -56,10 +59,11 @@ cdef void* _LLVMCreateBinary__funptr = NULL
 # message by calling \c LLVMDisposeMessage.
 # 
 # @see llvm::object::createBinary
-cdef LLVMBinaryRef LLVMCreateBinary(LLVMMemoryBufferRef MemBuf,LLVMContextRef Context,char ** ErrorMessage) nogil:
+cdef LLVMBinaryRef LLVMCreateBinary(LLVMMemoryBufferRef MemBuf,LLVMContextRef Context,char ** ErrorMessage):
     global _LLVMCreateBinary__funptr
     __init_symbol(&_LLVMCreateBinary__funptr,"LLVMCreateBinary")
-    return (<LLVMBinaryRef (*)(LLVMMemoryBufferRef,LLVMContextRef,char **) nogil> _LLVMCreateBinary__funptr)(MemBuf,Context,ErrorMessage)
+    with nogil:
+        return (<LLVMBinaryRef (*)(LLVMMemoryBufferRef,LLVMContextRef,char **) noexcept nogil> _LLVMCreateBinary__funptr)(MemBuf,Context,ErrorMessage)
 
 
 cdef void* _LLVMDisposeBinary__funptr = NULL
@@ -68,10 +72,11 @@ cdef void* _LLVMDisposeBinary__funptr = NULL
 # 
 # The binary file does not own its backing buffer.  It is the responsibilty
 # of the caller to free it with \c LLVMDisposeMemoryBuffer.
-cdef void LLVMDisposeBinary(LLVMBinaryRef BR) nogil:
+cdef void LLVMDisposeBinary(LLVMBinaryRef BR):
     global _LLVMDisposeBinary__funptr
     __init_symbol(&_LLVMDisposeBinary__funptr,"LLVMDisposeBinary")
-    (<void (*)(LLVMBinaryRef) nogil> _LLVMDisposeBinary__funptr)(BR)
+    with nogil:
+        (<void (*)(LLVMBinaryRef) noexcept nogil> _LLVMDisposeBinary__funptr)(BR)
 
 
 cdef void* _LLVMBinaryCopyMemoryBuffer__funptr = NULL
@@ -83,10 +88,11 @@ cdef void* _LLVMBinaryCopyMemoryBuffer__funptr = NULL
 # caller to free it with \c LLVMDisposeMemoryBuffer.
 # 
 # @see llvm::object::getMemoryBufferRef
-cdef LLVMMemoryBufferRef LLVMBinaryCopyMemoryBuffer(LLVMBinaryRef BR) nogil:
+cdef LLVMMemoryBufferRef LLVMBinaryCopyMemoryBuffer(LLVMBinaryRef BR):
     global _LLVMBinaryCopyMemoryBuffer__funptr
     __init_symbol(&_LLVMBinaryCopyMemoryBuffer__funptr,"LLVMBinaryCopyMemoryBuffer")
-    return (<LLVMMemoryBufferRef (*)(LLVMBinaryRef) nogil> _LLVMBinaryCopyMemoryBuffer__funptr)(BR)
+    with nogil:
+        return (<LLVMMemoryBufferRef (*)(LLVMBinaryRef) noexcept nogil> _LLVMBinaryCopyMemoryBuffer__funptr)(BR)
 
 
 cdef void* _LLVMBinaryGetType__funptr = NULL
@@ -94,17 +100,19 @@ cdef void* _LLVMBinaryGetType__funptr = NULL
 # Retrieve the specific type of a binary.
 # 
 # @see llvm::object::Binary::getType
-cdef LLVMBinaryType LLVMBinaryGetType(LLVMBinaryRef BR) nogil:
+cdef LLVMBinaryType LLVMBinaryGetType(LLVMBinaryRef BR):
     global _LLVMBinaryGetType__funptr
     __init_symbol(&_LLVMBinaryGetType__funptr,"LLVMBinaryGetType")
-    return (<LLVMBinaryType (*)(LLVMBinaryRef) nogil> _LLVMBinaryGetType__funptr)(BR)
+    with nogil:
+        return (<LLVMBinaryType (*)(LLVMBinaryRef) noexcept nogil> _LLVMBinaryGetType__funptr)(BR)
 
 
 cdef void* _LLVMMachOUniversalBinaryCopyObjectForArch__funptr = NULL
-cdef LLVMBinaryRef LLVMMachOUniversalBinaryCopyObjectForArch(LLVMBinaryRef BR,const char * Arch,unsigned long ArchLen,char ** ErrorMessage) nogil:
+cdef LLVMBinaryRef LLVMMachOUniversalBinaryCopyObjectForArch(LLVMBinaryRef BR,const char * Arch,unsigned long ArchLen,char ** ErrorMessage):
     global _LLVMMachOUniversalBinaryCopyObjectForArch__funptr
     __init_symbol(&_LLVMMachOUniversalBinaryCopyObjectForArch__funptr,"LLVMMachOUniversalBinaryCopyObjectForArch")
-    return (<LLVMBinaryRef (*)(LLVMBinaryRef,const char *,unsigned long,char **) nogil> _LLVMMachOUniversalBinaryCopyObjectForArch__funptr)(BR,Arch,ArchLen,ErrorMessage)
+    with nogil:
+        return (<LLVMBinaryRef (*)(LLVMBinaryRef,const char *,unsigned long,char **) noexcept nogil> _LLVMMachOUniversalBinaryCopyObjectForArch__funptr)(BR,Arch,ArchLen,ErrorMessage)
 
 
 cdef void* _LLVMObjectFileCopySectionIterator__funptr = NULL
@@ -118,10 +126,11 @@ cdef void* _LLVMObjectFileCopySectionIterator__funptr = NULL
 # \c LLVMDisposeSectionIterator.
 # 
 # @see llvm::object::sections()
-cdef LLVMSectionIteratorRef LLVMObjectFileCopySectionIterator(LLVMBinaryRef BR) nogil:
+cdef LLVMSectionIteratorRef LLVMObjectFileCopySectionIterator(LLVMBinaryRef BR):
     global _LLVMObjectFileCopySectionIterator__funptr
     __init_symbol(&_LLVMObjectFileCopySectionIterator__funptr,"LLVMObjectFileCopySectionIterator")
-    return (<LLVMSectionIteratorRef (*)(LLVMBinaryRef) nogil> _LLVMObjectFileCopySectionIterator__funptr)(BR)
+    with nogil:
+        return (<LLVMSectionIteratorRef (*)(LLVMBinaryRef) noexcept nogil> _LLVMObjectFileCopySectionIterator__funptr)(BR)
 
 
 cdef void* _LLVMObjectFileIsSectionIteratorAtEnd__funptr = NULL
@@ -129,10 +138,11 @@ cdef void* _LLVMObjectFileIsSectionIteratorAtEnd__funptr = NULL
 # Returns whether the given section iterator is at the end.
 # 
 # @see llvm::object::section_end
-cdef int LLVMObjectFileIsSectionIteratorAtEnd(LLVMBinaryRef BR,LLVMSectionIteratorRef SI) nogil:
+cdef int LLVMObjectFileIsSectionIteratorAtEnd(LLVMBinaryRef BR,LLVMSectionIteratorRef SI):
     global _LLVMObjectFileIsSectionIteratorAtEnd__funptr
     __init_symbol(&_LLVMObjectFileIsSectionIteratorAtEnd__funptr,"LLVMObjectFileIsSectionIteratorAtEnd")
-    return (<int (*)(LLVMBinaryRef,LLVMSectionIteratorRef) nogil> _LLVMObjectFileIsSectionIteratorAtEnd__funptr)(BR,SI)
+    with nogil:
+        return (<int (*)(LLVMBinaryRef,LLVMSectionIteratorRef) noexcept nogil> _LLVMObjectFileIsSectionIteratorAtEnd__funptr)(BR,SI)
 
 
 cdef void* _LLVMObjectFileCopySymbolIterator__funptr = NULL
@@ -146,10 +156,11 @@ cdef void* _LLVMObjectFileCopySymbolIterator__funptr = NULL
 # \c LLVMDisposeSymbolIterator.
 # 
 # @see llvm::object::symbols()
-cdef LLVMSymbolIteratorRef LLVMObjectFileCopySymbolIterator(LLVMBinaryRef BR) nogil:
+cdef LLVMSymbolIteratorRef LLVMObjectFileCopySymbolIterator(LLVMBinaryRef BR):
     global _LLVMObjectFileCopySymbolIterator__funptr
     __init_symbol(&_LLVMObjectFileCopySymbolIterator__funptr,"LLVMObjectFileCopySymbolIterator")
-    return (<LLVMSymbolIteratorRef (*)(LLVMBinaryRef) nogil> _LLVMObjectFileCopySymbolIterator__funptr)(BR)
+    with nogil:
+        return (<LLVMSymbolIteratorRef (*)(LLVMBinaryRef) noexcept nogil> _LLVMObjectFileCopySymbolIterator__funptr)(BR)
 
 
 cdef void* _LLVMObjectFileIsSymbolIteratorAtEnd__funptr = NULL
@@ -157,209 +168,238 @@ cdef void* _LLVMObjectFileIsSymbolIteratorAtEnd__funptr = NULL
 # Returns whether the given symbol iterator is at the end.
 # 
 # @see llvm::object::symbol_end
-cdef int LLVMObjectFileIsSymbolIteratorAtEnd(LLVMBinaryRef BR,LLVMSymbolIteratorRef SI) nogil:
+cdef int LLVMObjectFileIsSymbolIteratorAtEnd(LLVMBinaryRef BR,LLVMSymbolIteratorRef SI):
     global _LLVMObjectFileIsSymbolIteratorAtEnd__funptr
     __init_symbol(&_LLVMObjectFileIsSymbolIteratorAtEnd__funptr,"LLVMObjectFileIsSymbolIteratorAtEnd")
-    return (<int (*)(LLVMBinaryRef,LLVMSymbolIteratorRef) nogil> _LLVMObjectFileIsSymbolIteratorAtEnd__funptr)(BR,SI)
+    with nogil:
+        return (<int (*)(LLVMBinaryRef,LLVMSymbolIteratorRef) noexcept nogil> _LLVMObjectFileIsSymbolIteratorAtEnd__funptr)(BR,SI)
 
 
 cdef void* _LLVMDisposeSectionIterator__funptr = NULL
-cdef void LLVMDisposeSectionIterator(LLVMSectionIteratorRef SI) nogil:
+cdef void LLVMDisposeSectionIterator(LLVMSectionIteratorRef SI):
     global _LLVMDisposeSectionIterator__funptr
     __init_symbol(&_LLVMDisposeSectionIterator__funptr,"LLVMDisposeSectionIterator")
-    (<void (*)(LLVMSectionIteratorRef) nogil> _LLVMDisposeSectionIterator__funptr)(SI)
+    with nogil:
+        (<void (*)(LLVMSectionIteratorRef) noexcept nogil> _LLVMDisposeSectionIterator__funptr)(SI)
 
 
 cdef void* _LLVMMoveToNextSection__funptr = NULL
-cdef void LLVMMoveToNextSection(LLVMSectionIteratorRef SI) nogil:
+cdef void LLVMMoveToNextSection(LLVMSectionIteratorRef SI):
     global _LLVMMoveToNextSection__funptr
     __init_symbol(&_LLVMMoveToNextSection__funptr,"LLVMMoveToNextSection")
-    (<void (*)(LLVMSectionIteratorRef) nogil> _LLVMMoveToNextSection__funptr)(SI)
+    with nogil:
+        (<void (*)(LLVMSectionIteratorRef) noexcept nogil> _LLVMMoveToNextSection__funptr)(SI)
 
 
 cdef void* _LLVMMoveToContainingSection__funptr = NULL
-cdef void LLVMMoveToContainingSection(LLVMSectionIteratorRef Sect,LLVMSymbolIteratorRef Sym) nogil:
+cdef void LLVMMoveToContainingSection(LLVMSectionIteratorRef Sect,LLVMSymbolIteratorRef Sym):
     global _LLVMMoveToContainingSection__funptr
     __init_symbol(&_LLVMMoveToContainingSection__funptr,"LLVMMoveToContainingSection")
-    (<void (*)(LLVMSectionIteratorRef,LLVMSymbolIteratorRef) nogil> _LLVMMoveToContainingSection__funptr)(Sect,Sym)
+    with nogil:
+        (<void (*)(LLVMSectionIteratorRef,LLVMSymbolIteratorRef) noexcept nogil> _LLVMMoveToContainingSection__funptr)(Sect,Sym)
 
 
 cdef void* _LLVMDisposeSymbolIterator__funptr = NULL
-cdef void LLVMDisposeSymbolIterator(LLVMSymbolIteratorRef SI) nogil:
+cdef void LLVMDisposeSymbolIterator(LLVMSymbolIteratorRef SI):
     global _LLVMDisposeSymbolIterator__funptr
     __init_symbol(&_LLVMDisposeSymbolIterator__funptr,"LLVMDisposeSymbolIterator")
-    (<void (*)(LLVMSymbolIteratorRef) nogil> _LLVMDisposeSymbolIterator__funptr)(SI)
+    with nogil:
+        (<void (*)(LLVMSymbolIteratorRef) noexcept nogil> _LLVMDisposeSymbolIterator__funptr)(SI)
 
 
 cdef void* _LLVMMoveToNextSymbol__funptr = NULL
-cdef void LLVMMoveToNextSymbol(LLVMSymbolIteratorRef SI) nogil:
+cdef void LLVMMoveToNextSymbol(LLVMSymbolIteratorRef SI):
     global _LLVMMoveToNextSymbol__funptr
     __init_symbol(&_LLVMMoveToNextSymbol__funptr,"LLVMMoveToNextSymbol")
-    (<void (*)(LLVMSymbolIteratorRef) nogil> _LLVMMoveToNextSymbol__funptr)(SI)
+    with nogil:
+        (<void (*)(LLVMSymbolIteratorRef) noexcept nogil> _LLVMMoveToNextSymbol__funptr)(SI)
 
 
 cdef void* _LLVMGetSectionName__funptr = NULL
-cdef const char * LLVMGetSectionName(LLVMSectionIteratorRef SI) nogil:
+cdef const char * LLVMGetSectionName(LLVMSectionIteratorRef SI):
     global _LLVMGetSectionName__funptr
     __init_symbol(&_LLVMGetSectionName__funptr,"LLVMGetSectionName")
-    return (<const char * (*)(LLVMSectionIteratorRef) nogil> _LLVMGetSectionName__funptr)(SI)
+    with nogil:
+        return (<const char * (*)(LLVMSectionIteratorRef) noexcept nogil> _LLVMGetSectionName__funptr)(SI)
 
 
 cdef void* _LLVMGetSectionSize__funptr = NULL
-cdef unsigned long LLVMGetSectionSize(LLVMSectionIteratorRef SI) nogil:
+cdef unsigned long LLVMGetSectionSize(LLVMSectionIteratorRef SI):
     global _LLVMGetSectionSize__funptr
     __init_symbol(&_LLVMGetSectionSize__funptr,"LLVMGetSectionSize")
-    return (<unsigned long (*)(LLVMSectionIteratorRef) nogil> _LLVMGetSectionSize__funptr)(SI)
+    with nogil:
+        return (<unsigned long (*)(LLVMSectionIteratorRef) noexcept nogil> _LLVMGetSectionSize__funptr)(SI)
 
 
 cdef void* _LLVMGetSectionContents__funptr = NULL
-cdef const char * LLVMGetSectionContents(LLVMSectionIteratorRef SI) nogil:
+cdef const char * LLVMGetSectionContents(LLVMSectionIteratorRef SI):
     global _LLVMGetSectionContents__funptr
     __init_symbol(&_LLVMGetSectionContents__funptr,"LLVMGetSectionContents")
-    return (<const char * (*)(LLVMSectionIteratorRef) nogil> _LLVMGetSectionContents__funptr)(SI)
+    with nogil:
+        return (<const char * (*)(LLVMSectionIteratorRef) noexcept nogil> _LLVMGetSectionContents__funptr)(SI)
 
 
 cdef void* _LLVMGetSectionAddress__funptr = NULL
-cdef unsigned long LLVMGetSectionAddress(LLVMSectionIteratorRef SI) nogil:
+cdef unsigned long LLVMGetSectionAddress(LLVMSectionIteratorRef SI):
     global _LLVMGetSectionAddress__funptr
     __init_symbol(&_LLVMGetSectionAddress__funptr,"LLVMGetSectionAddress")
-    return (<unsigned long (*)(LLVMSectionIteratorRef) nogil> _LLVMGetSectionAddress__funptr)(SI)
+    with nogil:
+        return (<unsigned long (*)(LLVMSectionIteratorRef) noexcept nogil> _LLVMGetSectionAddress__funptr)(SI)
 
 
 cdef void* _LLVMGetSectionContainsSymbol__funptr = NULL
-cdef int LLVMGetSectionContainsSymbol(LLVMSectionIteratorRef SI,LLVMSymbolIteratorRef Sym) nogil:
+cdef int LLVMGetSectionContainsSymbol(LLVMSectionIteratorRef SI,LLVMSymbolIteratorRef Sym):
     global _LLVMGetSectionContainsSymbol__funptr
     __init_symbol(&_LLVMGetSectionContainsSymbol__funptr,"LLVMGetSectionContainsSymbol")
-    return (<int (*)(LLVMSectionIteratorRef,LLVMSymbolIteratorRef) nogil> _LLVMGetSectionContainsSymbol__funptr)(SI,Sym)
+    with nogil:
+        return (<int (*)(LLVMSectionIteratorRef,LLVMSymbolIteratorRef) noexcept nogil> _LLVMGetSectionContainsSymbol__funptr)(SI,Sym)
 
 
 cdef void* _LLVMGetRelocations__funptr = NULL
-cdef LLVMRelocationIteratorRef LLVMGetRelocations(LLVMSectionIteratorRef Section) nogil:
+cdef LLVMRelocationIteratorRef LLVMGetRelocations(LLVMSectionIteratorRef Section):
     global _LLVMGetRelocations__funptr
     __init_symbol(&_LLVMGetRelocations__funptr,"LLVMGetRelocations")
-    return (<LLVMRelocationIteratorRef (*)(LLVMSectionIteratorRef) nogil> _LLVMGetRelocations__funptr)(Section)
+    with nogil:
+        return (<LLVMRelocationIteratorRef (*)(LLVMSectionIteratorRef) noexcept nogil> _LLVMGetRelocations__funptr)(Section)
 
 
 cdef void* _LLVMDisposeRelocationIterator__funptr = NULL
-cdef void LLVMDisposeRelocationIterator(LLVMRelocationIteratorRef RI) nogil:
+cdef void LLVMDisposeRelocationIterator(LLVMRelocationIteratorRef RI):
     global _LLVMDisposeRelocationIterator__funptr
     __init_symbol(&_LLVMDisposeRelocationIterator__funptr,"LLVMDisposeRelocationIterator")
-    (<void (*)(LLVMRelocationIteratorRef) nogil> _LLVMDisposeRelocationIterator__funptr)(RI)
+    with nogil:
+        (<void (*)(LLVMRelocationIteratorRef) noexcept nogil> _LLVMDisposeRelocationIterator__funptr)(RI)
 
 
 cdef void* _LLVMIsRelocationIteratorAtEnd__funptr = NULL
-cdef int LLVMIsRelocationIteratorAtEnd(LLVMSectionIteratorRef Section,LLVMRelocationIteratorRef RI) nogil:
+cdef int LLVMIsRelocationIteratorAtEnd(LLVMSectionIteratorRef Section,LLVMRelocationIteratorRef RI):
     global _LLVMIsRelocationIteratorAtEnd__funptr
     __init_symbol(&_LLVMIsRelocationIteratorAtEnd__funptr,"LLVMIsRelocationIteratorAtEnd")
-    return (<int (*)(LLVMSectionIteratorRef,LLVMRelocationIteratorRef) nogil> _LLVMIsRelocationIteratorAtEnd__funptr)(Section,RI)
+    with nogil:
+        return (<int (*)(LLVMSectionIteratorRef,LLVMRelocationIteratorRef) noexcept nogil> _LLVMIsRelocationIteratorAtEnd__funptr)(Section,RI)
 
 
 cdef void* _LLVMMoveToNextRelocation__funptr = NULL
-cdef void LLVMMoveToNextRelocation(LLVMRelocationIteratorRef RI) nogil:
+cdef void LLVMMoveToNextRelocation(LLVMRelocationIteratorRef RI):
     global _LLVMMoveToNextRelocation__funptr
     __init_symbol(&_LLVMMoveToNextRelocation__funptr,"LLVMMoveToNextRelocation")
-    (<void (*)(LLVMRelocationIteratorRef) nogil> _LLVMMoveToNextRelocation__funptr)(RI)
+    with nogil:
+        (<void (*)(LLVMRelocationIteratorRef) noexcept nogil> _LLVMMoveToNextRelocation__funptr)(RI)
 
 
 cdef void* _LLVMGetSymbolName__funptr = NULL
-cdef const char * LLVMGetSymbolName(LLVMSymbolIteratorRef SI) nogil:
+cdef const char * LLVMGetSymbolName(LLVMSymbolIteratorRef SI):
     global _LLVMGetSymbolName__funptr
     __init_symbol(&_LLVMGetSymbolName__funptr,"LLVMGetSymbolName")
-    return (<const char * (*)(LLVMSymbolIteratorRef) nogil> _LLVMGetSymbolName__funptr)(SI)
+    with nogil:
+        return (<const char * (*)(LLVMSymbolIteratorRef) noexcept nogil> _LLVMGetSymbolName__funptr)(SI)
 
 
 cdef void* _LLVMGetSymbolAddress__funptr = NULL
-cdef unsigned long LLVMGetSymbolAddress(LLVMSymbolIteratorRef SI) nogil:
+cdef unsigned long LLVMGetSymbolAddress(LLVMSymbolIteratorRef SI):
     global _LLVMGetSymbolAddress__funptr
     __init_symbol(&_LLVMGetSymbolAddress__funptr,"LLVMGetSymbolAddress")
-    return (<unsigned long (*)(LLVMSymbolIteratorRef) nogil> _LLVMGetSymbolAddress__funptr)(SI)
+    with nogil:
+        return (<unsigned long (*)(LLVMSymbolIteratorRef) noexcept nogil> _LLVMGetSymbolAddress__funptr)(SI)
 
 
 cdef void* _LLVMGetSymbolSize__funptr = NULL
-cdef unsigned long LLVMGetSymbolSize(LLVMSymbolIteratorRef SI) nogil:
+cdef unsigned long LLVMGetSymbolSize(LLVMSymbolIteratorRef SI):
     global _LLVMGetSymbolSize__funptr
     __init_symbol(&_LLVMGetSymbolSize__funptr,"LLVMGetSymbolSize")
-    return (<unsigned long (*)(LLVMSymbolIteratorRef) nogil> _LLVMGetSymbolSize__funptr)(SI)
+    with nogil:
+        return (<unsigned long (*)(LLVMSymbolIteratorRef) noexcept nogil> _LLVMGetSymbolSize__funptr)(SI)
 
 
 cdef void* _LLVMGetRelocationOffset__funptr = NULL
-cdef unsigned long LLVMGetRelocationOffset(LLVMRelocationIteratorRef RI) nogil:
+cdef unsigned long LLVMGetRelocationOffset(LLVMRelocationIteratorRef RI):
     global _LLVMGetRelocationOffset__funptr
     __init_symbol(&_LLVMGetRelocationOffset__funptr,"LLVMGetRelocationOffset")
-    return (<unsigned long (*)(LLVMRelocationIteratorRef) nogil> _LLVMGetRelocationOffset__funptr)(RI)
+    with nogil:
+        return (<unsigned long (*)(LLVMRelocationIteratorRef) noexcept nogil> _LLVMGetRelocationOffset__funptr)(RI)
 
 
 cdef void* _LLVMGetRelocationSymbol__funptr = NULL
-cdef LLVMSymbolIteratorRef LLVMGetRelocationSymbol(LLVMRelocationIteratorRef RI) nogil:
+cdef LLVMSymbolIteratorRef LLVMGetRelocationSymbol(LLVMRelocationIteratorRef RI):
     global _LLVMGetRelocationSymbol__funptr
     __init_symbol(&_LLVMGetRelocationSymbol__funptr,"LLVMGetRelocationSymbol")
-    return (<LLVMSymbolIteratorRef (*)(LLVMRelocationIteratorRef) nogil> _LLVMGetRelocationSymbol__funptr)(RI)
+    with nogil:
+        return (<LLVMSymbolIteratorRef (*)(LLVMRelocationIteratorRef) noexcept nogil> _LLVMGetRelocationSymbol__funptr)(RI)
 
 
 cdef void* _LLVMGetRelocationType__funptr = NULL
-cdef unsigned long LLVMGetRelocationType(LLVMRelocationIteratorRef RI) nogil:
+cdef unsigned long LLVMGetRelocationType(LLVMRelocationIteratorRef RI):
     global _LLVMGetRelocationType__funptr
     __init_symbol(&_LLVMGetRelocationType__funptr,"LLVMGetRelocationType")
-    return (<unsigned long (*)(LLVMRelocationIteratorRef) nogil> _LLVMGetRelocationType__funptr)(RI)
+    with nogil:
+        return (<unsigned long (*)(LLVMRelocationIteratorRef) noexcept nogil> _LLVMGetRelocationType__funptr)(RI)
 
 
 cdef void* _LLVMGetRelocationTypeName__funptr = NULL
-cdef const char * LLVMGetRelocationTypeName(LLVMRelocationIteratorRef RI) nogil:
+cdef const char * LLVMGetRelocationTypeName(LLVMRelocationIteratorRef RI):
     global _LLVMGetRelocationTypeName__funptr
     __init_symbol(&_LLVMGetRelocationTypeName__funptr,"LLVMGetRelocationTypeName")
-    return (<const char * (*)(LLVMRelocationIteratorRef) nogil> _LLVMGetRelocationTypeName__funptr)(RI)
+    with nogil:
+        return (<const char * (*)(LLVMRelocationIteratorRef) noexcept nogil> _LLVMGetRelocationTypeName__funptr)(RI)
 
 
 cdef void* _LLVMGetRelocationValueString__funptr = NULL
-cdef const char * LLVMGetRelocationValueString(LLVMRelocationIteratorRef RI) nogil:
+cdef const char * LLVMGetRelocationValueString(LLVMRelocationIteratorRef RI):
     global _LLVMGetRelocationValueString__funptr
     __init_symbol(&_LLVMGetRelocationValueString__funptr,"LLVMGetRelocationValueString")
-    return (<const char * (*)(LLVMRelocationIteratorRef) nogil> _LLVMGetRelocationValueString__funptr)(RI)
+    with nogil:
+        return (<const char * (*)(LLVMRelocationIteratorRef) noexcept nogil> _LLVMGetRelocationValueString__funptr)(RI)
 
 
 cdef void* _LLVMCreateObjectFile__funptr = NULL
 # Deprecated: Use LLVMCreateBinary instead. */
-cdef LLVMObjectFileRef LLVMCreateObjectFile(LLVMMemoryBufferRef MemBuf) nogil:
+cdef LLVMObjectFileRef LLVMCreateObjectFile(LLVMMemoryBufferRef MemBuf):
     global _LLVMCreateObjectFile__funptr
     __init_symbol(&_LLVMCreateObjectFile__funptr,"LLVMCreateObjectFile")
-    return (<LLVMObjectFileRef (*)(LLVMMemoryBufferRef) nogil> _LLVMCreateObjectFile__funptr)(MemBuf)
+    with nogil:
+        return (<LLVMObjectFileRef (*)(LLVMMemoryBufferRef) noexcept nogil> _LLVMCreateObjectFile__funptr)(MemBuf)
 
 
 cdef void* _LLVMDisposeObjectFile__funptr = NULL
 # Deprecated: Use LLVMDisposeBinary instead. */
-cdef void LLVMDisposeObjectFile(LLVMObjectFileRef ObjectFile) nogil:
+cdef void LLVMDisposeObjectFile(LLVMObjectFileRef ObjectFile):
     global _LLVMDisposeObjectFile__funptr
     __init_symbol(&_LLVMDisposeObjectFile__funptr,"LLVMDisposeObjectFile")
-    (<void (*)(LLVMObjectFileRef) nogil> _LLVMDisposeObjectFile__funptr)(ObjectFile)
+    with nogil:
+        (<void (*)(LLVMObjectFileRef) noexcept nogil> _LLVMDisposeObjectFile__funptr)(ObjectFile)
 
 
 cdef void* _LLVMGetSections__funptr = NULL
 # Deprecated: Use LLVMObjectFileCopySectionIterator instead. */
-cdef LLVMSectionIteratorRef LLVMGetSections(LLVMObjectFileRef ObjectFile) nogil:
+cdef LLVMSectionIteratorRef LLVMGetSections(LLVMObjectFileRef ObjectFile):
     global _LLVMGetSections__funptr
     __init_symbol(&_LLVMGetSections__funptr,"LLVMGetSections")
-    return (<LLVMSectionIteratorRef (*)(LLVMObjectFileRef) nogil> _LLVMGetSections__funptr)(ObjectFile)
+    with nogil:
+        return (<LLVMSectionIteratorRef (*)(LLVMObjectFileRef) noexcept nogil> _LLVMGetSections__funptr)(ObjectFile)
 
 
 cdef void* _LLVMIsSectionIteratorAtEnd__funptr = NULL
 # Deprecated: Use LLVMObjectFileIsSectionIteratorAtEnd instead. */
-cdef int LLVMIsSectionIteratorAtEnd(LLVMObjectFileRef ObjectFile,LLVMSectionIteratorRef SI) nogil:
+cdef int LLVMIsSectionIteratorAtEnd(LLVMObjectFileRef ObjectFile,LLVMSectionIteratorRef SI):
     global _LLVMIsSectionIteratorAtEnd__funptr
     __init_symbol(&_LLVMIsSectionIteratorAtEnd__funptr,"LLVMIsSectionIteratorAtEnd")
-    return (<int (*)(LLVMObjectFileRef,LLVMSectionIteratorRef) nogil> _LLVMIsSectionIteratorAtEnd__funptr)(ObjectFile,SI)
+    with nogil:
+        return (<int (*)(LLVMObjectFileRef,LLVMSectionIteratorRef) noexcept nogil> _LLVMIsSectionIteratorAtEnd__funptr)(ObjectFile,SI)
 
 
 cdef void* _LLVMGetSymbols__funptr = NULL
 # Deprecated: Use LLVMObjectFileCopySymbolIterator instead. */
-cdef LLVMSymbolIteratorRef LLVMGetSymbols(LLVMObjectFileRef ObjectFile) nogil:
+cdef LLVMSymbolIteratorRef LLVMGetSymbols(LLVMObjectFileRef ObjectFile):
     global _LLVMGetSymbols__funptr
     __init_symbol(&_LLVMGetSymbols__funptr,"LLVMGetSymbols")
-    return (<LLVMSymbolIteratorRef (*)(LLVMObjectFileRef) nogil> _LLVMGetSymbols__funptr)(ObjectFile)
+    with nogil:
+        return (<LLVMSymbolIteratorRef (*)(LLVMObjectFileRef) noexcept nogil> _LLVMGetSymbols__funptr)(ObjectFile)
 
 
 cdef void* _LLVMIsSymbolIteratorAtEnd__funptr = NULL
 # Deprecated: Use LLVMObjectFileIsSymbolIteratorAtEnd instead. */
-cdef int LLVMIsSymbolIteratorAtEnd(LLVMObjectFileRef ObjectFile,LLVMSymbolIteratorRef SI) nogil:
+cdef int LLVMIsSymbolIteratorAtEnd(LLVMObjectFileRef ObjectFile,LLVMSymbolIteratorRef SI):
     global _LLVMIsSymbolIteratorAtEnd__funptr
     __init_symbol(&_LLVMIsSymbolIteratorAtEnd__funptr,"LLVMIsSymbolIteratorAtEnd")
-    return (<int (*)(LLVMObjectFileRef,LLVMSymbolIteratorRef) nogil> _LLVMIsSymbolIteratorAtEnd__funptr)(ObjectFile,SI)
+    with nogil:
+        return (<int (*)(LLVMObjectFileRef,LLVMSymbolIteratorRef) noexcept nogil> _LLVMIsSymbolIteratorAtEnd__funptr)(ObjectFile,SI)

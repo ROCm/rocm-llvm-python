@@ -30,26 +30,26 @@ from rocm.llvm.c.ctypes cimport *
 # @ingroup LLVMC
 # 
 # @{
-cdef int LLVMParseBitcode(LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutModule,char ** OutMessage) nogil
+cdef int LLVMParseBitcode(LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutModule,char ** OutMessage)
 
 
 
-cdef int LLVMParseBitcode2(LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutModule) nogil
+cdef int LLVMParseBitcode2(LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutModule)
 
 
 
-cdef int LLVMParseBitcodeInContext(LLVMContextRef ContextRef,LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutModule,char ** OutMessage) nogil
+cdef int LLVMParseBitcodeInContext(LLVMContextRef ContextRef,LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutModule,char ** OutMessage)
 
 
 
-cdef int LLVMParseBitcodeInContext2(LLVMContextRef ContextRef,LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutModule) nogil
+cdef int LLVMParseBitcodeInContext2(LLVMContextRef ContextRef,LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutModule)
 
 
 # Reads a module from the specified path, returning via the OutMP parameter
 # a module provider which performs lazy deserialization. Returns 0 on success.
 # Optionally returns a human-readable error message via OutMessage.
 # This is deprecated. Use LLVMGetBitcodeModuleInContext2.
-cdef int LLVMGetBitcodeModuleInContext(LLVMContextRef ContextRef,LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutM,char ** OutMessage) nogil
+cdef int LLVMGetBitcodeModuleInContext(LLVMContextRef ContextRef,LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutM,char ** OutMessage)
 
 
 #  Reads a module from the given memory buffer, returning via the OutMP
@@ -59,12 +59,12 @@ cdef int LLVMGetBitcodeModuleInContext(LLVMContextRef ContextRef,LLVMMemoryBuffe
 # 
 # Takes ownership of \p MemBuf if (and only if) the module was read
 # successfully.
-cdef int LLVMGetBitcodeModuleInContext2(LLVMContextRef ContextRef,LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutM) nogil
+cdef int LLVMGetBitcodeModuleInContext2(LLVMContextRef ContextRef,LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutM)
 
 
 
-cdef int LLVMGetBitcodeModule(LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutM,char ** OutMessage) nogil
+cdef int LLVMGetBitcodeModule(LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutM,char ** OutMessage)
 
 
 
-cdef int LLVMGetBitcodeModule2(LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutM) nogil
+cdef int LLVMGetBitcodeModule2(LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutM)

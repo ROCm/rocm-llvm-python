@@ -57,12 +57,12 @@ cdef void * LLVMCreateDisasmCPUFeatures(const char * Triple,const char * CPU,con
 # 
 # Set the disassembler's options.  Returns 1 if it can set the Options and 0
 # otherwise.
-cdef int LLVMSetDisasmOptions(void * DC,unsigned long Options) nogil
+cdef int LLVMSetDisasmOptions(void * DC,unsigned long Options)
 
 
 # 
 # Dispose of a disassembler context.
-cdef void LLVMDisasmDispose(void * DC) nogil
+cdef void LLVMDisasmDispose(void * DC)
 
 
 # 
@@ -74,4 +74,4 @@ cdef void LLVMDisasmDispose(void * DC) nogil
 # OutString whose size is specified in the parameter OutStringSize.  This
 # function returns the number of bytes in the instruction or zero if there was
 # no valid instruction.
-cdef unsigned long LLVMDisasmInstruction(void * DC,unsigned char * Bytes,unsigned long BytesSize,unsigned long PC,char * OutString,unsigned long OutStringSize) nogil
+cdef unsigned long LLVMDisasmInstruction(void * DC,unsigned char * Bytes,unsigned long BytesSize,unsigned long PC,char * OutString,unsigned long OutStringSize)

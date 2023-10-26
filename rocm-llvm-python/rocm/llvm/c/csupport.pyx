@@ -25,19 +25,22 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMLoadLibraryPermanently__funptr = NULL
@@ -46,10 +49,11 @@ cdef void* _LLVMLoadLibraryPermanently__funptr = NULL
 # It is safe to call this function multiple times for the same library.
 # 
 # @see sys::DynamicLibrary::LoadLibraryPermanently()
-cdef int LLVMLoadLibraryPermanently(const char * Filename) nogil:
+cdef int LLVMLoadLibraryPermanently(const char * Filename):
     global _LLVMLoadLibraryPermanently__funptr
     __init_symbol(&_LLVMLoadLibraryPermanently__funptr,"LLVMLoadLibraryPermanently")
-    return (<int (*)(const char *) nogil> _LLVMLoadLibraryPermanently__funptr)(Filename)
+    with nogil:
+        return (<int (*)(const char *) noexcept nogil> _LLVMLoadLibraryPermanently__funptr)(Filename)
 
 
 cdef void* _LLVMParseCommandLineOptions__funptr = NULL
@@ -60,10 +64,11 @@ cdef void* _LLVMParseCommandLineOptions__funptr = NULL
 # the same way across LLVM versions.
 # 
 # @see llvm::cl::ParseCommandLineOptions()
-cdef void LLVMParseCommandLineOptions(int argc,const char *const * argv,const char * Overview) nogil:
+cdef void LLVMParseCommandLineOptions(int argc,const char *const * argv,const char * Overview):
     global _LLVMParseCommandLineOptions__funptr
     __init_symbol(&_LLVMParseCommandLineOptions__funptr,"LLVMParseCommandLineOptions")
-    (<void (*)(int,const char *const *,const char *) nogil> _LLVMParseCommandLineOptions__funptr)(argc,argv,Overview)
+    with nogil:
+        (<void (*)(int,const char *const *,const char *) noexcept nogil> _LLVMParseCommandLineOptions__funptr)(argc,argv,Overview)
 
 
 cdef void* _LLVMSearchForAddressOfSymbol__funptr = NULL
@@ -73,10 +78,11 @@ cdef void* _LLVMSearchForAddressOfSymbol__funptr = NULL
 # that symbol is returned. If not, null is returned.
 # 
 # @see sys::DynamicLibrary::SearchForAddressOfSymbol()
-cdef void * LLVMSearchForAddressOfSymbol(const char * symbolName) nogil:
+cdef void * LLVMSearchForAddressOfSymbol(const char * symbolName):
     global _LLVMSearchForAddressOfSymbol__funptr
     __init_symbol(&_LLVMSearchForAddressOfSymbol__funptr,"LLVMSearchForAddressOfSymbol")
-    return (<void * (*)(const char *) nogil> _LLVMSearchForAddressOfSymbol__funptr)(symbolName)
+    with nogil:
+        return (<void * (*)(const char *) noexcept nogil> _LLVMSearchForAddressOfSymbol__funptr)(symbolName)
 
 
 cdef void* _LLVMAddSymbol__funptr = NULL
@@ -86,7 +92,8 @@ cdef void* _LLVMAddSymbol__funptr = NULL
 # libraries.
 # 
 # @see sys::DynamicLibrary::AddSymbol()
-cdef void LLVMAddSymbol(const char * symbolName,void * symbolValue) nogil:
+cdef void LLVMAddSymbol(const char * symbolName,void * symbolValue):
     global _LLVMAddSymbol__funptr
     __init_symbol(&_LLVMAddSymbol__funptr,"LLVMAddSymbol")
-    (<void (*)(const char *,void *) nogil> _LLVMAddSymbol__funptr)(symbolName,symbolValue)
+    with nogil:
+        (<void (*)(const char *,void *) noexcept nogil> _LLVMAddSymbol__funptr)(symbolName,symbolValue)

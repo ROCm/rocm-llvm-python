@@ -25,29 +25,33 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMGetErrorTypeId__funptr = NULL
 # 
 # Returns the type id for the given error instance, which must be a failure
 # value (i.e. non-null).
-cdef const void * LLVMGetErrorTypeId(LLVMErrorRef Err) nogil:
+cdef const void * LLVMGetErrorTypeId(LLVMErrorRef Err):
     global _LLVMGetErrorTypeId__funptr
     __init_symbol(&_LLVMGetErrorTypeId__funptr,"LLVMGetErrorTypeId")
-    return (<const void * (*)(LLVMErrorRef) nogil> _LLVMGetErrorTypeId__funptr)(Err)
+    with nogil:
+        return (<const void * (*)(LLVMErrorRef) noexcept nogil> _LLVMGetErrorTypeId__funptr)(Err)
 
 
 cdef void* _LLVMConsumeError__funptr = NULL
@@ -56,10 +60,11 @@ cdef void* _LLVMConsumeError__funptr = NULL
 # error, and the given LLVMErrorRef value is not usable once this call returns.
 # Note: This method *only* needs to be called if the error is not being passed
 # to some other consuming operation, e.g. LLVMGetErrorMessage.
-cdef void LLVMConsumeError(LLVMErrorRef Err) nogil:
+cdef void LLVMConsumeError(LLVMErrorRef Err):
     global _LLVMConsumeError__funptr
     __init_symbol(&_LLVMConsumeError__funptr,"LLVMConsumeError")
-    (<void (*)(LLVMErrorRef) nogil> _LLVMConsumeError__funptr)(Err)
+    with nogil:
+        (<void (*)(LLVMErrorRef) noexcept nogil> _LLVMConsumeError__funptr)(Err)
 
 
 cdef void* _LLVMGetErrorMessage__funptr = NULL
@@ -68,34 +73,38 @@ cdef void* _LLVMGetErrorMessage__funptr = NULL
 # and the given LLVMErrorRef value is not usable once this call returns.
 # The caller is responsible for disposing of the string by calling
 # LLVMDisposeErrorMessage.
-cdef char * LLVMGetErrorMessage(LLVMErrorRef Err) nogil:
+cdef char * LLVMGetErrorMessage(LLVMErrorRef Err):
     global _LLVMGetErrorMessage__funptr
     __init_symbol(&_LLVMGetErrorMessage__funptr,"LLVMGetErrorMessage")
-    return (<char * (*)(LLVMErrorRef) nogil> _LLVMGetErrorMessage__funptr)(Err)
+    with nogil:
+        return (<char * (*)(LLVMErrorRef) noexcept nogil> _LLVMGetErrorMessage__funptr)(Err)
 
 
 cdef void* _LLVMDisposeErrorMessage__funptr = NULL
 # 
 # Dispose of the given error message.
-cdef void LLVMDisposeErrorMessage(char * ErrMsg) nogil:
+cdef void LLVMDisposeErrorMessage(char * ErrMsg):
     global _LLVMDisposeErrorMessage__funptr
     __init_symbol(&_LLVMDisposeErrorMessage__funptr,"LLVMDisposeErrorMessage")
-    (<void (*)(char *) nogil> _LLVMDisposeErrorMessage__funptr)(ErrMsg)
+    with nogil:
+        (<void (*)(char *) noexcept nogil> _LLVMDisposeErrorMessage__funptr)(ErrMsg)
 
 
 cdef void* _LLVMGetStringErrorTypeId__funptr = NULL
 # 
 # Returns the type id for llvm StringError.
-cdef const void * LLVMGetStringErrorTypeId() nogil:
+cdef const void * LLVMGetStringErrorTypeId():
     global _LLVMGetStringErrorTypeId__funptr
     __init_symbol(&_LLVMGetStringErrorTypeId__funptr,"LLVMGetStringErrorTypeId")
-    return (<const void * (*)() nogil> _LLVMGetStringErrorTypeId__funptr)()
+    with nogil:
+        return (<const void * (*)() noexcept nogil> _LLVMGetStringErrorTypeId__funptr)()
 
 
 cdef void* _LLVMCreateStringError__funptr = NULL
 # 
 # Create a StringError.
-cdef LLVMErrorRef LLVMCreateStringError(const char * ErrMsg) nogil:
+cdef LLVMErrorRef LLVMCreateStringError(const char * ErrMsg):
     global _LLVMCreateStringError__funptr
     __init_symbol(&_LLVMCreateStringError__funptr,"LLVMCreateStringError")
-    return (<LLVMErrorRef (*)(const char *) nogil> _LLVMCreateStringError__funptr)(ErrMsg)
+    with nogil:
+        return (<LLVMErrorRef (*)(const char *) noexcept nogil> _LLVMCreateStringError__funptr)(ErrMsg)

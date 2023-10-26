@@ -45,14 +45,14 @@ cdef extern from "llvm-c/Remarks.h":
 # Returns the buffer holding the string.
 # 
 # \since REMARKS_API_VERSION=0
-cdef const char * LLVMRemarkStringGetData(LLVMRemarkStringRef String) nogil
+cdef const char * LLVMRemarkStringGetData(LLVMRemarkStringRef String)
 
 
 # 
 # Returns the size of the string.
 # 
 # \since REMARKS_API_VERSION=0
-cdef unsigned int LLVMRemarkStringGetLen(LLVMRemarkStringRef String) nogil
+cdef unsigned int LLVMRemarkStringGetLen(LLVMRemarkStringRef String)
 
 
 cdef extern from "llvm-c/Remarks.h":
@@ -66,21 +66,21 @@ cdef extern from "llvm-c/Remarks.h":
 # Return the path to the source file for a debug location.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkStringRef LLVMRemarkDebugLocGetSourceFilePath(LLVMRemarkDebugLocRef DL) nogil
+cdef LLVMRemarkStringRef LLVMRemarkDebugLocGetSourceFilePath(LLVMRemarkDebugLocRef DL)
 
 
 # 
 # Return the line in the source file for a debug location.
 # 
 # \since REMARKS_API_VERSION=0
-cdef unsigned int LLVMRemarkDebugLocGetSourceLine(LLVMRemarkDebugLocRef DL) nogil
+cdef unsigned int LLVMRemarkDebugLocGetSourceLine(LLVMRemarkDebugLocRef DL)
 
 
 # 
 # Return the column in the source file for a debug location.
 # 
 # \since REMARKS_API_VERSION=0
-cdef unsigned int LLVMRemarkDebugLocGetSourceColumn(LLVMRemarkDebugLocRef DL) nogil
+cdef unsigned int LLVMRemarkDebugLocGetSourceColumn(LLVMRemarkDebugLocRef DL)
 
 
 cdef extern from "llvm-c/Remarks.h":
@@ -95,14 +95,14 @@ cdef extern from "llvm-c/Remarks.h":
 # same key can appear multiple times in the list of arguments.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkStringRef LLVMRemarkArgGetKey(LLVMRemarkArgRef Arg) nogil
+cdef LLVMRemarkStringRef LLVMRemarkArgGetKey(LLVMRemarkArgRef Arg)
 
 
 # 
 # Returns the value of an argument. This is a string that can contain newlines.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkStringRef LLVMRemarkArgGetValue(LLVMRemarkArgRef Arg) nogil
+cdef LLVMRemarkStringRef LLVMRemarkArgGetValue(LLVMRemarkArgRef Arg)
 
 
 # 
@@ -111,7 +111,7 @@ cdef LLVMRemarkStringRef LLVMRemarkArgGetValue(LLVMRemarkArgRef Arg) nogil
 # If there is no debug location, the return value will be `NULL`.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkDebugLocRef LLVMRemarkArgGetDebugLoc(LLVMRemarkArgRef Arg) nogil
+cdef LLVMRemarkDebugLocRef LLVMRemarkArgGetDebugLoc(LLVMRemarkArgRef Arg)
 
 
 cdef extern from "llvm-c/Remarks.h":
@@ -125,7 +125,7 @@ cdef extern from "llvm-c/Remarks.h":
 # Free the resources used by the remark entry.
 # 
 # \since REMARKS_API_VERSION=0
-cdef void LLVMRemarkEntryDispose(LLVMRemarkEntryRef Remark) nogil
+cdef void LLVMRemarkEntryDispose(LLVMRemarkEntryRef Remark)
 
 
 # 
@@ -133,28 +133,28 @@ cdef void LLVMRemarkEntryDispose(LLVMRemarkEntryRef Remark) nogil
 # missed optimizations from the compiler.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkType LLVMRemarkEntryGetType(LLVMRemarkEntryRef Remark) nogil
+cdef LLVMRemarkType LLVMRemarkEntryGetType(LLVMRemarkEntryRef Remark)
 
 
 # 
 # Get the name of the pass that emitted this remark.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkStringRef LLVMRemarkEntryGetPassName(LLVMRemarkEntryRef Remark) nogil
+cdef LLVMRemarkStringRef LLVMRemarkEntryGetPassName(LLVMRemarkEntryRef Remark)
 
 
 # 
 # Get an identifier of the remark.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkStringRef LLVMRemarkEntryGetRemarkName(LLVMRemarkEntryRef Remark) nogil
+cdef LLVMRemarkStringRef LLVMRemarkEntryGetRemarkName(LLVMRemarkEntryRef Remark)
 
 
 # 
 # Get the name of the function being processed when the remark was emitted.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkStringRef LLVMRemarkEntryGetFunctionName(LLVMRemarkEntryRef Remark) nogil
+cdef LLVMRemarkStringRef LLVMRemarkEntryGetFunctionName(LLVMRemarkEntryRef Remark)
 
 
 # 
@@ -163,7 +163,7 @@ cdef LLVMRemarkStringRef LLVMRemarkEntryGetFunctionName(LLVMRemarkEntryRef Remar
 # If there is no debug location, the return value will be `NULL`.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkDebugLocRef LLVMRemarkEntryGetDebugLoc(LLVMRemarkEntryRef Remark) nogil
+cdef LLVMRemarkDebugLocRef LLVMRemarkEntryGetDebugLoc(LLVMRemarkEntryRef Remark)
 
 
 # 
@@ -172,14 +172,14 @@ cdef LLVMRemarkDebugLocRef LLVMRemarkEntryGetDebugLoc(LLVMRemarkEntryRef Remark)
 # A hotness of `0` means this value is not set.
 # 
 # \since REMARKS_API_VERSION=0
-cdef unsigned long LLVMRemarkEntryGetHotness(LLVMRemarkEntryRef Remark) nogil
+cdef unsigned long LLVMRemarkEntryGetHotness(LLVMRemarkEntryRef Remark)
 
 
 # 
 # The number of arguments the remark holds.
 # 
 # \since REMARKS_API_VERSION=0
-cdef unsigned int LLVMRemarkEntryGetNumArgs(LLVMRemarkEntryRef Remark) nogil
+cdef unsigned int LLVMRemarkEntryGetNumArgs(LLVMRemarkEntryRef Remark)
 
 
 # 
@@ -190,7 +190,7 @@ cdef unsigned int LLVMRemarkEntryGetNumArgs(LLVMRemarkEntryRef Remark) nogil
 # The lifetime of the returned value is bound to the lifetime of \p Remark.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkArgRef LLVMRemarkEntryGetFirstArg(LLVMRemarkEntryRef Remark) nogil
+cdef LLVMRemarkArgRef LLVMRemarkEntryGetFirstArg(LLVMRemarkEntryRef Remark)
 
 
 # 
@@ -201,7 +201,7 @@ cdef LLVMRemarkArgRef LLVMRemarkEntryGetFirstArg(LLVMRemarkEntryRef Remark) nogi
 # The lifetime of the returned value is bound to the lifetime of \p Remark.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkArgRef LLVMRemarkEntryGetNextArg(LLVMRemarkArgRef It,LLVMRemarkEntryRef Remark) nogil
+cdef LLVMRemarkArgRef LLVMRemarkEntryGetNextArg(LLVMRemarkArgRef It,LLVMRemarkEntryRef Remark)
 
 
 cdef extern from "llvm-c/Remarks.h":
@@ -221,7 +221,7 @@ cdef extern from "llvm-c/Remarks.h":
 # leaking resources.
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkParserRef LLVMRemarkParserCreateYAML(const void * Buf,unsigned long Size) nogil
+cdef LLVMRemarkParserRef LLVMRemarkParserCreateYAML(const void * Buf,unsigned long Size)
 
 
 # 
@@ -234,7 +234,7 @@ cdef LLVMRemarkParserRef LLVMRemarkParserCreateYAML(const void * Buf,unsigned lo
 # leaking resources.
 # 
 # \since REMARKS_API_VERSION=1
-cdef LLVMRemarkParserRef LLVMRemarkParserCreateBitstream(const void * Buf,unsigned long Size) nogil
+cdef LLVMRemarkParserRef LLVMRemarkParserCreateBitstream(const void * Buf,unsigned long Size)
 
 
 # 
@@ -278,14 +278,14 @@ cdef LLVMRemarkParserRef LLVMRemarkParserCreateBitstream(const void * Buf,unsign
 # ```
 # 
 # \since REMARKS_API_VERSION=0
-cdef LLVMRemarkEntryRef LLVMRemarkParserGetNext(LLVMRemarkParserRef Parser) nogil
+cdef LLVMRemarkEntryRef LLVMRemarkParserGetNext(LLVMRemarkParserRef Parser)
 
 
 # 
 # Returns `1` if the parser encountered an error while parsing the buffer.
 # 
 # \since REMARKS_API_VERSION=0
-cdef int LLVMRemarkParserHasError(LLVMRemarkParserRef Parser) nogil
+cdef int LLVMRemarkParserHasError(LLVMRemarkParserRef Parser)
 
 
 # 
@@ -298,18 +298,18 @@ cdef int LLVMRemarkParserHasError(LLVMRemarkParserRef Parser) nogil
 # released.
 # 
 # \since REMARKS_API_VERSION=0
-cdef const char * LLVMRemarkParserGetErrorMessage(LLVMRemarkParserRef Parser) nogil
+cdef const char * LLVMRemarkParserGetErrorMessage(LLVMRemarkParserRef Parser)
 
 
 # 
 # Releases all the resources used by \p Parser.
 # 
 # \since REMARKS_API_VERSION=0
-cdef void LLVMRemarkParserDispose(LLVMRemarkParserRef Parser) nogil
+cdef void LLVMRemarkParserDispose(LLVMRemarkParserRef Parser)
 
 
 # 
 # Returns the version of the remarks library.
 # 
 # \since REMARKS_API_VERSION=0
-cdef unsigned int LLVMRemarkVersion() nogil
+cdef unsigned int LLVMRemarkVersion()

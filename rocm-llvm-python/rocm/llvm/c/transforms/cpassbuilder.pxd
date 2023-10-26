@@ -42,7 +42,7 @@ cdef extern from "llvm-c/Transforms/PassBuilder.h":
 # manager. Individual passes may be specified, separated by commas. Full
 # pipelines may also be invoked using `default<O3>` and friends. See opt for
 # full reference of the Passes format.
-cdef LLVMErrorRef LLVMRunPasses(LLVMModuleRef M,const char * Passes,LLVMTargetMachineRef TM,LLVMPassBuilderOptionsRef Options) nogil
+cdef LLVMErrorRef LLVMRunPasses(LLVMModuleRef M,const char * Passes,LLVMTargetMachineRef TM,LLVMPassBuilderOptionsRef Options)
 
 
 # 
@@ -51,56 +51,56 @@ cdef LLVMErrorRef LLVMRunPasses(LLVMModuleRef M,const char * Passes,LLVMTargetMa
 # Ownership of the returned instance is given to the client, and they are
 # responsible for it. The client should call LLVMDisposePassBuilderOptions
 # to free the pass builder options.
-cdef LLVMPassBuilderOptionsRef LLVMCreatePassBuilderOptions() nogil
+cdef LLVMPassBuilderOptionsRef LLVMCreatePassBuilderOptions()
 
 
 # 
 # Toggle adding the VerifierPass for the PassBuilder, ensuring all functions
 # inside the module is valid.
-cdef void LLVMPassBuilderOptionsSetVerifyEach(LLVMPassBuilderOptionsRef Options,int VerifyEach) nogil
+cdef void LLVMPassBuilderOptionsSetVerifyEach(LLVMPassBuilderOptionsRef Options,int VerifyEach)
 
 
 # 
 # Toggle debug logging when running the PassBuilder
-cdef void LLVMPassBuilderOptionsSetDebugLogging(LLVMPassBuilderOptionsRef Options,int DebugLogging) nogil
+cdef void LLVMPassBuilderOptionsSetDebugLogging(LLVMPassBuilderOptionsRef Options,int DebugLogging)
 
 
 
-cdef void LLVMPassBuilderOptionsSetLoopInterleaving(LLVMPassBuilderOptionsRef Options,int LoopInterleaving) nogil
+cdef void LLVMPassBuilderOptionsSetLoopInterleaving(LLVMPassBuilderOptionsRef Options,int LoopInterleaving)
 
 
 
-cdef void LLVMPassBuilderOptionsSetLoopVectorization(LLVMPassBuilderOptionsRef Options,int LoopVectorization) nogil
+cdef void LLVMPassBuilderOptionsSetLoopVectorization(LLVMPassBuilderOptionsRef Options,int LoopVectorization)
 
 
 
-cdef void LLVMPassBuilderOptionsSetSLPVectorization(LLVMPassBuilderOptionsRef Options,int SLPVectorization) nogil
+cdef void LLVMPassBuilderOptionsSetSLPVectorization(LLVMPassBuilderOptionsRef Options,int SLPVectorization)
 
 
 
-cdef void LLVMPassBuilderOptionsSetLoopUnrolling(LLVMPassBuilderOptionsRef Options,int LoopUnrolling) nogil
+cdef void LLVMPassBuilderOptionsSetLoopUnrolling(LLVMPassBuilderOptionsRef Options,int LoopUnrolling)
 
 
 
-cdef void LLVMPassBuilderOptionsSetForgetAllSCEVInLoopUnroll(LLVMPassBuilderOptionsRef Options,int ForgetAllSCEVInLoopUnroll) nogil
+cdef void LLVMPassBuilderOptionsSetForgetAllSCEVInLoopUnroll(LLVMPassBuilderOptionsRef Options,int ForgetAllSCEVInLoopUnroll)
 
 
 
-cdef void LLVMPassBuilderOptionsSetLicmMssaOptCap(LLVMPassBuilderOptionsRef Options,unsigned int LicmMssaOptCap) nogil
+cdef void LLVMPassBuilderOptionsSetLicmMssaOptCap(LLVMPassBuilderOptionsRef Options,unsigned int LicmMssaOptCap)
 
 
 
-cdef void LLVMPassBuilderOptionsSetLicmMssaNoAccForPromotionCap(LLVMPassBuilderOptionsRef Options,unsigned int LicmMssaNoAccForPromotionCap) nogil
+cdef void LLVMPassBuilderOptionsSetLicmMssaNoAccForPromotionCap(LLVMPassBuilderOptionsRef Options,unsigned int LicmMssaNoAccForPromotionCap)
 
 
 
-cdef void LLVMPassBuilderOptionsSetCallGraphProfile(LLVMPassBuilderOptionsRef Options,int CallGraphProfile) nogil
+cdef void LLVMPassBuilderOptionsSetCallGraphProfile(LLVMPassBuilderOptionsRef Options,int CallGraphProfile)
 
 
 
-cdef void LLVMPassBuilderOptionsSetMergeFunctions(LLVMPassBuilderOptionsRef Options,int MergeFunctions) nogil
+cdef void LLVMPassBuilderOptionsSetMergeFunctions(LLVMPassBuilderOptionsRef Options,int MergeFunctions)
 
 
 # 
 # Dispose of a heap-allocated PassBuilderOptions instance
-cdef void LLVMDisposePassBuilderOptions(LLVMPassBuilderOptionsRef Options) nogil
+cdef void LLVMDisposePassBuilderOptions(LLVMPassBuilderOptionsRef Options)

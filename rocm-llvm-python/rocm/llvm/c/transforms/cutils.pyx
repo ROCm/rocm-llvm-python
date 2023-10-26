@@ -25,40 +25,46 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMAddLowerSwitchPass__funptr = NULL
 # See llvm::createLowerSwitchPass function. */
-cdef void LLVMAddLowerSwitchPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddLowerSwitchPass(LLVMPassManagerRef PM):
     global _LLVMAddLowerSwitchPass__funptr
     __init_symbol(&_LLVMAddLowerSwitchPass__funptr,"LLVMAddLowerSwitchPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddLowerSwitchPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddLowerSwitchPass__funptr)(PM)
 
 
 cdef void* _LLVMAddPromoteMemoryToRegisterPass__funptr = NULL
 # See llvm::createPromoteMemoryToRegisterPass function. */
-cdef void LLVMAddPromoteMemoryToRegisterPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddPromoteMemoryToRegisterPass(LLVMPassManagerRef PM):
     global _LLVMAddPromoteMemoryToRegisterPass__funptr
     __init_symbol(&_LLVMAddPromoteMemoryToRegisterPass__funptr,"LLVMAddPromoteMemoryToRegisterPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddPromoteMemoryToRegisterPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddPromoteMemoryToRegisterPass__funptr)(PM)
 
 
 cdef void* _LLVMAddAddDiscriminatorsPass__funptr = NULL
 # See llvm::createAddDiscriminatorsPass function. */
-cdef void LLVMAddAddDiscriminatorsPass(LLVMPassManagerRef PM) nogil:
+cdef void LLVMAddAddDiscriminatorsPass(LLVMPassManagerRef PM):
     global _LLVMAddAddDiscriminatorsPass__funptr
     __init_symbol(&_LLVMAddAddDiscriminatorsPass__funptr,"LLVMAddAddDiscriminatorsPass")
-    (<void (*)(LLVMPassManagerRef) nogil> _LLVMAddAddDiscriminatorsPass__funptr)(PM)
+    with nogil:
+        (<void (*)(LLVMPassManagerRef) noexcept nogil> _LLVMAddAddDiscriminatorsPass__funptr)(PM)

@@ -39,27 +39,6 @@ Attributes:
     LLVM_HOST_TRIPLE (`~.bytes`):
         Macro constant.
 
-    LLVM_NATIVE_ARCH (`~.list`):
-        Macro constant.
-
-    LLVM_NATIVE_ASMPARSER (`~.list`):
-        Macro constant.
-
-    LLVM_NATIVE_ASMPRINTER (`~.list`):
-        Macro constant.
-
-    LLVM_NATIVE_DISASSEMBLER (`~.list`):
-        Macro constant.
-
-    LLVM_NATIVE_TARGET (`~.list`):
-        Macro constant.
-
-    LLVM_NATIVE_TARGETINFO (`~.list`):
-        Macro constant.
-
-    LLVM_NATIVE_TARGETMC (`~.list`):
-        Macro constant.
-
     LLVM_ON_UNIX (`~.bool`):
         Macro constant.
 
@@ -118,20 +97,6 @@ LLVM_HAS_ATOMICS = cllvm_config.LLVM_HAS_ATOMICS
 
 LLVM_HOST_TRIPLE = cllvm_config.LLVM_HOST_TRIPLE
 
-LLVM_NATIVE_ARCH = cllvm_config.LLVM_NATIVE_ARCH
-
-LLVM_NATIVE_ASMPARSER = cllvm_config.LLVM_NATIVE_ASMPARSER
-
-LLVM_NATIVE_ASMPRINTER = cllvm_config.LLVM_NATIVE_ASMPRINTER
-
-LLVM_NATIVE_DISASSEMBLER = cllvm_config.LLVM_NATIVE_DISASSEMBLER
-
-LLVM_NATIVE_TARGET = cllvm_config.LLVM_NATIVE_TARGET
-
-LLVM_NATIVE_TARGETINFO = cllvm_config.LLVM_NATIVE_TARGETINFO
-
-LLVM_NATIVE_TARGETMC = cllvm_config.LLVM_NATIVE_TARGETMC
-
 LLVM_ON_UNIX = cllvm_config.LLVM_ON_UNIX
 
 LLVM_USE_INTEL_JITEVENTS = cllvm_config.LLVM_USE_INTEL_JITEVENTS
@@ -167,13 +132,6 @@ __all__ = [
     "LLVM_ENABLE_THREADS",
     "LLVM_HAS_ATOMICS",
     "LLVM_HOST_TRIPLE",
-    "LLVM_NATIVE_ARCH",
-    "LLVM_NATIVE_ASMPARSER",
-    "LLVM_NATIVE_ASMPRINTER",
-    "LLVM_NATIVE_DISASSEMBLER",
-    "LLVM_NATIVE_TARGET",
-    "LLVM_NATIVE_TARGETINFO",
-    "LLVM_NATIVE_TARGETMC",
     "LLVM_ON_UNIX",
     "LLVM_USE_INTEL_JITEVENTS",
     "LLVM_USE_OPROFILE",

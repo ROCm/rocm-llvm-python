@@ -26,168 +26,168 @@ from libc.stdint cimport *
 ctypedef bint _Bool # bool is not a reserved keyword in C, _Bool is
 from rocm.llvm.c.ctypes cimport *
 # See llvm::createAggressiveDCEPass function. */
-cdef void LLVMAddAggressiveDCEPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddAggressiveDCEPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createDeadCodeEliminationPass function. */
-cdef void LLVMAddDCEPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddDCEPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createBitTrackingDCEPass function. */
-cdef void LLVMAddBitTrackingDCEPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddBitTrackingDCEPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createAlignmentFromAssumptionsPass function. */
-cdef void LLVMAddAlignmentFromAssumptionsPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddAlignmentFromAssumptionsPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createCFGSimplificationPass function. */
-cdef void LLVMAddCFGSimplificationPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddCFGSimplificationPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createDeadStoreEliminationPass function. */
-cdef void LLVMAddDeadStoreEliminationPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddDeadStoreEliminationPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createScalarizerPass function. */
-cdef void LLVMAddScalarizerPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddScalarizerPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createMergedLoadStoreMotionPass function. */
-cdef void LLVMAddMergedLoadStoreMotionPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddMergedLoadStoreMotionPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createGVNPass function. */
-cdef void LLVMAddGVNPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddGVNPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createGVNPass function. */
-cdef void LLVMAddNewGVNPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddNewGVNPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createIndVarSimplifyPass function. */
-cdef void LLVMAddIndVarSimplifyPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddIndVarSimplifyPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createInstructionCombiningPass function. */
-cdef void LLVMAddInstructionCombiningPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddInstructionCombiningPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createInstSimplifyLegacyPass function. */
-cdef void LLVMAddInstructionSimplifyPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddInstructionSimplifyPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createJumpThreadingPass function. */
-cdef void LLVMAddJumpThreadingPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddJumpThreadingPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createLICMPass function. */
-cdef void LLVMAddLICMPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddLICMPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createLoopDeletionPass function. */
-cdef void LLVMAddLoopDeletionPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddLoopDeletionPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createLoopIdiomPass function */
-cdef void LLVMAddLoopIdiomPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddLoopIdiomPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createLoopRotatePass function. */
-cdef void LLVMAddLoopRotatePass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddLoopRotatePass(LLVMPassManagerRef PM)
 
 
 # See llvm::createLoopRerollPass function. */
-cdef void LLVMAddLoopRerollPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddLoopRerollPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createLoopUnrollPass function. */
-cdef void LLVMAddLoopUnrollPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddLoopUnrollPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createLoopUnrollAndJamPass function. */
-cdef void LLVMAddLoopUnrollAndJamPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddLoopUnrollAndJamPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createLowerAtomicPass function. */
-cdef void LLVMAddLowerAtomicPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddLowerAtomicPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createMemCpyOptPass function. */
-cdef void LLVMAddMemCpyOptPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddMemCpyOptPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createPartiallyInlineLibCallsPass function. */
-cdef void LLVMAddPartiallyInlineLibCallsPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddPartiallyInlineLibCallsPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createReassociatePass function. */
-cdef void LLVMAddReassociatePass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddReassociatePass(LLVMPassManagerRef PM)
 
 
 # See llvm::createSCCPPass function. */
-cdef void LLVMAddSCCPPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddSCCPPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createSROAPass function. */
-cdef void LLVMAddScalarReplAggregatesPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddScalarReplAggregatesPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createSROAPass function. */
-cdef void LLVMAddScalarReplAggregatesPassSSA(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddScalarReplAggregatesPassSSA(LLVMPassManagerRef PM)
 
 
 # See llvm::createSROAPass function. */
-cdef void LLVMAddScalarReplAggregatesPassWithThreshold(LLVMPassManagerRef PM,int Threshold) nogil
+cdef void LLVMAddScalarReplAggregatesPassWithThreshold(LLVMPassManagerRef PM,int Threshold)
 
 
 # See llvm::createSimplifyLibCallsPass function. */
-cdef void LLVMAddSimplifyLibCallsPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddSimplifyLibCallsPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createTailCallEliminationPass function. */
-cdef void LLVMAddTailCallEliminationPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddTailCallEliminationPass(LLVMPassManagerRef PM)
 
 
 # See llvm::demotePromoteMemoryToRegisterPass function. */
-cdef void LLVMAddDemoteMemoryToRegisterPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddDemoteMemoryToRegisterPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createVerifierPass function. */
-cdef void LLVMAddVerifierPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddVerifierPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createCorrelatedValuePropagationPass function */
-cdef void LLVMAddCorrelatedValuePropagationPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddCorrelatedValuePropagationPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createEarlyCSEPass function */
-cdef void LLVMAddEarlyCSEPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddEarlyCSEPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createEarlyCSEPass function */
-cdef void LLVMAddEarlyCSEMemSSAPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddEarlyCSEMemSSAPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createLowerExpectIntrinsicPass function */
-cdef void LLVMAddLowerExpectIntrinsicPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddLowerExpectIntrinsicPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createLowerConstantIntrinsicsPass function */
-cdef void LLVMAddLowerConstantIntrinsicsPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddLowerConstantIntrinsicsPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createTypeBasedAliasAnalysisPass function */
-cdef void LLVMAddTypeBasedAliasAnalysisPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddTypeBasedAliasAnalysisPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createScopedNoAliasAAPass function */
-cdef void LLVMAddScopedNoAliasAAPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddScopedNoAliasAAPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createBasicAliasAnalysisPass function */
-cdef void LLVMAddBasicAliasAnalysisPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddBasicAliasAnalysisPass(LLVMPassManagerRef PM)
 
 
 # See llvm::createUnifyFunctionExitNodesPass function */
-cdef void LLVMAddUnifyFunctionExitNodesPass(LLVMPassManagerRef PM) nogil
+cdef void LLVMAddUnifyFunctionExitNodesPass(LLVMPassManagerRef PM)

@@ -25,19 +25,22 @@
 cimport rocm.llvm._util.posixloader as loader
 cdef void* _lib_handle = NULL
 
-cdef void __init() nogil:
-    global _lib_handle
-    if _lib_handle == NULL:
-        with gil:
-            _lib_handle = loader.open_library("librocmllvm.so")
+DLL = "librocmllvm.so"
 
-cdef void __init_symbol(void** result, const char* name) nogil:
+cdef void __init():
+    global DLL
+    global _lib_handle
+    if not isinstance(DLL,str):
+        raise RuntimeError(f"'DLL' must be of type `str`")
+    if _lib_handle == NULL:
+        _lib_handle = loader.open_library(DLL.encode("utf-8"))
+
+cdef void __init_symbol(void** result, const char* name):
     global _lib_handle
     if _lib_handle == NULL:
         __init()
     if result[0] == NULL:
-        with gil:
-            result[0] = loader.load_symbol(_lib_handle, name) 
+        result[0] = loader.load_symbol(_lib_handle, name)
 
 
 cdef void* _LLVMParseIRInContext__funptr = NULL
@@ -49,7 +52,8 @@ cdef void* _LLVMParseIRInContext__funptr = NULL
 # LLVMDisposeMessage.
 # 
 # @see llvm::ParseIR()
-cdef int LLVMParseIRInContext(LLVMContextRef ContextRef,LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutM,char ** OutMessage) nogil:
+cdef int LLVMParseIRInContext(LLVMContextRef ContextRef,LLVMMemoryBufferRef MemBuf,LLVMModuleRef* OutM,char ** OutMessage):
     global _LLVMParseIRInContext__funptr
     __init_symbol(&_LLVMParseIRInContext__funptr,"LLVMParseIRInContext")
-    return (<int (*)(LLVMContextRef,LLVMMemoryBufferRef,LLVMModuleRef*,char **) nogil> _LLVMParseIRInContext__funptr)(ContextRef,MemBuf,OutM,OutMessage)
+    with nogil:
+        return (<int (*)(LLVMContextRef,LLVMMemoryBufferRef,LLVMModuleRef*,char **) noexcept nogil> _LLVMParseIRInContext__funptr)(ContextRef,MemBuf,OutM,OutMessage)
