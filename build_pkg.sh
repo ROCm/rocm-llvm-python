@@ -39,10 +39,11 @@ Options:
   --no-api-docs          Temporarily move the 'rocm-llvm-python/docs/python_api' subfolder so that sphinx does not see it.
   --no-clean-docs        Do not generate docs from scratch, i.e. don't run sphinx with -E switch.
   --run-tests            Run the tests.
+  --no-archive           Do not put previously created packages into the archive folder.
   -j,--num-jobs          Number of build jobs to use (currently only applied for building docs). Defaults to 1.
   --pre-clean            Remove the virtual Python environment subfolder '_venv' --- if it exists --- before all other tasks.
   --post-clean           Remove the virtual Python environment subfolder '_venv' --- if it exists --- after all other tasks.
-  -n, --no-venv          Do not create and use a virtual Python environment.
+  -n, --no-_venv          Do not create and use a virtual Python environment.
   -h, --help             Show this help message.
 "
 
@@ -57,7 +58,7 @@ while [[ $# -gt 0 ]]; do
       POST_CLEAN=1
       shift
       ;;
-    -n|--no-venv)
+    -n|--no-_venv)
       NO_VENV=1
       shift
       ;;
@@ -93,6 +94,10 @@ while [[ $# -gt 0 ]]; do
       NO_API_DOCS=1
       shift
       ;;
+    --no-archive)
+      NO_ARCHIVE_OLD_PACKAGES=1
+      shift
+      ;;
     -j|--num-jobs)
       NUM_JOBS=$2
       shift; shift
@@ -113,12 +118,12 @@ declare -x ROCM_LLVM_PYTHON_LIBS=${ROCM_LLVM_PYTHON_LIBS:-*}
 
 # note: [ -z {var+x} ] evaluates to true if `var` is unset!
 
-[ -z ${PRE_CLEAN+x} ] || rm -rf venv
+[ -z ${PRE_CLEAN+x} ] || rm -rf _venv
 
 alias PYTHON="python3"
 PYTHON_PATH="python3"
 if [ -z ${NO_ENV+x} ]; then
-  [ ! -d "venv" ] && python3 -m venv _venv
+  [ ! -d "_venv" ] && python3 -m venv _venv
   alias PYTHON="$(pwd)/_venv/bin/python3"
   PYTHON_PATH="$(pwd)/_venv/bin/python3"
 fi
@@ -135,8 +140,10 @@ if [ -z ${NO_BUILD+x} ]; then
   echo "building package ${PKG}"
   mkdir -p ${PKG}/dist/
   mkdir -p ${PKG}/dist/archive
-  mv ${PKG}/dist/*.whl ${PKG}/dist/archive/    2> /dev/null
-  mv ${PKG}/dist/*.tar.gz ${PKG}/dist/archive/ 2> /dev/null
+  if [ -z ${NO_ARCHIVE_OLD_PACKAGES+x} ]; then
+    mv ${PKG}/dist/*.whl ${PKG}/dist/archive/    2> /dev/null
+    mv ${PKG}/dist/*.tar.gz ${PKG}/dist/archive/ 2> /dev/null
+  fi
   PYTHON -m pip install -r ${PKG}/requirements.txt
   PYTHON _render_update_version.py
   PYTHON -m build ${PKG} -n
@@ -170,4 +177,4 @@ fi
 #   PYTHON -m pip install --force-reinstall rocm-llvm-python/dist/hip*whl
 # fi
 
-[ -z ${POST_CLEAN+x} ] || rm -rf venv
+[ -z ${POST_CLEAN+x} ] || rm -rf _venv
