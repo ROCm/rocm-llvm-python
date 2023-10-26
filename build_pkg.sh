@@ -24,24 +24,26 @@ if [[ "${BASH_SOURCE[0]}" != "${0}" ]]; then
    echo "ERROR: script must not be sourced";
    return 1
 fi
+set -e # failing subprograms make this script fail too
 
 HELP_MSG="
 Usage: ./$(basename $0) [OPTIONS]
 
 Options:
-  --rocm-path        Path to a ROCm installation, defaults to variable 'ROCM_PATH' if set or '/opt/rocm'.
-  --libs             Libraries to build as comma separated list without whitespaces, defaults to variable 'ROCM_LLVM_PYTHON_LIBS' if set or '*'.
-                     Add a prefix '^' to NOT build the comma-separated list of libraries that follows but all other libraries.
-  --no-build         Do not build package 'rocm-llvm-python'.
-  --no-docs          Do not build the docs of package 'rocm-llvm-python'.
-  --no-api-docs      Temporarily move the 'rocm-llvm-python/docs/python_api' subfolder so that sphinx does not see it.
-  --no-clean-docs    Do not generate docs from scratch, i.e. don't run sphinx with -E switch.
-  --run-tests        Run the tests.
-  -j,--num-jobs      Number of build jobs to use (currently only applied for building docs). Defaults to 1.
-  --pre-clean        Remove the virtual Python environment subfolder '_venv' --- if it exists --- before all other tasks.
-  --post-clean       Remove the virtual Python environment subfolder '_venv' --- if it exists --- after all other tasks.
-  -n, --no-venv      Do not create and use a virtual Python environment.
-  -h, --help         Show this help message.
+  --rocm-path            Path to a ROCm installation, defaults to variable 'ROCM_PATH' if set or '/opt/rocm'.
+  --libs                 Libraries to build as comma separated list without whitespaces, defaults to variable 'ROCM_LLVM_PYTHON_LIBS' if set or '*'.
+                         Add a prefix '^' to NOT build the comma-separated list of libraries that follows but all other libraries.
+  --no-build             Do not build package 'rocm-llvm-python'.
+  --no-docs              Do not build the docs of package 'rocm-llvm-python'.
+  --no-build-librocmllvm Do not build the librocmllvm shared object.
+  --no-api-docs          Temporarily move the 'rocm-llvm-python/docs/python_api' subfolder so that sphinx does not see it.
+  --no-clean-docs        Do not generate docs from scratch, i.e. don't run sphinx with -E switch.
+  --run-tests            Run the tests.
+  -j,--num-jobs          Number of build jobs to use (currently only applied for building docs). Defaults to 1.
+  --pre-clean            Remove the virtual Python environment subfolder '_venv' --- if it exists --- before all other tasks.
+  --post-clean           Remove the virtual Python environment subfolder '_venv' --- if it exists --- after all other tasks.
+  -n, --no-venv          Do not create and use a virtual Python environment.
+  -h, --help             Show this help message.
 "
 
 NUM_JOBS=1
@@ -73,6 +75,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --no-build)
       NO_BUILD=1
+      shift
+      ;;
+    --no-build-librocmllvm)
+      NO_BUILD_LIBROCMLLVM=1
       shift
       ;;
     --run-tests)
@@ -118,10 +124,15 @@ if [ -z ${NO_ENV+x} ]; then
 fi
 shopt -s expand_aliases
 
+PKG="rocm-llvm-python"
+if [ -z ${NO_BUILD_LIBROCMLLVM+x} ]; then
+    make clean librocmllvm.so
+    mv librocmllvm.so ${PKG}/rocm/llvm
+fi
+
 if [ -z ${NO_BUILD+x} ]; then
   # build rocm-llvm-python
-  echo "building package rocm-llvm-python"
-  PKG="rocm-llvm-python"
+  echo "building package ${PKG}"
   mkdir -p ${PKG}/dist/
   mkdir -p ${PKG}/dist/archive
   mv ${PKG}/dist/*.whl ${PKG}/dist/archive/    2> /dev/null
