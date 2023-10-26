@@ -66,10 +66,9 @@ def parse_options():
 
     EXTRA_COMPILE_ARGS = [f"-I{ROCM_LLVM_INC}"]
 
-def create_extension(name, sources):
+def create_extension(name, sources, ROCM_LLVM_PYTHON_MODULES):
     global ROCM_LLVM_INC
     global ROCM_LLVM_LIB
-    global ROCM_LLVM_PYTHON_MODULES
     global ROCM_LLVM_PYTHON_RUNTIME_LINKING
     return Extension(
         name,
@@ -100,49 +99,14 @@ class Module:
         ]
 
 # differs between rocm-llvm-python and rocm-llvm-python-as-cuda package
-def gather_ext_modules():
+def gather_ext_modules(global_module_names: str):
     global CYTHON_EXT_MODULES
-    global ROCM_LLVM_PYTHON_MODULES
     global ROCM_LLVM_PYTHON_LIBS
     CYTHON_EXT_MODULES.append(("rocm.llvm._util.types", ["./rocm/llvm/_util/types.pyx"]))
     CYTHON_EXT_MODULES.append(
         ("rocm.llvm._util.posixloader", ["./rocm/llvm/_util/posixloader.pyx"])
     )
-    ROCM_LLVM_PYTHON_MODULES += [
-        Module("rocm.llvm.c.analysis"),
-        Module("rocm.llvm.c.bitreader"),
-        Module("rocm.llvm.c.bitwriter"),
-        Module("rocm.llvm.c.blake3"),
-        Module("rocm.llvm.c.core"),
-        Module("rocm.llvm.c.datatypes"),
-        Module("rocm.llvm.c.debuginfo"),
-        Module("rocm.llvm.c.disassembler"),
-        Module("rocm.llvm.c.disassemblertypes"),
-        Module("rocm.llvm.c.error"),
-        Module("rocm.llvm.c.errorhandling"),
-        Module("rocm.llvm.c.executionengine"),
-        Module("rocm.llvm.c.initialization"),
-        Module("rocm.llvm.c.irreader"),
-        Module("rocm.llvm.c.linker"),
-        Module("rocm.llvm.c.lljit"),
-        Module("rocm.llvm.c.lto"),
-        Module("rocm.llvm.c.object"),
-        Module("rocm.llvm.c.orc"),
-        Module("rocm.llvm.c.orcee"),
-        Module("rocm.llvm.c.remarks"),
-        Module("rocm.llvm.c.support"),
-        Module("rocm.llvm.c.target"),
-        Module("rocm.llvm.c.targetmachine"),
-        Module("rocm.llvm.c.transforms.instcombine"),
-        Module("rocm.llvm.c.transforms.ipo"),
-        Module("rocm.llvm.c.transforms.passbuilder"),
-        Module("rocm.llvm.c.transforms.passmanagerbuilder"),
-        Module("rocm.llvm.c.transforms.scalar"),
-        Module("rocm.llvm.c.transforms.utils"),
-        Module("rocm.llvm.c.transforms.vectorize"),
-        Module("rocm.llvm.c.types"),
-        Module("rocm.llvm.config.llvm_config"),
-    ]
+    ROCM_LLVM_PYTHON_MODULES = [Module(a) for a in global_module_names]
 
     # process and check user-provided library names
     module_names = [mod.name for mod in ROCM_LLVM_PYTHON_MODULES]
@@ -163,6 +127,7 @@ def gather_ext_modules():
     for mod in ROCM_LLVM_PYTHON_MODULES:
         if mod.name in selected_libs:
             CYTHON_EXT_MODULES += mod.ext_modules
+    return ROCM_LLVM_PYTHON_MODULES
 
 if __name__ == "__main__":
     ROCM_LLVM_PYTHON_LIBS=None
@@ -171,27 +136,26 @@ if __name__ == "__main__":
     ROCM_LLVM_LIB = None
     EXTRA_COMPILE_ARGS = None
     VERBOSE = False
-    ROCM_LLVM_PYTHON_MODULES = []
+
+    # load _version.py
+    _version_dict = {}
+    exec(open(os.path.join("rocm","llvm","_version.py"),"r").read(), _version_dict)
     CYTHON_EXT_MODULES = []
-   
+
     parse_options()
-    gather_ext_modules() 
+    ROCM_LLVM_PYTHON_MODULES = gather_ext_modules(_version_dict["ROCM_LLVM_PYTHON_MODULE_LIST"]) 
     ext_modules = []
     for name, sources in CYTHON_EXT_MODULES:
-        extension = create_extension(name, sources)
+        extension = create_extension(name, sources, ROCM_LLVM_PYTHON_MODULES)
         ext_modules += cythonize(
             [extension],
             compiler_directives=dict(
                 embedsignature=True,
                 language_level=3,
-            ),
+            )
         )
-
-    # load _version.py
-    ns = {}
-    exec(open(os.path.join("rocm","llvm","_version.py"),"r").read(), ns)
 
     setup(
         ext_modules=ext_modules,
-        version = ns["__version__"],
+        version = _version_dict["__version__"],
     )
