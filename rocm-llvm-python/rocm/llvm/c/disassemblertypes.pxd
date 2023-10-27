@@ -33,61 +33,57 @@ cimport rocm.llvm._util.types
 
 
 from . cimport cdisassemblertypes
-cdef class LLVMOpInfoCallback:
-    cdef cdisassemblertypes.LLVMOpInfoCallback _ptr
+cdef class LLVMOpInfoCallback(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cdisassemblertypes.LLVMOpInfoCallback get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpInfoCallback from_ptr(cdisassemblertypes.LLVMOpInfoCallback ptr, bint owner=*)
+    cdef LLVMOpInfoCallback from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpInfoCallback from_pyobj(object pyobj)
 
 
-cdef class LLVMOpInfoSymbol1:
-    cdef cdisassemblertypes.LLVMOpInfoSymbol1* _ptr
+cdef class LLVMOpInfoSymbol1(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cdisassemblertypes.LLVMOpInfoSymbol1* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpInfoSymbol1 from_ptr(cdisassemblertypes.LLVMOpInfoSymbol1* ptr, bint owner=*)
+    cdef LLVMOpInfoSymbol1 from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpInfoSymbol1 from_pyobj(object pyobj)
     @staticmethod
-    cdef __allocate(cdisassemblertypes.LLVMOpInfoSymbol1** ptr)
+    cdef __allocate(void* ptr)
     @staticmethod
     cdef LLVMOpInfoSymbol1 new()
     @staticmethod
     cdef LLVMOpInfoSymbol1 from_value(cdisassemblertypes.LLVMOpInfoSymbol1 other)
 
 
-cdef class LLVMOpInfo1:
-    cdef cdisassemblertypes.LLVMOpInfo1* _ptr
+cdef class LLVMOpInfo1(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cdisassemblertypes.LLVMOpInfo1* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpInfo1 from_ptr(cdisassemblertypes.LLVMOpInfo1* ptr, bint owner=*)
+    cdef LLVMOpInfo1 from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpInfo1 from_pyobj(object pyobj)
     @staticmethod
-    cdef __allocate(cdisassemblertypes.LLVMOpInfo1** ptr)
+    cdef __allocate(void* ptr)
     @staticmethod
     cdef LLVMOpInfo1 new()
     @staticmethod
     cdef LLVMOpInfo1 from_value(cdisassemblertypes.LLVMOpInfo1 other)
 
 
-cdef class LLVMSymbolLookupCallback:
-    cdef cdisassemblertypes.LLVMSymbolLookupCallback _ptr
+cdef class LLVMSymbolLookupCallback(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cdisassemblertypes.LLVMSymbolLookupCallback get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMSymbolLookupCallback from_ptr(cdisassemblertypes.LLVMSymbolLookupCallback ptr, bint owner=*)
+    cdef LLVMSymbolLookupCallback from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMSymbolLookupCallback from_pyobj(object pyobj)

@@ -69,13 +69,11 @@ def LLVMWriteBitcodeToFile(object M, const char * Path):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMWriteBitcodeToFile__retval = cbitwriter.LLVMWriteBitcodeToFile(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Path)    # fully specified
-    return (_LLVMWriteBitcodeToFile__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Path)    # fully specified
+    return _LLVMWriteBitcodeToFile__retval
 
 
 @cython.embedsignature(True)
@@ -98,13 +96,11 @@ def LLVMWriteBitcodeToFD(object M, int FD, int ShouldClose, int Unbuffered):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMWriteBitcodeToFD__retval = cbitwriter.LLVMWriteBitcodeToFD(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,FD,ShouldClose,Unbuffered)    # fully specified
-    return (_LLVMWriteBitcodeToFD__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),FD,ShouldClose,Unbuffered)    # fully specified
+    return _LLVMWriteBitcodeToFD__retval
 
 
 @cython.embedsignature(True)
@@ -122,13 +118,11 @@ def LLVMWriteBitcodeToFileHandle(object M, int Handle):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMWriteBitcodeToFileHandle__retval = cbitwriter.LLVMWriteBitcodeToFileHandle(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Handle)    # fully specified
-    return (_LLVMWriteBitcodeToFileHandle__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Handle)    # fully specified
+    return _LLVMWriteBitcodeToFileHandle__retval
 
 
 @cython.embedsignature(True)
@@ -142,8 +136,8 @@ def LLVMWriteBitcodeToMemoryBuffer(object M):
             (undocumented)
     """
     _LLVMWriteBitcodeToMemoryBuffer__retval = LLVMOpaqueMemoryBuffer.from_ptr(cbitwriter.LLVMWriteBitcodeToMemoryBuffer(
-        LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
-    return (_LLVMWriteBitcodeToMemoryBuffer__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
+    return _LLVMWriteBitcodeToMemoryBuffer__retval
 
 __all__ = [
     "LLVMWriteBitcodeToFile",

@@ -58,25 +58,23 @@ from rocm.llvm.c.types cimport LLVMOpaqueBinary
 
 
 from . cimport ctargetmachine
-cdef class LLVMOpaqueTargetMachine:
-    cdef ctargetmachine.LLVMOpaqueTargetMachine* _ptr
+cdef class LLVMOpaqueTargetMachine(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctargetmachine.LLVMOpaqueTargetMachine* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueTargetMachine from_ptr(ctargetmachine.LLVMOpaqueTargetMachine* ptr, bint owner=*)
+    cdef LLVMOpaqueTargetMachine from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueTargetMachine from_pyobj(object pyobj)
 
 
-cdef class LLVMTarget:
-    cdef ctargetmachine.LLVMTarget* _ptr
+cdef class LLVMTarget(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctargetmachine.LLVMTarget* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMTarget from_ptr(ctargetmachine.LLVMTarget* ptr, bint owner=*)
+    cdef LLVMTarget from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMTarget from_pyobj(object pyobj)

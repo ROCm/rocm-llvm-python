@@ -54,13 +54,12 @@ from rocm.llvm.c.types cimport LLVMOpaqueBinary
 
 
 from . cimport cipo
-cdef class LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0:
-    cdef cipo.LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0 _ptr
+cdef class LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cipo.LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0 get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0 from_ptr(cipo.LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0 ptr, bint owner=*)
+    cdef LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0 from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0 from_pyobj(object pyobj)

@@ -57,25 +57,23 @@ from rocm.llvm.c.types cimport LLVMOpaqueBinary
 
 
 from . cimport ccore
-cdef class LLVMDiagnosticHandler:
-    cdef ccore.LLVMDiagnosticHandler _ptr
+cdef class LLVMDiagnosticHandler(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ccore.LLVMDiagnosticHandler get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMDiagnosticHandler from_ptr(ccore.LLVMDiagnosticHandler ptr, bint owner=*)
+    cdef LLVMDiagnosticHandler from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMDiagnosticHandler from_pyobj(object pyobj)
 
 
-cdef class LLVMYieldCallback:
-    cdef ccore.LLVMYieldCallback _ptr
+cdef class LLVMYieldCallback(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ccore.LLVMYieldCallback get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMYieldCallback from_ptr(ccore.LLVMYieldCallback ptr, bint owner=*)
+    cdef LLVMYieldCallback from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMYieldCallback from_pyobj(object pyobj)

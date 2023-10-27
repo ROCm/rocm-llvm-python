@@ -72,12 +72,10 @@ def LLVMLoadLibraryPermanently(const char * Filename):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMLoadLibraryPermanently__retval = csupport.LLVMLoadLibraryPermanently(Filename)    # fully specified
-    return (_LLVMLoadLibraryPermanently__retval,)
+    return _LLVMLoadLibraryPermanently__retval
 
 
 @cython.embedsignature(True)
@@ -122,7 +120,7 @@ def LLVMSearchForAddressOfSymbol(const char * symbolName):
             (undocumented)
     """
     _LLVMSearchForAddressOfSymbol__retval = rocm.llvm._util.types.Pointer.from_ptr(csupport.LLVMSearchForAddressOfSymbol(symbolName))    # fully specified
-    return (_LLVMSearchForAddressOfSymbol__retval,)
+    return _LLVMSearchForAddressOfSymbol__retval
 
 
 @cython.embedsignature(True)

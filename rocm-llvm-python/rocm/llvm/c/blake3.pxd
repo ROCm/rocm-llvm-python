@@ -31,36 +31,34 @@ ctypedef bint _Bool # bool is not a reserved keyword in C, _Bool is
 cimport rocm.llvm._util.types
 
 from . cimport cblake3
-cdef class llvm_blake3_chunk_state:
-    cdef cblake3.llvm_blake3_chunk_state* _ptr
+cdef class llvm_blake3_chunk_state(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cblake3.llvm_blake3_chunk_state* get_element_ptr(self)
+    
     @staticmethod
-    cdef llvm_blake3_chunk_state from_ptr(cblake3.llvm_blake3_chunk_state* ptr, bint owner=*)
+    cdef llvm_blake3_chunk_state from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef llvm_blake3_chunk_state from_pyobj(object pyobj)
     @staticmethod
-    cdef __allocate(cblake3.llvm_blake3_chunk_state** ptr)
+    cdef __allocate(void* ptr)
     @staticmethod
     cdef llvm_blake3_chunk_state new()
     @staticmethod
     cdef llvm_blake3_chunk_state from_value(cblake3.llvm_blake3_chunk_state other)
 
 
-cdef class llvm_blake3_hasher:
-    cdef cblake3.llvm_blake3_hasher* _ptr
+cdef class llvm_blake3_hasher(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cblake3.llvm_blake3_hasher* get_element_ptr(self)
+    
     @staticmethod
-    cdef llvm_blake3_hasher from_ptr(cblake3.llvm_blake3_hasher* ptr, bint owner=*)
+    cdef llvm_blake3_hasher from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef llvm_blake3_hasher from_pyobj(object pyobj)
     @staticmethod
-    cdef __allocate(cblake3.llvm_blake3_hasher** ptr)
+    cdef __allocate(void* ptr)
     @staticmethod
     cdef llvm_blake3_hasher new()
     @staticmethod

@@ -31,78 +31,72 @@ ctypedef bint _Bool # bool is not a reserved keyword in C, _Bool is
 cimport rocm.llvm._util.types
 
 from . cimport clto
-cdef class LLVMOpaqueLTOModule:
-    cdef clto.LLVMOpaqueLTOModule* _ptr
+cdef class LLVMOpaqueLTOModule(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef clto.LLVMOpaqueLTOModule* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueLTOModule from_ptr(clto.LLVMOpaqueLTOModule* ptr, bint owner=*)
+    cdef LLVMOpaqueLTOModule from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueLTOModule from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueLTOCodeGenerator:
-    cdef clto.LLVMOpaqueLTOCodeGenerator* _ptr
+cdef class LLVMOpaqueLTOCodeGenerator(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef clto.LLVMOpaqueLTOCodeGenerator* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueLTOCodeGenerator from_ptr(clto.LLVMOpaqueLTOCodeGenerator* ptr, bint owner=*)
+    cdef LLVMOpaqueLTOCodeGenerator from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueLTOCodeGenerator from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueThinLTOCodeGenerator:
-    cdef clto.LLVMOpaqueThinLTOCodeGenerator* _ptr
+cdef class LLVMOpaqueThinLTOCodeGenerator(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef clto.LLVMOpaqueThinLTOCodeGenerator* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueThinLTOCodeGenerator from_ptr(clto.LLVMOpaqueThinLTOCodeGenerator* ptr, bint owner=*)
+    cdef LLVMOpaqueThinLTOCodeGenerator from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueThinLTOCodeGenerator from_pyobj(object pyobj)
 
 
-cdef class lto_diagnostic_handler_t:
-    cdef clto.lto_diagnostic_handler_t _ptr
+cdef class lto_diagnostic_handler_t(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef clto.lto_diagnostic_handler_t get_element_ptr(self)
+    
     @staticmethod
-    cdef lto_diagnostic_handler_t from_ptr(clto.lto_diagnostic_handler_t ptr, bint owner=*)
+    cdef lto_diagnostic_handler_t from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef lto_diagnostic_handler_t from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueLTOInput:
-    cdef clto.LLVMOpaqueLTOInput* _ptr
+cdef class LLVMOpaqueLTOInput(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef clto.LLVMOpaqueLTOInput* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueLTOInput from_ptr(clto.LLVMOpaqueLTOInput* ptr, bint owner=*)
+    cdef LLVMOpaqueLTOInput from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueLTOInput from_pyobj(object pyobj)
 
 
-cdef class LTOObjectBuffer:
-    cdef clto.LTOObjectBuffer* _ptr
+cdef class LTOObjectBuffer(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef clto.LTOObjectBuffer* get_element_ptr(self)
+    
     @staticmethod
-    cdef LTOObjectBuffer from_ptr(clto.LTOObjectBuffer* ptr, bint owner=*)
+    cdef LTOObjectBuffer from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LTOObjectBuffer from_pyobj(object pyobj)
     @staticmethod
-    cdef __allocate(clto.LTOObjectBuffer** ptr)
+    cdef __allocate(void* ptr)
     @staticmethod
     cdef LTOObjectBuffer new()
     @staticmethod

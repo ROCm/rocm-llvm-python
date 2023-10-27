@@ -61,13 +61,12 @@ from rocm.llvm.c.types cimport LLVMOpaqueBinary
 
 
 from . cimport cpassbuilder
-cdef class LLVMOpaquePassBuilderOptions:
-    cdef cpassbuilder.LLVMOpaquePassBuilderOptions* _ptr
+cdef class LLVMOpaquePassBuilderOptions(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cpassbuilder.LLVMOpaquePassBuilderOptions* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaquePassBuilderOptions from_ptr(cpassbuilder.LLVMOpaquePassBuilderOptions* ptr, bint owner=*)
+    cdef LLVMOpaquePassBuilderOptions from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaquePassBuilderOptions from_pyobj(object pyobj)

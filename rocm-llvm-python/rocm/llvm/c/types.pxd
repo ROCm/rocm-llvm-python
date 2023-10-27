@@ -33,253 +33,232 @@ cimport rocm.llvm._util.types
 
 
 from . cimport ctypes
-cdef class LLVMOpaqueMemoryBuffer:
-    cdef ctypes.LLVMOpaqueMemoryBuffer* _ptr
+cdef class LLVMOpaqueMemoryBuffer(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctypes.LLVMOpaqueMemoryBuffer* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueMemoryBuffer from_ptr(ctypes.LLVMOpaqueMemoryBuffer* ptr, bint owner=*)
+    cdef LLVMOpaqueMemoryBuffer from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueMemoryBuffer from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueContext:
-    cdef ctypes.LLVMOpaqueContext* _ptr
+cdef class LLVMOpaqueContext(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctypes.LLVMOpaqueContext* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueContext from_ptr(ctypes.LLVMOpaqueContext* ptr, bint owner=*)
+    cdef LLVMOpaqueContext from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueContext from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueModule:
-    cdef ctypes.LLVMOpaqueModule* _ptr
+cdef class LLVMOpaqueModule(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctypes.LLVMOpaqueModule* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueModule from_ptr(ctypes.LLVMOpaqueModule* ptr, bint owner=*)
+    cdef LLVMOpaqueModule from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueModule from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueType:
-    cdef ctypes.LLVMOpaqueType* _ptr
+cdef class LLVMOpaqueType(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctypes.LLVMOpaqueType* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueType from_ptr(ctypes.LLVMOpaqueType* ptr, bint owner=*)
+    cdef LLVMOpaqueType from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueType from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueValue:
-    cdef ctypes.LLVMOpaqueValue* _ptr
+cdef class LLVMOpaqueValue(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctypes.LLVMOpaqueValue* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueValue from_ptr(ctypes.LLVMOpaqueValue* ptr, bint owner=*)
+    cdef LLVMOpaqueValue from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueValue from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueBasicBlock:
-    cdef ctypes.LLVMOpaqueBasicBlock* _ptr
+cdef class LLVMOpaqueBasicBlock(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctypes.LLVMOpaqueBasicBlock* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueBasicBlock from_ptr(ctypes.LLVMOpaqueBasicBlock* ptr, bint owner=*)
+    cdef LLVMOpaqueBasicBlock from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueBasicBlock from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueMetadata:
-    cdef ctypes.LLVMOpaqueMetadata* _ptr
+cdef class LLVMOpaqueMetadata(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctypes.LLVMOpaqueMetadata* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueMetadata from_ptr(ctypes.LLVMOpaqueMetadata* ptr, bint owner=*)
+    cdef LLVMOpaqueMetadata from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueMetadata from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueNamedMDNode:
-    cdef ctypes.LLVMOpaqueNamedMDNode* _ptr
+cdef class LLVMOpaqueNamedMDNode(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctypes.LLVMOpaqueNamedMDNode* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueNamedMDNode from_ptr(ctypes.LLVMOpaqueNamedMDNode* ptr, bint owner=*)
+    cdef LLVMOpaqueNamedMDNode from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueNamedMDNode from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueValueMetadataEntry:
-    cdef ctypes.LLVMOpaqueValueMetadataEntry* _ptr
+cdef class LLVMOpaqueValueMetadataEntry(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctypes.LLVMOpaqueValueMetadataEntry* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueValueMetadataEntry from_ptr(ctypes.LLVMOpaqueValueMetadataEntry* ptr, bint owner=*)
+    cdef LLVMOpaqueValueMetadataEntry from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueValueMetadataEntry from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueBuilder:
-    cdef ctypes.LLVMOpaqueBuilder* _ptr
+cdef class LLVMOpaqueBuilder(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctypes.LLVMOpaqueBuilder* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueBuilder from_ptr(ctypes.LLVMOpaqueBuilder* ptr, bint owner=*)
+    cdef LLVMOpaqueBuilder from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueBuilder from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueDIBuilder:
-    cdef ctypes.LLVMOpaqueDIBuilder* _ptr
+cdef class LLVMOpaqueDIBuilder(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctypes.LLVMOpaqueDIBuilder* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueDIBuilder from_ptr(ctypes.LLVMOpaqueDIBuilder* ptr, bint owner=*)
+    cdef LLVMOpaqueDIBuilder from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueDIBuilder from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueModuleProvider:
-    cdef ctypes.LLVMOpaqueModuleProvider* _ptr
+cdef class LLVMOpaqueModuleProvider(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctypes.LLVMOpaqueModuleProvider* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueModuleProvider from_ptr(ctypes.LLVMOpaqueModuleProvider* ptr, bint owner=*)
+    cdef LLVMOpaqueModuleProvider from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueModuleProvider from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaquePassManager:
-    cdef ctypes.LLVMOpaquePassManager* _ptr
+cdef class LLVMOpaquePassManager(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctypes.LLVMOpaquePassManager* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaquePassManager from_ptr(ctypes.LLVMOpaquePassManager* ptr, bint owner=*)
+    cdef LLVMOpaquePassManager from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaquePassManager from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaquePassRegistry:
-    cdef ctypes.LLVMOpaquePassRegistry* _ptr
+cdef class LLVMOpaquePassRegistry(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctypes.LLVMOpaquePassRegistry* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaquePassRegistry from_ptr(ctypes.LLVMOpaquePassRegistry* ptr, bint owner=*)
+    cdef LLVMOpaquePassRegistry from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaquePassRegistry from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueUse:
-    cdef ctypes.LLVMOpaqueUse* _ptr
+cdef class LLVMOpaqueUse(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctypes.LLVMOpaqueUse* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueUse from_ptr(ctypes.LLVMOpaqueUse* ptr, bint owner=*)
+    cdef LLVMOpaqueUse from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueUse from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueAttributeRef:
-    cdef ctypes.LLVMOpaqueAttributeRef* _ptr
+cdef class LLVMOpaqueAttributeRef(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctypes.LLVMOpaqueAttributeRef* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueAttributeRef from_ptr(ctypes.LLVMOpaqueAttributeRef* ptr, bint owner=*)
+    cdef LLVMOpaqueAttributeRef from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueAttributeRef from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueDiagnosticInfo:
-    cdef ctypes.LLVMOpaqueDiagnosticInfo* _ptr
+cdef class LLVMOpaqueDiagnosticInfo(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctypes.LLVMOpaqueDiagnosticInfo* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueDiagnosticInfo from_ptr(ctypes.LLVMOpaqueDiagnosticInfo* ptr, bint owner=*)
+    cdef LLVMOpaqueDiagnosticInfo from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueDiagnosticInfo from_pyobj(object pyobj)
 
 
-cdef class LLVMComdat:
-    cdef ctypes.LLVMComdat* _ptr
+cdef class LLVMComdat(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctypes.LLVMComdat* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMComdat from_ptr(ctypes.LLVMComdat* ptr, bint owner=*)
+    cdef LLVMComdat from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMComdat from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueModuleFlagEntry:
-    cdef ctypes.LLVMOpaqueModuleFlagEntry* _ptr
+cdef class LLVMOpaqueModuleFlagEntry(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctypes.LLVMOpaqueModuleFlagEntry* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueModuleFlagEntry from_ptr(ctypes.LLVMOpaqueModuleFlagEntry* ptr, bint owner=*)
+    cdef LLVMOpaqueModuleFlagEntry from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueModuleFlagEntry from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueJITEventListener:
-    cdef ctypes.LLVMOpaqueJITEventListener* _ptr
+cdef class LLVMOpaqueJITEventListener(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctypes.LLVMOpaqueJITEventListener* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueJITEventListener from_ptr(ctypes.LLVMOpaqueJITEventListener* ptr, bint owner=*)
+    cdef LLVMOpaqueJITEventListener from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueJITEventListener from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueBinary:
-    cdef ctypes.LLVMOpaqueBinary* _ptr
+cdef class LLVMOpaqueBinary(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctypes.LLVMOpaqueBinary* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueBinary from_ptr(ctypes.LLVMOpaqueBinary* ptr, bint owner=*)
+    cdef LLVMOpaqueBinary from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueBinary from_pyobj(object pyobj)

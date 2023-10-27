@@ -34,14 +34,13 @@ from . import _util
 from . import c
 from . import config
 
-# propagate DLL to modules that load libraries
+
 import sys
 import os
+
 for module_name, module in sys.modules.items():
     if module_name.startswith("rocm.llvm.c."):
         if "DLL" in vars(module):
             module.DLL = os.path.join(os.path.dirname(__file__),module.DLL)
-del module_name
-del module
 del sys
 del os

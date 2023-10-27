@@ -94,16 +94,14 @@ def LLVMVerifyModule(object M, object Action, object OutMessage):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     if not isinstance(Action,_LLVMVerifierFailureAction__Base):
         raise TypeError("argument 'Action' must be of type '_LLVMVerifierFailureAction__Base'")
     cdef int _LLVMVerifyModule__retval = canalysis.LLVMVerifyModule(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Action.value,
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Action.value,
         <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
-    return (_LLVMVerifyModule__retval,)
+    return _LLVMVerifyModule__retval
 
 
 @cython.embedsignature(True)
@@ -118,15 +116,13 @@ def LLVMVerifyFunction(object Fn, object Action):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     if not isinstance(Action,_LLVMVerifierFailureAction__Base):
         raise TypeError("argument 'Action' must be of type '_LLVMVerifierFailureAction__Base'")
     cdef int _LLVMVerifyFunction__retval = canalysis.LLVMVerifyFunction(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr,Action.value)    # fully specified
-    return (_LLVMVerifyFunction__retval,)
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),Action.value)    # fully specified
+    return _LLVMVerifyFunction__retval
 
 
 @cython.embedsignature(True)
@@ -138,7 +134,7 @@ def LLVMViewFunctionCFG(object Fn):
             (undocumented)
     """
     canalysis.LLVMViewFunctionCFG(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -150,7 +146,7 @@ def LLVMViewFunctionCFGOnly(object Fn):
             (undocumented)
     """
     canalysis.LLVMViewFunctionCFGOnly(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr())    # fully specified
 
 __all__ = [
     "_LLVMVerifierFailureAction__Base",

@@ -103,8 +103,8 @@ def LLVMGetOrInsertComdat(object M, const char * Name):
             (undocumented)
     """
     _LLVMGetOrInsertComdat__retval = LLVMComdat.from_ptr(ccomdat.LLVMGetOrInsertComdat(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Name))    # fully specified
-    return (_LLVMGetOrInsertComdat__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name))    # fully specified
+    return _LLVMGetOrInsertComdat__retval
 
 
 @cython.embedsignature(True)
@@ -121,8 +121,8 @@ def LLVMGetComdat(object V):
             (undocumented)
     """
     _LLVMGetComdat__retval = LLVMComdat.from_ptr(ccomdat.LLVMGetComdat(
-        LLVMOpaqueValue.from_pyobj(V)._ptr))    # fully specified
-    return (_LLVMGetComdat__retval,)
+        LLVMOpaqueValue.from_pyobj(V).get_element_ptr()))    # fully specified
+    return _LLVMGetComdat__retval
 
 
 @cython.embedsignature(True)
@@ -142,8 +142,8 @@ def LLVMSetComdat(object V, object C):
             (undocumented)
     """
     ccomdat.LLVMSetComdat(
-        LLVMOpaqueValue.from_pyobj(V)._ptr,
-        LLVMComdat.from_pyobj(C)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(V).get_element_ptr(),
+        LLVMComdat.from_pyobj(C).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -155,13 +155,11 @@ def LLVMGetComdatSelectionKind(object C):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.LLVMComdatSelectionKind`
+        `~.LLVMComdatSelectionKind`
     """
     _LLVMGetComdatSelectionKind__retval = LLVMComdatSelectionKind(ccomdat.LLVMGetComdatSelectionKind(
-        LLVMComdat.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMGetComdatSelectionKind__retval,)
+        LLVMComdat.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMGetComdatSelectionKind__retval
 
 
 @cython.embedsignature(True)
@@ -178,7 +176,7 @@ def LLVMSetComdatSelectionKind(object C, object Kind):
     if not isinstance(Kind,_LLVMComdatSelectionKind__Base):
         raise TypeError("argument 'Kind' must be of type '_LLVMComdatSelectionKind__Base'")
     ccomdat.LLVMSetComdatSelectionKind(
-        LLVMComdat.from_pyobj(C)._ptr,Kind.value)    # fully specified
+        LLVMComdat.from_pyobj(C).get_element_ptr(),Kind.value)    # fully specified
 
 __all__ = [
     "_LLVMComdatSelectionKind__Base",

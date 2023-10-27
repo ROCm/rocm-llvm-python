@@ -66,7 +66,7 @@ def LLVMAddInstructionCombiningPass(object PM):
             (undocumented)
     """
     cinstcombine.LLVMAddInstructionCombiningPass(
-        LLVMOpaquePassManager.from_pyobj(PM)._ptr)    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
 
 __all__ = [
     "LLVMAddInstructionCombiningPass",

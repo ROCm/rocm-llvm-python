@@ -68,7 +68,7 @@ def LLVMInitializeCore(object R):
             (undocumented)
     """
     cinitialization.LLVMInitializeCore(
-        LLVMOpaquePassRegistry.from_pyobj(R)._ptr)    # fully specified
+        LLVMOpaquePassRegistry.from_pyobj(R).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -80,7 +80,7 @@ def LLVMInitializeTransformUtils(object R):
             (undocumented)
     """
     cinitialization.LLVMInitializeTransformUtils(
-        LLVMOpaquePassRegistry.from_pyobj(R)._ptr)    # fully specified
+        LLVMOpaquePassRegistry.from_pyobj(R).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -92,7 +92,7 @@ def LLVMInitializeScalarOpts(object R):
             (undocumented)
     """
     cinitialization.LLVMInitializeScalarOpts(
-        LLVMOpaquePassRegistry.from_pyobj(R)._ptr)    # fully specified
+        LLVMOpaquePassRegistry.from_pyobj(R).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -104,7 +104,7 @@ def LLVMInitializeVectorization(object R):
             (undocumented)
     """
     cinitialization.LLVMInitializeVectorization(
-        LLVMOpaquePassRegistry.from_pyobj(R)._ptr)    # fully specified
+        LLVMOpaquePassRegistry.from_pyobj(R).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -116,7 +116,7 @@ def LLVMInitializeInstCombine(object R):
             (undocumented)
     """
     cinitialization.LLVMInitializeInstCombine(
-        LLVMOpaquePassRegistry.from_pyobj(R)._ptr)    # fully specified
+        LLVMOpaquePassRegistry.from_pyobj(R).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -128,7 +128,7 @@ def LLVMInitializeIPO(object R):
             (undocumented)
     """
     cinitialization.LLVMInitializeIPO(
-        LLVMOpaquePassRegistry.from_pyobj(R)._ptr)    # fully specified
+        LLVMOpaquePassRegistry.from_pyobj(R).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -140,7 +140,7 @@ def LLVMInitializeAnalysis(object R):
             (undocumented)
     """
     cinitialization.LLVMInitializeAnalysis(
-        LLVMOpaquePassRegistry.from_pyobj(R)._ptr)    # fully specified
+        LLVMOpaquePassRegistry.from_pyobj(R).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -152,7 +152,7 @@ def LLVMInitializeIPA(object R):
             (undocumented)
     """
     cinitialization.LLVMInitializeIPA(
-        LLVMOpaquePassRegistry.from_pyobj(R)._ptr)    # fully specified
+        LLVMOpaquePassRegistry.from_pyobj(R).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -164,7 +164,7 @@ def LLVMInitializeCodeGen(object R):
             (undocumented)
     """
     cinitialization.LLVMInitializeCodeGen(
-        LLVMOpaquePassRegistry.from_pyobj(R)._ptr)    # fully specified
+        LLVMOpaquePassRegistry.from_pyobj(R).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -176,7 +176,7 @@ def LLVMInitializeTarget(object R):
             (undocumented)
     """
     cinitialization.LLVMInitializeTarget(
-        LLVMOpaquePassRegistry.from_pyobj(R)._ptr)    # fully specified
+        LLVMOpaquePassRegistry.from_pyobj(R).get_element_ptr())    # fully specified
 
 __all__ = [
     "LLVMInitializeCore",

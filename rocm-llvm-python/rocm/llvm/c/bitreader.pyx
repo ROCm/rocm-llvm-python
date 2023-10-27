@@ -56,7 +56,7 @@ from rocm.llvm.c.types import LLVMJITEventListenerRef
 from rocm.llvm.c.types import LLVMBinaryRef
 
 @cython.embedsignature(True)
-def LLVMParseBitcode(object MemBuf, object OutModule, object OutMessage):
+def LLVMParseBitcode(object MemBuf, object OutMessage):
     r"""(No short description, might be part of a group.)
 
     @{
@@ -65,48 +65,46 @@ def LLVMParseBitcode(object MemBuf, object OutModule, object OutMessage):
         MemBuf (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
             (undocumented)
 
-        OutModule (`~.rocm.llvm._util.types.Pointer`/`~.object`):
-            (undocumented)
-
         OutMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
+        A `~.tuple` of size 2 that contains (in that order):
 
         * `~.int`
+        * (`~.LLVMOpaqueModule`):
+            (undocumented)
     """
+    OutModule = LLVMOpaqueModule.from_ptr(NULL)
     cdef int _LLVMParseBitcode__retval = cbitreader.LLVMParseBitcode(
-        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf)._ptr,
-        <cbitreader.LLVMModuleRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutModule)._ptr,
+        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),<cbitreader.LLVMOpaqueModule**>&OutModule._ptr,
         <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
-    return (_LLVMParseBitcode__retval,)
+    return (_LLVMParseBitcode__retval,OutModule)
 
 
 @cython.embedsignature(True)
-def LLVMParseBitcode2(object MemBuf, object OutModule):
+def LLVMParseBitcode2(object MemBuf):
     r"""(No short description, might be part of a group.)
 
     Args:
         MemBuf (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
             (undocumented)
 
-        OutModule (`~.rocm.llvm._util.types.Pointer`/`~.object`):
-            (undocumented)
-
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
+        A `~.tuple` of size 2 that contains (in that order):
 
         * `~.int`
+        * (`~.LLVMOpaqueModule`):
+            (undocumented)
     """
+    OutModule = LLVMOpaqueModule.from_ptr(NULL)
     cdef int _LLVMParseBitcode2__retval = cbitreader.LLVMParseBitcode2(
-        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf)._ptr,
-        <cbitreader.LLVMModuleRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutModule)._ptr)    # fully specified
-    return (_LLVMParseBitcode2__retval,)
+        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),<cbitreader.LLVMOpaqueModule**>&OutModule._ptr)    # fully specified
+    return (_LLVMParseBitcode2__retval,OutModule)
 
 
 @cython.embedsignature(True)
-def LLVMParseBitcodeInContext(object ContextRef, object MemBuf, object OutModule, object OutMessage):
+def LLVMParseBitcodeInContext(object ContextRef, object MemBuf, object OutMessage):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -114,29 +112,28 @@ def LLVMParseBitcodeInContext(object ContextRef, object MemBuf, object OutModule
             (undocumented)
 
         MemBuf (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
-            (undocumented)
-
-        OutModule (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         OutMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
+        A `~.tuple` of size 2 that contains (in that order):
 
         * `~.int`
+        * (`~.LLVMOpaqueModule`):
+            (undocumented)
     """
+    OutModule = LLVMOpaqueModule.from_ptr(NULL)
     cdef int _LLVMParseBitcodeInContext__retval = cbitreader.LLVMParseBitcodeInContext(
-        LLVMOpaqueContext.from_pyobj(ContextRef)._ptr,
-        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf)._ptr,
-        <cbitreader.LLVMModuleRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutModule)._ptr,
+        LLVMOpaqueContext.from_pyobj(ContextRef).get_element_ptr(),
+        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),<cbitreader.LLVMOpaqueModule**>&OutModule._ptr,
         <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
-    return (_LLVMParseBitcodeInContext__retval,)
+    return (_LLVMParseBitcodeInContext__retval,OutModule)
 
 
 @cython.embedsignature(True)
-def LLVMParseBitcodeInContext2(object ContextRef, object MemBuf, object OutModule):
+def LLVMParseBitcodeInContext2(object ContextRef, object MemBuf):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -146,23 +143,22 @@ def LLVMParseBitcodeInContext2(object ContextRef, object MemBuf, object OutModul
         MemBuf (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
             (undocumented)
 
-        OutModule (`~.rocm.llvm._util.types.Pointer`/`~.object`):
-            (undocumented)
-
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
+        A `~.tuple` of size 2 that contains (in that order):
 
         * `~.int`
+        * (`~.LLVMOpaqueModule`):
+            (undocumented)
     """
+    OutModule = LLVMOpaqueModule.from_ptr(NULL)
     cdef int _LLVMParseBitcodeInContext2__retval = cbitreader.LLVMParseBitcodeInContext2(
-        LLVMOpaqueContext.from_pyobj(ContextRef)._ptr,
-        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf)._ptr,
-        <cbitreader.LLVMModuleRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutModule)._ptr)    # fully specified
-    return (_LLVMParseBitcodeInContext2__retval,)
+        LLVMOpaqueContext.from_pyobj(ContextRef).get_element_ptr(),
+        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),<cbitreader.LLVMOpaqueModule**>&OutModule._ptr)    # fully specified
+    return (_LLVMParseBitcodeInContext2__retval,OutModule)
 
 
 @cython.embedsignature(True)
-def LLVMGetBitcodeModuleInContext(object ContextRef, object MemBuf, object OutM, object OutMessage):
+def LLVMGetBitcodeModuleInContext(object ContextRef, object MemBuf, object OutMessage):
     r"""(No short description, might be part of a group.)
 
     Reads a module from the specified path, returning via the OutMP parameter
@@ -177,27 +173,26 @@ def LLVMGetBitcodeModuleInContext(object ContextRef, object MemBuf, object OutM,
         MemBuf (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
             (undocumented)
 
-        OutM (`~.rocm.llvm._util.types.Pointer`/`~.object`):
-            (undocumented)
-
         OutMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
+        A `~.tuple` of size 2 that contains (in that order):
 
         * `~.int`
+        * (`~.LLVMOpaqueModule`):
+            (undocumented)
     """
+    OutM = LLVMOpaqueModule.from_ptr(NULL)
     cdef int _LLVMGetBitcodeModuleInContext__retval = cbitreader.LLVMGetBitcodeModuleInContext(
-        LLVMOpaqueContext.from_pyobj(ContextRef)._ptr,
-        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf)._ptr,
-        <cbitreader.LLVMModuleRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutM)._ptr,
+        LLVMOpaqueContext.from_pyobj(ContextRef).get_element_ptr(),
+        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),<cbitreader.LLVMOpaqueModule**>&OutM._ptr,
         <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
-    return (_LLVMGetBitcodeModuleInContext__retval,)
+    return (_LLVMGetBitcodeModuleInContext__retval,OutM)
 
 
 @cython.embedsignature(True)
-def LLVMGetBitcodeModuleInContext2(object ContextRef, object MemBuf, object OutM):
+def LLVMGetBitcodeModuleInContext2(object ContextRef, object MemBuf):
     r"""(No short description, might be part of a group.)
 
     Reads a module from the given memory buffer, returning via the OutMP
@@ -215,67 +210,64 @@ def LLVMGetBitcodeModuleInContext2(object ContextRef, object MemBuf, object OutM
         MemBuf (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
             (undocumented)
 
-        OutM (`~.rocm.llvm._util.types.Pointer`/`~.object`):
-            (undocumented)
-
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
+        A `~.tuple` of size 2 that contains (in that order):
 
         * `~.int`
+        * (`~.LLVMOpaqueModule`):
+            (undocumented)
     """
+    OutM = LLVMOpaqueModule.from_ptr(NULL)
     cdef int _LLVMGetBitcodeModuleInContext2__retval = cbitreader.LLVMGetBitcodeModuleInContext2(
-        LLVMOpaqueContext.from_pyobj(ContextRef)._ptr,
-        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf)._ptr,
-        <cbitreader.LLVMModuleRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutM)._ptr)    # fully specified
-    return (_LLVMGetBitcodeModuleInContext2__retval,)
+        LLVMOpaqueContext.from_pyobj(ContextRef).get_element_ptr(),
+        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),<cbitreader.LLVMOpaqueModule**>&OutM._ptr)    # fully specified
+    return (_LLVMGetBitcodeModuleInContext2__retval,OutM)
 
 
 @cython.embedsignature(True)
-def LLVMGetBitcodeModule(object MemBuf, object OutM, object OutMessage):
+def LLVMGetBitcodeModule(object MemBuf, object OutMessage):
     r"""(No short description, might be part of a group.)
 
     Args:
         MemBuf (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
-            (undocumented)
-
-        OutM (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
         OutMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
+        A `~.tuple` of size 2 that contains (in that order):
 
         * `~.int`
+        * (`~.LLVMOpaqueModule`):
+            (undocumented)
     """
+    OutM = LLVMOpaqueModule.from_ptr(NULL)
     cdef int _LLVMGetBitcodeModule__retval = cbitreader.LLVMGetBitcodeModule(
-        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf)._ptr,
-        <cbitreader.LLVMModuleRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutM)._ptr,
+        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),<cbitreader.LLVMOpaqueModule**>&OutM._ptr,
         <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
-    return (_LLVMGetBitcodeModule__retval,)
+    return (_LLVMGetBitcodeModule__retval,OutM)
 
 
 @cython.embedsignature(True)
-def LLVMGetBitcodeModule2(object MemBuf, object OutM):
+def LLVMGetBitcodeModule2(object MemBuf):
     r"""(No short description, might be part of a group.)
 
     Args:
         MemBuf (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
             (undocumented)
 
-        OutM (`~.rocm.llvm._util.types.Pointer`/`~.object`):
-            (undocumented)
-
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
+        A `~.tuple` of size 2 that contains (in that order):
 
         * `~.int`
+        * (`~.LLVMOpaqueModule`):
+            (undocumented)
     """
+    OutM = LLVMOpaqueModule.from_ptr(NULL)
     cdef int _LLVMGetBitcodeModule2__retval = cbitreader.LLVMGetBitcodeModule2(
-        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf)._ptr,
-        <cbitreader.LLVMModuleRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutM)._ptr)    # fully specified
-    return (_LLVMGetBitcodeModule2__retval,)
+        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),<cbitreader.LLVMOpaqueModule**>&OutM._ptr)    # fully specified
+    return (_LLVMGetBitcodeModule2__retval,OutM)
 
 __all__ = [
     "LLVMParseBitcode",

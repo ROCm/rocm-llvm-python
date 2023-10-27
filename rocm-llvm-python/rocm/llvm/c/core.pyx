@@ -1087,7 +1087,7 @@ def LLVMInitializeCore(object R):
             (undocumented)
     """
     ccore.LLVMInitializeCore(
-        LLVMOpaquePassRegistry.from_pyobj(R)._ptr)    # fully specified
+        LLVMOpaquePassRegistry.from_pyobj(R).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -1114,7 +1114,15 @@ def LLVMGetVersion():
     The version components are returned via the function's three output
     parameters or skipped if a NULL pointer was supplied.
 
-    Args:
+    Returns:
+        A `~.tuple` of size 3 that contains (in that order):
+
+        * (`~.int`):
+            (undocumented)
+        * (`~.int`):
+            (undocumented)
+        * (`~.int`):
+            (undocumented)
     """
     cdef unsigned int Major
     cdef unsigned int Minor
@@ -1132,12 +1140,10 @@ def LLVMCreateMessage(const char * Message):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef char * _LLVMCreateMessage__retval = ccore.LLVMCreateMessage(Message)    # fully specified
-    return (_LLVMCreateMessage__retval,)
+    return _LLVMCreateMessage__retval
 
 
 @cython.embedsignature(True)
@@ -1151,10 +1157,10 @@ def LLVMDisposeMessage(char * Message):
     ccore.LLVMDisposeMessage(Message)    # fully specified
 
 
-cdef class LLVMDiagnosticHandler:
-    """Python wrapper for C type ccore.LLVMDiagnosticHandler.
+cdef class LLVMDiagnosticHandler(rocm.llvm._util.types.Pointer):
+    """Python wrapper for cdef class ccore.LLVMDiagnosticHandler.
     
-    Python wrapper for C type ccore.LLVMDiagnosticHandler.
+    Python wrapper for cdef class ccore.LLVMDiagnosticHandler.
 
     If this type is initialized via its `__init__` method, it allocates a member of the underlying C type and
     destroys it again if the wrapper type is deallocted.
@@ -1170,11 +1176,13 @@ cdef class LLVMDiagnosticHandler:
     * `int`:
       
       Interprets the integer value as pointer address and writes it to ``self._ptr``.
+      No ownership is transferred.
       
     * `ctypes.c_void_p`:
       
       Takes the pointer address ``pyobj.value`` and writes it to ``self._ptr``.
-
+      No ownership is transferred.
+    
     
     Type checks are performed in the above order.
 
@@ -1195,8 +1203,11 @@ cdef class LLVMDiagnosticHandler:
         self.ptr_owner = False
         self._py_buffer_acquired = False
 
+    cdef ccore.LLVMDiagnosticHandler get_element_ptr(self):
+        return <ccore.LLVMDiagnosticHandler>self._ptr
+        
     @staticmethod
-    cdef LLVMDiagnosticHandler from_ptr(ccore.LLVMDiagnosticHandler ptr, bint owner=False):
+    cdef LLVMDiagnosticHandler from_ptr(void* ptr, bint owner=False):
         """Factory function to create ``LLVMDiagnosticHandler`` objects from
         given ``ccore.LLVMDiagnosticHandler`` pointer.
         """
@@ -1215,8 +1226,8 @@ cdef class LLVMDiagnosticHandler:
         returns it directly. No new ``LLVMDiagnosticHandler`` is created in this case.
 
         Args:
-            pyobj (object): Must be either `None`, a simple, contiguous buffer according to the buffer protocol,
-                            or of type `LLVMDiagnosticHandler`, `int`, or `ctypes.c_void_p`
+            pyobj (object): Must be either `None`; a `rocm.llvm._util.types.Pointer`; a simple, contiguous buffer according to the buffer protocol;
+                            or of type `LLVMDiagnosticHandler`; `int`; or `ctypes.c_void_p`.
 
         Note:
             This routine does not perform a copy but returns the original ``pyobj``
@@ -1230,11 +1241,13 @@ cdef class LLVMDiagnosticHandler:
         elif isinstance(pyobj,LLVMDiagnosticHandler):
             return pyobj
         elif isinstance(pyobj,int):
-            wrapper._ptr = <ccore.LLVMDiagnosticHandler>cpython.long.PyLong_AsVoidPtr(pyobj)
+            wrapper._ptr = cpython.long.PyLong_AsVoidPtr(pyobj)
         elif isinstance(pyobj,ctypes.c_void_p):
-            wrapper._ptr = <ccore.LLVMDiagnosticHandler>cpython.long.PyLong_AsVoidPtr(pyobj.value) if pyobj.value != None else NULL
+            wrapper._ptr = cpython.long.PyLong_AsVoidPtr(pyobj.value) if pyobj.value != None else NULL
         elif str(type(pyobj)).startswith("<class 'ctypes.CFUNCTYPE.") and str(type(pyobj)).endswith(".CFunctionType'>" ):
-            wrapper._ptr = <ccore.LLVMDiagnosticHandler>cpython.long.PyLong_AsVoidPtr(ctypes.cast(pyobj, ctypes.c_void_p).value)
+            wrapper._ptr = cpython.long.PyLong_AsVoidPtr(ctypes.cast(pyobj, ctypes.c_void_p).value)
+        elif isinstance(pyobj,rocm.llvm._util.types.Pointer):
+            wrapper._ptr = cpython.long.PyLong_AsVoidPtr(int(pyobj))
         else:
             raise TypeError(f"unsupported input type: '{str(type(pyobj))}'")
         return wrapper
@@ -1252,16 +1265,16 @@ cdef class LLVMDiagnosticHandler:
     def as_c_void_p(self):
         """Returns the data's address as `ctypes.c_void_p`
         Note:
-            Implements as function to not collide with 
+            Implemented as function to not collide with 
             autogenerated property names.
         """
         return ctypes.c_void_p(int(self))
 
 
-cdef class LLVMYieldCallback:
-    """Python wrapper for C type ccore.LLVMYieldCallback.
+cdef class LLVMYieldCallback(rocm.llvm._util.types.Pointer):
+    """Python wrapper for cdef class ccore.LLVMYieldCallback.
     
-    Python wrapper for C type ccore.LLVMYieldCallback.
+    Python wrapper for cdef class ccore.LLVMYieldCallback.
 
     If this type is initialized via its `__init__` method, it allocates a member of the underlying C type and
     destroys it again if the wrapper type is deallocted.
@@ -1277,11 +1290,13 @@ cdef class LLVMYieldCallback:
     * `int`:
       
       Interprets the integer value as pointer address and writes it to ``self._ptr``.
+      No ownership is transferred.
       
     * `ctypes.c_void_p`:
       
       Takes the pointer address ``pyobj.value`` and writes it to ``self._ptr``.
-
+      No ownership is transferred.
+    
     
     Type checks are performed in the above order.
 
@@ -1302,8 +1317,11 @@ cdef class LLVMYieldCallback:
         self.ptr_owner = False
         self._py_buffer_acquired = False
 
+    cdef ccore.LLVMYieldCallback get_element_ptr(self):
+        return <ccore.LLVMYieldCallback>self._ptr
+        
     @staticmethod
-    cdef LLVMYieldCallback from_ptr(ccore.LLVMYieldCallback ptr, bint owner=False):
+    cdef LLVMYieldCallback from_ptr(void* ptr, bint owner=False):
         """Factory function to create ``LLVMYieldCallback`` objects from
         given ``ccore.LLVMYieldCallback`` pointer.
         """
@@ -1322,8 +1340,8 @@ cdef class LLVMYieldCallback:
         returns it directly. No new ``LLVMYieldCallback`` is created in this case.
 
         Args:
-            pyobj (object): Must be either `None`, a simple, contiguous buffer according to the buffer protocol,
-                            or of type `LLVMYieldCallback`, `int`, or `ctypes.c_void_p`
+            pyobj (object): Must be either `None`; a `rocm.llvm._util.types.Pointer`; a simple, contiguous buffer according to the buffer protocol;
+                            or of type `LLVMYieldCallback`; `int`; or `ctypes.c_void_p`.
 
         Note:
             This routine does not perform a copy but returns the original ``pyobj``
@@ -1337,11 +1355,13 @@ cdef class LLVMYieldCallback:
         elif isinstance(pyobj,LLVMYieldCallback):
             return pyobj
         elif isinstance(pyobj,int):
-            wrapper._ptr = <ccore.LLVMYieldCallback>cpython.long.PyLong_AsVoidPtr(pyobj)
+            wrapper._ptr = cpython.long.PyLong_AsVoidPtr(pyobj)
         elif isinstance(pyobj,ctypes.c_void_p):
-            wrapper._ptr = <ccore.LLVMYieldCallback>cpython.long.PyLong_AsVoidPtr(pyobj.value) if pyobj.value != None else NULL
+            wrapper._ptr = cpython.long.PyLong_AsVoidPtr(pyobj.value) if pyobj.value != None else NULL
         elif str(type(pyobj)).startswith("<class 'ctypes.CFUNCTYPE.") and str(type(pyobj)).endswith(".CFunctionType'>" ):
-            wrapper._ptr = <ccore.LLVMYieldCallback>cpython.long.PyLong_AsVoidPtr(ctypes.cast(pyobj, ctypes.c_void_p).value)
+            wrapper._ptr = cpython.long.PyLong_AsVoidPtr(ctypes.cast(pyobj, ctypes.c_void_p).value)
+        elif isinstance(pyobj,rocm.llvm._util.types.Pointer):
+            wrapper._ptr = cpython.long.PyLong_AsVoidPtr(int(pyobj))
         else:
             raise TypeError(f"unsupported input type: '{str(type(pyobj))}'")
         return wrapper
@@ -1359,7 +1379,7 @@ cdef class LLVMYieldCallback:
     def as_c_void_p(self):
         """Returns the data's address as `ctypes.c_void_p`
         Note:
-            Implements as function to not collide with 
+            Implemented as function to not collide with 
             autogenerated property names.
         """
         return ctypes.c_void_p(int(self))
@@ -1375,7 +1395,7 @@ def LLVMContextCreate():
     LLVMContextDispose() or the context will leak memory.
     """
     _LLVMContextCreate__retval = LLVMOpaqueContext.from_ptr(ccore.LLVMContextCreate())    # fully specified
-    return (_LLVMContextCreate__retval,)
+    return _LLVMContextCreate__retval
 
 
 @cython.embedsignature(True)
@@ -1385,7 +1405,7 @@ def LLVMGetGlobalContext():
     Obtain the global context instance.
     """
     _LLVMGetGlobalContext__retval = LLVMOpaqueContext.from_ptr(ccore.LLVMGetGlobalContext())    # fully specified
-    return (_LLVMGetGlobalContext__retval,)
+    return _LLVMGetGlobalContext__retval
 
 
 @cython.embedsignature(True)
@@ -1405,8 +1425,8 @@ def LLVMContextSetDiagnosticHandler(object C, object Handler, object DiagnosticC
             (undocumented)
     """
     ccore.LLVMContextSetDiagnosticHandler(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,
-        LLVMDiagnosticHandler.from_pyobj(Handler)._ptr,
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),
+        LLVMDiagnosticHandler.from_pyobj(Handler).get_element_ptr(),
         <void *>rocm.llvm._util.types.Pointer.from_pyobj(DiagnosticContext)._ptr)    # fully specified
 
 
@@ -1421,8 +1441,8 @@ def LLVMContextGetDiagnosticHandler(object C):
             (undocumented)
     """
     _LLVMContextGetDiagnosticHandler__retval = rocm.llvm._util.types.Pointer.from_ptr(ccore.LLVMContextGetDiagnosticHandler(
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMContextGetDiagnosticHandler__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMContextGetDiagnosticHandler__retval
 
 
 @cython.embedsignature(True)
@@ -1436,8 +1456,8 @@ def LLVMContextGetDiagnosticContext(object C):
             (undocumented)
     """
     _LLVMContextGetDiagnosticContext__retval = rocm.llvm._util.types.Pointer.from_ptr(ccore.LLVMContextGetDiagnosticContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMContextGetDiagnosticContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMContextGetDiagnosticContext__retval
 
 
 @cython.embedsignature(True)
@@ -1460,8 +1480,8 @@ def LLVMContextSetYieldCallback(object C, object Callback, object OpaqueHandle):
             (undocumented)
     """
     ccore.LLVMContextSetYieldCallback(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,
-        LLVMYieldCallback.from_pyobj(Callback)._ptr,
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),
+        LLVMYieldCallback.from_pyobj(Callback).get_element_ptr(),
         <void *>rocm.llvm._util.types.Pointer.from_pyobj(OpaqueHandle)._ptr)    # fully specified
 
 
@@ -1479,13 +1499,11 @@ def LLVMContextShouldDiscardValueNames(object C):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMContextShouldDiscardValueNames__retval = ccore.LLVMContextShouldDiscardValueNames(
-        LLVMOpaqueContext.from_pyobj(C)._ptr)    # fully specified
-    return (_LLVMContextShouldDiscardValueNames__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr())    # fully specified
+    return _LLVMContextShouldDiscardValueNames__retval
 
 
 @cython.embedsignature(True)
@@ -1508,7 +1526,7 @@ def LLVMContextSetDiscardValueNames(object C, int Discard):
             (undocumented)
     """
     ccore.LLVMContextSetDiscardValueNames(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,Discard)    # fully specified
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),Discard)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -1528,7 +1546,7 @@ def LLVMContextSetOpaquePointers(object C, int OpaquePointers):
             (undocumented)
     """
     ccore.LLVMContextSetOpaquePointers(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,OpaquePointers)    # fully specified
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),OpaquePointers)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -1545,7 +1563,7 @@ def LLVMContextDispose(object C):
             (undocumented)
     """
     ccore.LLVMContextDispose(
-        LLVMOpaqueContext.from_pyobj(C)._ptr)    # fully specified
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -1563,13 +1581,11 @@ def LLVMGetDiagInfoDescription(object DI):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef char * _LLVMGetDiagInfoDescription__retval = ccore.LLVMGetDiagInfoDescription(
-        LLVMOpaqueDiagnosticInfo.from_pyobj(DI)._ptr)    # fully specified
-    return (_LLVMGetDiagInfoDescription__retval,)
+        LLVMOpaqueDiagnosticInfo.from_pyobj(DI).get_element_ptr())    # fully specified
+    return _LLVMGetDiagInfoDescription__retval
 
 
 @cython.embedsignature(True)
@@ -1586,13 +1602,11 @@ def LLVMGetDiagInfoSeverity(object DI):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.LLVMDiagnosticSeverity`
+        `~.LLVMDiagnosticSeverity`
     """
     _LLVMGetDiagInfoSeverity__retval = LLVMDiagnosticSeverity(ccore.LLVMGetDiagInfoSeverity(
-        LLVMOpaqueDiagnosticInfo.from_pyobj(DI)._ptr))    # fully specified
-    return (_LLVMGetDiagInfoSeverity__retval,)
+        LLVMOpaqueDiagnosticInfo.from_pyobj(DI).get_element_ptr()))    # fully specified
+    return _LLVMGetDiagInfoSeverity__retval
 
 
 @cython.embedsignature(True)
@@ -1610,13 +1624,11 @@ def LLVMGetMDKindIDInContext(object C, const char * Name, unsigned int SLen):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetMDKindIDInContext__retval = ccore.LLVMGetMDKindIDInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,Name,SLen)    # fully specified
-    return (_LLVMGetMDKindIDInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),Name,SLen)    # fully specified
+    return _LLVMGetMDKindIDInContext__retval
 
 
 @cython.embedsignature(True)
@@ -1631,12 +1643,10 @@ def LLVMGetMDKindID(const char * Name, unsigned int SLen):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetMDKindID__retval = ccore.LLVMGetMDKindID(Name,SLen)    # fully specified
-    return (_LLVMGetMDKindID__retval,)
+    return _LLVMGetMDKindID__retval
 
 
 @cython.embedsignature(True)
@@ -1661,12 +1671,10 @@ def LLVMGetEnumAttributeKindForName(const char * Name, unsigned long SLen):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetEnumAttributeKindForName__retval = ccore.LLVMGetEnumAttributeKindForName(Name,SLen)    # fully specified
-    return (_LLVMGetEnumAttributeKindForName__retval,)
+    return _LLVMGetEnumAttributeKindForName__retval
 
 
 @cython.embedsignature(True)
@@ -1674,12 +1682,10 @@ def LLVMGetLastEnumAttributeKind():
     r"""(No short description, might be part of a group.)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetLastEnumAttributeKind__retval = ccore.LLVMGetLastEnumAttributeKind()    # fully specified
-    return (_LLVMGetLastEnumAttributeKind__retval,)
+    return _LLVMGetLastEnumAttributeKind__retval
 
 
 @cython.embedsignature(True)
@@ -1699,8 +1705,8 @@ def LLVMCreateEnumAttribute(object C, unsigned int KindID, unsigned long Val):
             (undocumented)
     """
     _LLVMCreateEnumAttribute__retval = LLVMOpaqueAttributeRef.from_ptr(ccore.LLVMCreateEnumAttribute(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,KindID,Val))    # fully specified
-    return (_LLVMCreateEnumAttribute__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),KindID,Val))    # fully specified
+    return _LLVMCreateEnumAttribute__retval
 
 
 @cython.embedsignature(True)
@@ -1715,13 +1721,11 @@ def LLVMGetEnumAttributeKind(object A):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetEnumAttributeKind__retval = ccore.LLVMGetEnumAttributeKind(
-        LLVMOpaqueAttributeRef.from_pyobj(A)._ptr)    # fully specified
-    return (_LLVMGetEnumAttributeKind__retval,)
+        LLVMOpaqueAttributeRef.from_pyobj(A).get_element_ptr())    # fully specified
+    return _LLVMGetEnumAttributeKind__retval
 
 
 @cython.embedsignature(True)
@@ -1735,13 +1739,11 @@ def LLVMGetEnumAttributeValue(object A):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned long _LLVMGetEnumAttributeValue__retval = ccore.LLVMGetEnumAttributeValue(
-        LLVMOpaqueAttributeRef.from_pyobj(A)._ptr)    # fully specified
-    return (_LLVMGetEnumAttributeValue__retval,)
+        LLVMOpaqueAttributeRef.from_pyobj(A).get_element_ptr())    # fully specified
+    return _LLVMGetEnumAttributeValue__retval
 
 
 @cython.embedsignature(True)
@@ -1761,9 +1763,9 @@ def LLVMCreateTypeAttribute(object C, unsigned int KindID, object type_ref):
             (undocumented)
     """
     _LLVMCreateTypeAttribute__retval = LLVMOpaqueAttributeRef.from_ptr(ccore.LLVMCreateTypeAttribute(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,KindID,
-        LLVMOpaqueType.from_pyobj(type_ref)._ptr))    # fully specified
-    return (_LLVMCreateTypeAttribute__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),KindID,
+        LLVMOpaqueType.from_pyobj(type_ref).get_element_ptr()))    # fully specified
+    return _LLVMCreateTypeAttribute__retval
 
 
 @cython.embedsignature(True)
@@ -1777,8 +1779,8 @@ def LLVMGetTypeAttributeValue(object A):
             (undocumented)
     """
     _LLVMGetTypeAttributeValue__retval = LLVMOpaqueType.from_ptr(ccore.LLVMGetTypeAttributeValue(
-        LLVMOpaqueAttributeRef.from_pyobj(A)._ptr))    # fully specified
-    return (_LLVMGetTypeAttributeValue__retval,)
+        LLVMOpaqueAttributeRef.from_pyobj(A).get_element_ptr()))    # fully specified
+    return _LLVMGetTypeAttributeValue__retval
 
 
 @cython.embedsignature(True)
@@ -1804,8 +1806,8 @@ def LLVMCreateStringAttribute(object C, const char * K, unsigned int KLength, co
             (undocumented)
     """
     _LLVMCreateStringAttribute__retval = LLVMOpaqueAttributeRef.from_ptr(ccore.LLVMCreateStringAttribute(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,K,KLength,V,VLength))    # fully specified
-    return (_LLVMCreateStringAttribute__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),K,KLength,V,VLength))    # fully specified
+    return _LLVMCreateStringAttribute__retval
 
 
 @cython.embedsignature(True)
@@ -1822,14 +1824,12 @@ def LLVMGetStringAttributeKind(object A, object Length):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef const char * _LLVMGetStringAttributeKind__retval = ccore.LLVMGetStringAttributeKind(
-        LLVMOpaqueAttributeRef.from_pyobj(A)._ptr,
+        LLVMOpaqueAttributeRef.from_pyobj(A).get_element_ptr(),
         <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
-    return (_LLVMGetStringAttributeKind__retval,)
+    return _LLVMGetStringAttributeKind__retval
 
 
 @cython.embedsignature(True)
@@ -1846,14 +1846,12 @@ def LLVMGetStringAttributeValue(object A, object Length):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef const char * _LLVMGetStringAttributeValue__retval = ccore.LLVMGetStringAttributeValue(
-        LLVMOpaqueAttributeRef.from_pyobj(A)._ptr,
+        LLVMOpaqueAttributeRef.from_pyobj(A).get_element_ptr(),
         <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
-    return (_LLVMGetStringAttributeValue__retval,)
+    return _LLVMGetStringAttributeValue__retval
 
 
 @cython.embedsignature(True)
@@ -1867,13 +1865,11 @@ def LLVMIsEnumAttribute(object A):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIsEnumAttribute__retval = ccore.LLVMIsEnumAttribute(
-        LLVMOpaqueAttributeRef.from_pyobj(A)._ptr)    # fully specified
-    return (_LLVMIsEnumAttribute__retval,)
+        LLVMOpaqueAttributeRef.from_pyobj(A).get_element_ptr())    # fully specified
+    return _LLVMIsEnumAttribute__retval
 
 
 @cython.embedsignature(True)
@@ -1885,13 +1881,11 @@ def LLVMIsStringAttribute(object A):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIsStringAttribute__retval = ccore.LLVMIsStringAttribute(
-        LLVMOpaqueAttributeRef.from_pyobj(A)._ptr)    # fully specified
-    return (_LLVMIsStringAttribute__retval,)
+        LLVMOpaqueAttributeRef.from_pyobj(A).get_element_ptr())    # fully specified
+    return _LLVMIsStringAttribute__retval
 
 
 @cython.embedsignature(True)
@@ -1903,13 +1897,11 @@ def LLVMIsTypeAttribute(object A):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIsTypeAttribute__retval = ccore.LLVMIsTypeAttribute(
-        LLVMOpaqueAttributeRef.from_pyobj(A)._ptr)    # fully specified
-    return (_LLVMIsTypeAttribute__retval,)
+        LLVMOpaqueAttributeRef.from_pyobj(A).get_element_ptr())    # fully specified
+    return _LLVMIsTypeAttribute__retval
 
 
 @cython.embedsignature(True)
@@ -1926,8 +1918,8 @@ def LLVMGetTypeByName2(object C, const char * Name):
             (undocumented)
     """
     _LLVMGetTypeByName2__retval = LLVMOpaqueType.from_ptr(ccore.LLVMGetTypeByName2(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,Name))    # fully specified
-    return (_LLVMGetTypeByName2__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),Name))    # fully specified
+    return _LLVMGetTypeByName2__retval
 
 
 @cython.embedsignature(True)
@@ -1947,7 +1939,7 @@ def LLVMModuleCreateWithName(const char * ModuleID):
             (undocumented)
     """
     _LLVMModuleCreateWithName__retval = LLVMOpaqueModule.from_ptr(ccore.LLVMModuleCreateWithName(ModuleID))    # fully specified
-    return (_LLVMModuleCreateWithName__retval,)
+    return _LLVMModuleCreateWithName__retval
 
 
 @cython.embedsignature(True)
@@ -1967,8 +1959,8 @@ def LLVMModuleCreateWithNameInContext(const char * ModuleID, object C):
             (undocumented)
     """
     _LLVMModuleCreateWithNameInContext__retval = LLVMOpaqueModule.from_ptr(ccore.LLVMModuleCreateWithNameInContext(ModuleID,
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMModuleCreateWithNameInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMModuleCreateWithNameInContext__retval
 
 
 @cython.embedsignature(True)
@@ -1982,8 +1974,8 @@ def LLVMCloneModule(object M):
             (undocumented)
     """
     _LLVMCloneModule__retval = LLVMOpaqueModule.from_ptr(ccore.LLVMCloneModule(
-        LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
-    return (_LLVMCloneModule__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
+    return _LLVMCloneModule__retval
 
 
 @cython.embedsignature(True)
@@ -2000,7 +1992,7 @@ def LLVMDisposeModule(object M):
             (undocumented)
     """
     ccore.LLVMDisposeModule(
-        LLVMOpaqueModule.from_pyobj(M)._ptr)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -2020,14 +2012,12 @@ def LLVMGetModuleIdentifier(object M, object Len):
             Out parameter which holds the length of the returned string.
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`: The identifier of M.
+        `~.bytes`: The identifier of M.
     """
     cdef const char * _LLVMGetModuleIdentifier__retval = ccore.LLVMGetModuleIdentifier(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
         <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr)    # fully specified
-    return (_LLVMGetModuleIdentifier__retval,)
+    return _LLVMGetModuleIdentifier__retval
 
 
 @cython.embedsignature(True)
@@ -2050,7 +2040,7 @@ def LLVMSetModuleIdentifier(object M, const char * Ident, unsigned long Len):
             Length of Ident
     """
     ccore.LLVMSetModuleIdentifier(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Ident,Len)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Ident,Len)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -2070,14 +2060,12 @@ def LLVMGetSourceFileName(object M, object Len):
             Out parameter which holds the length of the returned string
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`: The original source file name of M
+        `~.bytes`: The original source file name of M
     """
     cdef const char * _LLVMGetSourceFileName__retval = ccore.LLVMGetSourceFileName(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
         <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr)    # fully specified
-    return (_LLVMGetSourceFileName__retval,)
+    return _LLVMGetSourceFileName__retval
 
 
 @cython.embedsignature(True)
@@ -2101,7 +2089,7 @@ def LLVMSetSourceFileName(object M, const char * Name, unsigned long Len):
             Length of Name
     """
     ccore.LLVMSetSourceFileName(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Name,Len)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name,Len)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -2122,13 +2110,11 @@ def LLVMGetDataLayoutStr(object M):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef const char * _LLVMGetDataLayoutStr__retval = ccore.LLVMGetDataLayoutStr(
-        LLVMOpaqueModule.from_pyobj(M)._ptr)    # fully specified
-    return (_LLVMGetDataLayoutStr__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr())    # fully specified
+    return _LLVMGetDataLayoutStr__retval
 
 
 @cython.embedsignature(True)
@@ -2140,13 +2126,11 @@ def LLVMGetDataLayout(object M):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef const char * _LLVMGetDataLayout__retval = ccore.LLVMGetDataLayout(
-        LLVMOpaqueModule.from_pyobj(M)._ptr)    # fully specified
-    return (_LLVMGetDataLayout__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr())    # fully specified
+    return _LLVMGetDataLayout__retval
 
 
 @cython.embedsignature(True)
@@ -2166,7 +2150,7 @@ def LLVMSetDataLayout(object M, const char * DataLayoutStr):
             (undocumented)
     """
     ccore.LLVMSetDataLayout(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,DataLayoutStr)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),DataLayoutStr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -2183,13 +2167,11 @@ def LLVMGetTarget(object M):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef const char * _LLVMGetTarget__retval = ccore.LLVMGetTarget(
-        LLVMOpaqueModule.from_pyobj(M)._ptr)    # fully specified
-    return (_LLVMGetTarget__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr())    # fully specified
+    return _LLVMGetTarget__retval
 
 
 @cython.embedsignature(True)
@@ -2209,7 +2191,7 @@ def LLVMSetTarget(object M, const char * Triple):
             (undocumented)
     """
     ccore.LLVMSetTarget(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Triple)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Triple)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -2231,9 +2213,9 @@ def LLVMCopyModuleFlagsMetadata(object M, object Len):
             (undocumented)
     """
     _LLVMCopyModuleFlagsMetadata__retval = LLVMOpaqueModuleFlagEntry.from_ptr(ccore.LLVMCopyModuleFlagsMetadata(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
         <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr))    # fully specified
-    return (_LLVMCopyModuleFlagsMetadata__retval,)
+    return _LLVMCopyModuleFlagsMetadata__retval
 
 
 @cython.embedsignature(True)
@@ -2247,7 +2229,7 @@ def LLVMDisposeModuleFlagsMetadata(object Entries):
             (undocumented)
     """
     ccore.LLVMDisposeModuleFlagsMetadata(
-        LLVMOpaqueModuleFlagEntry.from_pyobj(Entries)._ptr)    # fully specified
+        LLVMOpaqueModuleFlagEntry.from_pyobj(Entries).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -2267,13 +2249,11 @@ def LLVMModuleFlagEntriesGetFlagBehavior(object Entries, unsigned int Index):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.LLVMModuleFlagBehavior`
+        `~.LLVMModuleFlagBehavior`
     """
     _LLVMModuleFlagEntriesGetFlagBehavior__retval = LLVMModuleFlagBehavior(ccore.LLVMModuleFlagEntriesGetFlagBehavior(
-        LLVMOpaqueModuleFlagEntry.from_pyobj(Entries)._ptr,Index))    # fully specified
-    return (_LLVMModuleFlagEntriesGetFlagBehavior__retval,)
+        LLVMOpaqueModuleFlagEntry.from_pyobj(Entries).get_element_ptr(),Index))    # fully specified
+    return _LLVMModuleFlagEntriesGetFlagBehavior__retval
 
 
 @cython.embedsignature(True)
@@ -2296,14 +2276,12 @@ def LLVMModuleFlagEntriesGetKey(object Entries, unsigned int Index, object Len):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef const char * _LLVMModuleFlagEntriesGetKey__retval = ccore.LLVMModuleFlagEntriesGetKey(
-        LLVMOpaqueModuleFlagEntry.from_pyobj(Entries)._ptr,Index,
+        LLVMOpaqueModuleFlagEntry.from_pyobj(Entries).get_element_ptr(),Index,
         <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr)    # fully specified
-    return (_LLVMModuleFlagEntriesGetKey__retval,)
+    return _LLVMModuleFlagEntriesGetKey__retval
 
 
 @cython.embedsignature(True)
@@ -2323,8 +2301,8 @@ def LLVMModuleFlagEntriesGetMetadata(object Entries, unsigned int Index):
             (undocumented)
     """
     _LLVMModuleFlagEntriesGetMetadata__retval = LLVMOpaqueMetadata.from_ptr(ccore.LLVMModuleFlagEntriesGetMetadata(
-        LLVMOpaqueModuleFlagEntry.from_pyobj(Entries)._ptr,Index))    # fully specified
-    return (_LLVMModuleFlagEntriesGetMetadata__retval,)
+        LLVMOpaqueModuleFlagEntry.from_pyobj(Entries).get_element_ptr(),Index))    # fully specified
+    return _LLVMModuleFlagEntriesGetMetadata__retval
 
 
 @cython.embedsignature(True)
@@ -2348,8 +2326,8 @@ def LLVMGetModuleFlag(object M, const char * Key, unsigned long KeyLen):
             (undocumented)
     """
     _LLVMGetModuleFlag__retval = LLVMOpaqueMetadata.from_ptr(ccore.LLVMGetModuleFlag(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Key,KeyLen))    # fully specified
-    return (_LLVMGetModuleFlag__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Key,KeyLen))    # fully specified
+    return _LLVMGetModuleFlag__retval
 
 
 @cython.embedsignature(True)
@@ -2381,8 +2359,8 @@ def LLVMAddModuleFlag(object M, object Behavior, const char * Key, unsigned long
     if not isinstance(Behavior,_LLVMModuleFlagBehavior__Base):
         raise TypeError("argument 'Behavior' must be of type '_LLVMModuleFlagBehavior__Base'")
     ccore.LLVMAddModuleFlag(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Behavior.value,Key,KeyLen,
-        LLVMOpaqueMetadata.from_pyobj(Val)._ptr)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Behavior.value,Key,KeyLen,
+        LLVMOpaqueMetadata.from_pyobj(Val).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -2399,7 +2377,7 @@ def LLVMDumpModule(object M):
             (undocumented)
     """
     ccore.LLVMDumpModule(
-        LLVMOpaqueModule.from_pyobj(M)._ptr)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -2423,14 +2401,12 @@ def LLVMPrintModuleToFile(object M, const char * Filename, object ErrorMessage):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMPrintModuleToFile__retval = ccore.LLVMPrintModuleToFile(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Filename,
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Filename,
         <char **>rocm.llvm._util.types.Pointer.from_pyobj(ErrorMessage)._ptr)    # fully specified
-    return (_LLVMPrintModuleToFile__retval,)
+    return _LLVMPrintModuleToFile__retval
 
 
 @cython.embedsignature(True)
@@ -2448,13 +2424,11 @@ def LLVMPrintModuleToString(object M):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef char * _LLVMPrintModuleToString__retval = ccore.LLVMPrintModuleToString(
-        LLVMOpaqueModule.from_pyobj(M)._ptr)    # fully specified
-    return (_LLVMPrintModuleToString__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr())    # fully specified
+    return _LLVMPrintModuleToString__retval
 
 
 @cython.embedsignature(True)
@@ -2474,14 +2448,12 @@ def LLVMGetModuleInlineAsm(object M, object Len):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef const char * _LLVMGetModuleInlineAsm__retval = ccore.LLVMGetModuleInlineAsm(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
         <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr)    # fully specified
-    return (_LLVMGetModuleInlineAsm__retval,)
+    return _LLVMGetModuleInlineAsm__retval
 
 
 @cython.embedsignature(True)
@@ -2504,7 +2476,7 @@ def LLVMSetModuleInlineAsm2(object M, const char * Asm, unsigned long Len):
             (undocumented)
     """
     ccore.LLVMSetModuleInlineAsm2(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Asm,Len)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Asm,Len)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -2527,7 +2499,7 @@ def LLVMAppendModuleInlineAsm(object M, const char * Asm, unsigned long Len):
             (undocumented)
     """
     ccore.LLVMAppendModuleInlineAsm(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Asm,Len)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Asm,Len)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -2570,8 +2542,8 @@ def LLVMGetInlineAsm(object Ty, char * AsmString, unsigned long AsmStringSize, c
     if not isinstance(Dialect,_LLVMInlineAsmDialect__Base):
         raise TypeError("argument 'Dialect' must be of type '_LLVMInlineAsmDialect__Base'")
     _LLVMGetInlineAsm__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetInlineAsm(
-        LLVMOpaqueType.from_pyobj(Ty)._ptr,AsmString,AsmStringSize,Constraints,ConstraintsSize,HasSideEffects,IsAlignStack,Dialect.value,CanThrow))    # fully specified
-    return (_LLVMGetInlineAsm__retval,)
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),AsmString,AsmStringSize,Constraints,ConstraintsSize,HasSideEffects,IsAlignStack,Dialect.value,CanThrow))    # fully specified
+    return _LLVMGetInlineAsm__retval
 
 
 @cython.embedsignature(True)
@@ -2588,8 +2560,8 @@ def LLVMGetModuleContext(object M):
             (undocumented)
     """
     _LLVMGetModuleContext__retval = LLVMOpaqueContext.from_ptr(ccore.LLVMGetModuleContext(
-        LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
-    return (_LLVMGetModuleContext__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
+    return _LLVMGetModuleContext__retval
 
 
 @cython.embedsignature(True)
@@ -2606,8 +2578,8 @@ def LLVMGetTypeByName(object M, const char * Name):
             (undocumented)
     """
     _LLVMGetTypeByName__retval = LLVMOpaqueType.from_ptr(ccore.LLVMGetTypeByName(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Name))    # fully specified
-    return (_LLVMGetTypeByName__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name))    # fully specified
+    return _LLVMGetTypeByName__retval
 
 
 @cython.embedsignature(True)
@@ -2624,8 +2596,8 @@ def LLVMGetFirstNamedMetadata(object M):
             (undocumented)
     """
     _LLVMGetFirstNamedMetadata__retval = LLVMOpaqueNamedMDNode.from_ptr(ccore.LLVMGetFirstNamedMetadata(
-        LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
-    return (_LLVMGetFirstNamedMetadata__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
+    return _LLVMGetFirstNamedMetadata__retval
 
 
 @cython.embedsignature(True)
@@ -2642,8 +2614,8 @@ def LLVMGetLastNamedMetadata(object M):
             (undocumented)
     """
     _LLVMGetLastNamedMetadata__retval = LLVMOpaqueNamedMDNode.from_ptr(ccore.LLVMGetLastNamedMetadata(
-        LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
-    return (_LLVMGetLastNamedMetadata__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
+    return _LLVMGetLastNamedMetadata__retval
 
 
 @cython.embedsignature(True)
@@ -2660,8 +2632,8 @@ def LLVMGetNextNamedMetadata(object NamedMDNode):
             (undocumented)
     """
     _LLVMGetNextNamedMetadata__retval = LLVMOpaqueNamedMDNode.from_ptr(ccore.LLVMGetNextNamedMetadata(
-        LLVMOpaqueNamedMDNode.from_pyobj(NamedMDNode)._ptr))    # fully specified
-    return (_LLVMGetNextNamedMetadata__retval,)
+        LLVMOpaqueNamedMDNode.from_pyobj(NamedMDNode).get_element_ptr()))    # fully specified
+    return _LLVMGetNextNamedMetadata__retval
 
 
 @cython.embedsignature(True)
@@ -2678,8 +2650,8 @@ def LLVMGetPreviousNamedMetadata(object NamedMDNode):
             (undocumented)
     """
     _LLVMGetPreviousNamedMetadata__retval = LLVMOpaqueNamedMDNode.from_ptr(ccore.LLVMGetPreviousNamedMetadata(
-        LLVMOpaqueNamedMDNode.from_pyobj(NamedMDNode)._ptr))    # fully specified
-    return (_LLVMGetPreviousNamedMetadata__retval,)
+        LLVMOpaqueNamedMDNode.from_pyobj(NamedMDNode).get_element_ptr()))    # fully specified
+    return _LLVMGetPreviousNamedMetadata__retval
 
 
 @cython.embedsignature(True)
@@ -2703,8 +2675,8 @@ def LLVMGetNamedMetadata(object M, const char * Name, unsigned long NameLen):
             (undocumented)
     """
     _LLVMGetNamedMetadata__retval = LLVMOpaqueNamedMDNode.from_ptr(ccore.LLVMGetNamedMetadata(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Name,NameLen))    # fully specified
-    return (_LLVMGetNamedMetadata__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name,NameLen))    # fully specified
+    return _LLVMGetNamedMetadata__retval
 
 
 @cython.embedsignature(True)
@@ -2728,8 +2700,8 @@ def LLVMGetOrInsertNamedMetadata(object M, const char * Name, unsigned long Name
             (undocumented)
     """
     _LLVMGetOrInsertNamedMetadata__retval = LLVMOpaqueNamedMDNode.from_ptr(ccore.LLVMGetOrInsertNamedMetadata(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Name,NameLen))    # fully specified
-    return (_LLVMGetOrInsertNamedMetadata__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name,NameLen))    # fully specified
+    return _LLVMGetOrInsertNamedMetadata__retval
 
 
 @cython.embedsignature(True)
@@ -2749,14 +2721,12 @@ def LLVMGetNamedMetadataName(object NamedMD, object NameLen):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef const char * _LLVMGetNamedMetadataName__retval = ccore.LLVMGetNamedMetadataName(
-        LLVMOpaqueNamedMDNode.from_pyobj(NamedMD)._ptr,
+        LLVMOpaqueNamedMDNode.from_pyobj(NamedMD).get_element_ptr(),
         <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NameLen)._ptr)    # fully specified
-    return (_LLVMGetNamedMetadataName__retval,)
+    return _LLVMGetNamedMetadataName__retval
 
 
 @cython.embedsignature(True)
@@ -2776,13 +2746,11 @@ def LLVMGetNamedMetadataNumOperands(object M, const char * Name):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetNamedMetadataNumOperands__retval = ccore.LLVMGetNamedMetadataNumOperands(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Name)    # fully specified
-    return (_LLVMGetNamedMetadataNumOperands__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name)    # fully specified
+    return _LLVMGetNamedMetadataNumOperands__retval
 
 
 @cython.embedsignature(True)
@@ -2813,7 +2781,7 @@ def LLVMGetNamedMetadataOperands(object M, const char * Name, object Dest):
             (undocumented)
     """
     ccore.LLVMGetNamedMetadataOperands(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Name,
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name,
         <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Dest)._ptr)    # fully specified
 
 
@@ -2840,8 +2808,8 @@ def LLVMAddNamedMetadataOperand(object M, const char * Name, object Val):
             (undocumented)
     """
     ccore.LLVMAddNamedMetadataOperand(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Name,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name,
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -2868,14 +2836,12 @@ def LLVMGetDebugLocDirectory(object Val, object Length):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef const char * _LLVMGetDebugLocDirectory__retval = ccore.LLVMGetDebugLocDirectory(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
         <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
-    return (_LLVMGetDebugLocDirectory__retval,)
+    return _LLVMGetDebugLocDirectory__retval
 
 
 @cython.embedsignature(True)
@@ -2902,14 +2868,12 @@ def LLVMGetDebugLocFilename(object Val, object Length):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef const char * _LLVMGetDebugLocFilename__retval = ccore.LLVMGetDebugLocFilename(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
         <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
-    return (_LLVMGetDebugLocFilename__retval,)
+    return _LLVMGetDebugLocFilename__retval
 
 
 @cython.embedsignature(True)
@@ -2933,13 +2897,11 @@ def LLVMGetDebugLocLine(object Val):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetDebugLocLine__retval = ccore.LLVMGetDebugLocLine(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr)    # fully specified
-    return (_LLVMGetDebugLocLine__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr())    # fully specified
+    return _LLVMGetDebugLocLine__retval
 
 
 @cython.embedsignature(True)
@@ -2957,13 +2919,11 @@ def LLVMGetDebugLocColumn(object Val):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetDebugLocColumn__retval = ccore.LLVMGetDebugLocColumn(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr)    # fully specified
-    return (_LLVMGetDebugLocColumn__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr())    # fully specified
+    return _LLVMGetDebugLocColumn__retval
 
 
 @cython.embedsignature(True)
@@ -2986,9 +2946,9 @@ def LLVMAddFunction(object M, const char * Name, object FunctionTy):
             (undocumented)
     """
     _LLVMAddFunction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMAddFunction(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Name,
-        LLVMOpaqueType.from_pyobj(FunctionTy)._ptr))    # fully specified
-    return (_LLVMAddFunction__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name,
+        LLVMOpaqueType.from_pyobj(FunctionTy).get_element_ptr()))    # fully specified
+    return _LLVMAddFunction__retval
 
 
 @cython.embedsignature(True)
@@ -3010,8 +2970,8 @@ def LLVMGetNamedFunction(object M, const char * Name):
             (undocumented)
     """
     _LLVMGetNamedFunction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNamedFunction(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Name))    # fully specified
-    return (_LLVMGetNamedFunction__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name))    # fully specified
+    return _LLVMGetNamedFunction__retval
 
 
 @cython.embedsignature(True)
@@ -3028,8 +2988,8 @@ def LLVMGetFirstFunction(object M):
             (undocumented)
     """
     _LLVMGetFirstFunction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetFirstFunction(
-        LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
-    return (_LLVMGetFirstFunction__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
+    return _LLVMGetFirstFunction__retval
 
 
 @cython.embedsignature(True)
@@ -3046,8 +3006,8 @@ def LLVMGetLastFunction(object M):
             (undocumented)
     """
     _LLVMGetLastFunction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetLastFunction(
-        LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
-    return (_LLVMGetLastFunction__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
+    return _LLVMGetLastFunction__retval
 
 
 @cython.embedsignature(True)
@@ -3064,8 +3024,8 @@ def LLVMGetNextFunction(object Fn):
             (undocumented)
     """
     _LLVMGetNextFunction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNextFunction(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr))    # fully specified
-    return (_LLVMGetNextFunction__retval,)
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr()))    # fully specified
+    return _LLVMGetNextFunction__retval
 
 
 @cython.embedsignature(True)
@@ -3082,8 +3042,8 @@ def LLVMGetPreviousFunction(object Fn):
             (undocumented)
     """
     _LLVMGetPreviousFunction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetPreviousFunction(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr))    # fully specified
-    return (_LLVMGetPreviousFunction__retval,)
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr()))    # fully specified
+    return _LLVMGetPreviousFunction__retval
 
 
 @cython.embedsignature(True)
@@ -3100,7 +3060,7 @@ def LLVMSetModuleInlineAsm(object M, const char * Asm):
             (undocumented)
     """
     ccore.LLVMSetModuleInlineAsm(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Asm)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Asm)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -3117,13 +3077,11 @@ def LLVMGetTypeKind(object Ty):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.LLVMTypeKind`
+        `~.LLVMTypeKind`
     """
     _LLVMGetTypeKind__retval = LLVMTypeKind(ccore.LLVMGetTypeKind(
-        LLVMOpaqueType.from_pyobj(Ty)._ptr))    # fully specified
-    return (_LLVMGetTypeKind__retval,)
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr()))    # fully specified
+    return _LLVMGetTypeKind__retval
 
 
 @cython.embedsignature(True)
@@ -3142,13 +3100,11 @@ def LLVMTypeIsSized(object Ty):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMTypeIsSized__retval = ccore.LLVMTypeIsSized(
-        LLVMOpaqueType.from_pyobj(Ty)._ptr)    # fully specified
-    return (_LLVMTypeIsSized__retval,)
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr())    # fully specified
+    return _LLVMTypeIsSized__retval
 
 
 @cython.embedsignature(True)
@@ -3165,8 +3121,8 @@ def LLVMGetTypeContext(object Ty):
             (undocumented)
     """
     _LLVMGetTypeContext__retval = LLVMOpaqueContext.from_ptr(ccore.LLVMGetTypeContext(
-        LLVMOpaqueType.from_pyobj(Ty)._ptr))    # fully specified
-    return (_LLVMGetTypeContext__retval,)
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr()))    # fully specified
+    return _LLVMGetTypeContext__retval
 
 
 @cython.embedsignature(True)
@@ -3183,7 +3139,7 @@ def LLVMDumpType(object Val):
             (undocumented)
     """
     ccore.LLVMDumpType(
-        LLVMOpaqueType.from_pyobj(Val)._ptr)    # fully specified
+        LLVMOpaqueType.from_pyobj(Val).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -3201,13 +3157,11 @@ def LLVMPrintTypeToString(object Val):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef char * _LLVMPrintTypeToString__retval = ccore.LLVMPrintTypeToString(
-        LLVMOpaqueType.from_pyobj(Val)._ptr)    # fully specified
-    return (_LLVMPrintTypeToString__retval,)
+        LLVMOpaqueType.from_pyobj(Val).get_element_ptr())    # fully specified
+    return _LLVMPrintTypeToString__retval
 
 
 @cython.embedsignature(True)
@@ -3221,8 +3175,8 @@ def LLVMInt1TypeInContext(object C):
             (undocumented)
     """
     _LLVMInt1TypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt1TypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMInt1TypeInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMInt1TypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -3234,8 +3188,8 @@ def LLVMInt8TypeInContext(object C):
             (undocumented)
     """
     _LLVMInt8TypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt8TypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMInt8TypeInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMInt8TypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -3247,8 +3201,8 @@ def LLVMInt16TypeInContext(object C):
             (undocumented)
     """
     _LLVMInt16TypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt16TypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMInt16TypeInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMInt16TypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -3260,8 +3214,8 @@ def LLVMInt32TypeInContext(object C):
             (undocumented)
     """
     _LLVMInt32TypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt32TypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMInt32TypeInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMInt32TypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -3273,8 +3227,8 @@ def LLVMInt64TypeInContext(object C):
             (undocumented)
     """
     _LLVMInt64TypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt64TypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMInt64TypeInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMInt64TypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -3286,8 +3240,8 @@ def LLVMInt128TypeInContext(object C):
             (undocumented)
     """
     _LLVMInt128TypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt128TypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMInt128TypeInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMInt128TypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -3302,8 +3256,8 @@ def LLVMIntTypeInContext(object C, unsigned int NumBits):
             (undocumented)
     """
     _LLVMIntTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMIntTypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,NumBits))    # fully specified
-    return (_LLVMIntTypeInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),NumBits))    # fully specified
+    return _LLVMIntTypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -3314,7 +3268,7 @@ def LLVMInt1Type():
     width.
     """
     _LLVMInt1Type__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt1Type())    # fully specified
-    return (_LLVMInt1Type__retval,)
+    return _LLVMInt1Type__retval
 
 
 @cython.embedsignature(True)
@@ -3322,7 +3276,7 @@ def LLVMInt8Type():
     r"""(No short description, might be part of a group.)
     """
     _LLVMInt8Type__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt8Type())    # fully specified
-    return (_LLVMInt8Type__retval,)
+    return _LLVMInt8Type__retval
 
 
 @cython.embedsignature(True)
@@ -3330,7 +3284,7 @@ def LLVMInt16Type():
     r"""(No short description, might be part of a group.)
     """
     _LLVMInt16Type__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt16Type())    # fully specified
-    return (_LLVMInt16Type__retval,)
+    return _LLVMInt16Type__retval
 
 
 @cython.embedsignature(True)
@@ -3338,7 +3292,7 @@ def LLVMInt32Type():
     r"""(No short description, might be part of a group.)
     """
     _LLVMInt32Type__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt32Type())    # fully specified
-    return (_LLVMInt32Type__retval,)
+    return _LLVMInt32Type__retval
 
 
 @cython.embedsignature(True)
@@ -3346,7 +3300,7 @@ def LLVMInt64Type():
     r"""(No short description, might be part of a group.)
     """
     _LLVMInt64Type__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt64Type())    # fully specified
-    return (_LLVMInt64Type__retval,)
+    return _LLVMInt64Type__retval
 
 
 @cython.embedsignature(True)
@@ -3354,7 +3308,7 @@ def LLVMInt128Type():
     r"""(No short description, might be part of a group.)
     """
     _LLVMInt128Type__retval = LLVMOpaqueType.from_ptr(ccore.LLVMInt128Type())    # fully specified
-    return (_LLVMInt128Type__retval,)
+    return _LLVMInt128Type__retval
 
 
 @cython.embedsignature(True)
@@ -3366,7 +3320,7 @@ def LLVMIntType(unsigned int NumBits):
             (undocumented)
     """
     _LLVMIntType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMIntType(NumBits))    # fully specified
-    return (_LLVMIntType__retval,)
+    return _LLVMIntType__retval
 
 
 @cython.embedsignature(True)
@@ -3378,13 +3332,11 @@ def LLVMGetIntTypeWidth(object IntegerTy):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetIntTypeWidth__retval = ccore.LLVMGetIntTypeWidth(
-        LLVMOpaqueType.from_pyobj(IntegerTy)._ptr)    # fully specified
-    return (_LLVMGetIntTypeWidth__retval,)
+        LLVMOpaqueType.from_pyobj(IntegerTy).get_element_ptr())    # fully specified
+    return _LLVMGetIntTypeWidth__retval
 
 
 @cython.embedsignature(True)
@@ -3398,8 +3350,8 @@ def LLVMHalfTypeInContext(object C):
             (undocumented)
     """
     _LLVMHalfTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMHalfTypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMHalfTypeInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMHalfTypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -3413,8 +3365,8 @@ def LLVMBFloatTypeInContext(object C):
             (undocumented)
     """
     _LLVMBFloatTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMBFloatTypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMBFloatTypeInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMBFloatTypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -3428,8 +3380,8 @@ def LLVMFloatTypeInContext(object C):
             (undocumented)
     """
     _LLVMFloatTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMFloatTypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMFloatTypeInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMFloatTypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -3443,8 +3395,8 @@ def LLVMDoubleTypeInContext(object C):
             (undocumented)
     """
     _LLVMDoubleTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMDoubleTypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMDoubleTypeInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMDoubleTypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -3458,8 +3410,8 @@ def LLVMX86FP80TypeInContext(object C):
             (undocumented)
     """
     _LLVMX86FP80TypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMX86FP80TypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMX86FP80TypeInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMX86FP80TypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -3474,8 +3426,8 @@ def LLVMFP128TypeInContext(object C):
             (undocumented)
     """
     _LLVMFP128TypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMFP128TypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMFP128TypeInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMFP128TypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -3489,8 +3441,8 @@ def LLVMPPCFP128TypeInContext(object C):
             (undocumented)
     """
     _LLVMPPCFP128TypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMPPCFP128TypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMPPCFP128TypeInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMPPCFP128TypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -3502,7 +3454,7 @@ def LLVMHalfType():
     These map to the functions in this group of the same name.
     """
     _LLVMHalfType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMHalfType())    # fully specified
-    return (_LLVMHalfType__retval,)
+    return _LLVMHalfType__retval
 
 
 @cython.embedsignature(True)
@@ -3510,7 +3462,7 @@ def LLVMBFloatType():
     r"""(No short description, might be part of a group.)
     """
     _LLVMBFloatType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMBFloatType())    # fully specified
-    return (_LLVMBFloatType__retval,)
+    return _LLVMBFloatType__retval
 
 
 @cython.embedsignature(True)
@@ -3518,7 +3470,7 @@ def LLVMFloatType():
     r"""(No short description, might be part of a group.)
     """
     _LLVMFloatType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMFloatType())    # fully specified
-    return (_LLVMFloatType__retval,)
+    return _LLVMFloatType__retval
 
 
 @cython.embedsignature(True)
@@ -3526,7 +3478,7 @@ def LLVMDoubleType():
     r"""(No short description, might be part of a group.)
     """
     _LLVMDoubleType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMDoubleType())    # fully specified
-    return (_LLVMDoubleType__retval,)
+    return _LLVMDoubleType__retval
 
 
 @cython.embedsignature(True)
@@ -3534,7 +3486,7 @@ def LLVMX86FP80Type():
     r"""(No short description, might be part of a group.)
     """
     _LLVMX86FP80Type__retval = LLVMOpaqueType.from_ptr(ccore.LLVMX86FP80Type())    # fully specified
-    return (_LLVMX86FP80Type__retval,)
+    return _LLVMX86FP80Type__retval
 
 
 @cython.embedsignature(True)
@@ -3542,7 +3494,7 @@ def LLVMFP128Type():
     r"""(No short description, might be part of a group.)
     """
     _LLVMFP128Type__retval = LLVMOpaqueType.from_ptr(ccore.LLVMFP128Type())    # fully specified
-    return (_LLVMFP128Type__retval,)
+    return _LLVMFP128Type__retval
 
 
 @cython.embedsignature(True)
@@ -3550,7 +3502,7 @@ def LLVMPPCFP128Type():
     r"""(No short description, might be part of a group.)
     """
     _LLVMPPCFP128Type__retval = LLVMOpaqueType.from_ptr(ccore.LLVMPPCFP128Type())    # fully specified
-    return (_LLVMPPCFP128Type__retval,)
+    return _LLVMPPCFP128Type__retval
 
 
 @cython.embedsignature(True)
@@ -3566,7 +3518,7 @@ def LLVMFunctionType(object ReturnType, object ParamTypes, unsigned int ParamCou
         ReturnType (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        ParamTypes (`~.rocm.llvm._util.types.Pointer`/`~.object`):
+        ParamTypes (`~.rocm.llvm._util.types.ListOfPointer`/`~.object`):
             (undocumented)
 
         ParamCount (`~.int`):
@@ -3576,9 +3528,9 @@ def LLVMFunctionType(object ReturnType, object ParamTypes, unsigned int ParamCou
             (undocumented)
     """
     _LLVMFunctionType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMFunctionType(
-        LLVMOpaqueType.from_pyobj(ReturnType)._ptr,
-        <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(ParamTypes)._ptr,ParamCount,IsVarArg))    # fully specified
-    return (_LLVMFunctionType__retval,)
+        LLVMOpaqueType.from_pyobj(ReturnType).get_element_ptr(),
+        <ccore.LLVMTypeRef*>rocm.llvm._util.types.ListOfPointer.from_pyobj(ParamTypes)._ptr,ParamCount,IsVarArg))    # fully specified
+    return _LLVMFunctionType__retval
 
 
 @cython.embedsignature(True)
@@ -3592,13 +3544,11 @@ def LLVMIsFunctionVarArg(object FunctionTy):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIsFunctionVarArg__retval = ccore.LLVMIsFunctionVarArg(
-        LLVMOpaqueType.from_pyobj(FunctionTy)._ptr)    # fully specified
-    return (_LLVMIsFunctionVarArg__retval,)
+        LLVMOpaqueType.from_pyobj(FunctionTy).get_element_ptr())    # fully specified
+    return _LLVMIsFunctionVarArg__retval
 
 
 @cython.embedsignature(True)
@@ -3612,8 +3562,8 @@ def LLVMGetReturnType(object FunctionTy):
             (undocumented)
     """
     _LLVMGetReturnType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMGetReturnType(
-        LLVMOpaqueType.from_pyobj(FunctionTy)._ptr))    # fully specified
-    return (_LLVMGetReturnType__retval,)
+        LLVMOpaqueType.from_pyobj(FunctionTy).get_element_ptr()))    # fully specified
+    return _LLVMGetReturnType__retval
 
 
 @cython.embedsignature(True)
@@ -3627,13 +3577,11 @@ def LLVMCountParamTypes(object FunctionTy):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMCountParamTypes__retval = ccore.LLVMCountParamTypes(
-        LLVMOpaqueType.from_pyobj(FunctionTy)._ptr)    # fully specified
-    return (_LLVMCountParamTypes__retval,)
+        LLVMOpaqueType.from_pyobj(FunctionTy).get_element_ptr())    # fully specified
+    return _LLVMCountParamTypes__retval
 
 
 @cython.embedsignature(True)
@@ -3651,12 +3599,12 @@ def LLVMGetParamTypes(object FunctionTy, object Dest):
         FunctionTy (`~.LLVMOpaqueType`/`~.object`):
             The function type to operate on.
 
-        Dest (`~.rocm.llvm._util.types.Pointer`/`~.object`):
+        Dest (`~.rocm.llvm._util.types.ListOfPointer`/`~.object`):
             Memory address of an array to be filled with result.
     """
     ccore.LLVMGetParamTypes(
-        LLVMOpaqueType.from_pyobj(FunctionTy)._ptr,
-        <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(Dest)._ptr)    # fully specified
+        LLVMOpaqueType.from_pyobj(FunctionTy).get_element_ptr(),
+        <ccore.LLVMTypeRef*>rocm.llvm._util.types.ListOfPointer.from_pyobj(Dest)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -3685,9 +3633,9 @@ def LLVMStructTypeInContext(object C, object ElementTypes, unsigned int ElementC
             (undocumented)
     """
     _LLVMStructTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMStructTypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),
         <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(ElementTypes)._ptr,ElementCount,Packed))    # fully specified
-    return (_LLVMStructTypeInContext__retval,)
+    return _LLVMStructTypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -3711,7 +3659,7 @@ def LLVMStructType(object ElementTypes, unsigned int ElementCount, int Packed):
     """
     _LLVMStructType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMStructType(
         <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(ElementTypes)._ptr,ElementCount,Packed))    # fully specified
-    return (_LLVMStructType__retval,)
+    return _LLVMStructType__retval
 
 
 @cython.embedsignature(True)
@@ -3731,8 +3679,8 @@ def LLVMStructCreateNamed(object C, const char * Name):
             (undocumented)
     """
     _LLVMStructCreateNamed__retval = LLVMOpaqueType.from_ptr(ccore.LLVMStructCreateNamed(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,Name))    # fully specified
-    return (_LLVMStructCreateNamed__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),Name))    # fully specified
+    return _LLVMStructCreateNamed__retval
 
 
 @cython.embedsignature(True)
@@ -3749,13 +3697,11 @@ def LLVMGetStructName(object Ty):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef const char * _LLVMGetStructName__retval = ccore.LLVMGetStructName(
-        LLVMOpaqueType.from_pyobj(Ty)._ptr)    # fully specified
-    return (_LLVMGetStructName__retval,)
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr())    # fully specified
+    return _LLVMGetStructName__retval
 
 
 @cython.embedsignature(True)
@@ -3781,7 +3727,7 @@ def LLVMStructSetBody(object StructTy, object ElementTypes, unsigned int Element
             (undocumented)
     """
     ccore.LLVMStructSetBody(
-        LLVMOpaqueType.from_pyobj(StructTy)._ptr,
+        LLVMOpaqueType.from_pyobj(StructTy).get_element_ptr(),
         <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(ElementTypes)._ptr,ElementCount,Packed)    # fully specified
 
 
@@ -3799,13 +3745,11 @@ def LLVMCountStructElementTypes(object StructTy):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMCountStructElementTypes__retval = ccore.LLVMCountStructElementTypes(
-        LLVMOpaqueType.from_pyobj(StructTy)._ptr)    # fully specified
-    return (_LLVMCountStructElementTypes__retval,)
+        LLVMOpaqueType.from_pyobj(StructTy).get_element_ptr())    # fully specified
+    return _LLVMCountStructElementTypes__retval
 
 
 @cython.embedsignature(True)
@@ -3829,7 +3773,7 @@ def LLVMGetStructElementTypes(object StructTy, object Dest):
             (undocumented)
     """
     ccore.LLVMGetStructElementTypes(
-        LLVMOpaqueType.from_pyobj(StructTy)._ptr,
+        LLVMOpaqueType.from_pyobj(StructTy).get_element_ptr(),
         <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(Dest)._ptr)    # fully specified
 
 
@@ -3850,8 +3794,8 @@ def LLVMStructGetTypeAtIndex(object StructTy, unsigned int i):
             (undocumented)
     """
     _LLVMStructGetTypeAtIndex__retval = LLVMOpaqueType.from_ptr(ccore.LLVMStructGetTypeAtIndex(
-        LLVMOpaqueType.from_pyobj(StructTy)._ptr,i))    # fully specified
-    return (_LLVMStructGetTypeAtIndex__retval,)
+        LLVMOpaqueType.from_pyobj(StructTy).get_element_ptr(),i))    # fully specified
+    return _LLVMStructGetTypeAtIndex__retval
 
 
 @cython.embedsignature(True)
@@ -3868,13 +3812,11 @@ def LLVMIsPackedStruct(object StructTy):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIsPackedStruct__retval = ccore.LLVMIsPackedStruct(
-        LLVMOpaqueType.from_pyobj(StructTy)._ptr)    # fully specified
-    return (_LLVMIsPackedStruct__retval,)
+        LLVMOpaqueType.from_pyobj(StructTy).get_element_ptr())    # fully specified
+    return _LLVMIsPackedStruct__retval
 
 
 @cython.embedsignature(True)
@@ -3891,13 +3833,11 @@ def LLVMIsOpaqueStruct(object StructTy):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIsOpaqueStruct__retval = ccore.LLVMIsOpaqueStruct(
-        LLVMOpaqueType.from_pyobj(StructTy)._ptr)    # fully specified
-    return (_LLVMIsOpaqueStruct__retval,)
+        LLVMOpaqueType.from_pyobj(StructTy).get_element_ptr())    # fully specified
+    return _LLVMIsOpaqueStruct__retval
 
 
 @cython.embedsignature(True)
@@ -3914,13 +3854,11 @@ def LLVMIsLiteralStruct(object StructTy):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIsLiteralStruct__retval = ccore.LLVMIsLiteralStruct(
-        LLVMOpaqueType.from_pyobj(StructTy)._ptr)    # fully specified
-    return (_LLVMIsLiteralStruct__retval,)
+        LLVMOpaqueType.from_pyobj(StructTy).get_element_ptr())    # fully specified
+    return _LLVMIsLiteralStruct__retval
 
 
 @cython.embedsignature(True)
@@ -3939,8 +3877,8 @@ def LLVMGetElementType(object Ty):
             (undocumented)
     """
     _LLVMGetElementType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMGetElementType(
-        LLVMOpaqueType.from_pyobj(Ty)._ptr))    # fully specified
-    return (_LLVMGetElementType__retval,)
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr()))    # fully specified
+    return _LLVMGetElementType__retval
 
 
 @cython.embedsignature(True)
@@ -3960,7 +3898,7 @@ def LLVMGetSubtypes(object Tp, object Arr):
             (undocumented)
     """
     ccore.LLVMGetSubtypes(
-        LLVMOpaqueType.from_pyobj(Tp)._ptr,
+        LLVMOpaqueType.from_pyobj(Tp).get_element_ptr(),
         <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(Arr)._ptr)    # fully specified
 
 
@@ -3978,13 +3916,11 @@ def LLVMGetNumContainedTypes(object Tp):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetNumContainedTypes__retval = ccore.LLVMGetNumContainedTypes(
-        LLVMOpaqueType.from_pyobj(Tp)._ptr)    # fully specified
-    return (_LLVMGetNumContainedTypes__retval,)
+        LLVMOpaqueType.from_pyobj(Tp).get_element_ptr())    # fully specified
+    return _LLVMGetNumContainedTypes__retval
 
 
 @cython.embedsignature(True)
@@ -4007,8 +3943,8 @@ def LLVMArrayType(object ElementType, unsigned int ElementCount):
             (undocumented)
     """
     _LLVMArrayType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMArrayType(
-        LLVMOpaqueType.from_pyobj(ElementType)._ptr,ElementCount))    # fully specified
-    return (_LLVMArrayType__retval,)
+        LLVMOpaqueType.from_pyobj(ElementType).get_element_ptr(),ElementCount))    # fully specified
+    return _LLVMArrayType__retval
 
 
 @cython.embedsignature(True)
@@ -4027,13 +3963,11 @@ def LLVMGetArrayLength(object ArrayTy):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetArrayLength__retval = ccore.LLVMGetArrayLength(
-        LLVMOpaqueType.from_pyobj(ArrayTy)._ptr)    # fully specified
-    return (_LLVMGetArrayLength__retval,)
+        LLVMOpaqueType.from_pyobj(ArrayTy).get_element_ptr())    # fully specified
+    return _LLVMGetArrayLength__retval
 
 
 @cython.embedsignature(True)
@@ -4056,8 +3990,8 @@ def LLVMPointerType(object ElementType, unsigned int AddressSpace):
             (undocumented)
     """
     _LLVMPointerType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMPointerType(
-        LLVMOpaqueType.from_pyobj(ElementType)._ptr,AddressSpace))    # fully specified
-    return (_LLVMPointerType__retval,)
+        LLVMOpaqueType.from_pyobj(ElementType).get_element_ptr(),AddressSpace))    # fully specified
+    return _LLVMPointerType__retval
 
 
 @cython.embedsignature(True)
@@ -4076,13 +4010,11 @@ def LLVMPointerTypeIsOpaque(object Ty):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMPointerTypeIsOpaque__retval = ccore.LLVMPointerTypeIsOpaque(
-        LLVMOpaqueType.from_pyobj(Ty)._ptr)    # fully specified
-    return (_LLVMPointerTypeIsOpaque__retval,)
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr())    # fully specified
+    return _LLVMPointerTypeIsOpaque__retval
 
 
 @cython.embedsignature(True)
@@ -4102,8 +4034,8 @@ def LLVMPointerTypeInContext(object C, unsigned int AddressSpace):
             (undocumented)
     """
     _LLVMPointerTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMPointerTypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,AddressSpace))    # fully specified
-    return (_LLVMPointerTypeInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),AddressSpace))    # fully specified
+    return _LLVMPointerTypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -4122,13 +4054,11 @@ def LLVMGetPointerAddressSpace(object PointerTy):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetPointerAddressSpace__retval = ccore.LLVMGetPointerAddressSpace(
-        LLVMOpaqueType.from_pyobj(PointerTy)._ptr)    # fully specified
-    return (_LLVMGetPointerAddressSpace__retval,)
+        LLVMOpaqueType.from_pyobj(PointerTy).get_element_ptr())    # fully specified
+    return _LLVMGetPointerAddressSpace__retval
 
 
 @cython.embedsignature(True)
@@ -4152,8 +4082,8 @@ def LLVMVectorType(object ElementType, unsigned int ElementCount):
             (undocumented)
     """
     _LLVMVectorType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMVectorType(
-        LLVMOpaqueType.from_pyobj(ElementType)._ptr,ElementCount))    # fully specified
-    return (_LLVMVectorType__retval,)
+        LLVMOpaqueType.from_pyobj(ElementType).get_element_ptr(),ElementCount))    # fully specified
+    return _LLVMVectorType__retval
 
 
 @cython.embedsignature(True)
@@ -4177,8 +4107,8 @@ def LLVMScalableVectorType(object ElementType, unsigned int ElementCount):
             (undocumented)
     """
     _LLVMScalableVectorType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMScalableVectorType(
-        LLVMOpaqueType.from_pyobj(ElementType)._ptr,ElementCount))    # fully specified
-    return (_LLVMScalableVectorType__retval,)
+        LLVMOpaqueType.from_pyobj(ElementType).get_element_ptr(),ElementCount))    # fully specified
+    return _LLVMScalableVectorType__retval
 
 
 @cython.embedsignature(True)
@@ -4197,13 +4127,11 @@ def LLVMGetVectorSize(object VectorTy):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetVectorSize__retval = ccore.LLVMGetVectorSize(
-        LLVMOpaqueType.from_pyobj(VectorTy)._ptr)    # fully specified
-    return (_LLVMGetVectorSize__retval,)
+        LLVMOpaqueType.from_pyobj(VectorTy).get_element_ptr())    # fully specified
+    return _LLVMGetVectorSize__retval
 
 
 @cython.embedsignature(True)
@@ -4217,8 +4145,8 @@ def LLVMVoidTypeInContext(object C):
             (undocumented)
     """
     _LLVMVoidTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMVoidTypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMVoidTypeInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMVoidTypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -4232,8 +4160,8 @@ def LLVMLabelTypeInContext(object C):
             (undocumented)
     """
     _LLVMLabelTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMLabelTypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMLabelTypeInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMLabelTypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -4247,8 +4175,8 @@ def LLVMX86MMXTypeInContext(object C):
             (undocumented)
     """
     _LLVMX86MMXTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMX86MMXTypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMX86MMXTypeInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMX86MMXTypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -4262,8 +4190,8 @@ def LLVMX86AMXTypeInContext(object C):
             (undocumented)
     """
     _LLVMX86AMXTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMX86AMXTypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMX86AMXTypeInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMX86AMXTypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -4277,8 +4205,8 @@ def LLVMTokenTypeInContext(object C):
             (undocumented)
     """
     _LLVMTokenTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMTokenTypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMTokenTypeInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMTokenTypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -4292,8 +4220,8 @@ def LLVMMetadataTypeInContext(object C):
             (undocumented)
     """
     _LLVMMetadataTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMMetadataTypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMMetadataTypeInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMMetadataTypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -4304,7 +4232,7 @@ def LLVMVoidType():
     global context.
     """
     _LLVMVoidType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMVoidType())    # fully specified
-    return (_LLVMVoidType__retval,)
+    return _LLVMVoidType__retval
 
 
 @cython.embedsignature(True)
@@ -4312,7 +4240,7 @@ def LLVMLabelType():
     r"""(No short description, might be part of a group.)
     """
     _LLVMLabelType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMLabelType())    # fully specified
-    return (_LLVMLabelType__retval,)
+    return _LLVMLabelType__retval
 
 
 @cython.embedsignature(True)
@@ -4320,7 +4248,7 @@ def LLVMX86MMXType():
     r"""(No short description, might be part of a group.)
     """
     _LLVMX86MMXType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMX86MMXType())    # fully specified
-    return (_LLVMX86MMXType__retval,)
+    return _LLVMX86MMXType__retval
 
 
 @cython.embedsignature(True)
@@ -4328,7 +4256,7 @@ def LLVMX86AMXType():
     r"""(No short description, might be part of a group.)
     """
     _LLVMX86AMXType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMX86AMXType())    # fully specified
-    return (_LLVMX86AMXType__retval,)
+    return _LLVMX86AMXType__retval
 
 
 @cython.embedsignature(True)
@@ -4357,10 +4285,10 @@ def LLVMTargetExtTypeInContext(object C, const char * Name, object TypeParams, u
             (undocumented)
     """
     _LLVMTargetExtTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMTargetExtTypeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,Name,
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),Name,
         <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(TypeParams)._ptr,TypeParamCount,
         <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(IntParams)._ptr,IntParamCount))    # fully specified
-    return (_LLVMTargetExtTypeInContext__retval,)
+    return _LLVMTargetExtTypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -4377,8 +4305,8 @@ def LLVMTypeOf(object Val):
             (undocumented)
     """
     _LLVMTypeOf__retval = LLVMOpaqueType.from_ptr(ccore.LLVMTypeOf(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMTypeOf__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMTypeOf__retval
 
 
 @cython.embedsignature(True)
@@ -4395,13 +4323,11 @@ def LLVMGetValueKind(object Val):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.LLVMValueKind`
+        `~.LLVMValueKind`
     """
     _LLVMGetValueKind__retval = LLVMValueKind(ccore.LLVMGetValueKind(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMGetValueKind__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMGetValueKind__retval
 
 
 @cython.embedsignature(True)
@@ -4421,14 +4347,12 @@ def LLVMGetValueName2(object Val, object Length):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef const char * _LLVMGetValueName2__retval = ccore.LLVMGetValueName2(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
         <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
-    return (_LLVMGetValueName2__retval,)
+    return _LLVMGetValueName2__retval
 
 
 @cython.embedsignature(True)
@@ -4451,7 +4375,7 @@ def LLVMSetValueName2(object Val, const char * Name, unsigned long NameLen):
             (undocumented)
     """
     ccore.LLVMSetValueName2(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,Name,NameLen)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),Name,NameLen)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -4468,7 +4392,7 @@ def LLVMDumpValue(object Val):
             (undocumented)
     """
     ccore.LLVMDumpValue(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -4486,13 +4410,11 @@ def LLVMPrintValueToString(object Val):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef char * _LLVMPrintValueToString__retval = ccore.LLVMPrintValueToString(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr)    # fully specified
-    return (_LLVMPrintValueToString__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr())    # fully specified
+    return _LLVMPrintValueToString__retval
 
 
 @cython.embedsignature(True)
@@ -4512,8 +4434,8 @@ def LLVMReplaceAllUsesWith(object OldVal, object NewVal):
             (undocumented)
     """
     ccore.LLVMReplaceAllUsesWith(
-        LLVMOpaqueValue.from_pyobj(OldVal)._ptr,
-        LLVMOpaqueValue.from_pyobj(NewVal)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(OldVal).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(NewVal).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -4527,13 +4449,11 @@ def LLVMIsConstant(object Val):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIsConstant__retval = ccore.LLVMIsConstant(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr)    # fully specified
-    return (_LLVMIsConstant__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr())    # fully specified
+    return _LLVMIsConstant__retval
 
 
 @cython.embedsignature(True)
@@ -4547,13 +4467,11 @@ def LLVMIsUndef(object Val):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIsUndef__retval = ccore.LLVMIsUndef(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr)    # fully specified
-    return (_LLVMIsUndef__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr())    # fully specified
+    return _LLVMIsUndef__retval
 
 
 @cython.embedsignature(True)
@@ -4567,13 +4485,11 @@ def LLVMIsPoison(object Val):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIsPoison__retval = ccore.LLVMIsPoison(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr)    # fully specified
-    return (_LLVMIsPoison__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr())    # fully specified
+    return _LLVMIsPoison__retval
 
 
 @cython.embedsignature(True)
@@ -4585,8 +4501,8 @@ def LLVMIsAArgument(object Val):
             (undocumented)
     """
     _LLVMIsAArgument__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAArgument(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAArgument__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAArgument__retval
 
 
 @cython.embedsignature(True)
@@ -4598,8 +4514,8 @@ def LLVMIsABasicBlock(object Val):
             (undocumented)
     """
     _LLVMIsABasicBlock__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsABasicBlock(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsABasicBlock__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsABasicBlock__retval
 
 
 @cython.embedsignature(True)
@@ -4611,8 +4527,8 @@ def LLVMIsAInlineAsm(object Val):
             (undocumented)
     """
     _LLVMIsAInlineAsm__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAInlineAsm(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAInlineAsm__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAInlineAsm__retval
 
 
 @cython.embedsignature(True)
@@ -4624,8 +4540,8 @@ def LLVMIsAUser(object Val):
             (undocumented)
     """
     _LLVMIsAUser__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAUser(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAUser__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAUser__retval
 
 
 @cython.embedsignature(True)
@@ -4637,8 +4553,8 @@ def LLVMIsAConstant(object Val):
             (undocumented)
     """
     _LLVMIsAConstant__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstant(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAConstant__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAConstant__retval
 
 
 @cython.embedsignature(True)
@@ -4650,8 +4566,8 @@ def LLVMIsABlockAddress(object Val):
             (undocumented)
     """
     _LLVMIsABlockAddress__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsABlockAddress(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsABlockAddress__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsABlockAddress__retval
 
 
 @cython.embedsignature(True)
@@ -4663,8 +4579,8 @@ def LLVMIsAConstantAggregateZero(object Val):
             (undocumented)
     """
     _LLVMIsAConstantAggregateZero__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantAggregateZero(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAConstantAggregateZero__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAConstantAggregateZero__retval
 
 
 @cython.embedsignature(True)
@@ -4676,8 +4592,8 @@ def LLVMIsAConstantArray(object Val):
             (undocumented)
     """
     _LLVMIsAConstantArray__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantArray(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAConstantArray__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAConstantArray__retval
 
 
 @cython.embedsignature(True)
@@ -4689,8 +4605,8 @@ def LLVMIsAConstantDataSequential(object Val):
             (undocumented)
     """
     _LLVMIsAConstantDataSequential__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantDataSequential(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAConstantDataSequential__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAConstantDataSequential__retval
 
 
 @cython.embedsignature(True)
@@ -4702,8 +4618,8 @@ def LLVMIsAConstantDataArray(object Val):
             (undocumented)
     """
     _LLVMIsAConstantDataArray__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantDataArray(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAConstantDataArray__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAConstantDataArray__retval
 
 
 @cython.embedsignature(True)
@@ -4715,8 +4631,8 @@ def LLVMIsAConstantDataVector(object Val):
             (undocumented)
     """
     _LLVMIsAConstantDataVector__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantDataVector(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAConstantDataVector__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAConstantDataVector__retval
 
 
 @cython.embedsignature(True)
@@ -4728,8 +4644,8 @@ def LLVMIsAConstantExpr(object Val):
             (undocumented)
     """
     _LLVMIsAConstantExpr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantExpr(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAConstantExpr__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAConstantExpr__retval
 
 
 @cython.embedsignature(True)
@@ -4741,8 +4657,8 @@ def LLVMIsAConstantFP(object Val):
             (undocumented)
     """
     _LLVMIsAConstantFP__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantFP(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAConstantFP__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAConstantFP__retval
 
 
 @cython.embedsignature(True)
@@ -4754,8 +4670,8 @@ def LLVMIsAConstantInt(object Val):
             (undocumented)
     """
     _LLVMIsAConstantInt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantInt(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAConstantInt__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAConstantInt__retval
 
 
 @cython.embedsignature(True)
@@ -4767,8 +4683,8 @@ def LLVMIsAConstantPointerNull(object Val):
             (undocumented)
     """
     _LLVMIsAConstantPointerNull__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantPointerNull(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAConstantPointerNull__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAConstantPointerNull__retval
 
 
 @cython.embedsignature(True)
@@ -4780,8 +4696,8 @@ def LLVMIsAConstantStruct(object Val):
             (undocumented)
     """
     _LLVMIsAConstantStruct__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantStruct(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAConstantStruct__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAConstantStruct__retval
 
 
 @cython.embedsignature(True)
@@ -4793,8 +4709,8 @@ def LLVMIsAConstantTokenNone(object Val):
             (undocumented)
     """
     _LLVMIsAConstantTokenNone__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantTokenNone(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAConstantTokenNone__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAConstantTokenNone__retval
 
 
 @cython.embedsignature(True)
@@ -4806,8 +4722,8 @@ def LLVMIsAConstantVector(object Val):
             (undocumented)
     """
     _LLVMIsAConstantVector__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAConstantVector(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAConstantVector__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAConstantVector__retval
 
 
 @cython.embedsignature(True)
@@ -4819,8 +4735,8 @@ def LLVMIsAGlobalValue(object Val):
             (undocumented)
     """
     _LLVMIsAGlobalValue__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAGlobalValue(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAGlobalValue__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAGlobalValue__retval
 
 
 @cython.embedsignature(True)
@@ -4832,8 +4748,8 @@ def LLVMIsAGlobalAlias(object Val):
             (undocumented)
     """
     _LLVMIsAGlobalAlias__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAGlobalAlias(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAGlobalAlias__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAGlobalAlias__retval
 
 
 @cython.embedsignature(True)
@@ -4845,8 +4761,8 @@ def LLVMIsAGlobalObject(object Val):
             (undocumented)
     """
     _LLVMIsAGlobalObject__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAGlobalObject(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAGlobalObject__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAGlobalObject__retval
 
 
 @cython.embedsignature(True)
@@ -4858,8 +4774,8 @@ def LLVMIsAFunction(object Val):
             (undocumented)
     """
     _LLVMIsAFunction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAFunction(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAFunction__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAFunction__retval
 
 
 @cython.embedsignature(True)
@@ -4871,8 +4787,8 @@ def LLVMIsAGlobalVariable(object Val):
             (undocumented)
     """
     _LLVMIsAGlobalVariable__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAGlobalVariable(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAGlobalVariable__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAGlobalVariable__retval
 
 
 @cython.embedsignature(True)
@@ -4884,8 +4800,8 @@ def LLVMIsAGlobalIFunc(object Val):
             (undocumented)
     """
     _LLVMIsAGlobalIFunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAGlobalIFunc(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAGlobalIFunc__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAGlobalIFunc__retval
 
 
 @cython.embedsignature(True)
@@ -4897,8 +4813,8 @@ def LLVMIsAUndefValue(object Val):
             (undocumented)
     """
     _LLVMIsAUndefValue__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAUndefValue(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAUndefValue__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAUndefValue__retval
 
 
 @cython.embedsignature(True)
@@ -4910,8 +4826,8 @@ def LLVMIsAPoisonValue(object Val):
             (undocumented)
     """
     _LLVMIsAPoisonValue__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAPoisonValue(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAPoisonValue__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAPoisonValue__retval
 
 
 @cython.embedsignature(True)
@@ -4923,8 +4839,8 @@ def LLVMIsAInstruction(object Val):
             (undocumented)
     """
     _LLVMIsAInstruction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAInstruction(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAInstruction__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAInstruction__retval
 
 
 @cython.embedsignature(True)
@@ -4936,8 +4852,8 @@ def LLVMIsAUnaryOperator(object Val):
             (undocumented)
     """
     _LLVMIsAUnaryOperator__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAUnaryOperator(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAUnaryOperator__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAUnaryOperator__retval
 
 
 @cython.embedsignature(True)
@@ -4949,8 +4865,8 @@ def LLVMIsABinaryOperator(object Val):
             (undocumented)
     """
     _LLVMIsABinaryOperator__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsABinaryOperator(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsABinaryOperator__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsABinaryOperator__retval
 
 
 @cython.embedsignature(True)
@@ -4962,8 +4878,8 @@ def LLVMIsACallInst(object Val):
             (undocumented)
     """
     _LLVMIsACallInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsACallInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsACallInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsACallInst__retval
 
 
 @cython.embedsignature(True)
@@ -4975,8 +4891,8 @@ def LLVMIsAIntrinsicInst(object Val):
             (undocumented)
     """
     _LLVMIsAIntrinsicInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAIntrinsicInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAIntrinsicInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAIntrinsicInst__retval
 
 
 @cython.embedsignature(True)
@@ -4988,8 +4904,8 @@ def LLVMIsADbgInfoIntrinsic(object Val):
             (undocumented)
     """
     _LLVMIsADbgInfoIntrinsic__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsADbgInfoIntrinsic(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsADbgInfoIntrinsic__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsADbgInfoIntrinsic__retval
 
 
 @cython.embedsignature(True)
@@ -5001,8 +4917,8 @@ def LLVMIsADbgVariableIntrinsic(object Val):
             (undocumented)
     """
     _LLVMIsADbgVariableIntrinsic__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsADbgVariableIntrinsic(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsADbgVariableIntrinsic__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsADbgVariableIntrinsic__retval
 
 
 @cython.embedsignature(True)
@@ -5014,8 +4930,8 @@ def LLVMIsADbgDeclareInst(object Val):
             (undocumented)
     """
     _LLVMIsADbgDeclareInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsADbgDeclareInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsADbgDeclareInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsADbgDeclareInst__retval
 
 
 @cython.embedsignature(True)
@@ -5027,8 +4943,8 @@ def LLVMIsADbgLabelInst(object Val):
             (undocumented)
     """
     _LLVMIsADbgLabelInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsADbgLabelInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsADbgLabelInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsADbgLabelInst__retval
 
 
 @cython.embedsignature(True)
@@ -5040,8 +4956,8 @@ def LLVMIsAMemIntrinsic(object Val):
             (undocumented)
     """
     _LLVMIsAMemIntrinsic__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAMemIntrinsic(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAMemIntrinsic__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAMemIntrinsic__retval
 
 
 @cython.embedsignature(True)
@@ -5053,8 +4969,8 @@ def LLVMIsAMemCpyInst(object Val):
             (undocumented)
     """
     _LLVMIsAMemCpyInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAMemCpyInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAMemCpyInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAMemCpyInst__retval
 
 
 @cython.embedsignature(True)
@@ -5066,8 +4982,8 @@ def LLVMIsAMemMoveInst(object Val):
             (undocumented)
     """
     _LLVMIsAMemMoveInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAMemMoveInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAMemMoveInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAMemMoveInst__retval
 
 
 @cython.embedsignature(True)
@@ -5079,8 +4995,8 @@ def LLVMIsAMemSetInst(object Val):
             (undocumented)
     """
     _LLVMIsAMemSetInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAMemSetInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAMemSetInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAMemSetInst__retval
 
 
 @cython.embedsignature(True)
@@ -5092,8 +5008,8 @@ def LLVMIsACmpInst(object Val):
             (undocumented)
     """
     _LLVMIsACmpInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsACmpInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsACmpInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsACmpInst__retval
 
 
 @cython.embedsignature(True)
@@ -5105,8 +5021,8 @@ def LLVMIsAFCmpInst(object Val):
             (undocumented)
     """
     _LLVMIsAFCmpInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAFCmpInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAFCmpInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAFCmpInst__retval
 
 
 @cython.embedsignature(True)
@@ -5118,8 +5034,8 @@ def LLVMIsAICmpInst(object Val):
             (undocumented)
     """
     _LLVMIsAICmpInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAICmpInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAICmpInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAICmpInst__retval
 
 
 @cython.embedsignature(True)
@@ -5131,8 +5047,8 @@ def LLVMIsAExtractElementInst(object Val):
             (undocumented)
     """
     _LLVMIsAExtractElementInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAExtractElementInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAExtractElementInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAExtractElementInst__retval
 
 
 @cython.embedsignature(True)
@@ -5144,8 +5060,8 @@ def LLVMIsAGetElementPtrInst(object Val):
             (undocumented)
     """
     _LLVMIsAGetElementPtrInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAGetElementPtrInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAGetElementPtrInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAGetElementPtrInst__retval
 
 
 @cython.embedsignature(True)
@@ -5157,8 +5073,8 @@ def LLVMIsAInsertElementInst(object Val):
             (undocumented)
     """
     _LLVMIsAInsertElementInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAInsertElementInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAInsertElementInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAInsertElementInst__retval
 
 
 @cython.embedsignature(True)
@@ -5170,8 +5086,8 @@ def LLVMIsAInsertValueInst(object Val):
             (undocumented)
     """
     _LLVMIsAInsertValueInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAInsertValueInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAInsertValueInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAInsertValueInst__retval
 
 
 @cython.embedsignature(True)
@@ -5183,8 +5099,8 @@ def LLVMIsALandingPadInst(object Val):
             (undocumented)
     """
     _LLVMIsALandingPadInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsALandingPadInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsALandingPadInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsALandingPadInst__retval
 
 
 @cython.embedsignature(True)
@@ -5196,8 +5112,8 @@ def LLVMIsAPHINode(object Val):
             (undocumented)
     """
     _LLVMIsAPHINode__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAPHINode(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAPHINode__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAPHINode__retval
 
 
 @cython.embedsignature(True)
@@ -5209,8 +5125,8 @@ def LLVMIsASelectInst(object Val):
             (undocumented)
     """
     _LLVMIsASelectInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsASelectInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsASelectInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsASelectInst__retval
 
 
 @cython.embedsignature(True)
@@ -5222,8 +5138,8 @@ def LLVMIsAShuffleVectorInst(object Val):
             (undocumented)
     """
     _LLVMIsAShuffleVectorInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAShuffleVectorInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAShuffleVectorInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAShuffleVectorInst__retval
 
 
 @cython.embedsignature(True)
@@ -5235,8 +5151,8 @@ def LLVMIsAStoreInst(object Val):
             (undocumented)
     """
     _LLVMIsAStoreInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAStoreInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAStoreInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAStoreInst__retval
 
 
 @cython.embedsignature(True)
@@ -5248,8 +5164,8 @@ def LLVMIsABranchInst(object Val):
             (undocumented)
     """
     _LLVMIsABranchInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsABranchInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsABranchInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsABranchInst__retval
 
 
 @cython.embedsignature(True)
@@ -5261,8 +5177,8 @@ def LLVMIsAIndirectBrInst(object Val):
             (undocumented)
     """
     _LLVMIsAIndirectBrInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAIndirectBrInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAIndirectBrInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAIndirectBrInst__retval
 
 
 @cython.embedsignature(True)
@@ -5274,8 +5190,8 @@ def LLVMIsAInvokeInst(object Val):
             (undocumented)
     """
     _LLVMIsAInvokeInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAInvokeInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAInvokeInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAInvokeInst__retval
 
 
 @cython.embedsignature(True)
@@ -5287,8 +5203,8 @@ def LLVMIsAReturnInst(object Val):
             (undocumented)
     """
     _LLVMIsAReturnInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAReturnInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAReturnInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAReturnInst__retval
 
 
 @cython.embedsignature(True)
@@ -5300,8 +5216,8 @@ def LLVMIsASwitchInst(object Val):
             (undocumented)
     """
     _LLVMIsASwitchInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsASwitchInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsASwitchInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsASwitchInst__retval
 
 
 @cython.embedsignature(True)
@@ -5313,8 +5229,8 @@ def LLVMIsAUnreachableInst(object Val):
             (undocumented)
     """
     _LLVMIsAUnreachableInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAUnreachableInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAUnreachableInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAUnreachableInst__retval
 
 
 @cython.embedsignature(True)
@@ -5326,8 +5242,8 @@ def LLVMIsAResumeInst(object Val):
             (undocumented)
     """
     _LLVMIsAResumeInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAResumeInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAResumeInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAResumeInst__retval
 
 
 @cython.embedsignature(True)
@@ -5339,8 +5255,8 @@ def LLVMIsACleanupReturnInst(object Val):
             (undocumented)
     """
     _LLVMIsACleanupReturnInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsACleanupReturnInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsACleanupReturnInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsACleanupReturnInst__retval
 
 
 @cython.embedsignature(True)
@@ -5352,8 +5268,8 @@ def LLVMIsACatchReturnInst(object Val):
             (undocumented)
     """
     _LLVMIsACatchReturnInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsACatchReturnInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsACatchReturnInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsACatchReturnInst__retval
 
 
 @cython.embedsignature(True)
@@ -5365,8 +5281,8 @@ def LLVMIsACatchSwitchInst(object Val):
             (undocumented)
     """
     _LLVMIsACatchSwitchInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsACatchSwitchInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsACatchSwitchInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsACatchSwitchInst__retval
 
 
 @cython.embedsignature(True)
@@ -5378,8 +5294,8 @@ def LLVMIsACallBrInst(object Val):
             (undocumented)
     """
     _LLVMIsACallBrInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsACallBrInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsACallBrInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsACallBrInst__retval
 
 
 @cython.embedsignature(True)
@@ -5391,8 +5307,8 @@ def LLVMIsAFuncletPadInst(object Val):
             (undocumented)
     """
     _LLVMIsAFuncletPadInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAFuncletPadInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAFuncletPadInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAFuncletPadInst__retval
 
 
 @cython.embedsignature(True)
@@ -5404,8 +5320,8 @@ def LLVMIsACatchPadInst(object Val):
             (undocumented)
     """
     _LLVMIsACatchPadInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsACatchPadInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsACatchPadInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsACatchPadInst__retval
 
 
 @cython.embedsignature(True)
@@ -5417,8 +5333,8 @@ def LLVMIsACleanupPadInst(object Val):
             (undocumented)
     """
     _LLVMIsACleanupPadInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsACleanupPadInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsACleanupPadInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsACleanupPadInst__retval
 
 
 @cython.embedsignature(True)
@@ -5430,8 +5346,8 @@ def LLVMIsAUnaryInstruction(object Val):
             (undocumented)
     """
     _LLVMIsAUnaryInstruction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAUnaryInstruction(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAUnaryInstruction__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAUnaryInstruction__retval
 
 
 @cython.embedsignature(True)
@@ -5443,8 +5359,8 @@ def LLVMIsAAllocaInst(object Val):
             (undocumented)
     """
     _LLVMIsAAllocaInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAAllocaInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAAllocaInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAAllocaInst__retval
 
 
 @cython.embedsignature(True)
@@ -5456,8 +5372,8 @@ def LLVMIsACastInst(object Val):
             (undocumented)
     """
     _LLVMIsACastInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsACastInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsACastInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsACastInst__retval
 
 
 @cython.embedsignature(True)
@@ -5469,8 +5385,8 @@ def LLVMIsAAddrSpaceCastInst(object Val):
             (undocumented)
     """
     _LLVMIsAAddrSpaceCastInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAAddrSpaceCastInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAAddrSpaceCastInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAAddrSpaceCastInst__retval
 
 
 @cython.embedsignature(True)
@@ -5482,8 +5398,8 @@ def LLVMIsABitCastInst(object Val):
             (undocumented)
     """
     _LLVMIsABitCastInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsABitCastInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsABitCastInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsABitCastInst__retval
 
 
 @cython.embedsignature(True)
@@ -5495,8 +5411,8 @@ def LLVMIsAFPExtInst(object Val):
             (undocumented)
     """
     _LLVMIsAFPExtInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAFPExtInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAFPExtInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAFPExtInst__retval
 
 
 @cython.embedsignature(True)
@@ -5508,8 +5424,8 @@ def LLVMIsAFPToSIInst(object Val):
             (undocumented)
     """
     _LLVMIsAFPToSIInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAFPToSIInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAFPToSIInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAFPToSIInst__retval
 
 
 @cython.embedsignature(True)
@@ -5521,8 +5437,8 @@ def LLVMIsAFPToUIInst(object Val):
             (undocumented)
     """
     _LLVMIsAFPToUIInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAFPToUIInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAFPToUIInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAFPToUIInst__retval
 
 
 @cython.embedsignature(True)
@@ -5534,8 +5450,8 @@ def LLVMIsAFPTruncInst(object Val):
             (undocumented)
     """
     _LLVMIsAFPTruncInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAFPTruncInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAFPTruncInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAFPTruncInst__retval
 
 
 @cython.embedsignature(True)
@@ -5547,8 +5463,8 @@ def LLVMIsAIntToPtrInst(object Val):
             (undocumented)
     """
     _LLVMIsAIntToPtrInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAIntToPtrInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAIntToPtrInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAIntToPtrInst__retval
 
 
 @cython.embedsignature(True)
@@ -5560,8 +5476,8 @@ def LLVMIsAPtrToIntInst(object Val):
             (undocumented)
     """
     _LLVMIsAPtrToIntInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAPtrToIntInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAPtrToIntInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAPtrToIntInst__retval
 
 
 @cython.embedsignature(True)
@@ -5573,8 +5489,8 @@ def LLVMIsASExtInst(object Val):
             (undocumented)
     """
     _LLVMIsASExtInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsASExtInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsASExtInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsASExtInst__retval
 
 
 @cython.embedsignature(True)
@@ -5586,8 +5502,8 @@ def LLVMIsASIToFPInst(object Val):
             (undocumented)
     """
     _LLVMIsASIToFPInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsASIToFPInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsASIToFPInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsASIToFPInst__retval
 
 
 @cython.embedsignature(True)
@@ -5599,8 +5515,8 @@ def LLVMIsATruncInst(object Val):
             (undocumented)
     """
     _LLVMIsATruncInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsATruncInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsATruncInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsATruncInst__retval
 
 
 @cython.embedsignature(True)
@@ -5612,8 +5528,8 @@ def LLVMIsAUIToFPInst(object Val):
             (undocumented)
     """
     _LLVMIsAUIToFPInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAUIToFPInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAUIToFPInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAUIToFPInst__retval
 
 
 @cython.embedsignature(True)
@@ -5625,8 +5541,8 @@ def LLVMIsAZExtInst(object Val):
             (undocumented)
     """
     _LLVMIsAZExtInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAZExtInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAZExtInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAZExtInst__retval
 
 
 @cython.embedsignature(True)
@@ -5638,8 +5554,8 @@ def LLVMIsAExtractValueInst(object Val):
             (undocumented)
     """
     _LLVMIsAExtractValueInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAExtractValueInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAExtractValueInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAExtractValueInst__retval
 
 
 @cython.embedsignature(True)
@@ -5651,8 +5567,8 @@ def LLVMIsALoadInst(object Val):
             (undocumented)
     """
     _LLVMIsALoadInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsALoadInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsALoadInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsALoadInst__retval
 
 
 @cython.embedsignature(True)
@@ -5664,8 +5580,8 @@ def LLVMIsAVAArgInst(object Val):
             (undocumented)
     """
     _LLVMIsAVAArgInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAVAArgInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAVAArgInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAVAArgInst__retval
 
 
 @cython.embedsignature(True)
@@ -5677,8 +5593,8 @@ def LLVMIsAFreezeInst(object Val):
             (undocumented)
     """
     _LLVMIsAFreezeInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAFreezeInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAFreezeInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAFreezeInst__retval
 
 
 @cython.embedsignature(True)
@@ -5690,8 +5606,8 @@ def LLVMIsAAtomicCmpXchgInst(object Val):
             (undocumented)
     """
     _LLVMIsAAtomicCmpXchgInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAAtomicCmpXchgInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAAtomicCmpXchgInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAAtomicCmpXchgInst__retval
 
 
 @cython.embedsignature(True)
@@ -5703,8 +5619,8 @@ def LLVMIsAAtomicRMWInst(object Val):
             (undocumented)
     """
     _LLVMIsAAtomicRMWInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAAtomicRMWInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAAtomicRMWInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAAtomicRMWInst__retval
 
 
 @cython.embedsignature(True)
@@ -5716,8 +5632,8 @@ def LLVMIsAFenceInst(object Val):
             (undocumented)
     """
     _LLVMIsAFenceInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAFenceInst(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAFenceInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAFenceInst__retval
 
 
 @cython.embedsignature(True)
@@ -5729,8 +5645,8 @@ def LLVMIsAMDNode(object Val):
             (undocumented)
     """
     _LLVMIsAMDNode__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAMDNode(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAMDNode__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAMDNode__retval
 
 
 @cython.embedsignature(True)
@@ -5742,8 +5658,8 @@ def LLVMIsAMDString(object Val):
             (undocumented)
     """
     _LLVMIsAMDString__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsAMDString(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMIsAMDString__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMIsAMDString__retval
 
 
 @cython.embedsignature(True)
@@ -5757,13 +5673,11 @@ def LLVMGetValueName(object Val):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef const char * _LLVMGetValueName__retval = ccore.LLVMGetValueName(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr)    # fully specified
-    return (_LLVMGetValueName__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr())    # fully specified
+    return _LLVMGetValueName__retval
 
 
 @cython.embedsignature(True)
@@ -5780,7 +5694,7 @@ def LLVMSetValueName(object Val, const char * Name):
             (undocumented)
     """
     ccore.LLVMSetValueName(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,Name)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),Name)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -5802,8 +5716,8 @@ def LLVMGetFirstUse(object Val):
             (undocumented)
     """
     _LLVMGetFirstUse__retval = LLVMOpaqueUse.from_ptr(ccore.LLVMGetFirstUse(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMGetFirstUse__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMGetFirstUse__retval
 
 
 @cython.embedsignature(True)
@@ -5820,8 +5734,8 @@ def LLVMGetNextUse(object U):
             (undocumented)
     """
     _LLVMGetNextUse__retval = LLVMOpaqueUse.from_ptr(ccore.LLVMGetNextUse(
-        LLVMOpaqueUse.from_pyobj(U)._ptr))    # fully specified
-    return (_LLVMGetNextUse__retval,)
+        LLVMOpaqueUse.from_pyobj(U).get_element_ptr()))    # fully specified
+    return _LLVMGetNextUse__retval
 
 
 @cython.embedsignature(True)
@@ -5840,8 +5754,8 @@ def LLVMGetUser(object U):
             (undocumented)
     """
     _LLVMGetUser__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetUser(
-        LLVMOpaqueUse.from_pyobj(U)._ptr))    # fully specified
-    return (_LLVMGetUser__retval,)
+        LLVMOpaqueUse.from_pyobj(U).get_element_ptr()))    # fully specified
+    return _LLVMGetUser__retval
 
 
 @cython.embedsignature(True)
@@ -5858,8 +5772,8 @@ def LLVMGetUsedValue(object U):
             (undocumented)
     """
     _LLVMGetUsedValue__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetUsedValue(
-        LLVMOpaqueUse.from_pyobj(U)._ptr))    # fully specified
-    return (_LLVMGetUsedValue__retval,)
+        LLVMOpaqueUse.from_pyobj(U).get_element_ptr()))    # fully specified
+    return _LLVMGetUsedValue__retval
 
 
 @cython.embedsignature(True)
@@ -5879,8 +5793,8 @@ def LLVMGetOperand(object Val, unsigned int Index):
             (undocumented)
     """
     _LLVMGetOperand__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetOperand(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,Index))    # fully specified
-    return (_LLVMGetOperand__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),Index))    # fully specified
+    return _LLVMGetOperand__retval
 
 
 @cython.embedsignature(True)
@@ -5900,8 +5814,8 @@ def LLVMGetOperandUse(object Val, unsigned int Index):
             (undocumented)
     """
     _LLVMGetOperandUse__retval = LLVMOpaqueUse.from_ptr(ccore.LLVMGetOperandUse(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,Index))    # fully specified
-    return (_LLVMGetOperandUse__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),Index))    # fully specified
+    return _LLVMGetOperandUse__retval
 
 
 @cython.embedsignature(True)
@@ -5924,8 +5838,8 @@ def LLVMSetOperand(object User, unsigned int Index, object Val):
             (undocumented)
     """
     ccore.LLVMSetOperand(
-        LLVMOpaqueValue.from_pyobj(User)._ptr,Index,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(User).get_element_ptr(),Index,
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -5942,13 +5856,11 @@ def LLVMGetNumOperands(object Val):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMGetNumOperands__retval = ccore.LLVMGetNumOperands(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr)    # fully specified
-    return (_LLVMGetNumOperands__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr())    # fully specified
+    return _LLVMGetNumOperands__retval
 
 
 @cython.embedsignature(True)
@@ -5965,8 +5877,8 @@ def LLVMConstNull(object Ty):
             (undocumented)
     """
     _LLVMConstNull__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNull(
-        LLVMOpaqueType.from_pyobj(Ty)._ptr))    # fully specified
-    return (_LLVMConstNull__retval,)
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr()))    # fully specified
+    return _LLVMConstNull__retval
 
 
 @cython.embedsignature(True)
@@ -5986,8 +5898,8 @@ def LLVMConstAllOnes(object Ty):
             (undocumented)
     """
     _LLVMConstAllOnes__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstAllOnes(
-        LLVMOpaqueType.from_pyobj(Ty)._ptr))    # fully specified
-    return (_LLVMConstAllOnes__retval,)
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr()))    # fully specified
+    return _LLVMConstAllOnes__retval
 
 
 @cython.embedsignature(True)
@@ -6004,8 +5916,8 @@ def LLVMGetUndef(object Ty):
             (undocumented)
     """
     _LLVMGetUndef__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetUndef(
-        LLVMOpaqueType.from_pyobj(Ty)._ptr))    # fully specified
-    return (_LLVMGetUndef__retval,)
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr()))    # fully specified
+    return _LLVMGetUndef__retval
 
 
 @cython.embedsignature(True)
@@ -6022,8 +5934,8 @@ def LLVMGetPoison(object Ty):
             (undocumented)
     """
     _LLVMGetPoison__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetPoison(
-        LLVMOpaqueType.from_pyobj(Ty)._ptr))    # fully specified
-    return (_LLVMGetPoison__retval,)
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr()))    # fully specified
+    return _LLVMGetPoison__retval
 
 
 @cython.embedsignature(True)
@@ -6040,13 +5952,11 @@ def LLVMIsNull(object Val):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIsNull__retval = ccore.LLVMIsNull(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr)    # fully specified
-    return (_LLVMIsNull__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr())    # fully specified
+    return _LLVMIsNull__retval
 
 
 @cython.embedsignature(True)
@@ -6061,8 +5971,8 @@ def LLVMConstPointerNull(object Ty):
             (undocumented)
     """
     _LLVMConstPointerNull__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstPointerNull(
-        LLVMOpaqueType.from_pyobj(Ty)._ptr))    # fully specified
-    return (_LLVMConstPointerNull__retval,)
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr()))    # fully specified
+    return _LLVMConstPointerNull__retval
 
 
 @cython.embedsignature(True)
@@ -6087,8 +5997,8 @@ def LLVMConstInt(object IntTy, unsigned long long N, int SignExtend):
             Whether to sign extend the produced value.
     """
     _LLVMConstInt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstInt(
-        LLVMOpaqueType.from_pyobj(IntTy)._ptr,N,SignExtend))    # fully specified
-    return (_LLVMConstInt__retval,)
+        LLVMOpaqueType.from_pyobj(IntTy).get_element_ptr(),N,SignExtend))    # fully specified
+    return _LLVMConstInt__retval
 
 
 @cython.embedsignature(True)
@@ -6111,9 +6021,9 @@ def LLVMConstIntOfArbitraryPrecision(object IntTy, unsigned int NumWords, object
             (undocumented)
     """
     _LLVMConstIntOfArbitraryPrecision__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstIntOfArbitraryPrecision(
-        LLVMOpaqueType.from_pyobj(IntTy)._ptr,NumWords,
+        LLVMOpaqueType.from_pyobj(IntTy).get_element_ptr(),NumWords,
         <const unsigned long*>rocm.llvm._util.types.Pointer.from_pyobj(Words)._ptr))    # fully specified
-    return (_LLVMConstIntOfArbitraryPrecision__retval,)
+    return _LLVMConstIntOfArbitraryPrecision__retval
 
 
 @cython.embedsignature(True)
@@ -6140,8 +6050,8 @@ def LLVMConstIntOfString(object IntTy, const char * Text, unsigned char Radix):
             (undocumented)
     """
     _LLVMConstIntOfString__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstIntOfString(
-        LLVMOpaqueType.from_pyobj(IntTy)._ptr,Text,Radix))    # fully specified
-    return (_LLVMConstIntOfString__retval,)
+        LLVMOpaqueType.from_pyobj(IntTy).get_element_ptr(),Text,Radix))    # fully specified
+    return _LLVMConstIntOfString__retval
 
 
 @cython.embedsignature(True)
@@ -6168,8 +6078,8 @@ def LLVMConstIntOfStringAndSize(object IntTy, const char * Text, unsigned int SL
             (undocumented)
     """
     _LLVMConstIntOfStringAndSize__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstIntOfStringAndSize(
-        LLVMOpaqueType.from_pyobj(IntTy)._ptr,Text,SLen,Radix))    # fully specified
-    return (_LLVMConstIntOfStringAndSize__retval,)
+        LLVMOpaqueType.from_pyobj(IntTy).get_element_ptr(),Text,SLen,Radix))    # fully specified
+    return _LLVMConstIntOfStringAndSize__retval
 
 
 @cython.embedsignature(True)
@@ -6186,8 +6096,8 @@ def LLVMConstReal(object RealTy, double N):
             (undocumented)
     """
     _LLVMConstReal__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstReal(
-        LLVMOpaqueType.from_pyobj(RealTy)._ptr,N))    # fully specified
-    return (_LLVMConstReal__retval,)
+        LLVMOpaqueType.from_pyobj(RealTy).get_element_ptr(),N))    # fully specified
+    return _LLVMConstReal__retval
 
 
 @cython.embedsignature(True)
@@ -6207,8 +6117,8 @@ def LLVMConstRealOfString(object RealTy, const char * Text):
             (undocumented)
     """
     _LLVMConstRealOfString__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstRealOfString(
-        LLVMOpaqueType.from_pyobj(RealTy)._ptr,Text))    # fully specified
-    return (_LLVMConstRealOfString__retval,)
+        LLVMOpaqueType.from_pyobj(RealTy).get_element_ptr(),Text))    # fully specified
+    return _LLVMConstRealOfString__retval
 
 
 @cython.embedsignature(True)
@@ -6228,8 +6138,8 @@ def LLVMConstRealOfStringAndSize(object RealTy, const char * Text, unsigned int 
             (undocumented)
     """
     _LLVMConstRealOfStringAndSize__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstRealOfStringAndSize(
-        LLVMOpaqueType.from_pyobj(RealTy)._ptr,Text,SLen))    # fully specified
-    return (_LLVMConstRealOfStringAndSize__retval,)
+        LLVMOpaqueType.from_pyobj(RealTy).get_element_ptr(),Text,SLen))    # fully specified
+    return _LLVMConstRealOfStringAndSize__retval
 
 
 @cython.embedsignature(True)
@@ -6246,13 +6156,11 @@ def LLVMConstIntGetZExtValue(object ConstantVal):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned long long _LLVMConstIntGetZExtValue__retval = ccore.LLVMConstIntGetZExtValue(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr)    # fully specified
-    return (_LLVMConstIntGetZExtValue__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr())    # fully specified
+    return _LLVMConstIntGetZExtValue__retval
 
 
 @cython.embedsignature(True)
@@ -6269,13 +6177,11 @@ def LLVMConstIntGetSExtValue(object ConstantVal):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef long long _LLVMConstIntGetSExtValue__retval = ccore.LLVMConstIntGetSExtValue(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr)    # fully specified
-    return (_LLVMConstIntGetSExtValue__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr())    # fully specified
+    return _LLVMConstIntGetSExtValue__retval
 
 
 @cython.embedsignature(True)
@@ -6296,14 +6202,12 @@ def LLVMConstRealGetDouble(object ConstantVal, object losesInfo):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.float`
+        `~.float`
     """
     cdef double _LLVMConstRealGetDouble__retval = ccore.LLVMConstRealGetDouble(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),
         <int *>rocm.llvm._util.types.Pointer.from_pyobj(losesInfo)._ptr)    # fully specified
-    return (_LLVMConstRealGetDouble__retval,)
+    return _LLVMConstRealGetDouble__retval
 
 
 @cython.embedsignature(True)
@@ -6329,8 +6233,8 @@ def LLVMConstStringInContext(object C, const char * Str, unsigned int Length, in
             (undocumented)
     """
     _LLVMConstStringInContext__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstStringInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,Str,Length,DontNullTerminate))    # fully specified
-    return (_LLVMConstStringInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),Str,Length,DontNullTerminate))    # fully specified
+    return _LLVMConstStringInContext__retval
 
 
 @cython.embedsignature(True)
@@ -6359,7 +6263,7 @@ def LLVMConstString(const char * Str, unsigned int Length, int DontNullTerminate
             (undocumented)
     """
     _LLVMConstString__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstString(Str,Length,DontNullTerminate))    # fully specified
-    return (_LLVMConstString__retval,)
+    return _LLVMConstString__retval
 
 
 @cython.embedsignature(True)
@@ -6376,13 +6280,11 @@ def LLVMIsConstantString(object c):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIsConstantString__retval = ccore.LLVMIsConstantString(
-        LLVMOpaqueValue.from_pyobj(c)._ptr)    # fully specified
-    return (_LLVMIsConstantString__retval,)
+        LLVMOpaqueValue.from_pyobj(c).get_element_ptr())    # fully specified
+    return _LLVMIsConstantString__retval
 
 
 @cython.embedsignature(True)
@@ -6402,14 +6304,12 @@ def LLVMGetAsString(object c, object Length):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef const char * _LLVMGetAsString__retval = ccore.LLVMGetAsString(
-        LLVMOpaqueValue.from_pyobj(c)._ptr,
+        LLVMOpaqueValue.from_pyobj(c).get_element_ptr(),
         <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
-    return (_LLVMGetAsString__retval,)
+    return _LLVMGetAsString__retval
 
 
 @cython.embedsignature(True)
@@ -6435,9 +6335,9 @@ def LLVMConstStructInContext(object C, object ConstantVals, unsigned int Count, 
             (undocumented)
     """
     _LLVMConstStructInContext__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstStructInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),
         <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(ConstantVals)._ptr,Count,Packed))    # fully specified
-    return (_LLVMConstStructInContext__retval,)
+    return _LLVMConstStructInContext__retval
 
 
 @cython.embedsignature(True)
@@ -6464,7 +6364,7 @@ def LLVMConstStruct(object ConstantVals, unsigned int Count, int Packed):
     """
     _LLVMConstStruct__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstStruct(
         <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(ConstantVals)._ptr,Count,Packed))    # fully specified
-    return (_LLVMConstStruct__retval,)
+    return _LLVMConstStruct__retval
 
 
 @cython.embedsignature(True)
@@ -6487,9 +6387,9 @@ def LLVMConstArray(object ElementTy, object ConstantVals, unsigned int Length):
             (undocumented)
     """
     _LLVMConstArray__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstArray(
-        LLVMOpaqueType.from_pyobj(ElementTy)._ptr,
+        LLVMOpaqueType.from_pyobj(ElementTy).get_element_ptr(),
         <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(ConstantVals)._ptr,Length))    # fully specified
-    return (_LLVMConstArray__retval,)
+    return _LLVMConstArray__retval
 
 
 @cython.embedsignature(True)
@@ -6512,9 +6412,9 @@ def LLVMConstNamedStruct(object StructTy, object ConstantVals, unsigned int Coun
             (undocumented)
     """
     _LLVMConstNamedStruct__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNamedStruct(
-        LLVMOpaqueType.from_pyobj(StructTy)._ptr,
+        LLVMOpaqueType.from_pyobj(StructTy).get_element_ptr(),
         <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(ConstantVals)._ptr,Count))    # fully specified
-    return (_LLVMConstNamedStruct__retval,)
+    return _LLVMConstNamedStruct__retval
 
 
 @cython.embedsignature(True)
@@ -6537,8 +6437,8 @@ def LLVMGetAggregateElement(object C, unsigned int Idx):
             (undocumented)
     """
     _LLVMGetAggregateElement__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetAggregateElement(
-        LLVMOpaqueValue.from_pyobj(C)._ptr,Idx))    # fully specified
-    return (_LLVMGetAggregateElement__retval,)
+        LLVMOpaqueValue.from_pyobj(C).get_element_ptr(),Idx))    # fully specified
+    return _LLVMGetAggregateElement__retval
 
 
 @cython.embedsignature(True)
@@ -6553,8 +6453,8 @@ def LLVMGetElementAsConstant(object C, unsigned int idx):
             (undocumented)
     """
     _LLVMGetElementAsConstant__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetElementAsConstant(
-        LLVMOpaqueValue.from_pyobj(C)._ptr,idx))    # fully specified
-    return (_LLVMGetElementAsConstant__retval,)
+        LLVMOpaqueValue.from_pyobj(C).get_element_ptr(),idx))    # fully specified
+    return _LLVMGetElementAsConstant__retval
 
 
 @cython.embedsignature(True)
@@ -6575,7 +6475,7 @@ def LLVMConstVector(object ScalarConstantVals, unsigned int Size):
     """
     _LLVMConstVector__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstVector(
         <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(ScalarConstantVals)._ptr,Size))    # fully specified
-    return (_LLVMConstVector__retval,)
+    return _LLVMConstVector__retval
 
 
 @cython.embedsignature(True)
@@ -6594,13 +6494,11 @@ def LLVMGetConstOpcode(object ConstantVal):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.LLVMOpcode`
+        `~.LLVMOpcode`
     """
     _LLVMGetConstOpcode__retval = LLVMOpcode(ccore.LLVMGetConstOpcode(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr))    # fully specified
-    return (_LLVMGetConstOpcode__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr()))    # fully specified
+    return _LLVMGetConstOpcode__retval
 
 
 @cython.embedsignature(True)
@@ -6612,8 +6510,8 @@ def LLVMAlignOf(object Ty):
             (undocumented)
     """
     _LLVMAlignOf__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMAlignOf(
-        LLVMOpaqueType.from_pyobj(Ty)._ptr))    # fully specified
-    return (_LLVMAlignOf__retval,)
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr()))    # fully specified
+    return _LLVMAlignOf__retval
 
 
 @cython.embedsignature(True)
@@ -6625,8 +6523,8 @@ def LLVMSizeOf(object Ty):
             (undocumented)
     """
     _LLVMSizeOf__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMSizeOf(
-        LLVMOpaqueType.from_pyobj(Ty)._ptr))    # fully specified
-    return (_LLVMSizeOf__retval,)
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr()))    # fully specified
+    return _LLVMSizeOf__retval
 
 
 @cython.embedsignature(True)
@@ -6638,8 +6536,8 @@ def LLVMConstNeg(object ConstantVal):
             (undocumented)
     """
     _LLVMConstNeg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNeg(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr))    # fully specified
-    return (_LLVMConstNeg__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr()))    # fully specified
+    return _LLVMConstNeg__retval
 
 
 @cython.embedsignature(True)
@@ -6651,8 +6549,8 @@ def LLVMConstNSWNeg(object ConstantVal):
             (undocumented)
     """
     _LLVMConstNSWNeg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNSWNeg(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr))    # fully specified
-    return (_LLVMConstNSWNeg__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr()))    # fully specified
+    return _LLVMConstNSWNeg__retval
 
 
 @cython.embedsignature(True)
@@ -6664,8 +6562,8 @@ def LLVMConstNUWNeg(object ConstantVal):
             (undocumented)
     """
     _LLVMConstNUWNeg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNUWNeg(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr))    # fully specified
-    return (_LLVMConstNUWNeg__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr()))    # fully specified
+    return _LLVMConstNUWNeg__retval
 
 
 @cython.embedsignature(True)
@@ -6677,8 +6575,8 @@ def LLVMConstNot(object ConstantVal):
             (undocumented)
     """
     _LLVMConstNot__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNot(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr))    # fully specified
-    return (_LLVMConstNot__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr()))    # fully specified
+    return _LLVMConstNot__retval
 
 
 @cython.embedsignature(True)
@@ -6693,9 +6591,9 @@ def LLVMConstAdd(object LHSConstant, object RHSConstant):
             (undocumented)
     """
     _LLVMConstAdd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstAdd(
-        LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
-    return (_LLVMConstAdd__retval,)
+        LLVMOpaqueValue.from_pyobj(LHSConstant).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHSConstant).get_element_ptr()))    # fully specified
+    return _LLVMConstAdd__retval
 
 
 @cython.embedsignature(True)
@@ -6710,9 +6608,9 @@ def LLVMConstNSWAdd(object LHSConstant, object RHSConstant):
             (undocumented)
     """
     _LLVMConstNSWAdd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNSWAdd(
-        LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
-    return (_LLVMConstNSWAdd__retval,)
+        LLVMOpaqueValue.from_pyobj(LHSConstant).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHSConstant).get_element_ptr()))    # fully specified
+    return _LLVMConstNSWAdd__retval
 
 
 @cython.embedsignature(True)
@@ -6727,9 +6625,9 @@ def LLVMConstNUWAdd(object LHSConstant, object RHSConstant):
             (undocumented)
     """
     _LLVMConstNUWAdd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNUWAdd(
-        LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
-    return (_LLVMConstNUWAdd__retval,)
+        LLVMOpaqueValue.from_pyobj(LHSConstant).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHSConstant).get_element_ptr()))    # fully specified
+    return _LLVMConstNUWAdd__retval
 
 
 @cython.embedsignature(True)
@@ -6744,9 +6642,9 @@ def LLVMConstSub(object LHSConstant, object RHSConstant):
             (undocumented)
     """
     _LLVMConstSub__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstSub(
-        LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
-    return (_LLVMConstSub__retval,)
+        LLVMOpaqueValue.from_pyobj(LHSConstant).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHSConstant).get_element_ptr()))    # fully specified
+    return _LLVMConstSub__retval
 
 
 @cython.embedsignature(True)
@@ -6761,9 +6659,9 @@ def LLVMConstNSWSub(object LHSConstant, object RHSConstant):
             (undocumented)
     """
     _LLVMConstNSWSub__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNSWSub(
-        LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
-    return (_LLVMConstNSWSub__retval,)
+        LLVMOpaqueValue.from_pyobj(LHSConstant).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHSConstant).get_element_ptr()))    # fully specified
+    return _LLVMConstNSWSub__retval
 
 
 @cython.embedsignature(True)
@@ -6778,9 +6676,9 @@ def LLVMConstNUWSub(object LHSConstant, object RHSConstant):
             (undocumented)
     """
     _LLVMConstNUWSub__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNUWSub(
-        LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
-    return (_LLVMConstNUWSub__retval,)
+        LLVMOpaqueValue.from_pyobj(LHSConstant).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHSConstant).get_element_ptr()))    # fully specified
+    return _LLVMConstNUWSub__retval
 
 
 @cython.embedsignature(True)
@@ -6795,9 +6693,9 @@ def LLVMConstMul(object LHSConstant, object RHSConstant):
             (undocumented)
     """
     _LLVMConstMul__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstMul(
-        LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
-    return (_LLVMConstMul__retval,)
+        LLVMOpaqueValue.from_pyobj(LHSConstant).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHSConstant).get_element_ptr()))    # fully specified
+    return _LLVMConstMul__retval
 
 
 @cython.embedsignature(True)
@@ -6812,9 +6710,9 @@ def LLVMConstNSWMul(object LHSConstant, object RHSConstant):
             (undocumented)
     """
     _LLVMConstNSWMul__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNSWMul(
-        LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
-    return (_LLVMConstNSWMul__retval,)
+        LLVMOpaqueValue.from_pyobj(LHSConstant).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHSConstant).get_element_ptr()))    # fully specified
+    return _LLVMConstNSWMul__retval
 
 
 @cython.embedsignature(True)
@@ -6829,9 +6727,9 @@ def LLVMConstNUWMul(object LHSConstant, object RHSConstant):
             (undocumented)
     """
     _LLVMConstNUWMul__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstNUWMul(
-        LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
-    return (_LLVMConstNUWMul__retval,)
+        LLVMOpaqueValue.from_pyobj(LHSConstant).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHSConstant).get_element_ptr()))    # fully specified
+    return _LLVMConstNUWMul__retval
 
 
 @cython.embedsignature(True)
@@ -6846,9 +6744,9 @@ def LLVMConstAnd(object LHSConstant, object RHSConstant):
             (undocumented)
     """
     _LLVMConstAnd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstAnd(
-        LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
-    return (_LLVMConstAnd__retval,)
+        LLVMOpaqueValue.from_pyobj(LHSConstant).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHSConstant).get_element_ptr()))    # fully specified
+    return _LLVMConstAnd__retval
 
 
 @cython.embedsignature(True)
@@ -6863,9 +6761,9 @@ def LLVMConstOr(object LHSConstant, object RHSConstant):
             (undocumented)
     """
     _LLVMConstOr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstOr(
-        LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
-    return (_LLVMConstOr__retval,)
+        LLVMOpaqueValue.from_pyobj(LHSConstant).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHSConstant).get_element_ptr()))    # fully specified
+    return _LLVMConstOr__retval
 
 
 @cython.embedsignature(True)
@@ -6880,9 +6778,9 @@ def LLVMConstXor(object LHSConstant, object RHSConstant):
             (undocumented)
     """
     _LLVMConstXor__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstXor(
-        LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
-    return (_LLVMConstXor__retval,)
+        LLVMOpaqueValue.from_pyobj(LHSConstant).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHSConstant).get_element_ptr()))    # fully specified
+    return _LLVMConstXor__retval
 
 
 @cython.embedsignature(True)
@@ -6902,9 +6800,9 @@ def LLVMConstICmp(object Predicate, object LHSConstant, object RHSConstant):
     if not isinstance(Predicate,_LLVMIntPredicate__Base):
         raise TypeError("argument 'Predicate' must be of type '_LLVMIntPredicate__Base'")
     _LLVMConstICmp__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstICmp(Predicate.value,
-        LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
-    return (_LLVMConstICmp__retval,)
+        LLVMOpaqueValue.from_pyobj(LHSConstant).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHSConstant).get_element_ptr()))    # fully specified
+    return _LLVMConstICmp__retval
 
 
 @cython.embedsignature(True)
@@ -6924,9 +6822,9 @@ def LLVMConstFCmp(object Predicate, object LHSConstant, object RHSConstant):
     if not isinstance(Predicate,_LLVMRealPredicate__Base):
         raise TypeError("argument 'Predicate' must be of type '_LLVMRealPredicate__Base'")
     _LLVMConstFCmp__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstFCmp(Predicate.value,
-        LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
-    return (_LLVMConstFCmp__retval,)
+        LLVMOpaqueValue.from_pyobj(LHSConstant).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHSConstant).get_element_ptr()))    # fully specified
+    return _LLVMConstFCmp__retval
 
 
 @cython.embedsignature(True)
@@ -6941,9 +6839,9 @@ def LLVMConstShl(object LHSConstant, object RHSConstant):
             (undocumented)
     """
     _LLVMConstShl__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstShl(
-        LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
-    return (_LLVMConstShl__retval,)
+        LLVMOpaqueValue.from_pyobj(LHSConstant).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHSConstant).get_element_ptr()))    # fully specified
+    return _LLVMConstShl__retval
 
 
 @cython.embedsignature(True)
@@ -6958,9 +6856,9 @@ def LLVMConstLShr(object LHSConstant, object RHSConstant):
             (undocumented)
     """
     _LLVMConstLShr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstLShr(
-        LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
-    return (_LLVMConstLShr__retval,)
+        LLVMOpaqueValue.from_pyobj(LHSConstant).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHSConstant).get_element_ptr()))    # fully specified
+    return _LLVMConstLShr__retval
 
 
 @cython.embedsignature(True)
@@ -6975,9 +6873,9 @@ def LLVMConstAShr(object LHSConstant, object RHSConstant):
             (undocumented)
     """
     _LLVMConstAShr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstAShr(
-        LLVMOpaqueValue.from_pyobj(LHSConstant)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHSConstant)._ptr))    # fully specified
-    return (_LLVMConstAShr__retval,)
+        LLVMOpaqueValue.from_pyobj(LHSConstant).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHSConstant).get_element_ptr()))    # fully specified
+    return _LLVMConstAShr__retval
 
 
 @cython.embedsignature(True)
@@ -6998,10 +6896,10 @@ def LLVMConstGEP2(object Ty, object ConstantVal, object ConstantIndices, unsigne
             (undocumented)
     """
     _LLVMConstGEP2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstGEP2(
-        LLVMOpaqueType.from_pyobj(Ty)._ptr,
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),
         <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(ConstantIndices)._ptr,NumIndices))    # fully specified
-    return (_LLVMConstGEP2__retval,)
+    return _LLVMConstGEP2__retval
 
 
 @cython.embedsignature(True)
@@ -7022,10 +6920,10 @@ def LLVMConstInBoundsGEP2(object Ty, object ConstantVal, object ConstantIndices,
             (undocumented)
     """
     _LLVMConstInBoundsGEP2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstInBoundsGEP2(
-        LLVMOpaqueType.from_pyobj(Ty)._ptr,
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),
         <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(ConstantIndices)._ptr,NumIndices))    # fully specified
-    return (_LLVMConstInBoundsGEP2__retval,)
+    return _LLVMConstInBoundsGEP2__retval
 
 
 @cython.embedsignature(True)
@@ -7040,9 +6938,9 @@ def LLVMConstTrunc(object ConstantVal, object ToType):
             (undocumented)
     """
     _LLVMConstTrunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstTrunc(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
-    return (_LLVMConstTrunc__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(ToType).get_element_ptr()))    # fully specified
+    return _LLVMConstTrunc__retval
 
 
 @cython.embedsignature(True)
@@ -7057,9 +6955,9 @@ def LLVMConstSExt(object ConstantVal, object ToType):
             (undocumented)
     """
     _LLVMConstSExt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstSExt(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
-    return (_LLVMConstSExt__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(ToType).get_element_ptr()))    # fully specified
+    return _LLVMConstSExt__retval
 
 
 @cython.embedsignature(True)
@@ -7074,9 +6972,9 @@ def LLVMConstZExt(object ConstantVal, object ToType):
             (undocumented)
     """
     _LLVMConstZExt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstZExt(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
-    return (_LLVMConstZExt__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(ToType).get_element_ptr()))    # fully specified
+    return _LLVMConstZExt__retval
 
 
 @cython.embedsignature(True)
@@ -7091,9 +6989,9 @@ def LLVMConstFPTrunc(object ConstantVal, object ToType):
             (undocumented)
     """
     _LLVMConstFPTrunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstFPTrunc(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
-    return (_LLVMConstFPTrunc__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(ToType).get_element_ptr()))    # fully specified
+    return _LLVMConstFPTrunc__retval
 
 
 @cython.embedsignature(True)
@@ -7108,9 +7006,9 @@ def LLVMConstFPExt(object ConstantVal, object ToType):
             (undocumented)
     """
     _LLVMConstFPExt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstFPExt(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
-    return (_LLVMConstFPExt__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(ToType).get_element_ptr()))    # fully specified
+    return _LLVMConstFPExt__retval
 
 
 @cython.embedsignature(True)
@@ -7125,9 +7023,9 @@ def LLVMConstUIToFP(object ConstantVal, object ToType):
             (undocumented)
     """
     _LLVMConstUIToFP__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstUIToFP(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
-    return (_LLVMConstUIToFP__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(ToType).get_element_ptr()))    # fully specified
+    return _LLVMConstUIToFP__retval
 
 
 @cython.embedsignature(True)
@@ -7142,9 +7040,9 @@ def LLVMConstSIToFP(object ConstantVal, object ToType):
             (undocumented)
     """
     _LLVMConstSIToFP__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstSIToFP(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
-    return (_LLVMConstSIToFP__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(ToType).get_element_ptr()))    # fully specified
+    return _LLVMConstSIToFP__retval
 
 
 @cython.embedsignature(True)
@@ -7159,9 +7057,9 @@ def LLVMConstFPToUI(object ConstantVal, object ToType):
             (undocumented)
     """
     _LLVMConstFPToUI__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstFPToUI(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
-    return (_LLVMConstFPToUI__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(ToType).get_element_ptr()))    # fully specified
+    return _LLVMConstFPToUI__retval
 
 
 @cython.embedsignature(True)
@@ -7176,9 +7074,9 @@ def LLVMConstFPToSI(object ConstantVal, object ToType):
             (undocumented)
     """
     _LLVMConstFPToSI__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstFPToSI(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
-    return (_LLVMConstFPToSI__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(ToType).get_element_ptr()))    # fully specified
+    return _LLVMConstFPToSI__retval
 
 
 @cython.embedsignature(True)
@@ -7193,9 +7091,9 @@ def LLVMConstPtrToInt(object ConstantVal, object ToType):
             (undocumented)
     """
     _LLVMConstPtrToInt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstPtrToInt(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
-    return (_LLVMConstPtrToInt__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(ToType).get_element_ptr()))    # fully specified
+    return _LLVMConstPtrToInt__retval
 
 
 @cython.embedsignature(True)
@@ -7210,9 +7108,9 @@ def LLVMConstIntToPtr(object ConstantVal, object ToType):
             (undocumented)
     """
     _LLVMConstIntToPtr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstIntToPtr(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
-    return (_LLVMConstIntToPtr__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(ToType).get_element_ptr()))    # fully specified
+    return _LLVMConstIntToPtr__retval
 
 
 @cython.embedsignature(True)
@@ -7227,9 +7125,9 @@ def LLVMConstBitCast(object ConstantVal, object ToType):
             (undocumented)
     """
     _LLVMConstBitCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstBitCast(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
-    return (_LLVMConstBitCast__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(ToType).get_element_ptr()))    # fully specified
+    return _LLVMConstBitCast__retval
 
 
 @cython.embedsignature(True)
@@ -7244,9 +7142,9 @@ def LLVMConstAddrSpaceCast(object ConstantVal, object ToType):
             (undocumented)
     """
     _LLVMConstAddrSpaceCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstAddrSpaceCast(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
-    return (_LLVMConstAddrSpaceCast__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(ToType).get_element_ptr()))    # fully specified
+    return _LLVMConstAddrSpaceCast__retval
 
 
 @cython.embedsignature(True)
@@ -7261,9 +7159,9 @@ def LLVMConstZExtOrBitCast(object ConstantVal, object ToType):
             (undocumented)
     """
     _LLVMConstZExtOrBitCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstZExtOrBitCast(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
-    return (_LLVMConstZExtOrBitCast__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(ToType).get_element_ptr()))    # fully specified
+    return _LLVMConstZExtOrBitCast__retval
 
 
 @cython.embedsignature(True)
@@ -7278,9 +7176,9 @@ def LLVMConstSExtOrBitCast(object ConstantVal, object ToType):
             (undocumented)
     """
     _LLVMConstSExtOrBitCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstSExtOrBitCast(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
-    return (_LLVMConstSExtOrBitCast__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(ToType).get_element_ptr()))    # fully specified
+    return _LLVMConstSExtOrBitCast__retval
 
 
 @cython.embedsignature(True)
@@ -7295,9 +7193,9 @@ def LLVMConstTruncOrBitCast(object ConstantVal, object ToType):
             (undocumented)
     """
     _LLVMConstTruncOrBitCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstTruncOrBitCast(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
-    return (_LLVMConstTruncOrBitCast__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(ToType).get_element_ptr()))    # fully specified
+    return _LLVMConstTruncOrBitCast__retval
 
 
 @cython.embedsignature(True)
@@ -7312,9 +7210,9 @@ def LLVMConstPointerCast(object ConstantVal, object ToType):
             (undocumented)
     """
     _LLVMConstPointerCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstPointerCast(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
-    return (_LLVMConstPointerCast__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(ToType).get_element_ptr()))    # fully specified
+    return _LLVMConstPointerCast__retval
 
 
 @cython.embedsignature(True)
@@ -7332,9 +7230,9 @@ def LLVMConstIntCast(object ConstantVal, object ToType, int isSigned):
             (undocumented)
     """
     _LLVMConstIntCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstIntCast(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        LLVMOpaqueType.from_pyobj(ToType)._ptr,isSigned))    # fully specified
-    return (_LLVMConstIntCast__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(ToType).get_element_ptr(),isSigned))    # fully specified
+    return _LLVMConstIntCast__retval
 
 
 @cython.embedsignature(True)
@@ -7349,9 +7247,9 @@ def LLVMConstFPCast(object ConstantVal, object ToType):
             (undocumented)
     """
     _LLVMConstFPCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstFPCast(
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr,
-        LLVMOpaqueType.from_pyobj(ToType)._ptr))    # fully specified
-    return (_LLVMConstFPCast__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(ToType).get_element_ptr()))    # fully specified
+    return _LLVMConstFPCast__retval
 
 
 @cython.embedsignature(True)
@@ -7369,10 +7267,10 @@ def LLVMConstSelect(object ConstantCondition, object ConstantIfTrue, object Cons
             (undocumented)
     """
     _LLVMConstSelect__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstSelect(
-        LLVMOpaqueValue.from_pyobj(ConstantCondition)._ptr,
-        LLVMOpaqueValue.from_pyobj(ConstantIfTrue)._ptr,
-        LLVMOpaqueValue.from_pyobj(ConstantIfFalse)._ptr))    # fully specified
-    return (_LLVMConstSelect__retval,)
+        LLVMOpaqueValue.from_pyobj(ConstantCondition).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(ConstantIfTrue).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(ConstantIfFalse).get_element_ptr()))    # fully specified
+    return _LLVMConstSelect__retval
 
 
 @cython.embedsignature(True)
@@ -7387,9 +7285,9 @@ def LLVMConstExtractElement(object VectorConstant, object IndexConstant):
             (undocumented)
     """
     _LLVMConstExtractElement__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstExtractElement(
-        LLVMOpaqueValue.from_pyobj(VectorConstant)._ptr,
-        LLVMOpaqueValue.from_pyobj(IndexConstant)._ptr))    # fully specified
-    return (_LLVMConstExtractElement__retval,)
+        LLVMOpaqueValue.from_pyobj(VectorConstant).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(IndexConstant).get_element_ptr()))    # fully specified
+    return _LLVMConstExtractElement__retval
 
 
 @cython.embedsignature(True)
@@ -7407,10 +7305,10 @@ def LLVMConstInsertElement(object VectorConstant, object ElementValueConstant, o
             (undocumented)
     """
     _LLVMConstInsertElement__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstInsertElement(
-        LLVMOpaqueValue.from_pyobj(VectorConstant)._ptr,
-        LLVMOpaqueValue.from_pyobj(ElementValueConstant)._ptr,
-        LLVMOpaqueValue.from_pyobj(IndexConstant)._ptr))    # fully specified
-    return (_LLVMConstInsertElement__retval,)
+        LLVMOpaqueValue.from_pyobj(VectorConstant).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(ElementValueConstant).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(IndexConstant).get_element_ptr()))    # fully specified
+    return _LLVMConstInsertElement__retval
 
 
 @cython.embedsignature(True)
@@ -7428,10 +7326,10 @@ def LLVMConstShuffleVector(object VectorAConstant, object VectorBConstant, objec
             (undocumented)
     """
     _LLVMConstShuffleVector__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstShuffleVector(
-        LLVMOpaqueValue.from_pyobj(VectorAConstant)._ptr,
-        LLVMOpaqueValue.from_pyobj(VectorBConstant)._ptr,
-        LLVMOpaqueValue.from_pyobj(MaskConstant)._ptr))    # fully specified
-    return (_LLVMConstShuffleVector__retval,)
+        LLVMOpaqueValue.from_pyobj(VectorAConstant).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(VectorBConstant).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(MaskConstant).get_element_ptr()))    # fully specified
+    return _LLVMConstShuffleVector__retval
 
 
 @cython.embedsignature(True)
@@ -7446,9 +7344,9 @@ def LLVMBlockAddress(object F, object BB):
             (undocumented)
     """
     _LLVMBlockAddress__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBlockAddress(
-        LLVMOpaqueValue.from_pyobj(F)._ptr,
-        LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr))    # fully specified
-    return (_LLVMBlockAddress__retval,)
+        LLVMOpaqueValue.from_pyobj(F).get_element_ptr(),
+        LLVMOpaqueBasicBlock.from_pyobj(BB).get_element_ptr()))    # fully specified
+    return _LLVMBlockAddress__retval
 
 
 @cython.embedsignature(True)
@@ -7474,8 +7372,8 @@ def LLVMConstInlineAsm(object Ty, const char * AsmString, const char * Constrain
             (undocumented)
     """
     _LLVMConstInlineAsm__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstInlineAsm(
-        LLVMOpaqueType.from_pyobj(Ty)._ptr,AsmString,Constraints,HasSideEffects,IsAlignStack))    # fully specified
-    return (_LLVMConstInlineAsm__retval,)
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),AsmString,Constraints,HasSideEffects,IsAlignStack))    # fully specified
+    return _LLVMConstInlineAsm__retval
 
 
 @cython.embedsignature(True)
@@ -7495,8 +7393,8 @@ def LLVMGetGlobalParent(object Global):
             (undocumented)
     """
     _LLVMGetGlobalParent__retval = LLVMOpaqueModule.from_ptr(ccore.LLVMGetGlobalParent(
-        LLVMOpaqueValue.from_pyobj(Global)._ptr))    # fully specified
-    return (_LLVMGetGlobalParent__retval,)
+        LLVMOpaqueValue.from_pyobj(Global).get_element_ptr()))    # fully specified
+    return _LLVMGetGlobalParent__retval
 
 
 @cython.embedsignature(True)
@@ -7508,13 +7406,11 @@ def LLVMIsDeclaration(object Global):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIsDeclaration__retval = ccore.LLVMIsDeclaration(
-        LLVMOpaqueValue.from_pyobj(Global)._ptr)    # fully specified
-    return (_LLVMIsDeclaration__retval,)
+        LLVMOpaqueValue.from_pyobj(Global).get_element_ptr())    # fully specified
+    return _LLVMIsDeclaration__retval
 
 
 @cython.embedsignature(True)
@@ -7526,13 +7422,11 @@ def LLVMGetLinkage(object Global):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.LLVMLinkage`
+        `~.LLVMLinkage`
     """
     _LLVMGetLinkage__retval = LLVMLinkage(ccore.LLVMGetLinkage(
-        LLVMOpaqueValue.from_pyobj(Global)._ptr))    # fully specified
-    return (_LLVMGetLinkage__retval,)
+        LLVMOpaqueValue.from_pyobj(Global).get_element_ptr()))    # fully specified
+    return _LLVMGetLinkage__retval
 
 
 @cython.embedsignature(True)
@@ -7549,7 +7443,7 @@ def LLVMSetLinkage(object Global, object Linkage):
     if not isinstance(Linkage,_LLVMLinkage__Base):
         raise TypeError("argument 'Linkage' must be of type '_LLVMLinkage__Base'")
     ccore.LLVMSetLinkage(
-        LLVMOpaqueValue.from_pyobj(Global)._ptr,Linkage.value)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Global).get_element_ptr(),Linkage.value)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -7561,13 +7455,11 @@ def LLVMGetSection(object Global):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef const char * _LLVMGetSection__retval = ccore.LLVMGetSection(
-        LLVMOpaqueValue.from_pyobj(Global)._ptr)    # fully specified
-    return (_LLVMGetSection__retval,)
+        LLVMOpaqueValue.from_pyobj(Global).get_element_ptr())    # fully specified
+    return _LLVMGetSection__retval
 
 
 @cython.embedsignature(True)
@@ -7582,7 +7474,7 @@ def LLVMSetSection(object Global, const char * Section):
             (undocumented)
     """
     ccore.LLVMSetSection(
-        LLVMOpaqueValue.from_pyobj(Global)._ptr,Section)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Global).get_element_ptr(),Section)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -7594,13 +7486,11 @@ def LLVMGetVisibility(object Global):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.LLVMVisibility`
+        `~.LLVMVisibility`
     """
     _LLVMGetVisibility__retval = LLVMVisibility(ccore.LLVMGetVisibility(
-        LLVMOpaqueValue.from_pyobj(Global)._ptr))    # fully specified
-    return (_LLVMGetVisibility__retval,)
+        LLVMOpaqueValue.from_pyobj(Global).get_element_ptr()))    # fully specified
+    return _LLVMGetVisibility__retval
 
 
 @cython.embedsignature(True)
@@ -7617,7 +7507,7 @@ def LLVMSetVisibility(object Global, object Viz):
     if not isinstance(Viz,_LLVMVisibility__Base):
         raise TypeError("argument 'Viz' must be of type '_LLVMVisibility__Base'")
     ccore.LLVMSetVisibility(
-        LLVMOpaqueValue.from_pyobj(Global)._ptr,Viz.value)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Global).get_element_ptr(),Viz.value)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -7629,13 +7519,11 @@ def LLVMGetDLLStorageClass(object Global):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.LLVMDLLStorageClass`
+        `~.LLVMDLLStorageClass`
     """
     _LLVMGetDLLStorageClass__retval = LLVMDLLStorageClass(ccore.LLVMGetDLLStorageClass(
-        LLVMOpaqueValue.from_pyobj(Global)._ptr))    # fully specified
-    return (_LLVMGetDLLStorageClass__retval,)
+        LLVMOpaqueValue.from_pyobj(Global).get_element_ptr()))    # fully specified
+    return _LLVMGetDLLStorageClass__retval
 
 
 @cython.embedsignature(True)
@@ -7652,7 +7540,7 @@ def LLVMSetDLLStorageClass(object Global, object Class):
     if not isinstance(Class,_LLVMDLLStorageClass__Base):
         raise TypeError("argument 'Class' must be of type '_LLVMDLLStorageClass__Base'")
     ccore.LLVMSetDLLStorageClass(
-        LLVMOpaqueValue.from_pyobj(Global)._ptr,Class.value)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Global).get_element_ptr(),Class.value)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -7664,13 +7552,11 @@ def LLVMGetUnnamedAddress(object Global):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.LLVMUnnamedAddr`
+        `~.LLVMUnnamedAddr`
     """
     _LLVMGetUnnamedAddress__retval = LLVMUnnamedAddr(ccore.LLVMGetUnnamedAddress(
-        LLVMOpaqueValue.from_pyobj(Global)._ptr))    # fully specified
-    return (_LLVMGetUnnamedAddress__retval,)
+        LLVMOpaqueValue.from_pyobj(Global).get_element_ptr()))    # fully specified
+    return _LLVMGetUnnamedAddress__retval
 
 
 @cython.embedsignature(True)
@@ -7687,7 +7573,7 @@ def LLVMSetUnnamedAddress(object Global, object UnnamedAddr):
     if not isinstance(UnnamedAddr,_LLVMUnnamedAddr__Base):
         raise TypeError("argument 'UnnamedAddr' must be of type '_LLVMUnnamedAddr__Base'")
     ccore.LLVMSetUnnamedAddress(
-        LLVMOpaqueValue.from_pyobj(Global)._ptr,UnnamedAddr.value)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Global).get_element_ptr(),UnnamedAddr.value)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -7705,8 +7591,8 @@ def LLVMGlobalGetValueType(object Global):
             (undocumented)
     """
     _LLVMGlobalGetValueType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMGlobalGetValueType(
-        LLVMOpaqueValue.from_pyobj(Global)._ptr))    # fully specified
-    return (_LLVMGlobalGetValueType__retval,)
+        LLVMOpaqueValue.from_pyobj(Global).get_element_ptr()))    # fully specified
+    return _LLVMGlobalGetValueType__retval
 
 
 @cython.embedsignature(True)
@@ -7720,13 +7606,11 @@ def LLVMHasUnnamedAddr(object Global):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMHasUnnamedAddr__retval = ccore.LLVMHasUnnamedAddr(
-        LLVMOpaqueValue.from_pyobj(Global)._ptr)    # fully specified
-    return (_LLVMHasUnnamedAddr__retval,)
+        LLVMOpaqueValue.from_pyobj(Global).get_element_ptr())    # fully specified
+    return _LLVMHasUnnamedAddr__retval
 
 
 @cython.embedsignature(True)
@@ -7743,7 +7627,7 @@ def LLVMSetUnnamedAddr(object Global, int HasUnnamedAddr):
             (undocumented)
     """
     ccore.LLVMSetUnnamedAddr(
-        LLVMOpaqueValue.from_pyobj(Global)._ptr,HasUnnamedAddr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Global).get_element_ptr(),HasUnnamedAddr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -7775,13 +7659,11 @@ def LLVMGetAlignment(object V):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetAlignment__retval = ccore.LLVMGetAlignment(
-        LLVMOpaqueValue.from_pyobj(V)._ptr)    # fully specified
-    return (_LLVMGetAlignment__retval,)
+        LLVMOpaqueValue.from_pyobj(V).get_element_ptr())    # fully specified
+    return _LLVMGetAlignment__retval
 
 
 @cython.embedsignature(True)
@@ -7816,7 +7698,7 @@ def LLVMSetAlignment(object V, unsigned int Bytes):
             (undocumented)
     """
     ccore.LLVMSetAlignment(
-        LLVMOpaqueValue.from_pyobj(V)._ptr,Bytes)    # fully specified
+        LLVMOpaqueValue.from_pyobj(V).get_element_ptr(),Bytes)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -7840,8 +7722,8 @@ def LLVMGlobalSetMetadata(object Global, unsigned int Kind, object MD):
             (undocumented)
     """
     ccore.LLVMGlobalSetMetadata(
-        LLVMOpaqueValue.from_pyobj(Global)._ptr,Kind,
-        LLVMOpaqueMetadata.from_pyobj(MD)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Global).get_element_ptr(),Kind,
+        LLVMOpaqueMetadata.from_pyobj(MD).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -7861,7 +7743,7 @@ def LLVMGlobalEraseMetadata(object Global, unsigned int Kind):
             (undocumented)
     """
     ccore.LLVMGlobalEraseMetadata(
-        LLVMOpaqueValue.from_pyobj(Global)._ptr,Kind)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Global).get_element_ptr(),Kind)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -7878,7 +7760,7 @@ def LLVMGlobalClearMetadata(object Global):
             (undocumented)
     """
     ccore.LLVMGlobalClearMetadata(
-        LLVMOpaqueValue.from_pyobj(Global)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Global).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -7900,9 +7782,9 @@ def LLVMGlobalCopyAllMetadata(object Value, object NumEntries):
             (undocumented)
     """
     _LLVMGlobalCopyAllMetadata__retval = LLVMOpaqueValueMetadataEntry.from_ptr(ccore.LLVMGlobalCopyAllMetadata(
-        LLVMOpaqueValue.from_pyobj(Value)._ptr,
+        LLVMOpaqueValue.from_pyobj(Value).get_element_ptr(),
         <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NumEntries)._ptr))    # fully specified
-    return (_LLVMGlobalCopyAllMetadata__retval,)
+    return _LLVMGlobalCopyAllMetadata__retval
 
 
 @cython.embedsignature(True)
@@ -7916,7 +7798,7 @@ def LLVMDisposeValueMetadataEntries(object Entries):
             (undocumented)
     """
     ccore.LLVMDisposeValueMetadataEntries(
-        LLVMOpaqueValueMetadataEntry.from_pyobj(Entries)._ptr)    # fully specified
+        LLVMOpaqueValueMetadataEntry.from_pyobj(Entries).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -7933,13 +7815,11 @@ def LLVMValueMetadataEntriesGetKind(object Entries, unsigned int Index):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMValueMetadataEntriesGetKind__retval = ccore.LLVMValueMetadataEntriesGetKind(
-        LLVMOpaqueValueMetadataEntry.from_pyobj(Entries)._ptr,Index)    # fully specified
-    return (_LLVMValueMetadataEntriesGetKind__retval,)
+        LLVMOpaqueValueMetadataEntry.from_pyobj(Entries).get_element_ptr(),Index)    # fully specified
+    return _LLVMValueMetadataEntriesGetKind__retval
 
 
 @cython.embedsignature(True)
@@ -7957,8 +7837,8 @@ def LLVMValueMetadataEntriesGetMetadata(object Entries, unsigned int Index):
             (undocumented)
     """
     _LLVMValueMetadataEntriesGetMetadata__retval = LLVMOpaqueMetadata.from_ptr(ccore.LLVMValueMetadataEntriesGetMetadata(
-        LLVMOpaqueValueMetadataEntry.from_pyobj(Entries)._ptr,Index))    # fully specified
-    return (_LLVMValueMetadataEntriesGetMetadata__retval,)
+        LLVMOpaqueValueMetadataEntry.from_pyobj(Entries).get_element_ptr(),Index))    # fully specified
+    return _LLVMValueMetadataEntriesGetMetadata__retval
 
 
 @cython.embedsignature(True)
@@ -7983,9 +7863,9 @@ def LLVMAddGlobal(object M, object Ty, const char * Name):
             (undocumented)
     """
     _LLVMAddGlobal__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMAddGlobal(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,
-        LLVMOpaqueType.from_pyobj(Ty)._ptr,Name))    # fully specified
-    return (_LLVMAddGlobal__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),Name))    # fully specified
+    return _LLVMAddGlobal__retval
 
 
 @cython.embedsignature(True)
@@ -8006,9 +7886,9 @@ def LLVMAddGlobalInAddressSpace(object M, object Ty, const char * Name, unsigned
             (undocumented)
     """
     _LLVMAddGlobalInAddressSpace__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMAddGlobalInAddressSpace(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,
-        LLVMOpaqueType.from_pyobj(Ty)._ptr,Name,AddressSpace))    # fully specified
-    return (_LLVMAddGlobalInAddressSpace__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),Name,AddressSpace))    # fully specified
+    return _LLVMAddGlobalInAddressSpace__retval
 
 
 @cython.embedsignature(True)
@@ -8023,8 +7903,8 @@ def LLVMGetNamedGlobal(object M, const char * Name):
             (undocumented)
     """
     _LLVMGetNamedGlobal__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNamedGlobal(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Name))    # fully specified
-    return (_LLVMGetNamedGlobal__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name))    # fully specified
+    return _LLVMGetNamedGlobal__retval
 
 
 @cython.embedsignature(True)
@@ -8036,8 +7916,8 @@ def LLVMGetFirstGlobal(object M):
             (undocumented)
     """
     _LLVMGetFirstGlobal__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetFirstGlobal(
-        LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
-    return (_LLVMGetFirstGlobal__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
+    return _LLVMGetFirstGlobal__retval
 
 
 @cython.embedsignature(True)
@@ -8049,8 +7929,8 @@ def LLVMGetLastGlobal(object M):
             (undocumented)
     """
     _LLVMGetLastGlobal__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetLastGlobal(
-        LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
-    return (_LLVMGetLastGlobal__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
+    return _LLVMGetLastGlobal__retval
 
 
 @cython.embedsignature(True)
@@ -8062,8 +7942,8 @@ def LLVMGetNextGlobal(object GlobalVar):
             (undocumented)
     """
     _LLVMGetNextGlobal__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNextGlobal(
-        LLVMOpaqueValue.from_pyobj(GlobalVar)._ptr))    # fully specified
-    return (_LLVMGetNextGlobal__retval,)
+        LLVMOpaqueValue.from_pyobj(GlobalVar).get_element_ptr()))    # fully specified
+    return _LLVMGetNextGlobal__retval
 
 
 @cython.embedsignature(True)
@@ -8075,8 +7955,8 @@ def LLVMGetPreviousGlobal(object GlobalVar):
             (undocumented)
     """
     _LLVMGetPreviousGlobal__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetPreviousGlobal(
-        LLVMOpaqueValue.from_pyobj(GlobalVar)._ptr))    # fully specified
-    return (_LLVMGetPreviousGlobal__retval,)
+        LLVMOpaqueValue.from_pyobj(GlobalVar).get_element_ptr()))    # fully specified
+    return _LLVMGetPreviousGlobal__retval
 
 
 @cython.embedsignature(True)
@@ -8088,7 +7968,7 @@ def LLVMDeleteGlobal(object GlobalVar):
             (undocumented)
     """
     ccore.LLVMDeleteGlobal(
-        LLVMOpaqueValue.from_pyobj(GlobalVar)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(GlobalVar).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -8100,8 +7980,8 @@ def LLVMGetInitializer(object GlobalVar):
             (undocumented)
     """
     _LLVMGetInitializer__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetInitializer(
-        LLVMOpaqueValue.from_pyobj(GlobalVar)._ptr))    # fully specified
-    return (_LLVMGetInitializer__retval,)
+        LLVMOpaqueValue.from_pyobj(GlobalVar).get_element_ptr()))    # fully specified
+    return _LLVMGetInitializer__retval
 
 
 @cython.embedsignature(True)
@@ -8116,8 +7996,8 @@ def LLVMSetInitializer(object GlobalVar, object ConstantVal):
             (undocumented)
     """
     ccore.LLVMSetInitializer(
-        LLVMOpaqueValue.from_pyobj(GlobalVar)._ptr,
-        LLVMOpaqueValue.from_pyobj(ConstantVal)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(GlobalVar).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -8129,13 +8009,11 @@ def LLVMIsThreadLocal(object GlobalVar):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIsThreadLocal__retval = ccore.LLVMIsThreadLocal(
-        LLVMOpaqueValue.from_pyobj(GlobalVar)._ptr)    # fully specified
-    return (_LLVMIsThreadLocal__retval,)
+        LLVMOpaqueValue.from_pyobj(GlobalVar).get_element_ptr())    # fully specified
+    return _LLVMIsThreadLocal__retval
 
 
 @cython.embedsignature(True)
@@ -8150,7 +8028,7 @@ def LLVMSetThreadLocal(object GlobalVar, int IsThreadLocal):
             (undocumented)
     """
     ccore.LLVMSetThreadLocal(
-        LLVMOpaqueValue.from_pyobj(GlobalVar)._ptr,IsThreadLocal)    # fully specified
+        LLVMOpaqueValue.from_pyobj(GlobalVar).get_element_ptr(),IsThreadLocal)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -8162,13 +8040,11 @@ def LLVMIsGlobalConstant(object GlobalVar):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIsGlobalConstant__retval = ccore.LLVMIsGlobalConstant(
-        LLVMOpaqueValue.from_pyobj(GlobalVar)._ptr)    # fully specified
-    return (_LLVMIsGlobalConstant__retval,)
+        LLVMOpaqueValue.from_pyobj(GlobalVar).get_element_ptr())    # fully specified
+    return _LLVMIsGlobalConstant__retval
 
 
 @cython.embedsignature(True)
@@ -8183,7 +8059,7 @@ def LLVMSetGlobalConstant(object GlobalVar, int IsConstant):
             (undocumented)
     """
     ccore.LLVMSetGlobalConstant(
-        LLVMOpaqueValue.from_pyobj(GlobalVar)._ptr,IsConstant)    # fully specified
+        LLVMOpaqueValue.from_pyobj(GlobalVar).get_element_ptr(),IsConstant)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -8195,13 +8071,11 @@ def LLVMGetThreadLocalMode(object GlobalVar):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.LLVMThreadLocalMode`
+        `~.LLVMThreadLocalMode`
     """
     _LLVMGetThreadLocalMode__retval = LLVMThreadLocalMode(ccore.LLVMGetThreadLocalMode(
-        LLVMOpaqueValue.from_pyobj(GlobalVar)._ptr))    # fully specified
-    return (_LLVMGetThreadLocalMode__retval,)
+        LLVMOpaqueValue.from_pyobj(GlobalVar).get_element_ptr()))    # fully specified
+    return _LLVMGetThreadLocalMode__retval
 
 
 @cython.embedsignature(True)
@@ -8218,7 +8092,7 @@ def LLVMSetThreadLocalMode(object GlobalVar, object Mode):
     if not isinstance(Mode,_LLVMThreadLocalMode__Base):
         raise TypeError("argument 'Mode' must be of type '_LLVMThreadLocalMode__Base'")
     ccore.LLVMSetThreadLocalMode(
-        LLVMOpaqueValue.from_pyobj(GlobalVar)._ptr,Mode.value)    # fully specified
+        LLVMOpaqueValue.from_pyobj(GlobalVar).get_element_ptr(),Mode.value)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -8230,13 +8104,11 @@ def LLVMIsExternallyInitialized(object GlobalVar):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIsExternallyInitialized__retval = ccore.LLVMIsExternallyInitialized(
-        LLVMOpaqueValue.from_pyobj(GlobalVar)._ptr)    # fully specified
-    return (_LLVMIsExternallyInitialized__retval,)
+        LLVMOpaqueValue.from_pyobj(GlobalVar).get_element_ptr())    # fully specified
+    return _LLVMIsExternallyInitialized__retval
 
 
 @cython.embedsignature(True)
@@ -8251,7 +8123,7 @@ def LLVMSetExternallyInitialized(object GlobalVar, int IsExtInit):
             (undocumented)
     """
     ccore.LLVMSetExternallyInitialized(
-        LLVMOpaqueValue.from_pyobj(GlobalVar)._ptr,IsExtInit)    # fully specified
+        LLVMOpaqueValue.from_pyobj(GlobalVar).get_element_ptr(),IsExtInit)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -8280,10 +8152,10 @@ def LLVMAddAlias2(object M, object ValueTy, unsigned int AddrSpace, object Alias
             (undocumented)
     """
     _LLVMAddAlias2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMAddAlias2(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,
-        LLVMOpaqueType.from_pyobj(ValueTy)._ptr,AddrSpace,
-        LLVMOpaqueValue.from_pyobj(Aliasee)._ptr,Name))    # fully specified
-    return (_LLVMAddAlias2__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(ValueTy).get_element_ptr(),AddrSpace,
+        LLVMOpaqueValue.from_pyobj(Aliasee).get_element_ptr(),Name))    # fully specified
+    return _LLVMAddAlias2__retval
 
 
 @cython.embedsignature(True)
@@ -8308,8 +8180,8 @@ def LLVMGetNamedGlobalAlias(object M, const char * Name, unsigned long NameLen):
             (undocumented)
     """
     _LLVMGetNamedGlobalAlias__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNamedGlobalAlias(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Name,NameLen))    # fully specified
-    return (_LLVMGetNamedGlobalAlias__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name,NameLen))    # fully specified
+    return _LLVMGetNamedGlobalAlias__retval
 
 
 @cython.embedsignature(True)
@@ -8326,8 +8198,8 @@ def LLVMGetFirstGlobalAlias(object M):
             (undocumented)
     """
     _LLVMGetFirstGlobalAlias__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetFirstGlobalAlias(
-        LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
-    return (_LLVMGetFirstGlobalAlias__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
+    return _LLVMGetFirstGlobalAlias__retval
 
 
 @cython.embedsignature(True)
@@ -8344,8 +8216,8 @@ def LLVMGetLastGlobalAlias(object M):
             (undocumented)
     """
     _LLVMGetLastGlobalAlias__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetLastGlobalAlias(
-        LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
-    return (_LLVMGetLastGlobalAlias__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
+    return _LLVMGetLastGlobalAlias__retval
 
 
 @cython.embedsignature(True)
@@ -8362,8 +8234,8 @@ def LLVMGetNextGlobalAlias(object GA):
             (undocumented)
     """
     _LLVMGetNextGlobalAlias__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNextGlobalAlias(
-        LLVMOpaqueValue.from_pyobj(GA)._ptr))    # fully specified
-    return (_LLVMGetNextGlobalAlias__retval,)
+        LLVMOpaqueValue.from_pyobj(GA).get_element_ptr()))    # fully specified
+    return _LLVMGetNextGlobalAlias__retval
 
 
 @cython.embedsignature(True)
@@ -8380,8 +8252,8 @@ def LLVMGetPreviousGlobalAlias(object GA):
             (undocumented)
     """
     _LLVMGetPreviousGlobalAlias__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetPreviousGlobalAlias(
-        LLVMOpaqueValue.from_pyobj(GA)._ptr))    # fully specified
-    return (_LLVMGetPreviousGlobalAlias__retval,)
+        LLVMOpaqueValue.from_pyobj(GA).get_element_ptr()))    # fully specified
+    return _LLVMGetPreviousGlobalAlias__retval
 
 
 @cython.embedsignature(True)
@@ -8395,8 +8267,8 @@ def LLVMAliasGetAliasee(object Alias):
             (undocumented)
     """
     _LLVMAliasGetAliasee__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMAliasGetAliasee(
-        LLVMOpaqueValue.from_pyobj(Alias)._ptr))    # fully specified
-    return (_LLVMAliasGetAliasee__retval,)
+        LLVMOpaqueValue.from_pyobj(Alias).get_element_ptr()))    # fully specified
+    return _LLVMAliasGetAliasee__retval
 
 
 @cython.embedsignature(True)
@@ -8413,8 +8285,8 @@ def LLVMAliasSetAliasee(object Alias, object Aliasee):
             (undocumented)
     """
     ccore.LLVMAliasSetAliasee(
-        LLVMOpaqueValue.from_pyobj(Alias)._ptr,
-        LLVMOpaqueValue.from_pyobj(Aliasee)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Alias).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Aliasee).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -8431,7 +8303,7 @@ def LLVMDeleteFunction(object Fn):
             (undocumented)
     """
     ccore.LLVMDeleteFunction(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -8448,13 +8320,11 @@ def LLVMHasPersonalityFn(object Fn):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMHasPersonalityFn__retval = ccore.LLVMHasPersonalityFn(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr)    # fully specified
-    return (_LLVMHasPersonalityFn__retval,)
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr())    # fully specified
+    return _LLVMHasPersonalityFn__retval
 
 
 @cython.embedsignature(True)
@@ -8471,8 +8341,8 @@ def LLVMGetPersonalityFn(object Fn):
             (undocumented)
     """
     _LLVMGetPersonalityFn__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetPersonalityFn(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr))    # fully specified
-    return (_LLVMGetPersonalityFn__retval,)
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr()))    # fully specified
+    return _LLVMGetPersonalityFn__retval
 
 
 @cython.embedsignature(True)
@@ -8492,8 +8362,8 @@ def LLVMSetPersonalityFn(object Fn, object PersonalityFn):
             (undocumented)
     """
     ccore.LLVMSetPersonalityFn(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr,
-        LLVMOpaqueValue.from_pyobj(PersonalityFn)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(PersonalityFn).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -8513,12 +8383,10 @@ def LLVMLookupIntrinsicID(const char * Name, unsigned long NameLen):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMLookupIntrinsicID__retval = ccore.LLVMLookupIntrinsicID(Name,NameLen)    # fully specified
-    return (_LLVMLookupIntrinsicID__retval,)
+    return _LLVMLookupIntrinsicID__retval
 
 
 @cython.embedsignature(True)
@@ -8535,13 +8403,11 @@ def LLVMGetIntrinsicID(object Fn):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetIntrinsicID__retval = ccore.LLVMGetIntrinsicID(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr)    # fully specified
-    return (_LLVMGetIntrinsicID__retval,)
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr())    # fully specified
+    return _LLVMGetIntrinsicID__retval
 
 
 @cython.embedsignature(True)
@@ -8568,9 +8434,9 @@ def LLVMGetIntrinsicDeclaration(object Mod, unsigned int ID, object ParamTypes, 
             (undocumented)
     """
     _LLVMGetIntrinsicDeclaration__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetIntrinsicDeclaration(
-        LLVMOpaqueModule.from_pyobj(Mod)._ptr,ID,
+        LLVMOpaqueModule.from_pyobj(Mod).get_element_ptr(),ID,
         <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(ParamTypes)._ptr,ParamCount))    # fully specified
-    return (_LLVMGetIntrinsicDeclaration__retval,)
+    return _LLVMGetIntrinsicDeclaration__retval
 
 
 @cython.embedsignature(True)
@@ -8597,9 +8463,9 @@ def LLVMIntrinsicGetType(object Ctx, unsigned int ID, object ParamTypes, unsigne
             (undocumented)
     """
     _LLVMIntrinsicGetType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMIntrinsicGetType(
-        LLVMOpaqueContext.from_pyobj(Ctx)._ptr,ID,
+        LLVMOpaqueContext.from_pyobj(Ctx).get_element_ptr(),ID,
         <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(ParamTypes)._ptr,ParamCount))    # fully specified
-    return (_LLVMIntrinsicGetType__retval,)
+    return _LLVMIntrinsicGetType__retval
 
 
 @cython.embedsignature(True)
@@ -8619,13 +8485,11 @@ def LLVMIntrinsicGetName(unsigned int ID, object NameLength):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef const char * _LLVMIntrinsicGetName__retval = ccore.LLVMIntrinsicGetName(ID,
         <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NameLength)._ptr)    # fully specified
-    return (_LLVMIntrinsicGetName__retval,)
+    return _LLVMIntrinsicGetName__retval
 
 
 @cython.embedsignature(True)
@@ -8648,14 +8512,12 @@ def LLVMIntrinsicCopyOverloadedName(unsigned int ID, object ParamTypes, unsigned
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef const char * _LLVMIntrinsicCopyOverloadedName__retval = ccore.LLVMIntrinsicCopyOverloadedName(ID,
         <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(ParamTypes)._ptr,ParamCount,
         <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NameLength)._ptr)    # fully specified
-    return (_LLVMIntrinsicCopyOverloadedName__retval,)
+    return _LLVMIntrinsicCopyOverloadedName__retval
 
 
 @cython.embedsignature(True)
@@ -8690,15 +8552,13 @@ def LLVMIntrinsicCopyOverloadedName2(object Mod, unsigned int ID, object ParamTy
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef const char * _LLVMIntrinsicCopyOverloadedName2__retval = ccore.LLVMIntrinsicCopyOverloadedName2(
-        LLVMOpaqueModule.from_pyobj(Mod)._ptr,ID,
+        LLVMOpaqueModule.from_pyobj(Mod).get_element_ptr(),ID,
         <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(ParamTypes)._ptr,ParamCount,
         <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NameLength)._ptr)    # fully specified
-    return (_LLVMIntrinsicCopyOverloadedName2__retval,)
+    return _LLVMIntrinsicCopyOverloadedName2__retval
 
 
 @cython.embedsignature(True)
@@ -8715,12 +8575,10 @@ def LLVMIntrinsicIsOverloaded(unsigned int ID):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIntrinsicIsOverloaded__retval = ccore.LLVMIntrinsicIsOverloaded(ID)    # fully specified
-    return (_LLVMIntrinsicIsOverloaded__retval,)
+    return _LLVMIntrinsicIsOverloaded__retval
 
 
 @cython.embedsignature(True)
@@ -8739,13 +8597,11 @@ def LLVMGetFunctionCallConv(object Fn):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetFunctionCallConv__retval = ccore.LLVMGetFunctionCallConv(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr)    # fully specified
-    return (_LLVMGetFunctionCallConv__retval,)
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr())    # fully specified
+    return _LLVMGetFunctionCallConv__retval
 
 
 @cython.embedsignature(True)
@@ -8765,7 +8621,7 @@ def LLVMSetFunctionCallConv(object Fn, unsigned int CC):
             LLVMCallConv to set calling convention to
     """
     ccore.LLVMSetFunctionCallConv(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr,CC)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),CC)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -8783,13 +8639,11 @@ def LLVMGetGC(object Fn):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef const char * _LLVMGetGC__retval = ccore.LLVMGetGC(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr)    # fully specified
-    return (_LLVMGetGC__retval,)
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr())    # fully specified
+    return _LLVMGetGC__retval
 
 
 @cython.embedsignature(True)
@@ -8809,7 +8663,7 @@ def LLVMSetGC(object Fn, const char * Name):
             (undocumented)
     """
     ccore.LLVMSetGC(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr,Name)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),Name)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -8832,8 +8686,8 @@ def LLVMAddAttributeAtIndex(object F, unsigned int Idx, object A):
             (undocumented)
     """
     ccore.LLVMAddAttributeAtIndex(
-        LLVMOpaqueValue.from_pyobj(F)._ptr,Idx,
-        LLVMOpaqueAttributeRef.from_pyobj(A)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(F).get_element_ptr(),Idx,
+        LLVMOpaqueAttributeRef.from_pyobj(A).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -8848,13 +8702,11 @@ def LLVMGetAttributeCountAtIndex(object F, unsigned int Idx):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetAttributeCountAtIndex__retval = ccore.LLVMGetAttributeCountAtIndex(
-        LLVMOpaqueValue.from_pyobj(F)._ptr,Idx)    # fully specified
-    return (_LLVMGetAttributeCountAtIndex__retval,)
+        LLVMOpaqueValue.from_pyobj(F).get_element_ptr(),Idx)    # fully specified
+    return _LLVMGetAttributeCountAtIndex__retval
 
 
 @cython.embedsignature(True)
@@ -8872,7 +8724,7 @@ def LLVMGetAttributesAtIndex(object F, unsigned int Idx, object Attrs):
             (undocumented)
     """
     ccore.LLVMGetAttributesAtIndex(
-        LLVMOpaqueValue.from_pyobj(F)._ptr,Idx,
+        LLVMOpaqueValue.from_pyobj(F).get_element_ptr(),Idx,
         <ccore.LLVMAttributeRef*>rocm.llvm._util.types.Pointer.from_pyobj(Attrs)._ptr)    # fully specified
 
 
@@ -8891,8 +8743,8 @@ def LLVMGetEnumAttributeAtIndex(object F, unsigned int Idx, unsigned int KindID)
             (undocumented)
     """
     _LLVMGetEnumAttributeAtIndex__retval = LLVMOpaqueAttributeRef.from_ptr(ccore.LLVMGetEnumAttributeAtIndex(
-        LLVMOpaqueValue.from_pyobj(F)._ptr,Idx,KindID))    # fully specified
-    return (_LLVMGetEnumAttributeAtIndex__retval,)
+        LLVMOpaqueValue.from_pyobj(F).get_element_ptr(),Idx,KindID))    # fully specified
+    return _LLVMGetEnumAttributeAtIndex__retval
 
 
 @cython.embedsignature(True)
@@ -8913,8 +8765,8 @@ def LLVMGetStringAttributeAtIndex(object F, unsigned int Idx, const char * K, un
             (undocumented)
     """
     _LLVMGetStringAttributeAtIndex__retval = LLVMOpaqueAttributeRef.from_ptr(ccore.LLVMGetStringAttributeAtIndex(
-        LLVMOpaqueValue.from_pyobj(F)._ptr,Idx,K,KLen))    # fully specified
-    return (_LLVMGetStringAttributeAtIndex__retval,)
+        LLVMOpaqueValue.from_pyobj(F).get_element_ptr(),Idx,K,KLen))    # fully specified
+    return _LLVMGetStringAttributeAtIndex__retval
 
 
 @cython.embedsignature(True)
@@ -8932,7 +8784,7 @@ def LLVMRemoveEnumAttributeAtIndex(object F, unsigned int Idx, unsigned int Kind
             (undocumented)
     """
     ccore.LLVMRemoveEnumAttributeAtIndex(
-        LLVMOpaqueValue.from_pyobj(F)._ptr,Idx,KindID)    # fully specified
+        LLVMOpaqueValue.from_pyobj(F).get_element_ptr(),Idx,KindID)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -8953,7 +8805,7 @@ def LLVMRemoveStringAttributeAtIndex(object F, unsigned int Idx, const char * K,
             (undocumented)
     """
     ccore.LLVMRemoveStringAttributeAtIndex(
-        LLVMOpaqueValue.from_pyobj(F)._ptr,Idx,K,KLen)    # fully specified
+        LLVMOpaqueValue.from_pyobj(F).get_element_ptr(),Idx,K,KLen)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -8976,7 +8828,7 @@ def LLVMAddTargetDependentFunctionAttr(object Fn, const char * A, const char * V
             (undocumented)
     """
     ccore.LLVMAddTargetDependentFunctionAttr(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr,A,V)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),A,V)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -8993,13 +8845,11 @@ def LLVMCountParams(object Fn):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMCountParams__retval = ccore.LLVMCountParams(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr)    # fully specified
-    return (_LLVMCountParams__retval,)
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr())    # fully specified
+    return _LLVMCountParams__retval
 
 
 @cython.embedsignature(True)
@@ -9021,12 +8871,12 @@ def LLVMGetParams(object Fn, object Params):
         Fn (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Params (`~.rocm.llvm._util.types.Pointer`/`~.object`):
+        Params (`~.rocm.llvm._util.types.ListOfPointer`/`~.object`):
             (undocumented)
     """
     ccore.LLVMGetParams(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr,
-        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Params)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.ListOfPointer.from_pyobj(Params)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -9048,8 +8898,8 @@ def LLVMGetParam(object Fn, unsigned int Index):
             (undocumented)
     """
     _LLVMGetParam__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetParam(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr,Index))    # fully specified
-    return (_LLVMGetParam__retval,)
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),Index))    # fully specified
+    return _LLVMGetParam__retval
 
 
 @cython.embedsignature(True)
@@ -9069,8 +8919,8 @@ def LLVMGetParamParent(object Inst):
             (undocumented)
     """
     _LLVMGetParamParent__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetParamParent(
-        LLVMOpaqueValue.from_pyobj(Inst)._ptr))    # fully specified
-    return (_LLVMGetParamParent__retval,)
+        LLVMOpaqueValue.from_pyobj(Inst).get_element_ptr()))    # fully specified
+    return _LLVMGetParamParent__retval
 
 
 @cython.embedsignature(True)
@@ -9087,8 +8937,8 @@ def LLVMGetFirstParam(object Fn):
             (undocumented)
     """
     _LLVMGetFirstParam__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetFirstParam(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr))    # fully specified
-    return (_LLVMGetFirstParam__retval,)
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr()))    # fully specified
+    return _LLVMGetFirstParam__retval
 
 
 @cython.embedsignature(True)
@@ -9105,8 +8955,8 @@ def LLVMGetLastParam(object Fn):
             (undocumented)
     """
     _LLVMGetLastParam__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetLastParam(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr))    # fully specified
-    return (_LLVMGetLastParam__retval,)
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr()))    # fully specified
+    return _LLVMGetLastParam__retval
 
 
 @cython.embedsignature(True)
@@ -9124,8 +8974,8 @@ def LLVMGetNextParam(object Arg):
             (undocumented)
     """
     _LLVMGetNextParam__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNextParam(
-        LLVMOpaqueValue.from_pyobj(Arg)._ptr))    # fully specified
-    return (_LLVMGetNextParam__retval,)
+        LLVMOpaqueValue.from_pyobj(Arg).get_element_ptr()))    # fully specified
+    return _LLVMGetNextParam__retval
 
 
 @cython.embedsignature(True)
@@ -9141,8 +8991,8 @@ def LLVMGetPreviousParam(object Arg):
             (undocumented)
     """
     _LLVMGetPreviousParam__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetPreviousParam(
-        LLVMOpaqueValue.from_pyobj(Arg)._ptr))    # fully specified
-    return (_LLVMGetPreviousParam__retval,)
+        LLVMOpaqueValue.from_pyobj(Arg).get_element_ptr()))    # fully specified
+    return _LLVMGetPreviousParam__retval
 
 
 @cython.embedsignature(True)
@@ -9165,7 +9015,7 @@ def LLVMSetParamAlignment(object Arg, unsigned int Align):
             (undocumented)
     """
     ccore.LLVMSetParamAlignment(
-        LLVMOpaqueValue.from_pyobj(Arg)._ptr,Align)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Arg).get_element_ptr(),Align)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -9197,10 +9047,10 @@ def LLVMAddGlobalIFunc(object M, const char * Name, unsigned long NameLen, objec
             (undocumented)
     """
     _LLVMAddGlobalIFunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMAddGlobalIFunc(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Name,NameLen,
-        LLVMOpaqueType.from_pyobj(Ty)._ptr,AddrSpace,
-        LLVMOpaqueValue.from_pyobj(Resolver)._ptr))    # fully specified
-    return (_LLVMAddGlobalIFunc__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name,NameLen,
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),AddrSpace,
+        LLVMOpaqueValue.from_pyobj(Resolver).get_element_ptr()))    # fully specified
+    return _LLVMAddGlobalIFunc__retval
 
 
 @cython.embedsignature(True)
@@ -9225,8 +9075,8 @@ def LLVMGetNamedGlobalIFunc(object M, const char * Name, unsigned long NameLen):
             (undocumented)
     """
     _LLVMGetNamedGlobalIFunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNamedGlobalIFunc(
-        LLVMOpaqueModule.from_pyobj(M)._ptr,Name,NameLen))    # fully specified
-    return (_LLVMGetNamedGlobalIFunc__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name,NameLen))    # fully specified
+    return _LLVMGetNamedGlobalIFunc__retval
 
 
 @cython.embedsignature(True)
@@ -9243,8 +9093,8 @@ def LLVMGetFirstGlobalIFunc(object M):
             (undocumented)
     """
     _LLVMGetFirstGlobalIFunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetFirstGlobalIFunc(
-        LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
-    return (_LLVMGetFirstGlobalIFunc__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
+    return _LLVMGetFirstGlobalIFunc__retval
 
 
 @cython.embedsignature(True)
@@ -9261,8 +9111,8 @@ def LLVMGetLastGlobalIFunc(object M):
             (undocumented)
     """
     _LLVMGetLastGlobalIFunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetLastGlobalIFunc(
-        LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
-    return (_LLVMGetLastGlobalIFunc__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
+    return _LLVMGetLastGlobalIFunc__retval
 
 
 @cython.embedsignature(True)
@@ -9279,8 +9129,8 @@ def LLVMGetNextGlobalIFunc(object IFunc):
             (undocumented)
     """
     _LLVMGetNextGlobalIFunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNextGlobalIFunc(
-        LLVMOpaqueValue.from_pyobj(IFunc)._ptr))    # fully specified
-    return (_LLVMGetNextGlobalIFunc__retval,)
+        LLVMOpaqueValue.from_pyobj(IFunc).get_element_ptr()))    # fully specified
+    return _LLVMGetNextGlobalIFunc__retval
 
 
 @cython.embedsignature(True)
@@ -9297,8 +9147,8 @@ def LLVMGetPreviousGlobalIFunc(object IFunc):
             (undocumented)
     """
     _LLVMGetPreviousGlobalIFunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetPreviousGlobalIFunc(
-        LLVMOpaqueValue.from_pyobj(IFunc)._ptr))    # fully specified
-    return (_LLVMGetPreviousGlobalIFunc__retval,)
+        LLVMOpaqueValue.from_pyobj(IFunc).get_element_ptr()))    # fully specified
+    return _LLVMGetPreviousGlobalIFunc__retval
 
 
 @cython.embedsignature(True)
@@ -9316,8 +9166,8 @@ def LLVMGetGlobalIFuncResolver(object IFunc):
             (undocumented)
     """
     _LLVMGetGlobalIFuncResolver__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetGlobalIFuncResolver(
-        LLVMOpaqueValue.from_pyobj(IFunc)._ptr))    # fully specified
-    return (_LLVMGetGlobalIFuncResolver__retval,)
+        LLVMOpaqueValue.from_pyobj(IFunc).get_element_ptr()))    # fully specified
+    return _LLVMGetGlobalIFuncResolver__retval
 
 
 @cython.embedsignature(True)
@@ -9337,8 +9187,8 @@ def LLVMSetGlobalIFuncResolver(object IFunc, object Resolver):
             (undocumented)
     """
     ccore.LLVMSetGlobalIFuncResolver(
-        LLVMOpaqueValue.from_pyobj(IFunc)._ptr,
-        LLVMOpaqueValue.from_pyobj(Resolver)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(IFunc).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Resolver).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -9355,7 +9205,7 @@ def LLVMEraseGlobalIFunc(object IFunc):
             (undocumented)
     """
     ccore.LLVMEraseGlobalIFunc(
-        LLVMOpaqueValue.from_pyobj(IFunc)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(IFunc).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -9375,7 +9225,7 @@ def LLVMRemoveGlobalIFunc(object IFunc):
             (undocumented)
     """
     ccore.LLVMRemoveGlobalIFunc(
-        LLVMOpaqueValue.from_pyobj(IFunc)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(IFunc).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -9401,8 +9251,8 @@ def LLVMMDStringInContext2(object C, const char * Str, unsigned long SLen):
             (undocumented)
     """
     _LLVMMDStringInContext2__retval = LLVMOpaqueMetadata.from_ptr(ccore.LLVMMDStringInContext2(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,Str,SLen))    # fully specified
-    return (_LLVMMDStringInContext2__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),Str,SLen))    # fully specified
+    return _LLVMMDStringInContext2__retval
 
 
 @cython.embedsignature(True)
@@ -9425,9 +9275,9 @@ def LLVMMDNodeInContext2(object C, object MDs, unsigned long Count):
             (undocumented)
     """
     _LLVMMDNodeInContext2__retval = LLVMOpaqueMetadata.from_ptr(ccore.LLVMMDNodeInContext2(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),
         <ccore.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(MDs)._ptr,Count))    # fully specified
-    return (_LLVMMDNodeInContext2__retval,)
+    return _LLVMMDNodeInContext2__retval
 
 
 @cython.embedsignature(True)
@@ -9444,9 +9294,9 @@ def LLVMMetadataAsValue(object C, object MD):
             (undocumented)
     """
     _LLVMMetadataAsValue__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMMetadataAsValue(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,
-        LLVMOpaqueMetadata.from_pyobj(MD)._ptr))    # fully specified
-    return (_LLVMMetadataAsValue__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),
+        LLVMOpaqueMetadata.from_pyobj(MD).get_element_ptr()))    # fully specified
+    return _LLVMMetadataAsValue__retval
 
 
 @cython.embedsignature(True)
@@ -9460,8 +9310,8 @@ def LLVMValueAsMetadata(object Val):
             (undocumented)
     """
     _LLVMValueAsMetadata__retval = LLVMOpaqueMetadata.from_ptr(ccore.LLVMValueAsMetadata(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMValueAsMetadata__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMValueAsMetadata__retval
 
 
 @cython.embedsignature(True)
@@ -9478,14 +9328,12 @@ def LLVMGetMDString(object V, object Length):
             Memory address which will hold length of returned string.
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`: String data in MDString.
+        `~.bytes`: String data in MDString.
     """
     cdef const char * _LLVMGetMDString__retval = ccore.LLVMGetMDString(
-        LLVMOpaqueValue.from_pyobj(V)._ptr,
+        LLVMOpaqueValue.from_pyobj(V).get_element_ptr(),
         <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
-    return (_LLVMGetMDString__retval,)
+    return _LLVMGetMDString__retval
 
 
 @cython.embedsignature(True)
@@ -9499,13 +9347,11 @@ def LLVMGetMDNodeNumOperands(object V):
             MDNode to get number of operands from.
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`: Number of operands of the MDNode.
+        `~.int`: Number of operands of the MDNode.
     """
     cdef unsigned int _LLVMGetMDNodeNumOperands__retval = ccore.LLVMGetMDNodeNumOperands(
-        LLVMOpaqueValue.from_pyobj(V)._ptr)    # fully specified
-    return (_LLVMGetMDNodeNumOperands__retval,)
+        LLVMOpaqueValue.from_pyobj(V).get_element_ptr())    # fully specified
+    return _LLVMGetMDNodeNumOperands__retval
 
 
 @cython.embedsignature(True)
@@ -9527,7 +9373,7 @@ def LLVMGetMDNodeOperands(object V, object Dest):
             Destination array for operands.
     """
     ccore.LLVMGetMDNodeOperands(
-        LLVMOpaqueValue.from_pyobj(V)._ptr,
+        LLVMOpaqueValue.from_pyobj(V).get_element_ptr(),
         <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Dest)._ptr)    # fully specified
 
 
@@ -9548,8 +9394,8 @@ def LLVMMDStringInContext(object C, const char * Str, unsigned int SLen):
             (undocumented)
     """
     _LLVMMDStringInContext__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMMDStringInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,Str,SLen))    # fully specified
-    return (_LLVMMDStringInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),Str,SLen))    # fully specified
+    return _LLVMMDStringInContext__retval
 
 
 @cython.embedsignature(True)
@@ -9566,7 +9412,7 @@ def LLVMMDString(const char * Str, unsigned int SLen):
             (undocumented)
     """
     _LLVMMDString__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMMDString(Str,SLen))    # fully specified
-    return (_LLVMMDString__retval,)
+    return _LLVMMDString__retval
 
 
 @cython.embedsignature(True)
@@ -9586,9 +9432,9 @@ def LLVMMDNodeInContext(object C, object Vals, unsigned int Count):
             (undocumented)
     """
     _LLVMMDNodeInContext__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMMDNodeInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),
         <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Vals)._ptr,Count))    # fully specified
-    return (_LLVMMDNodeInContext__retval,)
+    return _LLVMMDNodeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -9606,7 +9452,7 @@ def LLVMMDNode(object Vals, unsigned int Count):
     """
     _LLVMMDNode__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMMDNode(
         <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Vals)._ptr,Count))    # fully specified
-    return (_LLVMMDNode__retval,)
+    return _LLVMMDNode__retval
 
 
 @cython.embedsignature(True)
@@ -9620,8 +9466,8 @@ def LLVMBasicBlockAsValue(object BB):
             (undocumented)
     """
     _LLVMBasicBlockAsValue__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBasicBlockAsValue(
-        LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr))    # fully specified
-    return (_LLVMBasicBlockAsValue__retval,)
+        LLVMOpaqueBasicBlock.from_pyobj(BB).get_element_ptr()))    # fully specified
+    return _LLVMBasicBlockAsValue__retval
 
 
 @cython.embedsignature(True)
@@ -9635,13 +9481,11 @@ def LLVMValueIsBasicBlock(object Val):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMValueIsBasicBlock__retval = ccore.LLVMValueIsBasicBlock(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr)    # fully specified
-    return (_LLVMValueIsBasicBlock__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr())    # fully specified
+    return _LLVMValueIsBasicBlock__retval
 
 
 @cython.embedsignature(True)
@@ -9655,8 +9499,8 @@ def LLVMValueAsBasicBlock(object Val):
             (undocumented)
     """
     _LLVMValueAsBasicBlock__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMValueAsBasicBlock(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr))    # fully specified
-    return (_LLVMValueAsBasicBlock__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
+    return _LLVMValueAsBasicBlock__retval
 
 
 @cython.embedsignature(True)
@@ -9670,13 +9514,11 @@ def LLVMGetBasicBlockName(object BB):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef const char * _LLVMGetBasicBlockName__retval = ccore.LLVMGetBasicBlockName(
-        LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr)    # fully specified
-    return (_LLVMGetBasicBlockName__retval,)
+        LLVMOpaqueBasicBlock.from_pyobj(BB).get_element_ptr())    # fully specified
+    return _LLVMGetBasicBlockName__retval
 
 
 @cython.embedsignature(True)
@@ -9693,8 +9535,8 @@ def LLVMGetBasicBlockParent(object BB):
             (undocumented)
     """
     _LLVMGetBasicBlockParent__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetBasicBlockParent(
-        LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr))    # fully specified
-    return (_LLVMGetBasicBlockParent__retval,)
+        LLVMOpaqueBasicBlock.from_pyobj(BB).get_element_ptr()))    # fully specified
+    return _LLVMGetBasicBlockParent__retval
 
 
 @cython.embedsignature(True)
@@ -9716,8 +9558,8 @@ def LLVMGetBasicBlockTerminator(object BB):
             (undocumented)
     """
     _LLVMGetBasicBlockTerminator__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetBasicBlockTerminator(
-        LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr))    # fully specified
-    return (_LLVMGetBasicBlockTerminator__retval,)
+        LLVMOpaqueBasicBlock.from_pyobj(BB).get_element_ptr()))    # fully specified
+    return _LLVMGetBasicBlockTerminator__retval
 
 
 @cython.embedsignature(True)
@@ -9731,13 +9573,11 @@ def LLVMCountBasicBlocks(object Fn):
             Function value to operate on.
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMCountBasicBlocks__retval = ccore.LLVMCountBasicBlocks(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr)    # fully specified
-    return (_LLVMCountBasicBlocks__retval,)
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr())    # fully specified
+    return _LLVMCountBasicBlocks__retval
 
 
 @cython.embedsignature(True)
@@ -9759,7 +9599,7 @@ def LLVMGetBasicBlocks(object Fn, object BasicBlocks):
             (undocumented)
     """
     ccore.LLVMGetBasicBlocks(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr,
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),
         <ccore.LLVMBasicBlockRef*>rocm.llvm._util.types.Pointer.from_pyobj(BasicBlocks)._ptr)    # fully specified
 
 
@@ -9780,8 +9620,8 @@ def LLVMGetFirstBasicBlock(object Fn):
             (undocumented)
     """
     _LLVMGetFirstBasicBlock__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetFirstBasicBlock(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr))    # fully specified
-    return (_LLVMGetFirstBasicBlock__retval,)
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr()))    # fully specified
+    return _LLVMGetFirstBasicBlock__retval
 
 
 @cython.embedsignature(True)
@@ -9798,8 +9638,8 @@ def LLVMGetLastBasicBlock(object Fn):
             (undocumented)
     """
     _LLVMGetLastBasicBlock__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetLastBasicBlock(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr))    # fully specified
-    return (_LLVMGetLastBasicBlock__retval,)
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr()))    # fully specified
+    return _LLVMGetLastBasicBlock__retval
 
 
 @cython.embedsignature(True)
@@ -9813,8 +9653,8 @@ def LLVMGetNextBasicBlock(object BB):
             (undocumented)
     """
     _LLVMGetNextBasicBlock__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetNextBasicBlock(
-        LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr))    # fully specified
-    return (_LLVMGetNextBasicBlock__retval,)
+        LLVMOpaqueBasicBlock.from_pyobj(BB).get_element_ptr()))    # fully specified
+    return _LLVMGetNextBasicBlock__retval
 
 
 @cython.embedsignature(True)
@@ -9828,8 +9668,8 @@ def LLVMGetPreviousBasicBlock(object BB):
             (undocumented)
     """
     _LLVMGetPreviousBasicBlock__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetPreviousBasicBlock(
-        LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr))    # fully specified
-    return (_LLVMGetPreviousBasicBlock__retval,)
+        LLVMOpaqueBasicBlock.from_pyobj(BB).get_element_ptr()))    # fully specified
+    return _LLVMGetPreviousBasicBlock__retval
 
 
 @cython.embedsignature(True)
@@ -9847,8 +9687,8 @@ def LLVMGetEntryBasicBlock(object Fn):
             (undocumented)
     """
     _LLVMGetEntryBasicBlock__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetEntryBasicBlock(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr))    # fully specified
-    return (_LLVMGetEntryBasicBlock__retval,)
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr()))    # fully specified
+    return _LLVMGetEntryBasicBlock__retval
 
 
 @cython.embedsignature(True)
@@ -9870,8 +9710,8 @@ def LLVMInsertExistingBasicBlockAfterInsertBlock(object Builder, object BB):
             (undocumented)
     """
     ccore.LLVMInsertExistingBasicBlockAfterInsertBlock(
-        LLVMOpaqueBuilder.from_pyobj(Builder)._ptr,
-        LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr)    # fully specified
+        LLVMOpaqueBuilder.from_pyobj(Builder).get_element_ptr(),
+        LLVMOpaqueBasicBlock.from_pyobj(BB).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -9891,8 +9731,8 @@ def LLVMAppendExistingBasicBlock(object Fn, object BB):
             (undocumented)
     """
     ccore.LLVMAppendExistingBasicBlock(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr,
-        LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),
+        LLVMOpaqueBasicBlock.from_pyobj(BB).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -9912,8 +9752,8 @@ def LLVMCreateBasicBlockInContext(object C, const char * Name):
             (undocumented)
     """
     _LLVMCreateBasicBlockInContext__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMCreateBasicBlockInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,Name))    # fully specified
-    return (_LLVMCreateBasicBlockInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),Name))    # fully specified
+    return _LLVMCreateBasicBlockInContext__retval
 
 
 @cython.embedsignature(True)
@@ -9936,9 +9776,9 @@ def LLVMAppendBasicBlockInContext(object C, object Fn, const char * Name):
             (undocumented)
     """
     _LLVMAppendBasicBlockInContext__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMAppendBasicBlockInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr,Name))    # fully specified
-    return (_LLVMAppendBasicBlockInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),Name))    # fully specified
+    return _LLVMAppendBasicBlockInContext__retval
 
 
 @cython.embedsignature(True)
@@ -9959,8 +9799,8 @@ def LLVMAppendBasicBlock(object Fn, const char * Name):
             (undocumented)
     """
     _LLVMAppendBasicBlock__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMAppendBasicBlock(
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr,Name))    # fully specified
-    return (_LLVMAppendBasicBlock__retval,)
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),Name))    # fully specified
+    return _LLVMAppendBasicBlock__retval
 
 
 @cython.embedsignature(True)
@@ -9986,9 +9826,9 @@ def LLVMInsertBasicBlockInContext(object C, object BB, const char * Name):
             (undocumented)
     """
     _LLVMInsertBasicBlockInContext__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMInsertBasicBlockInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr,
-        LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr,Name))    # fully specified
-    return (_LLVMInsertBasicBlockInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),
+        LLVMOpaqueBasicBlock.from_pyobj(BB).get_element_ptr(),Name))    # fully specified
+    return _LLVMInsertBasicBlockInContext__retval
 
 
 @cython.embedsignature(True)
@@ -10008,8 +9848,8 @@ def LLVMInsertBasicBlock(object InsertBeforeBB, const char * Name):
             (undocumented)
     """
     _LLVMInsertBasicBlock__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMInsertBasicBlock(
-        LLVMOpaqueBasicBlock.from_pyobj(InsertBeforeBB)._ptr,Name))    # fully specified
-    return (_LLVMInsertBasicBlock__retval,)
+        LLVMOpaqueBasicBlock.from_pyobj(InsertBeforeBB).get_element_ptr(),Name))    # fully specified
+    return _LLVMInsertBasicBlock__retval
 
 
 @cython.embedsignature(True)
@@ -10029,7 +9869,7 @@ def LLVMDeleteBasicBlock(object BB):
             (undocumented)
     """
     ccore.LLVMDeleteBasicBlock(
-        LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr)    # fully specified
+        LLVMOpaqueBasicBlock.from_pyobj(BB).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -10049,7 +9889,7 @@ def LLVMRemoveBasicBlockFromParent(object BB):
             (undocumented)
     """
     ccore.LLVMRemoveBasicBlockFromParent(
-        LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr)    # fully specified
+        LLVMOpaqueBasicBlock.from_pyobj(BB).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -10069,8 +9909,8 @@ def LLVMMoveBasicBlockBefore(object BB, object MovePos):
             (undocumented)
     """
     ccore.LLVMMoveBasicBlockBefore(
-        LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr,
-        LLVMOpaqueBasicBlock.from_pyobj(MovePos)._ptr)    # fully specified
+        LLVMOpaqueBasicBlock.from_pyobj(BB).get_element_ptr(),
+        LLVMOpaqueBasicBlock.from_pyobj(MovePos).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -10090,8 +9930,8 @@ def LLVMMoveBasicBlockAfter(object BB, object MovePos):
             (undocumented)
     """
     ccore.LLVMMoveBasicBlockAfter(
-        LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr,
-        LLVMOpaqueBasicBlock.from_pyobj(MovePos)._ptr)    # fully specified
+        LLVMOpaqueBasicBlock.from_pyobj(BB).get_element_ptr(),
+        LLVMOpaqueBasicBlock.from_pyobj(MovePos).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -10108,8 +9948,8 @@ def LLVMGetFirstInstruction(object BB):
             (undocumented)
     """
     _LLVMGetFirstInstruction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetFirstInstruction(
-        LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr))    # fully specified
-    return (_LLVMGetFirstInstruction__retval,)
+        LLVMOpaqueBasicBlock.from_pyobj(BB).get_element_ptr()))    # fully specified
+    return _LLVMGetFirstInstruction__retval
 
 
 @cython.embedsignature(True)
@@ -10125,8 +9965,8 @@ def LLVMGetLastInstruction(object BB):
             (undocumented)
     """
     _LLVMGetLastInstruction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetLastInstruction(
-        LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr))    # fully specified
-    return (_LLVMGetLastInstruction__retval,)
+        LLVMOpaqueBasicBlock.from_pyobj(BB).get_element_ptr()))    # fully specified
+    return _LLVMGetLastInstruction__retval
 
 
 @cython.embedsignature(True)
@@ -10140,13 +9980,11 @@ def LLVMHasMetadata(object Val):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMHasMetadata__retval = ccore.LLVMHasMetadata(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr)    # fully specified
-    return (_LLVMHasMetadata__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr())    # fully specified
+    return _LLVMHasMetadata__retval
 
 
 @cython.embedsignature(True)
@@ -10163,8 +10001,8 @@ def LLVMGetMetadata(object Val, unsigned int KindID):
             (undocumented)
     """
     _LLVMGetMetadata__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetMetadata(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,KindID))    # fully specified
-    return (_LLVMGetMetadata__retval,)
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),KindID))    # fully specified
+    return _LLVMGetMetadata__retval
 
 
 @cython.embedsignature(True)
@@ -10184,8 +10022,8 @@ def LLVMSetMetadata(object Val, unsigned int KindID, object Node):
             (undocumented)
     """
     ccore.LLVMSetMetadata(
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,KindID,
-        LLVMOpaqueValue.from_pyobj(Node)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),KindID,
+        LLVMOpaqueValue.from_pyobj(Node).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -10206,9 +10044,9 @@ def LLVMInstructionGetAllMetadataOtherThanDebugLoc(object Instr, object NumEntri
             (undocumented)
     """
     _LLVMInstructionGetAllMetadataOtherThanDebugLoc__retval = LLVMOpaqueValueMetadataEntry.from_ptr(ccore.LLVMInstructionGetAllMetadataOtherThanDebugLoc(
-        LLVMOpaqueValue.from_pyobj(Instr)._ptr,
+        LLVMOpaqueValue.from_pyobj(Instr).get_element_ptr(),
         <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NumEntries)._ptr))    # fully specified
-    return (_LLVMInstructionGetAllMetadataOtherThanDebugLoc__retval,)
+    return _LLVMInstructionGetAllMetadataOtherThanDebugLoc__retval
 
 
 @cython.embedsignature(True)
@@ -10225,8 +10063,8 @@ def LLVMGetInstructionParent(object Inst):
             (undocumented)
     """
     _LLVMGetInstructionParent__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetInstructionParent(
-        LLVMOpaqueValue.from_pyobj(Inst)._ptr))    # fully specified
-    return (_LLVMGetInstructionParent__retval,)
+        LLVMOpaqueValue.from_pyobj(Inst).get_element_ptr()))    # fully specified
+    return _LLVMGetInstructionParent__retval
 
 
 @cython.embedsignature(True)
@@ -10245,8 +10083,8 @@ def LLVMGetNextInstruction(object Inst):
             (undocumented)
     """
     _LLVMGetNextInstruction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNextInstruction(
-        LLVMOpaqueValue.from_pyobj(Inst)._ptr))    # fully specified
-    return (_LLVMGetNextInstruction__retval,)
+        LLVMOpaqueValue.from_pyobj(Inst).get_element_ptr()))    # fully specified
+    return _LLVMGetNextInstruction__retval
 
 
 @cython.embedsignature(True)
@@ -10263,8 +10101,8 @@ def LLVMGetPreviousInstruction(object Inst):
             (undocumented)
     """
     _LLVMGetPreviousInstruction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetPreviousInstruction(
-        LLVMOpaqueValue.from_pyobj(Inst)._ptr))    # fully specified
-    return (_LLVMGetPreviousInstruction__retval,)
+        LLVMOpaqueValue.from_pyobj(Inst).get_element_ptr()))    # fully specified
+    return _LLVMGetPreviousInstruction__retval
 
 
 @cython.embedsignature(True)
@@ -10284,7 +10122,7 @@ def LLVMInstructionRemoveFromParent(object Inst):
             (undocumented)
     """
     ccore.LLVMInstructionRemoveFromParent(
-        LLVMOpaqueValue.from_pyobj(Inst)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Inst).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -10304,7 +10142,7 @@ def LLVMInstructionEraseFromParent(object Inst):
             (undocumented)
     """
     ccore.LLVMInstructionEraseFromParent(
-        LLVMOpaqueValue.from_pyobj(Inst)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Inst).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -10324,7 +10162,7 @@ def LLVMDeleteInstruction(object Inst):
             (undocumented)
     """
     ccore.LLVMDeleteInstruction(
-        LLVMOpaqueValue.from_pyobj(Inst)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Inst).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -10341,13 +10179,11 @@ def LLVMGetInstructionOpcode(object Inst):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.LLVMOpcode`
+        `~.LLVMOpcode`
     """
     _LLVMGetInstructionOpcode__retval = LLVMOpcode(ccore.LLVMGetInstructionOpcode(
-        LLVMOpaqueValue.from_pyobj(Inst)._ptr))    # fully specified
-    return (_LLVMGetInstructionOpcode__retval,)
+        LLVMOpaqueValue.from_pyobj(Inst).get_element_ptr()))    # fully specified
+    return _LLVMGetInstructionOpcode__retval
 
 
 @cython.embedsignature(True)
@@ -10367,13 +10203,11 @@ def LLVMGetICmpPredicate(object Inst):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.LLVMIntPredicate`
+        `~.LLVMIntPredicate`
     """
     _LLVMGetICmpPredicate__retval = LLVMIntPredicate(ccore.LLVMGetICmpPredicate(
-        LLVMOpaqueValue.from_pyobj(Inst)._ptr))    # fully specified
-    return (_LLVMGetICmpPredicate__retval,)
+        LLVMOpaqueValue.from_pyobj(Inst).get_element_ptr()))    # fully specified
+    return _LLVMGetICmpPredicate__retval
 
 
 @cython.embedsignature(True)
@@ -10393,13 +10227,11 @@ def LLVMGetFCmpPredicate(object Inst):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.LLVMRealPredicate`
+        `~.LLVMRealPredicate`
     """
     _LLVMGetFCmpPredicate__retval = LLVMRealPredicate(ccore.LLVMGetFCmpPredicate(
-        LLVMOpaqueValue.from_pyobj(Inst)._ptr))    # fully specified
-    return (_LLVMGetFCmpPredicate__retval,)
+        LLVMOpaqueValue.from_pyobj(Inst).get_element_ptr()))    # fully specified
+    return _LLVMGetFCmpPredicate__retval
 
 
 @cython.embedsignature(True)
@@ -10419,8 +10251,8 @@ def LLVMInstructionClone(object Inst):
             (undocumented)
     """
     _LLVMInstructionClone__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMInstructionClone(
-        LLVMOpaqueValue.from_pyobj(Inst)._ptr))    # fully specified
-    return (_LLVMInstructionClone__retval,)
+        LLVMOpaqueValue.from_pyobj(Inst).get_element_ptr()))    # fully specified
+    return _LLVMInstructionClone__retval
 
 
 @cython.embedsignature(True)
@@ -10439,8 +10271,8 @@ def LLVMIsATerminatorInst(object Inst):
             (undocumented)
     """
     _LLVMIsATerminatorInst__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMIsATerminatorInst(
-        LLVMOpaqueValue.from_pyobj(Inst)._ptr))    # fully specified
-    return (_LLVMIsATerminatorInst__retval,)
+        LLVMOpaqueValue.from_pyobj(Inst).get_element_ptr()))    # fully specified
+    return _LLVMIsATerminatorInst__retval
 
 
 @cython.embedsignature(True)
@@ -10466,13 +10298,11 @@ def LLVMGetNumArgOperands(object Instr):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetNumArgOperands__retval = ccore.LLVMGetNumArgOperands(
-        LLVMOpaqueValue.from_pyobj(Instr)._ptr)    # fully specified
-    return (_LLVMGetNumArgOperands__retval,)
+        LLVMOpaqueValue.from_pyobj(Instr).get_element_ptr())    # fully specified
+    return _LLVMGetNumArgOperands__retval
 
 
 @cython.embedsignature(True)
@@ -10498,7 +10328,7 @@ def LLVMSetInstructionCallConv(object Instr, unsigned int CC):
             (undocumented)
     """
     ccore.LLVMSetInstructionCallConv(
-        LLVMOpaqueValue.from_pyobj(Instr)._ptr,CC)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Instr).get_element_ptr(),CC)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -10518,13 +10348,11 @@ def LLVMGetInstructionCallConv(object Instr):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetInstructionCallConv__retval = ccore.LLVMGetInstructionCallConv(
-        LLVMOpaqueValue.from_pyobj(Instr)._ptr)    # fully specified
-    return (_LLVMGetInstructionCallConv__retval,)
+        LLVMOpaqueValue.from_pyobj(Instr).get_element_ptr())    # fully specified
+    return _LLVMGetInstructionCallConv__retval
 
 
 @cython.embedsignature(True)
@@ -10542,7 +10370,7 @@ def LLVMSetInstrParamAlignment(object Instr, unsigned int Idx, unsigned int Alig
             (undocumented)
     """
     ccore.LLVMSetInstrParamAlignment(
-        LLVMOpaqueValue.from_pyobj(Instr)._ptr,Idx,Align)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Instr).get_element_ptr(),Idx,Align)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -10560,8 +10388,8 @@ def LLVMAddCallSiteAttribute(object C, unsigned int Idx, object A):
             (undocumented)
     """
     ccore.LLVMAddCallSiteAttribute(
-        LLVMOpaqueValue.from_pyobj(C)._ptr,Idx,
-        LLVMOpaqueAttributeRef.from_pyobj(A)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(C).get_element_ptr(),Idx,
+        LLVMOpaqueAttributeRef.from_pyobj(A).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -10576,13 +10404,11 @@ def LLVMGetCallSiteAttributeCount(object C, unsigned int Idx):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetCallSiteAttributeCount__retval = ccore.LLVMGetCallSiteAttributeCount(
-        LLVMOpaqueValue.from_pyobj(C)._ptr,Idx)    # fully specified
-    return (_LLVMGetCallSiteAttributeCount__retval,)
+        LLVMOpaqueValue.from_pyobj(C).get_element_ptr(),Idx)    # fully specified
+    return _LLVMGetCallSiteAttributeCount__retval
 
 
 @cython.embedsignature(True)
@@ -10600,7 +10426,7 @@ def LLVMGetCallSiteAttributes(object C, unsigned int Idx, object Attrs):
             (undocumented)
     """
     ccore.LLVMGetCallSiteAttributes(
-        LLVMOpaqueValue.from_pyobj(C)._ptr,Idx,
+        LLVMOpaqueValue.from_pyobj(C).get_element_ptr(),Idx,
         <ccore.LLVMAttributeRef*>rocm.llvm._util.types.Pointer.from_pyobj(Attrs)._ptr)    # fully specified
 
 
@@ -10619,8 +10445,8 @@ def LLVMGetCallSiteEnumAttribute(object C, unsigned int Idx, unsigned int KindID
             (undocumented)
     """
     _LLVMGetCallSiteEnumAttribute__retval = LLVMOpaqueAttributeRef.from_ptr(ccore.LLVMGetCallSiteEnumAttribute(
-        LLVMOpaqueValue.from_pyobj(C)._ptr,Idx,KindID))    # fully specified
-    return (_LLVMGetCallSiteEnumAttribute__retval,)
+        LLVMOpaqueValue.from_pyobj(C).get_element_ptr(),Idx,KindID))    # fully specified
+    return _LLVMGetCallSiteEnumAttribute__retval
 
 
 @cython.embedsignature(True)
@@ -10641,8 +10467,8 @@ def LLVMGetCallSiteStringAttribute(object C, unsigned int Idx, const char * K, u
             (undocumented)
     """
     _LLVMGetCallSiteStringAttribute__retval = LLVMOpaqueAttributeRef.from_ptr(ccore.LLVMGetCallSiteStringAttribute(
-        LLVMOpaqueValue.from_pyobj(C)._ptr,Idx,K,KLen))    # fully specified
-    return (_LLVMGetCallSiteStringAttribute__retval,)
+        LLVMOpaqueValue.from_pyobj(C).get_element_ptr(),Idx,K,KLen))    # fully specified
+    return _LLVMGetCallSiteStringAttribute__retval
 
 
 @cython.embedsignature(True)
@@ -10660,7 +10486,7 @@ def LLVMRemoveCallSiteEnumAttribute(object C, unsigned int Idx, unsigned int Kin
             (undocumented)
     """
     ccore.LLVMRemoveCallSiteEnumAttribute(
-        LLVMOpaqueValue.from_pyobj(C)._ptr,Idx,KindID)    # fully specified
+        LLVMOpaqueValue.from_pyobj(C).get_element_ptr(),Idx,KindID)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -10681,7 +10507,7 @@ def LLVMRemoveCallSiteStringAttribute(object C, unsigned int Idx, const char * K
             (undocumented)
     """
     ccore.LLVMRemoveCallSiteStringAttribute(
-        LLVMOpaqueValue.from_pyobj(C)._ptr,Idx,K,KLen)    # fully specified
+        LLVMOpaqueValue.from_pyobj(C).get_element_ptr(),Idx,K,KLen)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -10698,8 +10524,8 @@ def LLVMGetCalledFunctionType(object C):
             (undocumented)
     """
     _LLVMGetCalledFunctionType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMGetCalledFunctionType(
-        LLVMOpaqueValue.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMGetCalledFunctionType__retval,)
+        LLVMOpaqueValue.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMGetCalledFunctionType__retval
 
 
 @cython.embedsignature(True)
@@ -10722,8 +10548,8 @@ def LLVMGetCalledValue(object Instr):
             (undocumented)
     """
     _LLVMGetCalledValue__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetCalledValue(
-        LLVMOpaqueValue.from_pyobj(Instr)._ptr))    # fully specified
-    return (_LLVMGetCalledValue__retval,)
+        LLVMOpaqueValue.from_pyobj(Instr).get_element_ptr()))    # fully specified
+    return _LLVMGetCalledValue__retval
 
 
 @cython.embedsignature(True)
@@ -10742,13 +10568,11 @@ def LLVMIsTailCall(object CallInst):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIsTailCall__retval = ccore.LLVMIsTailCall(
-        LLVMOpaqueValue.from_pyobj(CallInst)._ptr)    # fully specified
-    return (_LLVMIsTailCall__retval,)
+        LLVMOpaqueValue.from_pyobj(CallInst).get_element_ptr())    # fully specified
+    return _LLVMIsTailCall__retval
 
 
 @cython.embedsignature(True)
@@ -10770,7 +10594,7 @@ def LLVMSetTailCall(object CallInst, int IsTailCall):
             (undocumented)
     """
     ccore.LLVMSetTailCall(
-        LLVMOpaqueValue.from_pyobj(CallInst)._ptr,IsTailCall)    # fully specified
+        LLVMOpaqueValue.from_pyobj(CallInst).get_element_ptr(),IsTailCall)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -10789,8 +10613,8 @@ def LLVMGetNormalDest(object InvokeInst):
             (undocumented)
     """
     _LLVMGetNormalDest__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetNormalDest(
-        LLVMOpaqueValue.from_pyobj(InvokeInst)._ptr))    # fully specified
-    return (_LLVMGetNormalDest__retval,)
+        LLVMOpaqueValue.from_pyobj(InvokeInst).get_element_ptr()))    # fully specified
+    return _LLVMGetNormalDest__retval
 
 
 @cython.embedsignature(True)
@@ -10816,8 +10640,8 @@ def LLVMGetUnwindDest(object InvokeInst):
             (undocumented)
     """
     _LLVMGetUnwindDest__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetUnwindDest(
-        LLVMOpaqueValue.from_pyobj(InvokeInst)._ptr))    # fully specified
-    return (_LLVMGetUnwindDest__retval,)
+        LLVMOpaqueValue.from_pyobj(InvokeInst).get_element_ptr()))    # fully specified
+    return _LLVMGetUnwindDest__retval
 
 
 @cython.embedsignature(True)
@@ -10839,8 +10663,8 @@ def LLVMSetNormalDest(object InvokeInst, object B):
             (undocumented)
     """
     ccore.LLVMSetNormalDest(
-        LLVMOpaqueValue.from_pyobj(InvokeInst)._ptr,
-        LLVMOpaqueBasicBlock.from_pyobj(B)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(InvokeInst).get_element_ptr(),
+        LLVMOpaqueBasicBlock.from_pyobj(B).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -10869,8 +10693,8 @@ def LLVMSetUnwindDest(object InvokeInst, object B):
             (undocumented)
     """
     ccore.LLVMSetUnwindDest(
-        LLVMOpaqueValue.from_pyobj(InvokeInst)._ptr,
-        LLVMOpaqueBasicBlock.from_pyobj(B)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(InvokeInst).get_element_ptr(),
+        LLVMOpaqueBasicBlock.from_pyobj(B).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -10887,13 +10711,11 @@ def LLVMGetNumSuccessors(object Term):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetNumSuccessors__retval = ccore.LLVMGetNumSuccessors(
-        LLVMOpaqueValue.from_pyobj(Term)._ptr)    # fully specified
-    return (_LLVMGetNumSuccessors__retval,)
+        LLVMOpaqueValue.from_pyobj(Term).get_element_ptr())    # fully specified
+    return _LLVMGetNumSuccessors__retval
 
 
 @cython.embedsignature(True)
@@ -10913,8 +10735,8 @@ def LLVMGetSuccessor(object Term, unsigned int i):
             (undocumented)
     """
     _LLVMGetSuccessor__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetSuccessor(
-        LLVMOpaqueValue.from_pyobj(Term)._ptr,i))    # fully specified
-    return (_LLVMGetSuccessor__retval,)
+        LLVMOpaqueValue.from_pyobj(Term).get_element_ptr(),i))    # fully specified
+    return _LLVMGetSuccessor__retval
 
 
 @cython.embedsignature(True)
@@ -10937,8 +10759,8 @@ def LLVMSetSuccessor(object Term, unsigned int i, object block):
             (undocumented)
     """
     ccore.LLVMSetSuccessor(
-        LLVMOpaqueValue.from_pyobj(Term)._ptr,i,
-        LLVMOpaqueBasicBlock.from_pyobj(block)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Term).get_element_ptr(),i,
+        LLVMOpaqueBasicBlock.from_pyobj(block).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -10957,13 +10779,11 @@ def LLVMIsConditional(object Branch):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIsConditional__retval = ccore.LLVMIsConditional(
-        LLVMOpaqueValue.from_pyobj(Branch)._ptr)    # fully specified
-    return (_LLVMIsConditional__retval,)
+        LLVMOpaqueValue.from_pyobj(Branch).get_element_ptr())    # fully specified
+    return _LLVMIsConditional__retval
 
 
 @cython.embedsignature(True)
@@ -10982,8 +10802,8 @@ def LLVMGetCondition(object Branch):
             (undocumented)
     """
     _LLVMGetCondition__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetCondition(
-        LLVMOpaqueValue.from_pyobj(Branch)._ptr))    # fully specified
-    return (_LLVMGetCondition__retval,)
+        LLVMOpaqueValue.from_pyobj(Branch).get_element_ptr()))    # fully specified
+    return _LLVMGetCondition__retval
 
 
 @cython.embedsignature(True)
@@ -11005,8 +10825,8 @@ def LLVMSetCondition(object Branch, object Cond):
             (undocumented)
     """
     ccore.LLVMSetCondition(
-        LLVMOpaqueValue.from_pyobj(Branch)._ptr,
-        LLVMOpaqueValue.from_pyobj(Cond)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Branch).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Cond).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -11025,8 +10845,8 @@ def LLVMGetSwitchDefaultDest(object SwitchInstr):
             (undocumented)
     """
     _LLVMGetSwitchDefaultDest__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetSwitchDefaultDest(
-        LLVMOpaqueValue.from_pyobj(SwitchInstr)._ptr))    # fully specified
-    return (_LLVMGetSwitchDefaultDest__retval,)
+        LLVMOpaqueValue.from_pyobj(SwitchInstr).get_element_ptr()))    # fully specified
+    return _LLVMGetSwitchDefaultDest__retval
 
 
 @cython.embedsignature(True)
@@ -11040,8 +10860,8 @@ def LLVMGetAllocatedType(object Alloca):
             (undocumented)
     """
     _LLVMGetAllocatedType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMGetAllocatedType(
-        LLVMOpaqueValue.from_pyobj(Alloca)._ptr))    # fully specified
-    return (_LLVMGetAllocatedType__retval,)
+        LLVMOpaqueValue.from_pyobj(Alloca).get_element_ptr()))    # fully specified
+    return _LLVMGetAllocatedType__retval
 
 
 @cython.embedsignature(True)
@@ -11055,13 +10875,11 @@ def LLVMIsInBounds(object GEP):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIsInBounds__retval = ccore.LLVMIsInBounds(
-        LLVMOpaqueValue.from_pyobj(GEP)._ptr)    # fully specified
-    return (_LLVMIsInBounds__retval,)
+        LLVMOpaqueValue.from_pyobj(GEP).get_element_ptr())    # fully specified
+    return _LLVMIsInBounds__retval
 
 
 @cython.embedsignature(True)
@@ -11078,7 +10896,7 @@ def LLVMSetIsInBounds(object GEP, int InBounds):
             (undocumented)
     """
     ccore.LLVMSetIsInBounds(
-        LLVMOpaqueValue.from_pyobj(GEP)._ptr,InBounds)    # fully specified
+        LLVMOpaqueValue.from_pyobj(GEP).get_element_ptr(),InBounds)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -11092,8 +10910,8 @@ def LLVMGetGEPSourceElementType(object GEP):
             (undocumented)
     """
     _LLVMGetGEPSourceElementType__retval = LLVMOpaqueType.from_ptr(ccore.LLVMGetGEPSourceElementType(
-        LLVMOpaqueValue.from_pyobj(GEP)._ptr))    # fully specified
-    return (_LLVMGetGEPSourceElementType__retval,)
+        LLVMOpaqueValue.from_pyobj(GEP).get_element_ptr()))    # fully specified
+    return _LLVMGetGEPSourceElementType__retval
 
 
 @cython.embedsignature(True)
@@ -11116,7 +10934,7 @@ def LLVMAddIncoming(object PhiNode, object IncomingValues, object IncomingBlocks
             (undocumented)
     """
     ccore.LLVMAddIncoming(
-        LLVMOpaqueValue.from_pyobj(PhiNode)._ptr,
+        LLVMOpaqueValue.from_pyobj(PhiNode).get_element_ptr(),
         <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(IncomingValues)._ptr,
         <ccore.LLVMBasicBlockRef*>rocm.llvm._util.types.Pointer.from_pyobj(IncomingBlocks)._ptr,Count)    # fully specified
 
@@ -11132,13 +10950,11 @@ def LLVMCountIncoming(object PhiNode):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMCountIncoming__retval = ccore.LLVMCountIncoming(
-        LLVMOpaqueValue.from_pyobj(PhiNode)._ptr)    # fully specified
-    return (_LLVMCountIncoming__retval,)
+        LLVMOpaqueValue.from_pyobj(PhiNode).get_element_ptr())    # fully specified
+    return _LLVMCountIncoming__retval
 
 
 @cython.embedsignature(True)
@@ -11155,8 +10971,8 @@ def LLVMGetIncomingValue(object PhiNode, unsigned int Index):
             (undocumented)
     """
     _LLVMGetIncomingValue__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetIncomingValue(
-        LLVMOpaqueValue.from_pyobj(PhiNode)._ptr,Index))    # fully specified
-    return (_LLVMGetIncomingValue__retval,)
+        LLVMOpaqueValue.from_pyobj(PhiNode).get_element_ptr(),Index))    # fully specified
+    return _LLVMGetIncomingValue__retval
 
 
 @cython.embedsignature(True)
@@ -11173,8 +10989,8 @@ def LLVMGetIncomingBlock(object PhiNode, unsigned int Index):
             (undocumented)
     """
     _LLVMGetIncomingBlock__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetIncomingBlock(
-        LLVMOpaqueValue.from_pyobj(PhiNode)._ptr,Index))    # fully specified
-    return (_LLVMGetIncomingBlock__retval,)
+        LLVMOpaqueValue.from_pyobj(PhiNode).get_element_ptr(),Index))    # fully specified
+    return _LLVMGetIncomingBlock__retval
 
 
 @cython.embedsignature(True)
@@ -11189,13 +11005,11 @@ def LLVMGetNumIndices(object Inst):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetNumIndices__retval = ccore.LLVMGetNumIndices(
-        LLVMOpaqueValue.from_pyobj(Inst)._ptr)    # fully specified
-    return (_LLVMGetNumIndices__retval,)
+        LLVMOpaqueValue.from_pyobj(Inst).get_element_ptr())    # fully specified
+    return _LLVMGetNumIndices__retval
 
 
 @cython.embedsignature(True)
@@ -11209,8 +11023,8 @@ def LLVMGetIndices(object Inst):
             (undocumented)
     """
     _LLVMGetIndices__retval = rocm.llvm._util.types.Pointer.from_ptr(ccore.LLVMGetIndices(
-        LLVMOpaqueValue.from_pyobj(Inst)._ptr))    # fully specified
-    return (_LLVMGetIndices__retval,)
+        LLVMOpaqueValue.from_pyobj(Inst).get_element_ptr()))    # fully specified
+    return _LLVMGetIndices__retval
 
 
 @cython.embedsignature(True)
@@ -11227,8 +11041,8 @@ def LLVMCreateBuilderInContext(object C):
             (undocumented)
     """
     _LLVMCreateBuilderInContext__retval = LLVMOpaqueBuilder.from_ptr(ccore.LLVMCreateBuilderInContext(
-        LLVMOpaqueContext.from_pyobj(C)._ptr))    # fully specified
-    return (_LLVMCreateBuilderInContext__retval,)
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
+    return _LLVMCreateBuilderInContext__retval
 
 
 @cython.embedsignature(True)
@@ -11236,7 +11050,7 @@ def LLVMCreateBuilder():
     r"""(No short description, might be part of a group.)
     """
     _LLVMCreateBuilder__retval = LLVMOpaqueBuilder.from_ptr(ccore.LLVMCreateBuilder())    # fully specified
-    return (_LLVMCreateBuilder__retval,)
+    return _LLVMCreateBuilder__retval
 
 
 @cython.embedsignature(True)
@@ -11254,9 +11068,9 @@ def LLVMPositionBuilder(object Builder, object Block, object Instr):
             (undocumented)
     """
     ccore.LLVMPositionBuilder(
-        LLVMOpaqueBuilder.from_pyobj(Builder)._ptr,
-        LLVMOpaqueBasicBlock.from_pyobj(Block)._ptr,
-        LLVMOpaqueValue.from_pyobj(Instr)._ptr)    # fully specified
+        LLVMOpaqueBuilder.from_pyobj(Builder).get_element_ptr(),
+        LLVMOpaqueBasicBlock.from_pyobj(Block).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Instr).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -11271,8 +11085,8 @@ def LLVMPositionBuilderBefore(object Builder, object Instr):
             (undocumented)
     """
     ccore.LLVMPositionBuilderBefore(
-        LLVMOpaqueBuilder.from_pyobj(Builder)._ptr,
-        LLVMOpaqueValue.from_pyobj(Instr)._ptr)    # fully specified
+        LLVMOpaqueBuilder.from_pyobj(Builder).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Instr).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -11287,8 +11101,8 @@ def LLVMPositionBuilderAtEnd(object Builder, object Block):
             (undocumented)
     """
     ccore.LLVMPositionBuilderAtEnd(
-        LLVMOpaqueBuilder.from_pyobj(Builder)._ptr,
-        LLVMOpaqueBasicBlock.from_pyobj(Block)._ptr)    # fully specified
+        LLVMOpaqueBuilder.from_pyobj(Builder).get_element_ptr(),
+        LLVMOpaqueBasicBlock.from_pyobj(Block).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -11300,8 +11114,8 @@ def LLVMGetInsertBlock(object Builder):
             (undocumented)
     """
     _LLVMGetInsertBlock__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMGetInsertBlock(
-        LLVMOpaqueBuilder.from_pyobj(Builder)._ptr))    # fully specified
-    return (_LLVMGetInsertBlock__retval,)
+        LLVMOpaqueBuilder.from_pyobj(Builder).get_element_ptr()))    # fully specified
+    return _LLVMGetInsertBlock__retval
 
 
 @cython.embedsignature(True)
@@ -11313,7 +11127,7 @@ def LLVMClearInsertionPosition(object Builder):
             (undocumented)
     """
     ccore.LLVMClearInsertionPosition(
-        LLVMOpaqueBuilder.from_pyobj(Builder)._ptr)    # fully specified
+        LLVMOpaqueBuilder.from_pyobj(Builder).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -11328,8 +11142,8 @@ def LLVMInsertIntoBuilder(object Builder, object Instr):
             (undocumented)
     """
     ccore.LLVMInsertIntoBuilder(
-        LLVMOpaqueBuilder.from_pyobj(Builder)._ptr,
-        LLVMOpaqueValue.from_pyobj(Instr)._ptr)    # fully specified
+        LLVMOpaqueBuilder.from_pyobj(Builder).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Instr).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -11347,8 +11161,8 @@ def LLVMInsertIntoBuilderWithName(object Builder, object Instr, const char * Nam
             (undocumented)
     """
     ccore.LLVMInsertIntoBuilderWithName(
-        LLVMOpaqueBuilder.from_pyobj(Builder)._ptr,
-        LLVMOpaqueValue.from_pyobj(Instr)._ptr,Name)    # fully specified
+        LLVMOpaqueBuilder.from_pyobj(Builder).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Instr).get_element_ptr(),Name)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -11360,7 +11174,7 @@ def LLVMDisposeBuilder(object Builder):
             (undocumented)
     """
     ccore.LLVMDisposeBuilder(
-        LLVMOpaqueBuilder.from_pyobj(Builder)._ptr)    # fully specified
+        LLVMOpaqueBuilder.from_pyobj(Builder).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -11377,8 +11191,8 @@ def LLVMGetCurrentDebugLocation2(object Builder):
             (undocumented)
     """
     _LLVMGetCurrentDebugLocation2__retval = LLVMOpaqueMetadata.from_ptr(ccore.LLVMGetCurrentDebugLocation2(
-        LLVMOpaqueBuilder.from_pyobj(Builder)._ptr))    # fully specified
-    return (_LLVMGetCurrentDebugLocation2__retval,)
+        LLVMOpaqueBuilder.from_pyobj(Builder).get_element_ptr()))    # fully specified
+    return _LLVMGetCurrentDebugLocation2__retval
 
 
 @cython.embedsignature(True)
@@ -11400,8 +11214,8 @@ def LLVMSetCurrentDebugLocation2(object Builder, object Loc):
             (undocumented)
     """
     ccore.LLVMSetCurrentDebugLocation2(
-        LLVMOpaqueBuilder.from_pyobj(Builder)._ptr,
-        LLVMOpaqueMetadata.from_pyobj(Loc)._ptr)    # fully specified
+        LLVMOpaqueBuilder.from_pyobj(Builder).get_element_ptr(),
+        LLVMOpaqueMetadata.from_pyobj(Loc).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -11427,8 +11241,8 @@ def LLVMSetInstDebugLocation(object Builder, object Inst):
             (undocumented)
     """
     ccore.LLVMSetInstDebugLocation(
-        LLVMOpaqueBuilder.from_pyobj(Builder)._ptr,
-        LLVMOpaqueValue.from_pyobj(Inst)._ptr)    # fully specified
+        LLVMOpaqueBuilder.from_pyobj(Builder).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Inst).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -11448,8 +11262,8 @@ def LLVMAddMetadataToInst(object Builder, object Inst):
             (undocumented)
     """
     ccore.LLVMAddMetadataToInst(
-        LLVMOpaqueBuilder.from_pyobj(Builder)._ptr,
-        LLVMOpaqueValue.from_pyobj(Inst)._ptr)    # fully specified
+        LLVMOpaqueBuilder.from_pyobj(Builder).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Inst).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -11466,8 +11280,8 @@ def LLVMBuilderGetDefaultFPMathTag(object Builder):
             (undocumented)
     """
     _LLVMBuilderGetDefaultFPMathTag__retval = LLVMOpaqueMetadata.from_ptr(ccore.LLVMBuilderGetDefaultFPMathTag(
-        LLVMOpaqueBuilder.from_pyobj(Builder)._ptr))    # fully specified
-    return (_LLVMBuilderGetDefaultFPMathTag__retval,)
+        LLVMOpaqueBuilder.from_pyobj(Builder).get_element_ptr()))    # fully specified
+    return _LLVMBuilderGetDefaultFPMathTag__retval
 
 
 @cython.embedsignature(True)
@@ -11489,8 +11303,8 @@ def LLVMBuilderSetDefaultFPMathTag(object Builder, object FPMathTag):
             (undocumented)
     """
     ccore.LLVMBuilderSetDefaultFPMathTag(
-        LLVMOpaqueBuilder.from_pyobj(Builder)._ptr,
-        LLVMOpaqueMetadata.from_pyobj(FPMathTag)._ptr)    # fully specified
+        LLVMOpaqueBuilder.from_pyobj(Builder).get_element_ptr(),
+        LLVMOpaqueMetadata.from_pyobj(FPMathTag).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -11508,8 +11322,8 @@ def LLVMSetCurrentDebugLocation(object Builder, object L):
             (undocumented)
     """
     ccore.LLVMSetCurrentDebugLocation(
-        LLVMOpaqueBuilder.from_pyobj(Builder)._ptr,
-        LLVMOpaqueValue.from_pyobj(L)._ptr)    # fully specified
+        LLVMOpaqueBuilder.from_pyobj(Builder).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(L).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -11524,8 +11338,8 @@ def LLVMGetCurrentDebugLocation(object Builder):
             (undocumented)
     """
     _LLVMGetCurrentDebugLocation__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetCurrentDebugLocation(
-        LLVMOpaqueBuilder.from_pyobj(Builder)._ptr))    # fully specified
-    return (_LLVMGetCurrentDebugLocation__retval,)
+        LLVMOpaqueBuilder.from_pyobj(Builder).get_element_ptr()))    # fully specified
+    return _LLVMGetCurrentDebugLocation__retval
 
 
 @cython.embedsignature(True)
@@ -11537,8 +11351,8 @@ def LLVMBuildRetVoid(object arg0):
             (undocumented)
     """
     _LLVMBuildRetVoid__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildRetVoid(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr))    # fully specified
-    return (_LLVMBuildRetVoid__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr()))    # fully specified
+    return _LLVMBuildRetVoid__retval
 
 
 @cython.embedsignature(True)
@@ -11553,9 +11367,9 @@ def LLVMBuildRet(object arg0, object V):
             (undocumented)
     """
     _LLVMBuildRet__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildRet(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(V)._ptr))    # fully specified
-    return (_LLVMBuildRet__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(V).get_element_ptr()))    # fully specified
+    return _LLVMBuildRet__retval
 
 
 @cython.embedsignature(True)
@@ -11573,9 +11387,9 @@ def LLVMBuildAggregateRet(object arg0, object RetVals, unsigned int N):
             (undocumented)
     """
     _LLVMBuildAggregateRet__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildAggregateRet(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(RetVals)._ptr,N))    # fully specified
-    return (_LLVMBuildAggregateRet__retval,)
+    return _LLVMBuildAggregateRet__retval
 
 
 @cython.embedsignature(True)
@@ -11590,9 +11404,9 @@ def LLVMBuildBr(object arg0, object Dest):
             (undocumented)
     """
     _LLVMBuildBr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildBr(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueBasicBlock.from_pyobj(Dest)._ptr))    # fully specified
-    return (_LLVMBuildBr__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueBasicBlock.from_pyobj(Dest).get_element_ptr()))    # fully specified
+    return _LLVMBuildBr__retval
 
 
 @cython.embedsignature(True)
@@ -11613,11 +11427,11 @@ def LLVMBuildCondBr(object arg0, object If, object Then, object Else):
             (undocumented)
     """
     _LLVMBuildCondBr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildCondBr(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(If)._ptr,
-        LLVMOpaqueBasicBlock.from_pyobj(Then)._ptr,
-        LLVMOpaqueBasicBlock.from_pyobj(Else)._ptr))    # fully specified
-    return (_LLVMBuildCondBr__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(If).get_element_ptr(),
+        LLVMOpaqueBasicBlock.from_pyobj(Then).get_element_ptr(),
+        LLVMOpaqueBasicBlock.from_pyobj(Else).get_element_ptr()))    # fully specified
+    return _LLVMBuildCondBr__retval
 
 
 @cython.embedsignature(True)
@@ -11638,10 +11452,10 @@ def LLVMBuildSwitch(object arg0, object V, object Else, unsigned int NumCases):
             (undocumented)
     """
     _LLVMBuildSwitch__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSwitch(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(V)._ptr,
-        LLVMOpaqueBasicBlock.from_pyobj(Else)._ptr,NumCases))    # fully specified
-    return (_LLVMBuildSwitch__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(V).get_element_ptr(),
+        LLVMOpaqueBasicBlock.from_pyobj(Else).get_element_ptr(),NumCases))    # fully specified
+    return _LLVMBuildSwitch__retval
 
 
 @cython.embedsignature(True)
@@ -11659,9 +11473,9 @@ def LLVMBuildIndirectBr(object B, object Addr, unsigned int NumDests):
             (undocumented)
     """
     _LLVMBuildIndirectBr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildIndirectBr(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,
-        LLVMOpaqueValue.from_pyobj(Addr)._ptr,NumDests))    # fully specified
-    return (_LLVMBuildIndirectBr__retval,)
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Addr).get_element_ptr(),NumDests))    # fully specified
+    return _LLVMBuildIndirectBr__retval
 
 
 @cython.embedsignature(True)
@@ -11694,13 +11508,13 @@ def LLVMBuildInvoke2(object arg0, object Ty, object Fn, object Args, unsigned in
             (undocumented)
     """
     _LLVMBuildInvoke2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildInvoke2(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueType.from_pyobj(Ty)._ptr,
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr,
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),
         <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Args)._ptr,NumArgs,
-        LLVMOpaqueBasicBlock.from_pyobj(Then)._ptr,
-        LLVMOpaqueBasicBlock.from_pyobj(Catch)._ptr,Name))    # fully specified
-    return (_LLVMBuildInvoke2__retval,)
+        LLVMOpaqueBasicBlock.from_pyobj(Then).get_element_ptr(),
+        LLVMOpaqueBasicBlock.from_pyobj(Catch).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildInvoke2__retval
 
 
 @cython.embedsignature(True)
@@ -11712,8 +11526,8 @@ def LLVMBuildUnreachable(object arg0):
             (undocumented)
     """
     _LLVMBuildUnreachable__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildUnreachable(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr))    # fully specified
-    return (_LLVMBuildUnreachable__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr()))    # fully specified
+    return _LLVMBuildUnreachable__retval
 
 
 @cython.embedsignature(True)
@@ -11728,9 +11542,9 @@ def LLVMBuildResume(object B, object Exn):
             (undocumented)
     """
     _LLVMBuildResume__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildResume(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,
-        LLVMOpaqueValue.from_pyobj(Exn)._ptr))    # fully specified
-    return (_LLVMBuildResume__retval,)
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Exn).get_element_ptr()))    # fully specified
+    return _LLVMBuildResume__retval
 
 
 @cython.embedsignature(True)
@@ -11754,10 +11568,10 @@ def LLVMBuildLandingPad(object B, object Ty, object PersFn, unsigned int NumClau
             (undocumented)
     """
     _LLVMBuildLandingPad__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildLandingPad(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,
-        LLVMOpaqueType.from_pyobj(Ty)._ptr,
-        LLVMOpaqueValue.from_pyobj(PersFn)._ptr,NumClauses,Name))    # fully specified
-    return (_LLVMBuildLandingPad__retval,)
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(PersFn).get_element_ptr(),NumClauses,Name))    # fully specified
+    return _LLVMBuildLandingPad__retval
 
 
 @cython.embedsignature(True)
@@ -11775,10 +11589,10 @@ def LLVMBuildCleanupRet(object B, object CatchPad, object BB):
             (undocumented)
     """
     _LLVMBuildCleanupRet__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildCleanupRet(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,
-        LLVMOpaqueValue.from_pyobj(CatchPad)._ptr,
-        LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr))    # fully specified
-    return (_LLVMBuildCleanupRet__retval,)
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(CatchPad).get_element_ptr(),
+        LLVMOpaqueBasicBlock.from_pyobj(BB).get_element_ptr()))    # fully specified
+    return _LLVMBuildCleanupRet__retval
 
 
 @cython.embedsignature(True)
@@ -11796,10 +11610,10 @@ def LLVMBuildCatchRet(object B, object CatchPad, object BB):
             (undocumented)
     """
     _LLVMBuildCatchRet__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildCatchRet(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,
-        LLVMOpaqueValue.from_pyobj(CatchPad)._ptr,
-        LLVMOpaqueBasicBlock.from_pyobj(BB)._ptr))    # fully specified
-    return (_LLVMBuildCatchRet__retval,)
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(CatchPad).get_element_ptr(),
+        LLVMOpaqueBasicBlock.from_pyobj(BB).get_element_ptr()))    # fully specified
+    return _LLVMBuildCatchRet__retval
 
 
 @cython.embedsignature(True)
@@ -11823,10 +11637,10 @@ def LLVMBuildCatchPad(object B, object ParentPad, object Args, unsigned int NumA
             (undocumented)
     """
     _LLVMBuildCatchPad__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildCatchPad(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,
-        LLVMOpaqueValue.from_pyobj(ParentPad)._ptr,
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(ParentPad).get_element_ptr(),
         <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Args)._ptr,NumArgs,Name))    # fully specified
-    return (_LLVMBuildCatchPad__retval,)
+    return _LLVMBuildCatchPad__retval
 
 
 @cython.embedsignature(True)
@@ -11850,10 +11664,10 @@ def LLVMBuildCleanupPad(object B, object ParentPad, object Args, unsigned int Nu
             (undocumented)
     """
     _LLVMBuildCleanupPad__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildCleanupPad(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,
-        LLVMOpaqueValue.from_pyobj(ParentPad)._ptr,
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(ParentPad).get_element_ptr(),
         <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Args)._ptr,NumArgs,Name))    # fully specified
-    return (_LLVMBuildCleanupPad__retval,)
+    return _LLVMBuildCleanupPad__retval
 
 
 @cython.embedsignature(True)
@@ -11877,10 +11691,10 @@ def LLVMBuildCatchSwitch(object B, object ParentPad, object UnwindBB, unsigned i
             (undocumented)
     """
     _LLVMBuildCatchSwitch__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildCatchSwitch(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,
-        LLVMOpaqueValue.from_pyobj(ParentPad)._ptr,
-        LLVMOpaqueBasicBlock.from_pyobj(UnwindBB)._ptr,NumHandlers,Name))    # fully specified
-    return (_LLVMBuildCatchSwitch__retval,)
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(ParentPad).get_element_ptr(),
+        LLVMOpaqueBasicBlock.from_pyobj(UnwindBB).get_element_ptr(),NumHandlers,Name))    # fully specified
+    return _LLVMBuildCatchSwitch__retval
 
 
 @cython.embedsignature(True)
@@ -11898,9 +11712,9 @@ def LLVMAddCase(object Switch, object OnVal, object Dest):
             (undocumented)
     """
     ccore.LLVMAddCase(
-        LLVMOpaqueValue.from_pyobj(Switch)._ptr,
-        LLVMOpaqueValue.from_pyobj(OnVal)._ptr,
-        LLVMOpaqueBasicBlock.from_pyobj(Dest)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Switch).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(OnVal).get_element_ptr(),
+        LLVMOpaqueBasicBlock.from_pyobj(Dest).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -11915,8 +11729,8 @@ def LLVMAddDestination(object IndirectBr, object Dest):
             (undocumented)
     """
     ccore.LLVMAddDestination(
-        LLVMOpaqueValue.from_pyobj(IndirectBr)._ptr,
-        LLVMOpaqueBasicBlock.from_pyobj(Dest)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(IndirectBr).get_element_ptr(),
+        LLVMOpaqueBasicBlock.from_pyobj(Dest).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -11928,13 +11742,11 @@ def LLVMGetNumClauses(object LandingPad):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetNumClauses__retval = ccore.LLVMGetNumClauses(
-        LLVMOpaqueValue.from_pyobj(LandingPad)._ptr)    # fully specified
-    return (_LLVMGetNumClauses__retval,)
+        LLVMOpaqueValue.from_pyobj(LandingPad).get_element_ptr())    # fully specified
+    return _LLVMGetNumClauses__retval
 
 
 @cython.embedsignature(True)
@@ -11949,8 +11761,8 @@ def LLVMGetClause(object LandingPad, unsigned int Idx):
             (undocumented)
     """
     _LLVMGetClause__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetClause(
-        LLVMOpaqueValue.from_pyobj(LandingPad)._ptr,Idx))    # fully specified
-    return (_LLVMGetClause__retval,)
+        LLVMOpaqueValue.from_pyobj(LandingPad).get_element_ptr(),Idx))    # fully specified
+    return _LLVMGetClause__retval
 
 
 @cython.embedsignature(True)
@@ -11965,8 +11777,8 @@ def LLVMAddClause(object LandingPad, object ClauseVal):
             (undocumented)
     """
     ccore.LLVMAddClause(
-        LLVMOpaqueValue.from_pyobj(LandingPad)._ptr,
-        LLVMOpaqueValue.from_pyobj(ClauseVal)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(LandingPad).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(ClauseVal).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -11978,13 +11790,11 @@ def LLVMIsCleanup(object LandingPad):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIsCleanup__retval = ccore.LLVMIsCleanup(
-        LLVMOpaqueValue.from_pyobj(LandingPad)._ptr)    # fully specified
-    return (_LLVMIsCleanup__retval,)
+        LLVMOpaqueValue.from_pyobj(LandingPad).get_element_ptr())    # fully specified
+    return _LLVMIsCleanup__retval
 
 
 @cython.embedsignature(True)
@@ -11999,7 +11809,7 @@ def LLVMSetCleanup(object LandingPad, int Val):
             (undocumented)
     """
     ccore.LLVMSetCleanup(
-        LLVMOpaqueValue.from_pyobj(LandingPad)._ptr,Val)    # fully specified
+        LLVMOpaqueValue.from_pyobj(LandingPad).get_element_ptr(),Val)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -12014,8 +11824,8 @@ def LLVMAddHandler(object CatchSwitch, object Dest):
             (undocumented)
     """
     ccore.LLVMAddHandler(
-        LLVMOpaqueValue.from_pyobj(CatchSwitch)._ptr,
-        LLVMOpaqueBasicBlock.from_pyobj(Dest)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(CatchSwitch).get_element_ptr(),
+        LLVMOpaqueBasicBlock.from_pyobj(Dest).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -12027,13 +11837,11 @@ def LLVMGetNumHandlers(object CatchSwitch):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetNumHandlers__retval = ccore.LLVMGetNumHandlers(
-        LLVMOpaqueValue.from_pyobj(CatchSwitch)._ptr)    # fully specified
-    return (_LLVMGetNumHandlers__retval,)
+        LLVMOpaqueValue.from_pyobj(CatchSwitch).get_element_ptr())    # fully specified
+    return _LLVMGetNumHandlers__retval
 
 
 @cython.embedsignature(True)
@@ -12055,7 +11863,7 @@ def LLVMGetHandlers(object CatchSwitch, object Handlers):
             Memory address of an array to be filled with basic blocks.
     """
     ccore.LLVMGetHandlers(
-        LLVMOpaqueValue.from_pyobj(CatchSwitch)._ptr,
+        LLVMOpaqueValue.from_pyobj(CatchSwitch).get_element_ptr(),
         <ccore.LLVMBasicBlockRef*>rocm.llvm._util.types.Pointer.from_pyobj(Handlers)._ptr)    # fully specified
 
 
@@ -12071,8 +11879,8 @@ def LLVMGetArgOperand(object Funclet, unsigned int i):
             (undocumented)
     """
     _LLVMGetArgOperand__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetArgOperand(
-        LLVMOpaqueValue.from_pyobj(Funclet)._ptr,i))    # fully specified
-    return (_LLVMGetArgOperand__retval,)
+        LLVMOpaqueValue.from_pyobj(Funclet).get_element_ptr(),i))    # fully specified
+    return _LLVMGetArgOperand__retval
 
 
 @cython.embedsignature(True)
@@ -12090,8 +11898,8 @@ def LLVMSetArgOperand(object Funclet, unsigned int i, object value):
             (undocumented)
     """
     ccore.LLVMSetArgOperand(
-        LLVMOpaqueValue.from_pyobj(Funclet)._ptr,i,
-        LLVMOpaqueValue.from_pyobj(value)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Funclet).get_element_ptr(),i,
+        LLVMOpaqueValue.from_pyobj(value).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -12110,8 +11918,8 @@ def LLVMGetParentCatchSwitch(object CatchPad):
             (undocumented)
     """
     _LLVMGetParentCatchSwitch__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetParentCatchSwitch(
-        LLVMOpaqueValue.from_pyobj(CatchPad)._ptr))    # fully specified
-    return (_LLVMGetParentCatchSwitch__retval,)
+        LLVMOpaqueValue.from_pyobj(CatchPad).get_element_ptr()))    # fully specified
+    return _LLVMGetParentCatchSwitch__retval
 
 
 @cython.embedsignature(True)
@@ -12133,8 +11941,8 @@ def LLVMSetParentCatchSwitch(object CatchPad, object CatchSwitch):
             (undocumented)
     """
     ccore.LLVMSetParentCatchSwitch(
-        LLVMOpaqueValue.from_pyobj(CatchPad)._ptr,
-        LLVMOpaqueValue.from_pyobj(CatchSwitch)._ptr)    # fully specified
+        LLVMOpaqueValue.from_pyobj(CatchPad).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(CatchSwitch).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -12155,10 +11963,10 @@ def LLVMBuildAdd(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildAdd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildAdd(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildAdd__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildAdd__retval
 
 
 @cython.embedsignature(True)
@@ -12179,10 +11987,10 @@ def LLVMBuildNSWAdd(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildNSWAdd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNSWAdd(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildNSWAdd__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildNSWAdd__retval
 
 
 @cython.embedsignature(True)
@@ -12203,10 +12011,10 @@ def LLVMBuildNUWAdd(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildNUWAdd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNUWAdd(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildNUWAdd__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildNUWAdd__retval
 
 
 @cython.embedsignature(True)
@@ -12227,10 +12035,10 @@ def LLVMBuildFAdd(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildFAdd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFAdd(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildFAdd__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildFAdd__retval
 
 
 @cython.embedsignature(True)
@@ -12251,10 +12059,10 @@ def LLVMBuildSub(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildSub__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSub(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildSub__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildSub__retval
 
 
 @cython.embedsignature(True)
@@ -12275,10 +12083,10 @@ def LLVMBuildNSWSub(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildNSWSub__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNSWSub(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildNSWSub__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildNSWSub__retval
 
 
 @cython.embedsignature(True)
@@ -12299,10 +12107,10 @@ def LLVMBuildNUWSub(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildNUWSub__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNUWSub(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildNUWSub__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildNUWSub__retval
 
 
 @cython.embedsignature(True)
@@ -12323,10 +12131,10 @@ def LLVMBuildFSub(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildFSub__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFSub(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildFSub__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildFSub__retval
 
 
 @cython.embedsignature(True)
@@ -12347,10 +12155,10 @@ def LLVMBuildMul(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildMul__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildMul(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildMul__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildMul__retval
 
 
 @cython.embedsignature(True)
@@ -12371,10 +12179,10 @@ def LLVMBuildNSWMul(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildNSWMul__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNSWMul(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildNSWMul__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildNSWMul__retval
 
 
 @cython.embedsignature(True)
@@ -12395,10 +12203,10 @@ def LLVMBuildNUWMul(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildNUWMul__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNUWMul(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildNUWMul__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildNUWMul__retval
 
 
 @cython.embedsignature(True)
@@ -12419,10 +12227,10 @@ def LLVMBuildFMul(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildFMul__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFMul(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildFMul__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildFMul__retval
 
 
 @cython.embedsignature(True)
@@ -12443,10 +12251,10 @@ def LLVMBuildUDiv(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildUDiv__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildUDiv(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildUDiv__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildUDiv__retval
 
 
 @cython.embedsignature(True)
@@ -12467,10 +12275,10 @@ def LLVMBuildExactUDiv(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildExactUDiv__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildExactUDiv(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildExactUDiv__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildExactUDiv__retval
 
 
 @cython.embedsignature(True)
@@ -12491,10 +12299,10 @@ def LLVMBuildSDiv(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildSDiv__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSDiv(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildSDiv__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildSDiv__retval
 
 
 @cython.embedsignature(True)
@@ -12515,10 +12323,10 @@ def LLVMBuildExactSDiv(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildExactSDiv__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildExactSDiv(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildExactSDiv__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildExactSDiv__retval
 
 
 @cython.embedsignature(True)
@@ -12539,10 +12347,10 @@ def LLVMBuildFDiv(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildFDiv__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFDiv(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildFDiv__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildFDiv__retval
 
 
 @cython.embedsignature(True)
@@ -12563,10 +12371,10 @@ def LLVMBuildURem(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildURem__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildURem(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildURem__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildURem__retval
 
 
 @cython.embedsignature(True)
@@ -12587,10 +12395,10 @@ def LLVMBuildSRem(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildSRem__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSRem(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildSRem__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildSRem__retval
 
 
 @cython.embedsignature(True)
@@ -12611,10 +12419,10 @@ def LLVMBuildFRem(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildFRem__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFRem(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildFRem__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildFRem__retval
 
 
 @cython.embedsignature(True)
@@ -12635,10 +12443,10 @@ def LLVMBuildShl(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildShl__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildShl(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildShl__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildShl__retval
 
 
 @cython.embedsignature(True)
@@ -12659,10 +12467,10 @@ def LLVMBuildLShr(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildLShr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildLShr(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildLShr__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildLShr__retval
 
 
 @cython.embedsignature(True)
@@ -12683,10 +12491,10 @@ def LLVMBuildAShr(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildAShr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildAShr(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildAShr__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildAShr__retval
 
 
 @cython.embedsignature(True)
@@ -12707,10 +12515,10 @@ def LLVMBuildAnd(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildAnd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildAnd(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildAnd__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildAnd__retval
 
 
 @cython.embedsignature(True)
@@ -12731,10 +12539,10 @@ def LLVMBuildOr(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildOr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildOr(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildOr__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildOr__retval
 
 
 @cython.embedsignature(True)
@@ -12755,10 +12563,10 @@ def LLVMBuildXor(object arg0, object LHS, object RHS, const char * Name):
             (undocumented)
     """
     _LLVMBuildXor__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildXor(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildXor__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildXor__retval
 
 
 @cython.embedsignature(True)
@@ -12784,10 +12592,10 @@ def LLVMBuildBinOp(object B, object Op, object LHS, object RHS, const char * Nam
     if not isinstance(Op,_LLVMOpcode__Base):
         raise TypeError("argument 'Op' must be of type '_LLVMOpcode__Base'")
     _LLVMBuildBinOp__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildBinOp(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,Op.value,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildBinOp__retval,)
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),Op.value,
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildBinOp__retval
 
 
 @cython.embedsignature(True)
@@ -12805,9 +12613,9 @@ def LLVMBuildNeg(object arg0, object V, const char * Name):
             (undocumented)
     """
     _LLVMBuildNeg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNeg(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(V)._ptr,Name))    # fully specified
-    return (_LLVMBuildNeg__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(V).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildNeg__retval
 
 
 @cython.embedsignature(True)
@@ -12825,9 +12633,9 @@ def LLVMBuildNSWNeg(object B, object V, const char * Name):
             (undocumented)
     """
     _LLVMBuildNSWNeg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNSWNeg(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,
-        LLVMOpaqueValue.from_pyobj(V)._ptr,Name))    # fully specified
-    return (_LLVMBuildNSWNeg__retval,)
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(V).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildNSWNeg__retval
 
 
 @cython.embedsignature(True)
@@ -12845,9 +12653,9 @@ def LLVMBuildNUWNeg(object B, object V, const char * Name):
             (undocumented)
     """
     _LLVMBuildNUWNeg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNUWNeg(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,
-        LLVMOpaqueValue.from_pyobj(V)._ptr,Name))    # fully specified
-    return (_LLVMBuildNUWNeg__retval,)
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(V).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildNUWNeg__retval
 
 
 @cython.embedsignature(True)
@@ -12865,9 +12673,9 @@ def LLVMBuildFNeg(object arg0, object V, const char * Name):
             (undocumented)
     """
     _LLVMBuildFNeg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFNeg(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(V)._ptr,Name))    # fully specified
-    return (_LLVMBuildFNeg__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(V).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildFNeg__retval
 
 
 @cython.embedsignature(True)
@@ -12885,9 +12693,9 @@ def LLVMBuildNot(object arg0, object V, const char * Name):
             (undocumented)
     """
     _LLVMBuildNot__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNot(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(V)._ptr,Name))    # fully specified
-    return (_LLVMBuildNot__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(V).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildNot__retval
 
 
 @cython.embedsignature(True)
@@ -12905,9 +12713,9 @@ def LLVMBuildMalloc(object arg0, object Ty, const char * Name):
             (undocumented)
     """
     _LLVMBuildMalloc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildMalloc(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueType.from_pyobj(Ty)._ptr,Name))    # fully specified
-    return (_LLVMBuildMalloc__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildMalloc__retval
 
 
 @cython.embedsignature(True)
@@ -12928,10 +12736,10 @@ def LLVMBuildArrayMalloc(object arg0, object Ty, object Val, const char * Name):
             (undocumented)
     """
     _LLVMBuildArrayMalloc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildArrayMalloc(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueType.from_pyobj(Ty)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,Name))    # fully specified
-    return (_LLVMBuildArrayMalloc__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildArrayMalloc__retval
 
 
 @cython.embedsignature(True)
@@ -12961,11 +12769,11 @@ def LLVMBuildMemSet(object B, object Ptr, object Val, object Len, unsigned int A
             (undocumented)
     """
     _LLVMBuildMemSet__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildMemSet(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,
-        LLVMOpaqueValue.from_pyobj(Ptr)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueValue.from_pyobj(Len)._ptr,Align))    # fully specified
-    return (_LLVMBuildMemSet__retval,)
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Ptr).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Len).get_element_ptr(),Align))    # fully specified
+    return _LLVMBuildMemSet__retval
 
 
 @cython.embedsignature(True)
@@ -12997,11 +12805,11 @@ def LLVMBuildMemCpy(object B, object Dst, unsigned int DstAlign, object Src, uns
             (undocumented)
     """
     _LLVMBuildMemCpy__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildMemCpy(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,
-        LLVMOpaqueValue.from_pyobj(Dst)._ptr,DstAlign,
-        LLVMOpaqueValue.from_pyobj(Src)._ptr,SrcAlign,
-        LLVMOpaqueValue.from_pyobj(Size)._ptr))    # fully specified
-    return (_LLVMBuildMemCpy__retval,)
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Dst).get_element_ptr(),DstAlign,
+        LLVMOpaqueValue.from_pyobj(Src).get_element_ptr(),SrcAlign,
+        LLVMOpaqueValue.from_pyobj(Size).get_element_ptr()))    # fully specified
+    return _LLVMBuildMemCpy__retval
 
 
 @cython.embedsignature(True)
@@ -13033,11 +12841,11 @@ def LLVMBuildMemMove(object B, object Dst, unsigned int DstAlign, object Src, un
             (undocumented)
     """
     _LLVMBuildMemMove__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildMemMove(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,
-        LLVMOpaqueValue.from_pyobj(Dst)._ptr,DstAlign,
-        LLVMOpaqueValue.from_pyobj(Src)._ptr,SrcAlign,
-        LLVMOpaqueValue.from_pyobj(Size)._ptr))    # fully specified
-    return (_LLVMBuildMemMove__retval,)
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Dst).get_element_ptr(),DstAlign,
+        LLVMOpaqueValue.from_pyobj(Src).get_element_ptr(),SrcAlign,
+        LLVMOpaqueValue.from_pyobj(Size).get_element_ptr()))    # fully specified
+    return _LLVMBuildMemMove__retval
 
 
 @cython.embedsignature(True)
@@ -13055,9 +12863,9 @@ def LLVMBuildAlloca(object arg0, object Ty, const char * Name):
             (undocumented)
     """
     _LLVMBuildAlloca__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildAlloca(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueType.from_pyobj(Ty)._ptr,Name))    # fully specified
-    return (_LLVMBuildAlloca__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildAlloca__retval
 
 
 @cython.embedsignature(True)
@@ -13078,10 +12886,10 @@ def LLVMBuildArrayAlloca(object arg0, object Ty, object Val, const char * Name):
             (undocumented)
     """
     _LLVMBuildArrayAlloca__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildArrayAlloca(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueType.from_pyobj(Ty)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,Name))    # fully specified
-    return (_LLVMBuildArrayAlloca__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildArrayAlloca__retval
 
 
 @cython.embedsignature(True)
@@ -13096,9 +12904,9 @@ def LLVMBuildFree(object arg0, object PointerVal):
             (undocumented)
     """
     _LLVMBuildFree__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFree(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(PointerVal)._ptr))    # fully specified
-    return (_LLVMBuildFree__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(PointerVal).get_element_ptr()))    # fully specified
+    return _LLVMBuildFree__retval
 
 
 @cython.embedsignature(True)
@@ -13119,10 +12927,10 @@ def LLVMBuildLoad2(object arg0, object Ty, object PointerVal, const char * Name)
             (undocumented)
     """
     _LLVMBuildLoad2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildLoad2(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueType.from_pyobj(Ty)._ptr,
-        LLVMOpaqueValue.from_pyobj(PointerVal)._ptr,Name))    # fully specified
-    return (_LLVMBuildLoad2__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(PointerVal).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildLoad2__retval
 
 
 @cython.embedsignature(True)
@@ -13140,10 +12948,10 @@ def LLVMBuildStore(object arg0, object Val, object Ptr):
             (undocumented)
     """
     _LLVMBuildStore__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildStore(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueValue.from_pyobj(Ptr)._ptr))    # fully specified
-    return (_LLVMBuildStore__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Ptr).get_element_ptr()))    # fully specified
+    return _LLVMBuildStore__retval
 
 
 @cython.embedsignature(True)
@@ -13170,11 +12978,11 @@ def LLVMBuildGEP2(object B, object Ty, object Pointer, object Indices, unsigned 
             (undocumented)
     """
     _LLVMBuildGEP2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildGEP2(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,
-        LLVMOpaqueType.from_pyobj(Ty)._ptr,
-        LLVMOpaqueValue.from_pyobj(Pointer)._ptr,
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Pointer).get_element_ptr(),
         <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Indices)._ptr,NumIndices,Name))    # fully specified
-    return (_LLVMBuildGEP2__retval,)
+    return _LLVMBuildGEP2__retval
 
 
 @cython.embedsignature(True)
@@ -13201,11 +13009,11 @@ def LLVMBuildInBoundsGEP2(object B, object Ty, object Pointer, object Indices, u
             (undocumented)
     """
     _LLVMBuildInBoundsGEP2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildInBoundsGEP2(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,
-        LLVMOpaqueType.from_pyobj(Ty)._ptr,
-        LLVMOpaqueValue.from_pyobj(Pointer)._ptr,
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Pointer).get_element_ptr(),
         <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Indices)._ptr,NumIndices,Name))    # fully specified
-    return (_LLVMBuildInBoundsGEP2__retval,)
+    return _LLVMBuildInBoundsGEP2__retval
 
 
 @cython.embedsignature(True)
@@ -13229,10 +13037,10 @@ def LLVMBuildStructGEP2(object B, object Ty, object Pointer, unsigned int Idx, c
             (undocumented)
     """
     _LLVMBuildStructGEP2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildStructGEP2(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,
-        LLVMOpaqueType.from_pyobj(Ty)._ptr,
-        LLVMOpaqueValue.from_pyobj(Pointer)._ptr,Idx,Name))    # fully specified
-    return (_LLVMBuildStructGEP2__retval,)
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Pointer).get_element_ptr(),Idx,Name))    # fully specified
+    return _LLVMBuildStructGEP2__retval
 
 
 @cython.embedsignature(True)
@@ -13250,8 +13058,8 @@ def LLVMBuildGlobalString(object B, const char * Str, const char * Name):
             (undocumented)
     """
     _LLVMBuildGlobalString__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildGlobalString(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,Str,Name))    # fully specified
-    return (_LLVMBuildGlobalString__retval,)
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),Str,Name))    # fully specified
+    return _LLVMBuildGlobalString__retval
 
 
 @cython.embedsignature(True)
@@ -13269,8 +13077,8 @@ def LLVMBuildGlobalStringPtr(object B, const char * Str, const char * Name):
             (undocumented)
     """
     _LLVMBuildGlobalStringPtr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildGlobalStringPtr(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,Str,Name))    # fully specified
-    return (_LLVMBuildGlobalStringPtr__retval,)
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),Str,Name))    # fully specified
+    return _LLVMBuildGlobalStringPtr__retval
 
 
 @cython.embedsignature(True)
@@ -13282,13 +13090,11 @@ def LLVMGetVolatile(object MemoryAccessInst):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMGetVolatile__retval = ccore.LLVMGetVolatile(
-        LLVMOpaqueValue.from_pyobj(MemoryAccessInst)._ptr)    # fully specified
-    return (_LLVMGetVolatile__retval,)
+        LLVMOpaqueValue.from_pyobj(MemoryAccessInst).get_element_ptr())    # fully specified
+    return _LLVMGetVolatile__retval
 
 
 @cython.embedsignature(True)
@@ -13303,7 +13109,7 @@ def LLVMSetVolatile(object MemoryAccessInst, int IsVolatile):
             (undocumented)
     """
     ccore.LLVMSetVolatile(
-        LLVMOpaqueValue.from_pyobj(MemoryAccessInst)._ptr,IsVolatile)    # fully specified
+        LLVMOpaqueValue.from_pyobj(MemoryAccessInst).get_element_ptr(),IsVolatile)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -13315,13 +13121,11 @@ def LLVMGetWeak(object CmpXchgInst):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMGetWeak__retval = ccore.LLVMGetWeak(
-        LLVMOpaqueValue.from_pyobj(CmpXchgInst)._ptr)    # fully specified
-    return (_LLVMGetWeak__retval,)
+        LLVMOpaqueValue.from_pyobj(CmpXchgInst).get_element_ptr())    # fully specified
+    return _LLVMGetWeak__retval
 
 
 @cython.embedsignature(True)
@@ -13336,7 +13140,7 @@ def LLVMSetWeak(object CmpXchgInst, int IsWeak):
             (undocumented)
     """
     ccore.LLVMSetWeak(
-        LLVMOpaqueValue.from_pyobj(CmpXchgInst)._ptr,IsWeak)    # fully specified
+        LLVMOpaqueValue.from_pyobj(CmpXchgInst).get_element_ptr(),IsWeak)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -13348,13 +13152,11 @@ def LLVMGetOrdering(object MemoryAccessInst):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.LLVMAtomicOrdering`
+        `~.LLVMAtomicOrdering`
     """
     _LLVMGetOrdering__retval = LLVMAtomicOrdering(ccore.LLVMGetOrdering(
-        LLVMOpaqueValue.from_pyobj(MemoryAccessInst)._ptr))    # fully specified
-    return (_LLVMGetOrdering__retval,)
+        LLVMOpaqueValue.from_pyobj(MemoryAccessInst).get_element_ptr()))    # fully specified
+    return _LLVMGetOrdering__retval
 
 
 @cython.embedsignature(True)
@@ -13371,7 +13173,7 @@ def LLVMSetOrdering(object MemoryAccessInst, object Ordering):
     if not isinstance(Ordering,_LLVMAtomicOrdering__Base):
         raise TypeError("argument 'Ordering' must be of type '_LLVMAtomicOrdering__Base'")
     ccore.LLVMSetOrdering(
-        LLVMOpaqueValue.from_pyobj(MemoryAccessInst)._ptr,Ordering.value)    # fully specified
+        LLVMOpaqueValue.from_pyobj(MemoryAccessInst).get_element_ptr(),Ordering.value)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -13383,13 +13185,11 @@ def LLVMGetAtomicRMWBinOp(object AtomicRMWInst):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.LLVMAtomicRMWBinOp`
+        `~.LLVMAtomicRMWBinOp`
     """
     _LLVMGetAtomicRMWBinOp__retval = LLVMAtomicRMWBinOp(ccore.LLVMGetAtomicRMWBinOp(
-        LLVMOpaqueValue.from_pyobj(AtomicRMWInst)._ptr))    # fully specified
-    return (_LLVMGetAtomicRMWBinOp__retval,)
+        LLVMOpaqueValue.from_pyobj(AtomicRMWInst).get_element_ptr()))    # fully specified
+    return _LLVMGetAtomicRMWBinOp__retval
 
 
 @cython.embedsignature(True)
@@ -13406,7 +13206,7 @@ def LLVMSetAtomicRMWBinOp(object AtomicRMWInst, object BinOp):
     if not isinstance(BinOp,_LLVMAtomicRMWBinOp__Base):
         raise TypeError("argument 'BinOp' must be of type '_LLVMAtomicRMWBinOp__Base'")
     ccore.LLVMSetAtomicRMWBinOp(
-        LLVMOpaqueValue.from_pyobj(AtomicRMWInst)._ptr,BinOp.value)    # fully specified
+        LLVMOpaqueValue.from_pyobj(AtomicRMWInst).get_element_ptr(),BinOp.value)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -13427,10 +13227,10 @@ def LLVMBuildTrunc(object arg0, object Val, object DestTy, const char * Name):
             (undocumented)
     """
     _LLVMBuildTrunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildTrunc(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
-    return (_LLVMBuildTrunc__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildTrunc__retval
 
 
 @cython.embedsignature(True)
@@ -13451,10 +13251,10 @@ def LLVMBuildZExt(object arg0, object Val, object DestTy, const char * Name):
             (undocumented)
     """
     _LLVMBuildZExt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildZExt(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
-    return (_LLVMBuildZExt__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildZExt__retval
 
 
 @cython.embedsignature(True)
@@ -13475,10 +13275,10 @@ def LLVMBuildSExt(object arg0, object Val, object DestTy, const char * Name):
             (undocumented)
     """
     _LLVMBuildSExt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSExt(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
-    return (_LLVMBuildSExt__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildSExt__retval
 
 
 @cython.embedsignature(True)
@@ -13499,10 +13299,10 @@ def LLVMBuildFPToUI(object arg0, object Val, object DestTy, const char * Name):
             (undocumented)
     """
     _LLVMBuildFPToUI__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFPToUI(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
-    return (_LLVMBuildFPToUI__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildFPToUI__retval
 
 
 @cython.embedsignature(True)
@@ -13523,10 +13323,10 @@ def LLVMBuildFPToSI(object arg0, object Val, object DestTy, const char * Name):
             (undocumented)
     """
     _LLVMBuildFPToSI__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFPToSI(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
-    return (_LLVMBuildFPToSI__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildFPToSI__retval
 
 
 @cython.embedsignature(True)
@@ -13547,10 +13347,10 @@ def LLVMBuildUIToFP(object arg0, object Val, object DestTy, const char * Name):
             (undocumented)
     """
     _LLVMBuildUIToFP__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildUIToFP(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
-    return (_LLVMBuildUIToFP__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildUIToFP__retval
 
 
 @cython.embedsignature(True)
@@ -13571,10 +13371,10 @@ def LLVMBuildSIToFP(object arg0, object Val, object DestTy, const char * Name):
             (undocumented)
     """
     _LLVMBuildSIToFP__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSIToFP(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
-    return (_LLVMBuildSIToFP__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildSIToFP__retval
 
 
 @cython.embedsignature(True)
@@ -13595,10 +13395,10 @@ def LLVMBuildFPTrunc(object arg0, object Val, object DestTy, const char * Name):
             (undocumented)
     """
     _LLVMBuildFPTrunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFPTrunc(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
-    return (_LLVMBuildFPTrunc__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildFPTrunc__retval
 
 
 @cython.embedsignature(True)
@@ -13619,10 +13419,10 @@ def LLVMBuildFPExt(object arg0, object Val, object DestTy, const char * Name):
             (undocumented)
     """
     _LLVMBuildFPExt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFPExt(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
-    return (_LLVMBuildFPExt__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildFPExt__retval
 
 
 @cython.embedsignature(True)
@@ -13643,10 +13443,10 @@ def LLVMBuildPtrToInt(object arg0, object Val, object DestTy, const char * Name)
             (undocumented)
     """
     _LLVMBuildPtrToInt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildPtrToInt(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
-    return (_LLVMBuildPtrToInt__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildPtrToInt__retval
 
 
 @cython.embedsignature(True)
@@ -13667,10 +13467,10 @@ def LLVMBuildIntToPtr(object arg0, object Val, object DestTy, const char * Name)
             (undocumented)
     """
     _LLVMBuildIntToPtr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildIntToPtr(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
-    return (_LLVMBuildIntToPtr__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildIntToPtr__retval
 
 
 @cython.embedsignature(True)
@@ -13691,10 +13491,10 @@ def LLVMBuildBitCast(object arg0, object Val, object DestTy, const char * Name):
             (undocumented)
     """
     _LLVMBuildBitCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildBitCast(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
-    return (_LLVMBuildBitCast__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildBitCast__retval
 
 
 @cython.embedsignature(True)
@@ -13715,10 +13515,10 @@ def LLVMBuildAddrSpaceCast(object arg0, object Val, object DestTy, const char * 
             (undocumented)
     """
     _LLVMBuildAddrSpaceCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildAddrSpaceCast(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
-    return (_LLVMBuildAddrSpaceCast__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildAddrSpaceCast__retval
 
 
 @cython.embedsignature(True)
@@ -13739,10 +13539,10 @@ def LLVMBuildZExtOrBitCast(object arg0, object Val, object DestTy, const char * 
             (undocumented)
     """
     _LLVMBuildZExtOrBitCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildZExtOrBitCast(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
-    return (_LLVMBuildZExtOrBitCast__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildZExtOrBitCast__retval
 
 
 @cython.embedsignature(True)
@@ -13763,10 +13563,10 @@ def LLVMBuildSExtOrBitCast(object arg0, object Val, object DestTy, const char * 
             (undocumented)
     """
     _LLVMBuildSExtOrBitCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSExtOrBitCast(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
-    return (_LLVMBuildSExtOrBitCast__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildSExtOrBitCast__retval
 
 
 @cython.embedsignature(True)
@@ -13787,10 +13587,10 @@ def LLVMBuildTruncOrBitCast(object arg0, object Val, object DestTy, const char *
             (undocumented)
     """
     _LLVMBuildTruncOrBitCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildTruncOrBitCast(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
-    return (_LLVMBuildTruncOrBitCast__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildTruncOrBitCast__retval
 
 
 @cython.embedsignature(True)
@@ -13816,10 +13616,10 @@ def LLVMBuildCast(object B, object Op, object Val, object DestTy, const char * N
     if not isinstance(Op,_LLVMOpcode__Base):
         raise TypeError("argument 'Op' must be of type '_LLVMOpcode__Base'")
     _LLVMBuildCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildCast(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,Op.value,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
-    return (_LLVMBuildCast__retval,)
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),Op.value,
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildCast__retval
 
 
 @cython.embedsignature(True)
@@ -13840,10 +13640,10 @@ def LLVMBuildPointerCast(object arg0, object Val, object DestTy, const char * Na
             (undocumented)
     """
     _LLVMBuildPointerCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildPointerCast(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
-    return (_LLVMBuildPointerCast__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildPointerCast__retval
 
 
 @cython.embedsignature(True)
@@ -13867,10 +13667,10 @@ def LLVMBuildIntCast2(object arg0, object Val, object DestTy, int IsSigned, cons
             (undocumented)
     """
     _LLVMBuildIntCast2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildIntCast2(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueType.from_pyobj(DestTy)._ptr,IsSigned,Name))    # fully specified
-    return (_LLVMBuildIntCast2__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),IsSigned,Name))    # fully specified
+    return _LLVMBuildIntCast2__retval
 
 
 @cython.embedsignature(True)
@@ -13891,10 +13691,10 @@ def LLVMBuildFPCast(object arg0, object Val, object DestTy, const char * Name):
             (undocumented)
     """
     _LLVMBuildFPCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFPCast(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
-    return (_LLVMBuildFPCast__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildFPCast__retval
 
 
 @cython.embedsignature(True)
@@ -13917,10 +13717,10 @@ def LLVMBuildIntCast(object arg0, object Val, object DestTy, const char * Name):
             (undocumented)
     """
     _LLVMBuildIntCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildIntCast(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,
-        LLVMOpaqueType.from_pyobj(DestTy)._ptr,Name))    # fully specified
-    return (_LLVMBuildIntCast__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildIntCast__retval
 
 
 @cython.embedsignature(True)
@@ -13941,14 +13741,12 @@ def LLVMGetCastOpcode(object Src, int SrcIsSigned, object DestTy, int DestIsSign
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.LLVMOpcode`
+        `~.LLVMOpcode`
     """
     _LLVMGetCastOpcode__retval = LLVMOpcode(ccore.LLVMGetCastOpcode(
-        LLVMOpaqueValue.from_pyobj(Src)._ptr,SrcIsSigned,
-        LLVMOpaqueType.from_pyobj(DestTy)._ptr,DestIsSigned))    # fully specified
-    return (_LLVMGetCastOpcode__retval,)
+        LLVMOpaqueValue.from_pyobj(Src).get_element_ptr(),SrcIsSigned,
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),DestIsSigned))    # fully specified
+    return _LLVMGetCastOpcode__retval
 
 
 @cython.embedsignature(True)
@@ -13974,10 +13772,10 @@ def LLVMBuildICmp(object arg0, object Op, object LHS, object RHS, const char * N
     if not isinstance(Op,_LLVMIntPredicate__Base):
         raise TypeError("argument 'Op' must be of type '_LLVMIntPredicate__Base'")
     _LLVMBuildICmp__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildICmp(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,Op.value,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildICmp__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),Op.value,
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildICmp__retval
 
 
 @cython.embedsignature(True)
@@ -14003,10 +13801,10 @@ def LLVMBuildFCmp(object arg0, object Op, object LHS, object RHS, const char * N
     if not isinstance(Op,_LLVMRealPredicate__Base):
         raise TypeError("argument 'Op' must be of type '_LLVMRealPredicate__Base'")
     _LLVMBuildFCmp__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFCmp(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,Op.value,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildFCmp__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),Op.value,
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildFCmp__retval
 
 
 @cython.embedsignature(True)
@@ -14024,9 +13822,9 @@ def LLVMBuildPhi(object arg0, object Ty, const char * Name):
             (undocumented)
     """
     _LLVMBuildPhi__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildPhi(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueType.from_pyobj(Ty)._ptr,Name))    # fully specified
-    return (_LLVMBuildPhi__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildPhi__retval
 
 
 @cython.embedsignature(True)
@@ -14053,11 +13851,11 @@ def LLVMBuildCall2(object arg0, object arg1, object Fn, object Args, unsigned in
             (undocumented)
     """
     _LLVMBuildCall2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildCall2(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueType.from_pyobj(arg1)._ptr,
-        LLVMOpaqueValue.from_pyobj(Fn)._ptr,
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(arg1).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),
         <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Args)._ptr,NumArgs,Name))    # fully specified
-    return (_LLVMBuildCall2__retval,)
+    return _LLVMBuildCall2__retval
 
 
 @cython.embedsignature(True)
@@ -14081,11 +13879,11 @@ def LLVMBuildSelect(object arg0, object If, object Then, object Else, const char
             (undocumented)
     """
     _LLVMBuildSelect__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSelect(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(If)._ptr,
-        LLVMOpaqueValue.from_pyobj(Then)._ptr,
-        LLVMOpaqueValue.from_pyobj(Else)._ptr,Name))    # fully specified
-    return (_LLVMBuildSelect__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(If).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Then).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Else).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildSelect__retval
 
 
 @cython.embedsignature(True)
@@ -14106,10 +13904,10 @@ def LLVMBuildVAArg(object arg0, object List, object Ty, const char * Name):
             (undocumented)
     """
     _LLVMBuildVAArg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildVAArg(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(List)._ptr,
-        LLVMOpaqueType.from_pyobj(Ty)._ptr,Name))    # fully specified
-    return (_LLVMBuildVAArg__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(List).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildVAArg__retval
 
 
 @cython.embedsignature(True)
@@ -14130,10 +13928,10 @@ def LLVMBuildExtractElement(object arg0, object VecVal, object Index, const char
             (undocumented)
     """
     _LLVMBuildExtractElement__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildExtractElement(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(VecVal)._ptr,
-        LLVMOpaqueValue.from_pyobj(Index)._ptr,Name))    # fully specified
-    return (_LLVMBuildExtractElement__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(VecVal).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Index).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildExtractElement__retval
 
 
 @cython.embedsignature(True)
@@ -14157,11 +13955,11 @@ def LLVMBuildInsertElement(object arg0, object VecVal, object EltVal, object Ind
             (undocumented)
     """
     _LLVMBuildInsertElement__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildInsertElement(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(VecVal)._ptr,
-        LLVMOpaqueValue.from_pyobj(EltVal)._ptr,
-        LLVMOpaqueValue.from_pyobj(Index)._ptr,Name))    # fully specified
-    return (_LLVMBuildInsertElement__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(VecVal).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(EltVal).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Index).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildInsertElement__retval
 
 
 @cython.embedsignature(True)
@@ -14185,11 +13983,11 @@ def LLVMBuildShuffleVector(object arg0, object V1, object V2, object Mask, const
             (undocumented)
     """
     _LLVMBuildShuffleVector__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildShuffleVector(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(V1)._ptr,
-        LLVMOpaqueValue.from_pyobj(V2)._ptr,
-        LLVMOpaqueValue.from_pyobj(Mask)._ptr,Name))    # fully specified
-    return (_LLVMBuildShuffleVector__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(V1).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(V2).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Mask).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildShuffleVector__retval
 
 
 @cython.embedsignature(True)
@@ -14210,9 +14008,9 @@ def LLVMBuildExtractValue(object arg0, object AggVal, unsigned int Index, const 
             (undocumented)
     """
     _LLVMBuildExtractValue__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildExtractValue(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(AggVal)._ptr,Index,Name))    # fully specified
-    return (_LLVMBuildExtractValue__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(AggVal).get_element_ptr(),Index,Name))    # fully specified
+    return _LLVMBuildExtractValue__retval
 
 
 @cython.embedsignature(True)
@@ -14236,10 +14034,10 @@ def LLVMBuildInsertValue(object arg0, object AggVal, object EltVal, unsigned int
             (undocumented)
     """
     _LLVMBuildInsertValue__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildInsertValue(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(AggVal)._ptr,
-        LLVMOpaqueValue.from_pyobj(EltVal)._ptr,Index,Name))    # fully specified
-    return (_LLVMBuildInsertValue__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(AggVal).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(EltVal).get_element_ptr(),Index,Name))    # fully specified
+    return _LLVMBuildInsertValue__retval
 
 
 @cython.embedsignature(True)
@@ -14257,9 +14055,9 @@ def LLVMBuildFreeze(object arg0, object Val, const char * Name):
             (undocumented)
     """
     _LLVMBuildFreeze__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFreeze(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,Name))    # fully specified
-    return (_LLVMBuildFreeze__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildFreeze__retval
 
 
 @cython.embedsignature(True)
@@ -14277,9 +14075,9 @@ def LLVMBuildIsNull(object arg0, object Val, const char * Name):
             (undocumented)
     """
     _LLVMBuildIsNull__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildIsNull(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,Name))    # fully specified
-    return (_LLVMBuildIsNull__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildIsNull__retval
 
 
 @cython.embedsignature(True)
@@ -14297,9 +14095,9 @@ def LLVMBuildIsNotNull(object arg0, object Val, const char * Name):
             (undocumented)
     """
     _LLVMBuildIsNotNull__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildIsNotNull(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,Name))    # fully specified
-    return (_LLVMBuildIsNotNull__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildIsNotNull__retval
 
 
 @cython.embedsignature(True)
@@ -14323,11 +14121,11 @@ def LLVMBuildPtrDiff2(object arg0, object ElemTy, object LHS, object RHS, const 
             (undocumented)
     """
     _LLVMBuildPtrDiff2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildPtrDiff2(
-        LLVMOpaqueBuilder.from_pyobj(arg0)._ptr,
-        LLVMOpaqueType.from_pyobj(ElemTy)._ptr,
-        LLVMOpaqueValue.from_pyobj(LHS)._ptr,
-        LLVMOpaqueValue.from_pyobj(RHS)._ptr,Name))    # fully specified
-    return (_LLVMBuildPtrDiff2__retval,)
+        LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
+        LLVMOpaqueType.from_pyobj(ElemTy).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+    return _LLVMBuildPtrDiff2__retval
 
 
 @cython.embedsignature(True)
@@ -14350,8 +14148,8 @@ def LLVMBuildFence(object B, object ordering, int singleThread, const char * Nam
     if not isinstance(ordering,_LLVMAtomicOrdering__Base):
         raise TypeError("argument 'ordering' must be of type '_LLVMAtomicOrdering__Base'")
     _LLVMBuildFence__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFence(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,ordering.value,singleThread,Name))    # fully specified
-    return (_LLVMBuildFence__retval,)
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),ordering.value,singleThread,Name))    # fully specified
+    return _LLVMBuildFence__retval
 
 
 @cython.embedsignature(True)
@@ -14382,10 +14180,10 @@ def LLVMBuildAtomicRMW(object B, object op, object PTR, object Val, object order
     if not isinstance(ordering,_LLVMAtomicOrdering__Base):
         raise TypeError("argument 'ordering' must be of type '_LLVMAtomicOrdering__Base'")
     _LLVMBuildAtomicRMW__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildAtomicRMW(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,op.value,
-        LLVMOpaqueValue.from_pyobj(PTR)._ptr,
-        LLVMOpaqueValue.from_pyobj(Val)._ptr,ordering.value,singleThread))    # fully specified
-    return (_LLVMBuildAtomicRMW__retval,)
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),op.value,
+        LLVMOpaqueValue.from_pyobj(PTR).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),ordering.value,singleThread))    # fully specified
+    return _LLVMBuildAtomicRMW__retval
 
 
 @cython.embedsignature(True)
@@ -14419,11 +14217,11 @@ def LLVMBuildAtomicCmpXchg(object B, object Ptr, object Cmp, object New, object 
     if not isinstance(FailureOrdering,_LLVMAtomicOrdering__Base):
         raise TypeError("argument 'FailureOrdering' must be of type '_LLVMAtomicOrdering__Base'")
     _LLVMBuildAtomicCmpXchg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildAtomicCmpXchg(
-        LLVMOpaqueBuilder.from_pyobj(B)._ptr,
-        LLVMOpaqueValue.from_pyobj(Ptr)._ptr,
-        LLVMOpaqueValue.from_pyobj(Cmp)._ptr,
-        LLVMOpaqueValue.from_pyobj(New)._ptr,SuccessOrdering.value,FailureOrdering.value,SingleThread))    # fully specified
-    return (_LLVMBuildAtomicCmpXchg__retval,)
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Ptr).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(Cmp).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(New).get_element_ptr(),SuccessOrdering.value,FailureOrdering.value,SingleThread))    # fully specified
+    return _LLVMBuildAtomicCmpXchg__retval
 
 
 @cython.embedsignature(True)
@@ -14437,13 +14235,11 @@ def LLVMGetNumMaskElements(object ShuffleVectorInst):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned int _LLVMGetNumMaskElements__retval = ccore.LLVMGetNumMaskElements(
-        LLVMOpaqueValue.from_pyobj(ShuffleVectorInst)._ptr)    # fully specified
-    return (_LLVMGetNumMaskElements__retval,)
+        LLVMOpaqueValue.from_pyobj(ShuffleVectorInst).get_element_ptr())    # fully specified
+    return _LLVMGetNumMaskElements__retval
 
 
 @cython.embedsignature(True)
@@ -14451,13 +14247,11 @@ def LLVMGetUndefMaskElem():
     r"""(No short description, might be part of a group.)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`: a constant that specifies that the result of a ``ShuffleVectorInst``
+        `~.int`: a constant that specifies that the result of a ``ShuffleVectorInst``
             is undefined.
     """
     cdef int _LLVMGetUndefMaskElem__retval = ccore.LLVMGetUndefMaskElem()    # fully specified
-    return (_LLVMGetUndefMaskElem__retval,)
+    return _LLVMGetUndefMaskElem__retval
 
 
 @cython.embedsignature(True)
@@ -14478,13 +14272,11 @@ def LLVMGetMaskValue(object ShuffleVectorInst, unsigned int Elt):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMGetMaskValue__retval = ccore.LLVMGetMaskValue(
-        LLVMOpaqueValue.from_pyobj(ShuffleVectorInst)._ptr,Elt)    # fully specified
-    return (_LLVMGetMaskValue__retval,)
+        LLVMOpaqueValue.from_pyobj(ShuffleVectorInst).get_element_ptr(),Elt)    # fully specified
+    return _LLVMGetMaskValue__retval
 
 
 @cython.embedsignature(True)
@@ -14496,13 +14288,11 @@ def LLVMIsAtomicSingleThread(object AtomicInst):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIsAtomicSingleThread__retval = ccore.LLVMIsAtomicSingleThread(
-        LLVMOpaqueValue.from_pyobj(AtomicInst)._ptr)    # fully specified
-    return (_LLVMIsAtomicSingleThread__retval,)
+        LLVMOpaqueValue.from_pyobj(AtomicInst).get_element_ptr())    # fully specified
+    return _LLVMIsAtomicSingleThread__retval
 
 
 @cython.embedsignature(True)
@@ -14517,7 +14307,7 @@ def LLVMSetAtomicSingleThread(object AtomicInst, int SingleThread):
             (undocumented)
     """
     ccore.LLVMSetAtomicSingleThread(
-        LLVMOpaqueValue.from_pyobj(AtomicInst)._ptr,SingleThread)    # fully specified
+        LLVMOpaqueValue.from_pyobj(AtomicInst).get_element_ptr(),SingleThread)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -14529,13 +14319,11 @@ def LLVMGetCmpXchgSuccessOrdering(object CmpXchgInst):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.LLVMAtomicOrdering`
+        `~.LLVMAtomicOrdering`
     """
     _LLVMGetCmpXchgSuccessOrdering__retval = LLVMAtomicOrdering(ccore.LLVMGetCmpXchgSuccessOrdering(
-        LLVMOpaqueValue.from_pyobj(CmpXchgInst)._ptr))    # fully specified
-    return (_LLVMGetCmpXchgSuccessOrdering__retval,)
+        LLVMOpaqueValue.from_pyobj(CmpXchgInst).get_element_ptr()))    # fully specified
+    return _LLVMGetCmpXchgSuccessOrdering__retval
 
 
 @cython.embedsignature(True)
@@ -14552,7 +14340,7 @@ def LLVMSetCmpXchgSuccessOrdering(object CmpXchgInst, object Ordering):
     if not isinstance(Ordering,_LLVMAtomicOrdering__Base):
         raise TypeError("argument 'Ordering' must be of type '_LLVMAtomicOrdering__Base'")
     ccore.LLVMSetCmpXchgSuccessOrdering(
-        LLVMOpaqueValue.from_pyobj(CmpXchgInst)._ptr,Ordering.value)    # fully specified
+        LLVMOpaqueValue.from_pyobj(CmpXchgInst).get_element_ptr(),Ordering.value)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -14564,13 +14352,11 @@ def LLVMGetCmpXchgFailureOrdering(object CmpXchgInst):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.LLVMAtomicOrdering`
+        `~.LLVMAtomicOrdering`
     """
     _LLVMGetCmpXchgFailureOrdering__retval = LLVMAtomicOrdering(ccore.LLVMGetCmpXchgFailureOrdering(
-        LLVMOpaqueValue.from_pyobj(CmpXchgInst)._ptr))    # fully specified
-    return (_LLVMGetCmpXchgFailureOrdering__retval,)
+        LLVMOpaqueValue.from_pyobj(CmpXchgInst).get_element_ptr()))    # fully specified
+    return _LLVMGetCmpXchgFailureOrdering__retval
 
 
 @cython.embedsignature(True)
@@ -14587,7 +14373,7 @@ def LLVMSetCmpXchgFailureOrdering(object CmpXchgInst, object Ordering):
     if not isinstance(Ordering,_LLVMAtomicOrdering__Base):
         raise TypeError("argument 'Ordering' must be of type '_LLVMAtomicOrdering__Base'")
     ccore.LLVMSetCmpXchgFailureOrdering(
-        LLVMOpaqueValue.from_pyobj(CmpXchgInst)._ptr,Ordering.value)    # fully specified
+        LLVMOpaqueValue.from_pyobj(CmpXchgInst).get_element_ptr(),Ordering.value)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -14602,8 +14388,8 @@ def LLVMCreateModuleProviderForExistingModule(object M):
             (undocumented)
     """
     _LLVMCreateModuleProviderForExistingModule__retval = LLVMOpaqueModuleProvider.from_ptr(ccore.LLVMCreateModuleProviderForExistingModule(
-        LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
-    return (_LLVMCreateModuleProviderForExistingModule__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
+    return _LLVMCreateModuleProviderForExistingModule__retval
 
 
 @cython.embedsignature(True)
@@ -14617,11 +14403,11 @@ def LLVMDisposeModuleProvider(object M):
             (undocumented)
     """
     ccore.LLVMDisposeModuleProvider(
-        LLVMOpaqueModuleProvider.from_pyobj(M)._ptr)    # fully specified
+        LLVMOpaqueModuleProvider.from_pyobj(M).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
-def LLVMCreateMemoryBufferWithContentsOfFile(const char * Path, object OutMemBuf, object OutMessage):
+def LLVMCreateMemoryBufferWithContentsOfFile(const char * Path, object OutMessage):
     r"""(No short description, might be part of a group.)
 
     @{
@@ -14630,43 +14416,41 @@ def LLVMCreateMemoryBufferWithContentsOfFile(const char * Path, object OutMemBuf
         Path (`~.bytes`):
             (undocumented)
 
-        OutMemBuf (`~.rocm.llvm._util.types.Pointer`/`~.object`):
-            (undocumented)
-
         OutMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
+        A `~.tuple` of size 2 that contains (in that order):
 
         * `~.int`
+        * (`~.LLVMOpaqueMemoryBuffer`):
+            (undocumented)
     """
-    cdef int _LLVMCreateMemoryBufferWithContentsOfFile__retval = ccore.LLVMCreateMemoryBufferWithContentsOfFile(Path,
-        <ccore.LLVMMemoryBufferRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutMemBuf)._ptr,
+    OutMemBuf = LLVMOpaqueMemoryBuffer.from_ptr(NULL)
+    cdef int _LLVMCreateMemoryBufferWithContentsOfFile__retval = ccore.LLVMCreateMemoryBufferWithContentsOfFile(Path,<ccore.LLVMOpaqueMemoryBuffer**>&OutMemBuf._ptr,
         <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
-    return (_LLVMCreateMemoryBufferWithContentsOfFile__retval,)
+    return (_LLVMCreateMemoryBufferWithContentsOfFile__retval,OutMemBuf)
 
 
 @cython.embedsignature(True)
-def LLVMCreateMemoryBufferWithSTDIN(object OutMemBuf, object OutMessage):
+def LLVMCreateMemoryBufferWithSTDIN(object OutMessage):
     r"""(No short description, might be part of a group.)
 
     Args:
-        OutMemBuf (`~.rocm.llvm._util.types.Pointer`/`~.object`):
-            (undocumented)
-
         OutMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
+        A `~.tuple` of size 2 that contains (in that order):
 
         * `~.int`
+        * (`~.LLVMOpaqueMemoryBuffer`):
+            (undocumented)
     """
-    cdef int _LLVMCreateMemoryBufferWithSTDIN__retval = ccore.LLVMCreateMemoryBufferWithSTDIN(
-        <ccore.LLVMMemoryBufferRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutMemBuf)._ptr,
+    OutMemBuf = LLVMOpaqueMemoryBuffer.from_ptr(NULL)
+    cdef int _LLVMCreateMemoryBufferWithSTDIN__retval = ccore.LLVMCreateMemoryBufferWithSTDIN(<ccore.LLVMOpaqueMemoryBuffer**>&OutMemBuf._ptr,
         <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
-    return (_LLVMCreateMemoryBufferWithSTDIN__retval,)
+    return (_LLVMCreateMemoryBufferWithSTDIN__retval,OutMemBuf)
 
 
 @cython.embedsignature(True)
@@ -14687,7 +14471,7 @@ def LLVMCreateMemoryBufferWithMemoryRange(const char * InputData, unsigned long 
             (undocumented)
     """
     _LLVMCreateMemoryBufferWithMemoryRange__retval = LLVMOpaqueMemoryBuffer.from_ptr(ccore.LLVMCreateMemoryBufferWithMemoryRange(InputData,InputDataLength,BufferName,RequiresNullTerminator))    # fully specified
-    return (_LLVMCreateMemoryBufferWithMemoryRange__retval,)
+    return _LLVMCreateMemoryBufferWithMemoryRange__retval
 
 
 @cython.embedsignature(True)
@@ -14705,7 +14489,7 @@ def LLVMCreateMemoryBufferWithMemoryRangeCopy(const char * InputData, unsigned l
             (undocumented)
     """
     _LLVMCreateMemoryBufferWithMemoryRangeCopy__retval = LLVMOpaqueMemoryBuffer.from_ptr(ccore.LLVMCreateMemoryBufferWithMemoryRangeCopy(InputData,InputDataLength,BufferName))    # fully specified
-    return (_LLVMCreateMemoryBufferWithMemoryRangeCopy__retval,)
+    return _LLVMCreateMemoryBufferWithMemoryRangeCopy__retval
 
 
 @cython.embedsignature(True)
@@ -14717,13 +14501,11 @@ def LLVMGetBufferStart(object MemBuf):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.bytes`
+        `~.bytes`
     """
     cdef const char * _LLVMGetBufferStart__retval = ccore.LLVMGetBufferStart(
-        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf)._ptr)    # fully specified
-    return (_LLVMGetBufferStart__retval,)
+        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr())    # fully specified
+    return _LLVMGetBufferStart__retval
 
 
 @cython.embedsignature(True)
@@ -14735,13 +14517,11 @@ def LLVMGetBufferSize(object MemBuf):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef unsigned long _LLVMGetBufferSize__retval = ccore.LLVMGetBufferSize(
-        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf)._ptr)    # fully specified
-    return (_LLVMGetBufferSize__retval,)
+        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr())    # fully specified
+    return _LLVMGetBufferSize__retval
 
 
 @cython.embedsignature(True)
@@ -14753,7 +14533,7 @@ def LLVMDisposeMemoryBuffer(object MemBuf):
             (undocumented)
     """
     ccore.LLVMDisposeMemoryBuffer(
-        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf)._ptr)    # fully specified
+        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -14766,7 +14546,7 @@ def LLVMGetGlobalPassRegistry():
         `~.llvm``~.`~.PassRegistry`.`~.getPassRegistry``
     """
     _LLVMGetGlobalPassRegistry__retval = LLVMOpaquePassRegistry.from_ptr(ccore.LLVMGetGlobalPassRegistry())    # fully specified
-    return (_LLVMGetGlobalPassRegistry__retval,)
+    return _LLVMGetGlobalPassRegistry__retval
 
 
 @cython.embedsignature(True)
@@ -14780,7 +14560,7 @@ def LLVMCreatePassManager():
         `~.llvm``~.`~.PassManager`.`~.PassManager``
     """
     _LLVMCreatePassManager__retval = LLVMOpaquePassManager.from_ptr(ccore.LLVMCreatePassManager())    # fully specified
-    return (_LLVMCreatePassManager__retval,)
+    return _LLVMCreatePassManager__retval
 
 
 @cython.embedsignature(True)
@@ -14799,8 +14579,8 @@ def LLVMCreateFunctionPassManagerForModule(object M):
             (undocumented)
     """
     _LLVMCreateFunctionPassManagerForModule__retval = LLVMOpaquePassManager.from_ptr(ccore.LLVMCreateFunctionPassManagerForModule(
-        LLVMOpaqueModule.from_pyobj(M)._ptr))    # fully specified
-    return (_LLVMCreateFunctionPassManagerForModule__retval,)
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
+    return _LLVMCreateFunctionPassManagerForModule__retval
 
 
 @cython.embedsignature(True)
@@ -14814,8 +14594,8 @@ def LLVMCreateFunctionPassManager(object MP):
             (undocumented)
     """
     _LLVMCreateFunctionPassManager__retval = LLVMOpaquePassManager.from_ptr(ccore.LLVMCreateFunctionPassManager(
-        LLVMOpaqueModuleProvider.from_pyobj(MP)._ptr))    # fully specified
-    return (_LLVMCreateFunctionPassManager__retval,)
+        LLVMOpaqueModuleProvider.from_pyobj(MP).get_element_ptr()))    # fully specified
+    return _LLVMCreateFunctionPassManager__retval
 
 
 @cython.embedsignature(True)
@@ -14837,14 +14617,12 @@ def LLVMRunPassManager(object PM, object M):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMRunPassManager__retval = ccore.LLVMRunPassManager(
-        LLVMOpaquePassManager.from_pyobj(PM)._ptr,
-        LLVMOpaqueModule.from_pyobj(M)._ptr)    # fully specified
-    return (_LLVMRunPassManager__retval,)
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr(),
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr())    # fully specified
+    return _LLVMRunPassManager__retval
 
 
 @cython.embedsignature(True)
@@ -14862,13 +14640,11 @@ def LLVMInitializeFunctionPassManager(object FPM):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMInitializeFunctionPassManager__retval = ccore.LLVMInitializeFunctionPassManager(
-        LLVMOpaquePassManager.from_pyobj(FPM)._ptr)    # fully specified
-    return (_LLVMInitializeFunctionPassManager__retval,)
+        LLVMOpaquePassManager.from_pyobj(FPM).get_element_ptr())    # fully specified
+    return _LLVMInitializeFunctionPassManager__retval
 
 
 @cython.embedsignature(True)
@@ -14890,14 +14666,12 @@ def LLVMRunFunctionPassManager(object FPM, object F):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMRunFunctionPassManager__retval = ccore.LLVMRunFunctionPassManager(
-        LLVMOpaquePassManager.from_pyobj(FPM)._ptr,
-        LLVMOpaqueValue.from_pyobj(F)._ptr)    # fully specified
-    return (_LLVMRunFunctionPassManager__retval,)
+        LLVMOpaquePassManager.from_pyobj(FPM).get_element_ptr(),
+        LLVMOpaqueValue.from_pyobj(F).get_element_ptr())    # fully specified
+    return _LLVMRunFunctionPassManager__retval
 
 
 @cython.embedsignature(True)
@@ -14915,13 +14689,11 @@ def LLVMFinalizeFunctionPassManager(object FPM):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMFinalizeFunctionPassManager__retval = ccore.LLVMFinalizeFunctionPassManager(
-        LLVMOpaquePassManager.from_pyobj(FPM)._ptr)    # fully specified
-    return (_LLVMFinalizeFunctionPassManager__retval,)
+        LLVMOpaquePassManager.from_pyobj(FPM).get_element_ptr())    # fully specified
+    return _LLVMFinalizeFunctionPassManager__retval
 
 
 @cython.embedsignature(True)
@@ -14939,7 +14711,7 @@ def LLVMDisposePassManager(object PM):
             (undocumented)
     """
     ccore.LLVMDisposePassManager(
-        LLVMOpaquePassManager.from_pyobj(PM)._ptr)    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -14951,12 +14723,10 @@ def LLVMStartMultithreaded():
     LLVMIsMultithreaded().
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMStartMultithreaded__retval = ccore.LLVMStartMultithreaded()    # fully specified
-    return (_LLVMStartMultithreaded__retval,)
+    return _LLVMStartMultithreaded__retval
 
 
 @cython.embedsignature(True)
@@ -14979,12 +14749,10 @@ def LLVMIsMultithreaded():
         `~.llvm``~.`~.llvm_is_multithreaded``
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMIsMultithreaded__retval = ccore.LLVMIsMultithreaded()    # fully specified
-    return (_LLVMIsMultithreaded__retval,)
+    return _LLVMIsMultithreaded__retval
 
 __all__ = [
     "_LLVMOpcode__Base",

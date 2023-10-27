@@ -31,13 +31,12 @@ ctypedef bint _Bool # bool is not a reserved keyword in C, _Bool is
 cimport rocm.llvm._util.types
 
 from . cimport cerrorhandling
-cdef class LLVMFatalErrorHandler:
-    cdef cerrorhandling.LLVMFatalErrorHandler _ptr
+cdef class LLVMFatalErrorHandler(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cerrorhandling.LLVMFatalErrorHandler get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMFatalErrorHandler from_ptr(cerrorhandling.LLVMFatalErrorHandler ptr, bint owner=*)
+    cdef LLVMFatalErrorHandler from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMFatalErrorHandler from_pyobj(object pyobj)

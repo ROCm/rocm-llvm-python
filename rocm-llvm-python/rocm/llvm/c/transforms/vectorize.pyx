@@ -66,7 +66,7 @@ def LLVMAddLoopVectorizePass(object PM):
             (undocumented)
     """
     cvectorize.LLVMAddLoopVectorizePass(
-        LLVMOpaquePassManager.from_pyobj(PM)._ptr)    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -80,7 +80,7 @@ def LLVMAddSLPVectorizePass(object PM):
             (undocumented)
     """
     cvectorize.LLVMAddSLPVectorizePass(
-        LLVMOpaquePassManager.from_pyobj(PM)._ptr)    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
 
 __all__ = [
     "LLVMAddLoopVectorizePass",

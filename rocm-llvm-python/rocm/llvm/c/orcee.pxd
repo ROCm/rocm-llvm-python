@@ -113,25 +113,23 @@ from rocm.llvm.c.types cimport LLVMOpaqueBinary
 
 
 from . cimport corcee
-cdef class LLVMMemoryManagerCreateContextCallback:
-    cdef corcee.LLVMMemoryManagerCreateContextCallback _ptr
+cdef class LLVMMemoryManagerCreateContextCallback(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corcee.LLVMMemoryManagerCreateContextCallback get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMMemoryManagerCreateContextCallback from_ptr(corcee.LLVMMemoryManagerCreateContextCallback ptr, bint owner=*)
+    cdef LLVMMemoryManagerCreateContextCallback from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMMemoryManagerCreateContextCallback from_pyobj(object pyobj)
 
 
-cdef class LLVMMemoryManagerNotifyTerminatingCallback:
-    cdef corcee.LLVMMemoryManagerNotifyTerminatingCallback _ptr
+cdef class LLVMMemoryManagerNotifyTerminatingCallback(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corcee.LLVMMemoryManagerNotifyTerminatingCallback get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMMemoryManagerNotifyTerminatingCallback from_ptr(corcee.LLVMMemoryManagerNotifyTerminatingCallback ptr, bint owner=*)
+    cdef LLVMMemoryManagerNotifyTerminatingCallback from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMMemoryManagerNotifyTerminatingCallback from_pyobj(object pyobj)

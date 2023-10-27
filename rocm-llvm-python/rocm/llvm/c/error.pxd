@@ -31,13 +31,12 @@ ctypedef bint _Bool # bool is not a reserved keyword in C, _Bool is
 cimport rocm.llvm._util.types
 
 from . cimport cerror
-cdef class LLVMOpaqueError:
-    cdef cerror.LLVMOpaqueError* _ptr
+cdef class LLVMOpaqueError(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cerror.LLVMOpaqueError* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueError from_ptr(cerror.LLVMOpaqueError* ptr, bint owner=*)
+    cdef LLVMOpaqueError from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueError from_pyobj(object pyobj)

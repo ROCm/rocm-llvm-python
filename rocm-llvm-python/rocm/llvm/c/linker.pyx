@@ -88,14 +88,12 @@ def LLVMLinkModules2(object Dest, object Src):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 1 that contains (in that order):
-
-        * `~.int`
+        `~.int`
     """
     cdef int _LLVMLinkModules2__retval = clinker.LLVMLinkModules2(
-        LLVMOpaqueModule.from_pyobj(Dest)._ptr,
-        LLVMOpaqueModule.from_pyobj(Src)._ptr)    # fully specified
-    return (_LLVMLinkModules2__retval,)
+        LLVMOpaqueModule.from_pyobj(Dest).get_element_ptr(),
+        LLVMOpaqueModule.from_pyobj(Src).get_element_ptr())    # fully specified
+    return _LLVMLinkModules2__retval
 
 __all__ = [
     "_LLVMLinkerMode__Base",

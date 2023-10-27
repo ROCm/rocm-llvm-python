@@ -54,61 +54,56 @@ from rocm.llvm.c.types cimport LLVMOpaqueBinary
 
 
 from . cimport cremarks
-cdef class LLVMRemarkOpaqueString:
-    cdef cremarks.LLVMRemarkOpaqueString* _ptr
+cdef class LLVMRemarkOpaqueString(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cremarks.LLVMRemarkOpaqueString* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMRemarkOpaqueString from_ptr(cremarks.LLVMRemarkOpaqueString* ptr, bint owner=*)
+    cdef LLVMRemarkOpaqueString from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMRemarkOpaqueString from_pyobj(object pyobj)
 
 
-cdef class LLVMRemarkOpaqueDebugLoc:
-    cdef cremarks.LLVMRemarkOpaqueDebugLoc* _ptr
+cdef class LLVMRemarkOpaqueDebugLoc(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cremarks.LLVMRemarkOpaqueDebugLoc* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMRemarkOpaqueDebugLoc from_ptr(cremarks.LLVMRemarkOpaqueDebugLoc* ptr, bint owner=*)
+    cdef LLVMRemarkOpaqueDebugLoc from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMRemarkOpaqueDebugLoc from_pyobj(object pyobj)
 
 
-cdef class LLVMRemarkOpaqueArg:
-    cdef cremarks.LLVMRemarkOpaqueArg* _ptr
+cdef class LLVMRemarkOpaqueArg(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cremarks.LLVMRemarkOpaqueArg* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMRemarkOpaqueArg from_ptr(cremarks.LLVMRemarkOpaqueArg* ptr, bint owner=*)
+    cdef LLVMRemarkOpaqueArg from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMRemarkOpaqueArg from_pyobj(object pyobj)
 
 
-cdef class LLVMRemarkOpaqueEntry:
-    cdef cremarks.LLVMRemarkOpaqueEntry* _ptr
+cdef class LLVMRemarkOpaqueEntry(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cremarks.LLVMRemarkOpaqueEntry* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMRemarkOpaqueEntry from_ptr(cremarks.LLVMRemarkOpaqueEntry* ptr, bint owner=*)
+    cdef LLVMRemarkOpaqueEntry from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMRemarkOpaqueEntry from_pyobj(object pyobj)
 
 
-cdef class LLVMRemarkOpaqueParser:
-    cdef cremarks.LLVMRemarkOpaqueParser* _ptr
+cdef class LLVMRemarkOpaqueParser(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cremarks.LLVMRemarkOpaqueParser* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMRemarkOpaqueParser from_ptr(cremarks.LLVMRemarkOpaqueParser* ptr, bint owner=*)
+    cdef LLVMRemarkOpaqueParser from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMRemarkOpaqueParser from_pyobj(object pyobj)

@@ -103,37 +103,34 @@ from rocm.llvm.c.types cimport LLVMOpaqueBinary
 
 
 from . cimport clljit
-cdef class LLVMOrcLLJITBuilderObjectLinkingLayerCreatorFunction:
-    cdef clljit.LLVMOrcLLJITBuilderObjectLinkingLayerCreatorFunction _ptr
+cdef class LLVMOrcLLJITBuilderObjectLinkingLayerCreatorFunction(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef clljit.LLVMOrcLLJITBuilderObjectLinkingLayerCreatorFunction get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcLLJITBuilderObjectLinkingLayerCreatorFunction from_ptr(clljit.LLVMOrcLLJITBuilderObjectLinkingLayerCreatorFunction ptr, bint owner=*)
+    cdef LLVMOrcLLJITBuilderObjectLinkingLayerCreatorFunction from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcLLJITBuilderObjectLinkingLayerCreatorFunction from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcOpaqueLLJITBuilder:
-    cdef clljit.LLVMOrcOpaqueLLJITBuilder* _ptr
+cdef class LLVMOrcOpaqueLLJITBuilder(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef clljit.LLVMOrcOpaqueLLJITBuilder* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcOpaqueLLJITBuilder from_ptr(clljit.LLVMOrcOpaqueLLJITBuilder* ptr, bint owner=*)
+    cdef LLVMOrcOpaqueLLJITBuilder from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcOpaqueLLJITBuilder from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcOpaqueLLJIT:
-    cdef clljit.LLVMOrcOpaqueLLJIT* _ptr
+cdef class LLVMOrcOpaqueLLJIT(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef clljit.LLVMOrcOpaqueLLJIT* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcOpaqueLLJIT from_ptr(clljit.LLVMOrcOpaqueLLJIT* ptr, bint owner=*)
+    cdef LLVMOrcOpaqueLLJIT from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcOpaqueLLJIT from_pyobj(object pyobj)

@@ -62,103 +62,95 @@ from rocm.llvm.c.types cimport LLVMOpaqueBinary
 
 
 from . cimport cexecutionengine
-cdef class LLVMOpaqueGenericValue:
-    cdef cexecutionengine.LLVMOpaqueGenericValue* _ptr
+cdef class LLVMOpaqueGenericValue(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cexecutionengine.LLVMOpaqueGenericValue* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueGenericValue from_ptr(cexecutionengine.LLVMOpaqueGenericValue* ptr, bint owner=*)
+    cdef LLVMOpaqueGenericValue from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueGenericValue from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueExecutionEngine:
-    cdef cexecutionengine.LLVMOpaqueExecutionEngine* _ptr
+cdef class LLVMOpaqueExecutionEngine(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cexecutionengine.LLVMOpaqueExecutionEngine* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueExecutionEngine from_ptr(cexecutionengine.LLVMOpaqueExecutionEngine* ptr, bint owner=*)
+    cdef LLVMOpaqueExecutionEngine from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueExecutionEngine from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueMCJITMemoryManager:
-    cdef cexecutionengine.LLVMOpaqueMCJITMemoryManager* _ptr
+cdef class LLVMOpaqueMCJITMemoryManager(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cexecutionengine.LLVMOpaqueMCJITMemoryManager* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueMCJITMemoryManager from_ptr(cexecutionengine.LLVMOpaqueMCJITMemoryManager* ptr, bint owner=*)
+    cdef LLVMOpaqueMCJITMemoryManager from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueMCJITMemoryManager from_pyobj(object pyobj)
 
 
-cdef class LLVMMCJITCompilerOptions:
-    cdef cexecutionengine.LLVMMCJITCompilerOptions* _ptr
+cdef class LLVMMCJITCompilerOptions(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cexecutionengine.LLVMMCJITCompilerOptions* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMMCJITCompilerOptions from_ptr(cexecutionengine.LLVMMCJITCompilerOptions* ptr, bint owner=*)
+    cdef LLVMMCJITCompilerOptions from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMMCJITCompilerOptions from_pyobj(object pyobj)
     @staticmethod
-    cdef __allocate(cexecutionengine.LLVMMCJITCompilerOptions** ptr)
+    cdef __allocate(void* ptr)
     @staticmethod
     cdef LLVMMCJITCompilerOptions new()
     @staticmethod
     cdef LLVMMCJITCompilerOptions from_value(cexecutionengine.LLVMMCJITCompilerOptions other)
 
 
-cdef class LLVMMemoryManagerAllocateCodeSectionCallback:
-    cdef cexecutionengine.LLVMMemoryManagerAllocateCodeSectionCallback _ptr
+cdef class LLVMMemoryManagerAllocateCodeSectionCallback(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cexecutionengine.LLVMMemoryManagerAllocateCodeSectionCallback get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMMemoryManagerAllocateCodeSectionCallback from_ptr(cexecutionengine.LLVMMemoryManagerAllocateCodeSectionCallback ptr, bint owner=*)
+    cdef LLVMMemoryManagerAllocateCodeSectionCallback from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMMemoryManagerAllocateCodeSectionCallback from_pyobj(object pyobj)
 
 
-cdef class LLVMMemoryManagerAllocateDataSectionCallback:
-    cdef cexecutionengine.LLVMMemoryManagerAllocateDataSectionCallback _ptr
+cdef class LLVMMemoryManagerAllocateDataSectionCallback(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cexecutionengine.LLVMMemoryManagerAllocateDataSectionCallback get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMMemoryManagerAllocateDataSectionCallback from_ptr(cexecutionengine.LLVMMemoryManagerAllocateDataSectionCallback ptr, bint owner=*)
+    cdef LLVMMemoryManagerAllocateDataSectionCallback from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMMemoryManagerAllocateDataSectionCallback from_pyobj(object pyobj)
 
 
-cdef class LLVMMemoryManagerFinalizeMemoryCallback:
-    cdef cexecutionengine.LLVMMemoryManagerFinalizeMemoryCallback _ptr
+cdef class LLVMMemoryManagerFinalizeMemoryCallback(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cexecutionengine.LLVMMemoryManagerFinalizeMemoryCallback get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMMemoryManagerFinalizeMemoryCallback from_ptr(cexecutionengine.LLVMMemoryManagerFinalizeMemoryCallback ptr, bint owner=*)
+    cdef LLVMMemoryManagerFinalizeMemoryCallback from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMMemoryManagerFinalizeMemoryCallback from_pyobj(object pyobj)
 
 
-cdef class LLVMMemoryManagerDestroyCallback:
-    cdef cexecutionengine.LLVMMemoryManagerDestroyCallback _ptr
+cdef class LLVMMemoryManagerDestroyCallback(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cexecutionengine.LLVMMemoryManagerDestroyCallback get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMMemoryManagerDestroyCallback from_ptr(cexecutionengine.LLVMMemoryManagerDestroyCallback ptr, bint owner=*)
+    cdef LLVMMemoryManagerDestroyCallback from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMMemoryManagerDestroyCallback from_pyobj(object pyobj)

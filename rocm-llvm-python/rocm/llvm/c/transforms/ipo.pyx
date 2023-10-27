@@ -66,7 +66,7 @@ def LLVMAddConstantMergePass(object PM):
             (undocumented)
     """
     cipo.LLVMAddConstantMergePass(
-        LLVMOpaquePassManager.from_pyobj(PM)._ptr)    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -80,7 +80,7 @@ def LLVMAddMergeFunctionsPass(object PM):
             (undocumented)
     """
     cipo.LLVMAddMergeFunctionsPass(
-        LLVMOpaquePassManager.from_pyobj(PM)._ptr)    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -94,7 +94,7 @@ def LLVMAddCalledValuePropagationPass(object PM):
             (undocumented)
     """
     cipo.LLVMAddCalledValuePropagationPass(
-        LLVMOpaquePassManager.from_pyobj(PM)._ptr)    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -108,7 +108,7 @@ def LLVMAddDeadArgEliminationPass(object PM):
             (undocumented)
     """
     cipo.LLVMAddDeadArgEliminationPass(
-        LLVMOpaquePassManager.from_pyobj(PM)._ptr)    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -122,7 +122,7 @@ def LLVMAddFunctionAttrsPass(object PM):
             (undocumented)
     """
     cipo.LLVMAddFunctionAttrsPass(
-        LLVMOpaquePassManager.from_pyobj(PM)._ptr)    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -136,7 +136,7 @@ def LLVMAddFunctionInliningPass(object PM):
             (undocumented)
     """
     cipo.LLVMAddFunctionInliningPass(
-        LLVMOpaquePassManager.from_pyobj(PM)._ptr)    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -150,7 +150,7 @@ def LLVMAddAlwaysInlinerPass(object PM):
             (undocumented)
     """
     cipo.LLVMAddAlwaysInlinerPass(
-        LLVMOpaquePassManager.from_pyobj(PM)._ptr)    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -164,7 +164,7 @@ def LLVMAddGlobalDCEPass(object PM):
             (undocumented)
     """
     cipo.LLVMAddGlobalDCEPass(
-        LLVMOpaquePassManager.from_pyobj(PM)._ptr)    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -178,7 +178,7 @@ def LLVMAddGlobalOptimizerPass(object PM):
             (undocumented)
     """
     cipo.LLVMAddGlobalOptimizerPass(
-        LLVMOpaquePassManager.from_pyobj(PM)._ptr)    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -192,7 +192,7 @@ def LLVMAddIPSCCPPass(object PM):
             (undocumented)
     """
     cipo.LLVMAddIPSCCPPass(
-        LLVMOpaquePassManager.from_pyobj(PM)._ptr)    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -209,13 +209,13 @@ def LLVMAddInternalizePass(object arg0, unsigned int AllButMain):
             (undocumented)
     """
     cipo.LLVMAddInternalizePass(
-        LLVMOpaquePassManager.from_pyobj(arg0)._ptr,AllButMain)    # fully specified
+        LLVMOpaquePassManager.from_pyobj(arg0).get_element_ptr(),AllButMain)    # fully specified
 
 
-cdef class LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0:
-    """Python wrapper for C type cipo.LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0.
+cdef class LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0(rocm.llvm._util.types.Pointer):
+    """Python wrapper for cdef class cipo.LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0.
     
-    Python wrapper for C type cipo.LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0.
+    Python wrapper for cdef class cipo.LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0.
 
     If this type is initialized via its `__init__` method, it allocates a member of the underlying C type and
     destroys it again if the wrapper type is deallocted.
@@ -231,11 +231,13 @@ cdef class LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0:
     * `int`:
       
       Interprets the integer value as pointer address and writes it to ``self._ptr``.
+      No ownership is transferred.
       
     * `ctypes.c_void_p`:
       
       Takes the pointer address ``pyobj.value`` and writes it to ``self._ptr``.
-
+      No ownership is transferred.
+    
     
     Type checks are performed in the above order.
 
@@ -256,8 +258,11 @@ cdef class LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0:
         self.ptr_owner = False
         self._py_buffer_acquired = False
 
+    cdef cipo.LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0 get_element_ptr(self):
+        return <cipo.LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0>self._ptr
+        
     @staticmethod
-    cdef LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0 from_ptr(cipo.LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0 ptr, bint owner=False):
+    cdef LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0 from_ptr(void* ptr, bint owner=False):
         """Factory function to create ``LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0`` objects from
         given ``cipo.LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0`` pointer.
         """
@@ -276,8 +281,8 @@ cdef class LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0:
         returns it directly. No new ``LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0`` is created in this case.
 
         Args:
-            pyobj (object): Must be either `None`, a simple, contiguous buffer according to the buffer protocol,
-                            or of type `LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0`, `int`, or `ctypes.c_void_p`
+            pyobj (object): Must be either `None`; a `rocm.llvm._util.types.Pointer`; a simple, contiguous buffer according to the buffer protocol;
+                            or of type `LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0`; `int`; or `ctypes.c_void_p`.
 
         Note:
             This routine does not perform a copy but returns the original ``pyobj``
@@ -291,11 +296,13 @@ cdef class LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0:
         elif isinstance(pyobj,LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0):
             return pyobj
         elif isinstance(pyobj,int):
-            wrapper._ptr = <cipo.LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0>cpython.long.PyLong_AsVoidPtr(pyobj)
+            wrapper._ptr = cpython.long.PyLong_AsVoidPtr(pyobj)
         elif isinstance(pyobj,ctypes.c_void_p):
-            wrapper._ptr = <cipo.LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0>cpython.long.PyLong_AsVoidPtr(pyobj.value) if pyobj.value != None else NULL
+            wrapper._ptr = cpython.long.PyLong_AsVoidPtr(pyobj.value) if pyobj.value != None else NULL
         elif str(type(pyobj)).startswith("<class 'ctypes.CFUNCTYPE.") and str(type(pyobj)).endswith(".CFunctionType'>" ):
-            wrapper._ptr = <cipo.LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0>cpython.long.PyLong_AsVoidPtr(ctypes.cast(pyobj, ctypes.c_void_p).value)
+            wrapper._ptr = cpython.long.PyLong_AsVoidPtr(ctypes.cast(pyobj, ctypes.c_void_p).value)
+        elif isinstance(pyobj,rocm.llvm._util.types.Pointer):
+            wrapper._ptr = cpython.long.PyLong_AsVoidPtr(int(pyobj))
         else:
             raise TypeError(f"unsupported input type: '{str(type(pyobj))}'")
         return wrapper
@@ -313,7 +320,7 @@ cdef class LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0:
     def as_c_void_p(self):
         """Returns the data's address as `ctypes.c_void_p`
         Note:
-            Implements as function to not collide with 
+            Implemented as function to not collide with 
             autogenerated property names.
         """
         return ctypes.c_void_p(int(self))
@@ -344,9 +351,9 @@ def LLVMAddInternalizePassWithMustPreservePredicate(object PM, object Context, o
             (undocumented)
     """
     cipo.LLVMAddInternalizePassWithMustPreservePredicate(
-        LLVMOpaquePassManager.from_pyobj(PM)._ptr,
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr(),
         <void *>rocm.llvm._util.types.Pointer.from_pyobj(Context)._ptr,
-        LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0.from_pyobj(MustPreserve)._ptr)    # fully specified
+        LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0.from_pyobj(MustPreserve).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -360,7 +367,7 @@ def LLVMAddStripDeadPrototypesPass(object PM):
             (undocumented)
     """
     cipo.LLVMAddStripDeadPrototypesPass(
-        LLVMOpaquePassManager.from_pyobj(PM)._ptr)    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
 
 
 @cython.embedsignature(True)
@@ -374,7 +381,7 @@ def LLVMAddStripSymbolsPass(object PM):
             (undocumented)
     """
     cipo.LLVMAddStripSymbolsPass(
-        LLVMOpaquePassManager.from_pyobj(PM)._ptr)    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
 
 __all__ = [
     "LLVMAddConstantMergePass",

@@ -56,25 +56,23 @@ from rocm.llvm.c.types cimport LLVMOpaqueBinary
 
 
 from . cimport ctarget
-cdef class LLVMOpaqueTargetData:
-    cdef ctarget.LLVMOpaqueTargetData* _ptr
+cdef class LLVMOpaqueTargetData(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctarget.LLVMOpaqueTargetData* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueTargetData from_ptr(ctarget.LLVMOpaqueTargetData* ptr, bint owner=*)
+    cdef LLVMOpaqueTargetData from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueTargetData from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueTargetLibraryInfotData:
-    cdef ctarget.LLVMOpaqueTargetLibraryInfotData* _ptr
+cdef class LLVMOpaqueTargetLibraryInfotData(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef ctarget.LLVMOpaqueTargetLibraryInfotData* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueTargetLibraryInfotData from_ptr(ctarget.LLVMOpaqueTargetLibraryInfotData* ptr, bint owner=*)
+    cdef LLVMOpaqueTargetLibraryInfotData from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueTargetLibraryInfotData from_pyobj(object pyobj)

@@ -61,541 +61,501 @@ from rocm.llvm.c.types cimport LLVMOpaqueBinary
 
 
 from . cimport corc
-cdef class LLVMJITSymbolFlags:
-    cdef corc.LLVMJITSymbolFlags* _ptr
+cdef class LLVMJITSymbolFlags(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMJITSymbolFlags* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMJITSymbolFlags from_ptr(corc.LLVMJITSymbolFlags* ptr, bint owner=*)
+    cdef LLVMJITSymbolFlags from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMJITSymbolFlags from_pyobj(object pyobj)
     @staticmethod
-    cdef __allocate(corc.LLVMJITSymbolFlags** ptr)
+    cdef __allocate(void* ptr)
     @staticmethod
     cdef LLVMJITSymbolFlags new()
     @staticmethod
     cdef LLVMJITSymbolFlags from_value(corc.LLVMJITSymbolFlags other)
 
 
-cdef class LLVMJITEvaluatedSymbol:
-    cdef corc.LLVMJITEvaluatedSymbol* _ptr
+cdef class LLVMJITEvaluatedSymbol(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMJITEvaluatedSymbol* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMJITEvaluatedSymbol from_ptr(corc.LLVMJITEvaluatedSymbol* ptr, bint owner=*)
+    cdef LLVMJITEvaluatedSymbol from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMJITEvaluatedSymbol from_pyobj(object pyobj)
     @staticmethod
-    cdef __allocate(corc.LLVMJITEvaluatedSymbol** ptr)
+    cdef __allocate(void* ptr)
     @staticmethod
     cdef LLVMJITEvaluatedSymbol new()
     @staticmethod
     cdef LLVMJITEvaluatedSymbol from_value(corc.LLVMJITEvaluatedSymbol other)
 
 
-cdef class LLVMOrcOpaqueExecutionSession:
-    cdef corc.LLVMOrcOpaqueExecutionSession* _ptr
+cdef class LLVMOrcOpaqueExecutionSession(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcOpaqueExecutionSession* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcOpaqueExecutionSession from_ptr(corc.LLVMOrcOpaqueExecutionSession* ptr, bint owner=*)
+    cdef LLVMOrcOpaqueExecutionSession from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcOpaqueExecutionSession from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcErrorReporterFunction:
-    cdef corc.LLVMOrcErrorReporterFunction _ptr
+cdef class LLVMOrcErrorReporterFunction(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcErrorReporterFunction get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcErrorReporterFunction from_ptr(corc.LLVMOrcErrorReporterFunction ptr, bint owner=*)
+    cdef LLVMOrcErrorReporterFunction from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcErrorReporterFunction from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcOpaqueSymbolStringPool:
-    cdef corc.LLVMOrcOpaqueSymbolStringPool* _ptr
+cdef class LLVMOrcOpaqueSymbolStringPool(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcOpaqueSymbolStringPool* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcOpaqueSymbolStringPool from_ptr(corc.LLVMOrcOpaqueSymbolStringPool* ptr, bint owner=*)
+    cdef LLVMOrcOpaqueSymbolStringPool from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcOpaqueSymbolStringPool from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcOpaqueSymbolStringPoolEntry:
-    cdef corc.LLVMOrcOpaqueSymbolStringPoolEntry* _ptr
+cdef class LLVMOrcOpaqueSymbolStringPoolEntry(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcOpaqueSymbolStringPoolEntry* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcOpaqueSymbolStringPoolEntry from_ptr(corc.LLVMOrcOpaqueSymbolStringPoolEntry* ptr, bint owner=*)
+    cdef LLVMOrcOpaqueSymbolStringPoolEntry from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcOpaqueSymbolStringPoolEntry from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcCSymbolFlagsMapPair:
-    cdef corc.LLVMOrcCSymbolFlagsMapPair* _ptr
+cdef class LLVMOrcCSymbolFlagsMapPair(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcCSymbolFlagsMapPair* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcCSymbolFlagsMapPair from_ptr(corc.LLVMOrcCSymbolFlagsMapPair* ptr, bint owner=*)
+    cdef LLVMOrcCSymbolFlagsMapPair from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcCSymbolFlagsMapPair from_pyobj(object pyobj)
     @staticmethod
-    cdef __allocate(corc.LLVMOrcCSymbolFlagsMapPair** ptr)
+    cdef __allocate(void* ptr)
     @staticmethod
     cdef LLVMOrcCSymbolFlagsMapPair new()
     @staticmethod
     cdef LLVMOrcCSymbolFlagsMapPair from_value(corc.LLVMOrcCSymbolFlagsMapPair other)
 
 
-cdef class LLVMOrcCSymbolMapPair:
-    cdef corc.LLVMOrcCSymbolMapPair* _ptr
+cdef class LLVMOrcCSymbolMapPair(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcCSymbolMapPair* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcCSymbolMapPair from_ptr(corc.LLVMOrcCSymbolMapPair* ptr, bint owner=*)
+    cdef LLVMOrcCSymbolMapPair from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcCSymbolMapPair from_pyobj(object pyobj)
     @staticmethod
-    cdef __allocate(corc.LLVMOrcCSymbolMapPair** ptr)
+    cdef __allocate(void* ptr)
     @staticmethod
     cdef LLVMOrcCSymbolMapPair new()
     @staticmethod
     cdef LLVMOrcCSymbolMapPair from_value(corc.LLVMOrcCSymbolMapPair other)
 
 
-cdef class LLVMOrcCSymbolAliasMapEntry:
-    cdef corc.LLVMOrcCSymbolAliasMapEntry* _ptr
+cdef class LLVMOrcCSymbolAliasMapEntry(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcCSymbolAliasMapEntry* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcCSymbolAliasMapEntry from_ptr(corc.LLVMOrcCSymbolAliasMapEntry* ptr, bint owner=*)
+    cdef LLVMOrcCSymbolAliasMapEntry from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcCSymbolAliasMapEntry from_pyobj(object pyobj)
     @staticmethod
-    cdef __allocate(corc.LLVMOrcCSymbolAliasMapEntry** ptr)
+    cdef __allocate(void* ptr)
     @staticmethod
     cdef LLVMOrcCSymbolAliasMapEntry new()
     @staticmethod
     cdef LLVMOrcCSymbolAliasMapEntry from_value(corc.LLVMOrcCSymbolAliasMapEntry other)
 
 
-cdef class LLVMOrcCSymbolAliasMapPair:
-    cdef corc.LLVMOrcCSymbolAliasMapPair* _ptr
+cdef class LLVMOrcCSymbolAliasMapPair(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcCSymbolAliasMapPair* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcCSymbolAliasMapPair from_ptr(corc.LLVMOrcCSymbolAliasMapPair* ptr, bint owner=*)
+    cdef LLVMOrcCSymbolAliasMapPair from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcCSymbolAliasMapPair from_pyobj(object pyobj)
     @staticmethod
-    cdef __allocate(corc.LLVMOrcCSymbolAliasMapPair** ptr)
+    cdef __allocate(void* ptr)
     @staticmethod
     cdef LLVMOrcCSymbolAliasMapPair new()
     @staticmethod
     cdef LLVMOrcCSymbolAliasMapPair from_value(corc.LLVMOrcCSymbolAliasMapPair other)
 
 
-cdef class LLVMOrcOpaqueJITDylib:
-    cdef corc.LLVMOrcOpaqueJITDylib* _ptr
+cdef class LLVMOrcOpaqueJITDylib(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcOpaqueJITDylib* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcOpaqueJITDylib from_ptr(corc.LLVMOrcOpaqueJITDylib* ptr, bint owner=*)
+    cdef LLVMOrcOpaqueJITDylib from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcOpaqueJITDylib from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcCSymbolsList:
-    cdef corc.LLVMOrcCSymbolsList* _ptr
+cdef class LLVMOrcCSymbolsList(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcCSymbolsList* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcCSymbolsList from_ptr(corc.LLVMOrcCSymbolsList* ptr, bint owner=*)
+    cdef LLVMOrcCSymbolsList from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcCSymbolsList from_pyobj(object pyobj)
     @staticmethod
-    cdef __allocate(corc.LLVMOrcCSymbolsList** ptr)
+    cdef __allocate(void* ptr)
     @staticmethod
     cdef LLVMOrcCSymbolsList new()
     @staticmethod
     cdef LLVMOrcCSymbolsList from_value(corc.LLVMOrcCSymbolsList other)
 
 
-cdef class LLVMOrcCDependenceMapPair:
-    cdef corc.LLVMOrcCDependenceMapPair* _ptr
+cdef class LLVMOrcCDependenceMapPair(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcCDependenceMapPair* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcCDependenceMapPair from_ptr(corc.LLVMOrcCDependenceMapPair* ptr, bint owner=*)
+    cdef LLVMOrcCDependenceMapPair from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcCDependenceMapPair from_pyobj(object pyobj)
     @staticmethod
-    cdef __allocate(corc.LLVMOrcCDependenceMapPair** ptr)
+    cdef __allocate(void* ptr)
     @staticmethod
     cdef LLVMOrcCDependenceMapPair new()
     @staticmethod
     cdef LLVMOrcCDependenceMapPair from_value(corc.LLVMOrcCDependenceMapPair other)
 
 
-cdef class LLVMOrcCJITDylibSearchOrderElement:
-    cdef corc.LLVMOrcCJITDylibSearchOrderElement* _ptr
+cdef class LLVMOrcCJITDylibSearchOrderElement(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcCJITDylibSearchOrderElement* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcCJITDylibSearchOrderElement from_ptr(corc.LLVMOrcCJITDylibSearchOrderElement* ptr, bint owner=*)
+    cdef LLVMOrcCJITDylibSearchOrderElement from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcCJITDylibSearchOrderElement from_pyobj(object pyobj)
     @staticmethod
-    cdef __allocate(corc.LLVMOrcCJITDylibSearchOrderElement** ptr)
+    cdef __allocate(void* ptr)
     @staticmethod
     cdef LLVMOrcCJITDylibSearchOrderElement new()
     @staticmethod
     cdef LLVMOrcCJITDylibSearchOrderElement from_value(corc.LLVMOrcCJITDylibSearchOrderElement other)
 
 
-cdef class LLVMOrcCLookupSetElement:
-    cdef corc.LLVMOrcCLookupSetElement* _ptr
+cdef class LLVMOrcCLookupSetElement(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcCLookupSetElement* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcCLookupSetElement from_ptr(corc.LLVMOrcCLookupSetElement* ptr, bint owner=*)
+    cdef LLVMOrcCLookupSetElement from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcCLookupSetElement from_pyobj(object pyobj)
     @staticmethod
-    cdef __allocate(corc.LLVMOrcCLookupSetElement** ptr)
+    cdef __allocate(void* ptr)
     @staticmethod
     cdef LLVMOrcCLookupSetElement new()
     @staticmethod
     cdef LLVMOrcCLookupSetElement from_value(corc.LLVMOrcCLookupSetElement other)
 
 
-cdef class LLVMOrcOpaqueMaterializationUnit:
-    cdef corc.LLVMOrcOpaqueMaterializationUnit* _ptr
+cdef class LLVMOrcOpaqueMaterializationUnit(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcOpaqueMaterializationUnit* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcOpaqueMaterializationUnit from_ptr(corc.LLVMOrcOpaqueMaterializationUnit* ptr, bint owner=*)
+    cdef LLVMOrcOpaqueMaterializationUnit from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcOpaqueMaterializationUnit from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcOpaqueMaterializationResponsibility:
-    cdef corc.LLVMOrcOpaqueMaterializationResponsibility* _ptr
+cdef class LLVMOrcOpaqueMaterializationResponsibility(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcOpaqueMaterializationResponsibility* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcOpaqueMaterializationResponsibility from_ptr(corc.LLVMOrcOpaqueMaterializationResponsibility* ptr, bint owner=*)
+    cdef LLVMOrcOpaqueMaterializationResponsibility from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcOpaqueMaterializationResponsibility from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcMaterializationUnitMaterializeFunction:
-    cdef corc.LLVMOrcMaterializationUnitMaterializeFunction _ptr
+cdef class LLVMOrcMaterializationUnitMaterializeFunction(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcMaterializationUnitMaterializeFunction get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcMaterializationUnitMaterializeFunction from_ptr(corc.LLVMOrcMaterializationUnitMaterializeFunction ptr, bint owner=*)
+    cdef LLVMOrcMaterializationUnitMaterializeFunction from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcMaterializationUnitMaterializeFunction from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcMaterializationUnitDiscardFunction:
-    cdef corc.LLVMOrcMaterializationUnitDiscardFunction _ptr
+cdef class LLVMOrcMaterializationUnitDiscardFunction(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcMaterializationUnitDiscardFunction get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcMaterializationUnitDiscardFunction from_ptr(corc.LLVMOrcMaterializationUnitDiscardFunction ptr, bint owner=*)
+    cdef LLVMOrcMaterializationUnitDiscardFunction from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcMaterializationUnitDiscardFunction from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcMaterializationUnitDestroyFunction:
-    cdef corc.LLVMOrcMaterializationUnitDestroyFunction _ptr
+cdef class LLVMOrcMaterializationUnitDestroyFunction(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcMaterializationUnitDestroyFunction get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcMaterializationUnitDestroyFunction from_ptr(corc.LLVMOrcMaterializationUnitDestroyFunction ptr, bint owner=*)
+    cdef LLVMOrcMaterializationUnitDestroyFunction from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcMaterializationUnitDestroyFunction from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcOpaqueResourceTracker:
-    cdef corc.LLVMOrcOpaqueResourceTracker* _ptr
+cdef class LLVMOrcOpaqueResourceTracker(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcOpaqueResourceTracker* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcOpaqueResourceTracker from_ptr(corc.LLVMOrcOpaqueResourceTracker* ptr, bint owner=*)
+    cdef LLVMOrcOpaqueResourceTracker from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcOpaqueResourceTracker from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcOpaqueDefinitionGenerator:
-    cdef corc.LLVMOrcOpaqueDefinitionGenerator* _ptr
+cdef class LLVMOrcOpaqueDefinitionGenerator(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcOpaqueDefinitionGenerator* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcOpaqueDefinitionGenerator from_ptr(corc.LLVMOrcOpaqueDefinitionGenerator* ptr, bint owner=*)
+    cdef LLVMOrcOpaqueDefinitionGenerator from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcOpaqueDefinitionGenerator from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcOpaqueLookupState:
-    cdef corc.LLVMOrcOpaqueLookupState* _ptr
+cdef class LLVMOrcOpaqueLookupState(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcOpaqueLookupState* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcOpaqueLookupState from_ptr(corc.LLVMOrcOpaqueLookupState* ptr, bint owner=*)
+    cdef LLVMOrcOpaqueLookupState from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcOpaqueLookupState from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcCAPIDefinitionGeneratorTryToGenerateFunction:
-    cdef corc.LLVMOrcCAPIDefinitionGeneratorTryToGenerateFunction _ptr
+cdef class LLVMOrcCAPIDefinitionGeneratorTryToGenerateFunction(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcCAPIDefinitionGeneratorTryToGenerateFunction get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcCAPIDefinitionGeneratorTryToGenerateFunction from_ptr(corc.LLVMOrcCAPIDefinitionGeneratorTryToGenerateFunction ptr, bint owner=*)
+    cdef LLVMOrcCAPIDefinitionGeneratorTryToGenerateFunction from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcCAPIDefinitionGeneratorTryToGenerateFunction from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcDisposeCAPIDefinitionGeneratorFunction:
-    cdef corc.LLVMOrcDisposeCAPIDefinitionGeneratorFunction _ptr
+cdef class LLVMOrcDisposeCAPIDefinitionGeneratorFunction(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcDisposeCAPIDefinitionGeneratorFunction get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcDisposeCAPIDefinitionGeneratorFunction from_ptr(corc.LLVMOrcDisposeCAPIDefinitionGeneratorFunction ptr, bint owner=*)
+    cdef LLVMOrcDisposeCAPIDefinitionGeneratorFunction from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcDisposeCAPIDefinitionGeneratorFunction from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcSymbolPredicate:
-    cdef corc.LLVMOrcSymbolPredicate _ptr
+cdef class LLVMOrcSymbolPredicate(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcSymbolPredicate get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcSymbolPredicate from_ptr(corc.LLVMOrcSymbolPredicate ptr, bint owner=*)
+    cdef LLVMOrcSymbolPredicate from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcSymbolPredicate from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcOpaqueThreadSafeContext:
-    cdef corc.LLVMOrcOpaqueThreadSafeContext* _ptr
+cdef class LLVMOrcOpaqueThreadSafeContext(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcOpaqueThreadSafeContext* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcOpaqueThreadSafeContext from_ptr(corc.LLVMOrcOpaqueThreadSafeContext* ptr, bint owner=*)
+    cdef LLVMOrcOpaqueThreadSafeContext from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcOpaqueThreadSafeContext from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcOpaqueThreadSafeModule:
-    cdef corc.LLVMOrcOpaqueThreadSafeModule* _ptr
+cdef class LLVMOrcOpaqueThreadSafeModule(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcOpaqueThreadSafeModule* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcOpaqueThreadSafeModule from_ptr(corc.LLVMOrcOpaqueThreadSafeModule* ptr, bint owner=*)
+    cdef LLVMOrcOpaqueThreadSafeModule from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcOpaqueThreadSafeModule from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcGenericIRModuleOperationFunction:
-    cdef corc.LLVMOrcGenericIRModuleOperationFunction _ptr
+cdef class LLVMOrcGenericIRModuleOperationFunction(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcGenericIRModuleOperationFunction get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcGenericIRModuleOperationFunction from_ptr(corc.LLVMOrcGenericIRModuleOperationFunction ptr, bint owner=*)
+    cdef LLVMOrcGenericIRModuleOperationFunction from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcGenericIRModuleOperationFunction from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcOpaqueJITTargetMachineBuilder:
-    cdef corc.LLVMOrcOpaqueJITTargetMachineBuilder* _ptr
+cdef class LLVMOrcOpaqueJITTargetMachineBuilder(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcOpaqueJITTargetMachineBuilder* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcOpaqueJITTargetMachineBuilder from_ptr(corc.LLVMOrcOpaqueJITTargetMachineBuilder* ptr, bint owner=*)
+    cdef LLVMOrcOpaqueJITTargetMachineBuilder from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcOpaqueJITTargetMachineBuilder from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcOpaqueObjectLayer:
-    cdef corc.LLVMOrcOpaqueObjectLayer* _ptr
+cdef class LLVMOrcOpaqueObjectLayer(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcOpaqueObjectLayer* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcOpaqueObjectLayer from_ptr(corc.LLVMOrcOpaqueObjectLayer* ptr, bint owner=*)
+    cdef LLVMOrcOpaqueObjectLayer from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcOpaqueObjectLayer from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcOpaqueObjectLinkingLayer:
-    cdef corc.LLVMOrcOpaqueObjectLinkingLayer* _ptr
+cdef class LLVMOrcOpaqueObjectLinkingLayer(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcOpaqueObjectLinkingLayer* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcOpaqueObjectLinkingLayer from_ptr(corc.LLVMOrcOpaqueObjectLinkingLayer* ptr, bint owner=*)
+    cdef LLVMOrcOpaqueObjectLinkingLayer from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcOpaqueObjectLinkingLayer from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcOpaqueIRTransformLayer:
-    cdef corc.LLVMOrcOpaqueIRTransformLayer* _ptr
+cdef class LLVMOrcOpaqueIRTransformLayer(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcOpaqueIRTransformLayer* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcOpaqueIRTransformLayer from_ptr(corc.LLVMOrcOpaqueIRTransformLayer* ptr, bint owner=*)
+    cdef LLVMOrcOpaqueIRTransformLayer from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcOpaqueIRTransformLayer from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcIRTransformLayerTransformFunction:
-    cdef corc.LLVMOrcIRTransformLayerTransformFunction _ptr
+cdef class LLVMOrcIRTransformLayerTransformFunction(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcIRTransformLayerTransformFunction get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcIRTransformLayerTransformFunction from_ptr(corc.LLVMOrcIRTransformLayerTransformFunction ptr, bint owner=*)
+    cdef LLVMOrcIRTransformLayerTransformFunction from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcIRTransformLayerTransformFunction from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcOpaqueObjectTransformLayer:
-    cdef corc.LLVMOrcOpaqueObjectTransformLayer* _ptr
+cdef class LLVMOrcOpaqueObjectTransformLayer(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcOpaqueObjectTransformLayer* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcOpaqueObjectTransformLayer from_ptr(corc.LLVMOrcOpaqueObjectTransformLayer* ptr, bint owner=*)
+    cdef LLVMOrcOpaqueObjectTransformLayer from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcOpaqueObjectTransformLayer from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcObjectTransformLayerTransformFunction:
-    cdef corc.LLVMOrcObjectTransformLayerTransformFunction _ptr
+cdef class LLVMOrcObjectTransformLayerTransformFunction(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcObjectTransformLayerTransformFunction get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcObjectTransformLayerTransformFunction from_ptr(corc.LLVMOrcObjectTransformLayerTransformFunction ptr, bint owner=*)
+    cdef LLVMOrcObjectTransformLayerTransformFunction from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcObjectTransformLayerTransformFunction from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcOpaqueIndirectStubsManager:
-    cdef corc.LLVMOrcOpaqueIndirectStubsManager* _ptr
+cdef class LLVMOrcOpaqueIndirectStubsManager(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcOpaqueIndirectStubsManager* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcOpaqueIndirectStubsManager from_ptr(corc.LLVMOrcOpaqueIndirectStubsManager* ptr, bint owner=*)
+    cdef LLVMOrcOpaqueIndirectStubsManager from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcOpaqueIndirectStubsManager from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcOpaqueLazyCallThroughManager:
-    cdef corc.LLVMOrcOpaqueLazyCallThroughManager* _ptr
+cdef class LLVMOrcOpaqueLazyCallThroughManager(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcOpaqueLazyCallThroughManager* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcOpaqueLazyCallThroughManager from_ptr(corc.LLVMOrcOpaqueLazyCallThroughManager* ptr, bint owner=*)
+    cdef LLVMOrcOpaqueLazyCallThroughManager from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcOpaqueLazyCallThroughManager from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcOpaqueDumpObjects:
-    cdef corc.LLVMOrcOpaqueDumpObjects* _ptr
+cdef class LLVMOrcOpaqueDumpObjects(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcOpaqueDumpObjects* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcOpaqueDumpObjects from_ptr(corc.LLVMOrcOpaqueDumpObjects* ptr, bint owner=*)
+    cdef LLVMOrcOpaqueDumpObjects from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcOpaqueDumpObjects from_pyobj(object pyobj)
 
 
-cdef class LLVMOrcExecutionSessionLookupHandleResultFunction:
-    cdef corc.LLVMOrcExecutionSessionLookupHandleResultFunction _ptr
+cdef class LLVMOrcExecutionSessionLookupHandleResultFunction(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef corc.LLVMOrcExecutionSessionLookupHandleResultFunction get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOrcExecutionSessionLookupHandleResultFunction from_ptr(corc.LLVMOrcExecutionSessionLookupHandleResultFunction ptr, bint owner=*)
+    cdef LLVMOrcExecutionSessionLookupHandleResultFunction from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOrcExecutionSessionLookupHandleResultFunction from_pyobj(object pyobj)

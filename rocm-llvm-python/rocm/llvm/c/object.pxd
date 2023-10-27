@@ -56,49 +56,45 @@ from rocm.llvm.c.types cimport LLVMOpaqueBinary
 
 
 from . cimport cobject
-cdef class LLVMOpaqueSectionIterator:
-    cdef cobject.LLVMOpaqueSectionIterator* _ptr
+cdef class LLVMOpaqueSectionIterator(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cobject.LLVMOpaqueSectionIterator* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueSectionIterator from_ptr(cobject.LLVMOpaqueSectionIterator* ptr, bint owner=*)
+    cdef LLVMOpaqueSectionIterator from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueSectionIterator from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueSymbolIterator:
-    cdef cobject.LLVMOpaqueSymbolIterator* _ptr
+cdef class LLVMOpaqueSymbolIterator(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cobject.LLVMOpaqueSymbolIterator* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueSymbolIterator from_ptr(cobject.LLVMOpaqueSymbolIterator* ptr, bint owner=*)
+    cdef LLVMOpaqueSymbolIterator from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueSymbolIterator from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueRelocationIterator:
-    cdef cobject.LLVMOpaqueRelocationIterator* _ptr
+cdef class LLVMOpaqueRelocationIterator(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cobject.LLVMOpaqueRelocationIterator* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueRelocationIterator from_ptr(cobject.LLVMOpaqueRelocationIterator* ptr, bint owner=*)
+    cdef LLVMOpaqueRelocationIterator from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueRelocationIterator from_pyobj(object pyobj)
 
 
-cdef class LLVMOpaqueObjectFile:
-    cdef cobject.LLVMOpaqueObjectFile* _ptr
+cdef class LLVMOpaqueObjectFile(rocm.llvm._util.types.Pointer):
     cdef bint ptr_owner
-    cdef Py_buffer _py_buffer
-    cdef bint _py_buffer_acquired
 
+    cdef cobject.LLVMOpaqueObjectFile* get_element_ptr(self)
+    
     @staticmethod
-    cdef LLVMOpaqueObjectFile from_ptr(cobject.LLVMOpaqueObjectFile* ptr, bint owner=*)
+    cdef LLVMOpaqueObjectFile from_ptr(void* ptr, bint owner=*)
     @staticmethod
     cdef LLVMOpaqueObjectFile from_pyobj(object pyobj)
