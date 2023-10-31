@@ -49,9 +49,9 @@ args = parser.parse_args()
 # Build the code
 builder = LLVMCreateBuilder()
 
-# Note that the LLVM C will typically not copy 
-# bytes/strings. Hence the Pyhton objects that you supply
-# should not go out of scope during the lifetime
+# Note that the LLVM C APIs will typically not copy 
+# bytes/strings. Hence the Python objects that you pass
+# to them should not go out of scope during the lifetime
 # of the respective LLVM C object.
 
 mod = LLVMModuleCreateWithName(b"my_module") 
@@ -98,6 +98,6 @@ if LLVMWriteBitcodeToFile(mod, b"sum.bc") != 0:
 
 # shutdown
 LLVMDisposeExecutionEngine(engine)
-# LLVMDisposeModule(mod) # TODO you can either call this or the above, 
-                         # Investigate further.
+# LLVMDisposeModule(mod) # TODO you can either call this or the above.
+                         # Otherwise you get a segfualt, investigate further.
 LLVMDisposeBuilder(builder)
