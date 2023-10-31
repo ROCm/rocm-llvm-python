@@ -922,7 +922,7 @@ def LLVMGenericValueToPointer(object GenVal):
         GenVal (`~.LLVMOpaqueGenericValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGenericValueToPointer__retval = rocm.llvm._util.types.Pointer.from_ptr(cexecutionengine.LLVMGenericValueToPointer(
+    _LLVMGenericValueToPointer__retval = rocm.llvm._util.types.Pointer.from_ptr(<void*>cexecutionengine.LLVMGenericValueToPointer(
         LLVMOpaqueGenericValue.from_pyobj(GenVal).get_element_ptr()))    # fully specified
     return _LLVMGenericValueToPointer__retval
 
@@ -960,57 +960,57 @@ def LLVMDisposeGenericValue(object GenVal):
 
 
 @cython.embedsignature(True)
-def LLVMCreateExecutionEngineForModule(object M, object OutError):
+def LLVMCreateExecutionEngineForModule(object M):
     r"""(No short description, might be part of a group.)
 
     Args:
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        OutError (`~.rocm.llvm._util.types.Pointer`/`~.object`):
-            (undocumented)
-
     Returns:
-        A `~.tuple` of size 2 that contains (in that order):
+        A `~.tuple` of size 3 that contains (in that order):
 
         * `~.int`
-        * (`~.LLVMOpaqueExecutionEngine`):
+        * OutEE (`~.LLVMOpaqueExecutionEngine`):
+            (undocumented)
+        * OutError (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     OutEE = LLVMOpaqueExecutionEngine.from_ptr(NULL)
+    OutError = rocm.llvm._util.types.CStr.from_ptr(NULL)
     cdef int _LLVMCreateExecutionEngineForModule__retval = cexecutionengine.LLVMCreateExecutionEngineForModule(<cexecutionengine.LLVMOpaqueExecutionEngine**>&OutEE._ptr,
         LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
-        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutError)._ptr)    # fully specified
-    return (_LLVMCreateExecutionEngineForModule__retval,OutEE)
+        <char **>&OutError._ptr)    # fully specified
+    return (_LLVMCreateExecutionEngineForModule__retval,None if OutEE._ptr == NULL else OutEE,None if OutError._ptr == NULL else OutError)
 
 
 @cython.embedsignature(True)
-def LLVMCreateInterpreterForModule(object M, object OutError):
+def LLVMCreateInterpreterForModule(object M):
     r"""(No short description, might be part of a group.)
 
     Args:
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        OutError (`~.rocm.llvm._util.types.Pointer`/`~.object`):
-            (undocumented)
-
     Returns:
-        A `~.tuple` of size 2 that contains (in that order):
+        A `~.tuple` of size 3 that contains (in that order):
 
         * `~.int`
-        * (`~.LLVMOpaqueExecutionEngine`):
+        * OutInterp (`~.LLVMOpaqueExecutionEngine`):
+            (undocumented)
+        * OutError (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     OutInterp = LLVMOpaqueExecutionEngine.from_ptr(NULL)
+    OutError = rocm.llvm._util.types.CStr.from_ptr(NULL)
     cdef int _LLVMCreateInterpreterForModule__retval = cexecutionengine.LLVMCreateInterpreterForModule(<cexecutionengine.LLVMOpaqueExecutionEngine**>&OutInterp._ptr,
         LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
-        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutError)._ptr)    # fully specified
-    return (_LLVMCreateInterpreterForModule__retval,OutInterp)
+        <char **>&OutError._ptr)    # fully specified
+    return (_LLVMCreateInterpreterForModule__retval,None if OutInterp._ptr == NULL else OutInterp,None if OutError._ptr == NULL else OutError)
 
 
 @cython.embedsignature(True)
-def LLVMCreateJITCompilerForModule(object M, unsigned int OptLevel, object OutError):
+def LLVMCreateJITCompilerForModule(object M, unsigned int OptLevel):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -1020,21 +1020,21 @@ def LLVMCreateJITCompilerForModule(object M, unsigned int OptLevel, object OutEr
         OptLevel (`~.int`):
             (undocumented)
 
-        OutError (`~.rocm.llvm._util.types.Pointer`/`~.object`):
-            (undocumented)
-
     Returns:
-        A `~.tuple` of size 2 that contains (in that order):
+        A `~.tuple` of size 3 that contains (in that order):
 
         * `~.int`
-        * (`~.LLVMOpaqueExecutionEngine`):
+        * OutJIT (`~.LLVMOpaqueExecutionEngine`):
+            (undocumented)
+        * OutError (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     OutJIT = LLVMOpaqueExecutionEngine.from_ptr(NULL)
+    OutError = rocm.llvm._util.types.CStr.from_ptr(NULL)
     cdef int _LLVMCreateJITCompilerForModule__retval = cexecutionengine.LLVMCreateJITCompilerForModule(<cexecutionengine.LLVMOpaqueExecutionEngine**>&OutJIT._ptr,
         LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),OptLevel,
-        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutError)._ptr)    # fully specified
-    return (_LLVMCreateJITCompilerForModule__retval,OutJIT)
+        <char **>&OutError._ptr)    # fully specified
+    return (_LLVMCreateJITCompilerForModule__retval,None if OutJIT._ptr == NULL else OutJIT,None if OutError._ptr == NULL else OutError)
 
 
 @cython.embedsignature(True)
@@ -1053,7 +1053,7 @@ def LLVMInitializeMCJITCompilerOptions(object Options, unsigned long SizeOfOptio
 
 
 @cython.embedsignature(True)
-def LLVMCreateMCJITCompilerForModule(object M, object Options, unsigned long SizeOfOptions, object OutError):
+def LLVMCreateMCJITCompilerForModule(object M, object Options, unsigned long SizeOfOptions):
     r"""(No short description, might be part of a group.)
 
     Create an MCJIT execution engine for a module, with the given options. It is
@@ -1082,22 +1082,22 @@ def LLVMCreateMCJITCompilerForModule(object M, object Options, unsigned long Siz
         SizeOfOptions (`~.int`):
             (undocumented)
 
-        OutError (`~.rocm.llvm._util.types.Pointer`/`~.object`):
-            (undocumented)
-
     Returns:
-        A `~.tuple` of size 2 that contains (in that order):
+        A `~.tuple` of size 3 that contains (in that order):
 
         * `~.int`
-        * (`~.LLVMOpaqueExecutionEngine`):
+        * OutJIT (`~.LLVMOpaqueExecutionEngine`):
+            (undocumented)
+        * OutError (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     OutJIT = LLVMOpaqueExecutionEngine.from_ptr(NULL)
+    OutError = rocm.llvm._util.types.CStr.from_ptr(NULL)
     cdef int _LLVMCreateMCJITCompilerForModule__retval = cexecutionengine.LLVMCreateMCJITCompilerForModule(<cexecutionengine.LLVMOpaqueExecutionEngine**>&OutJIT._ptr,
         LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
         LLVMMCJITCompilerOptions.from_pyobj(Options).get_element_ptr(),SizeOfOptions,
-        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutError)._ptr)    # fully specified
-    return (_LLVMCreateMCJITCompilerForModule__retval,OutJIT)
+        <char **>&OutError._ptr)    # fully specified
+    return (_LLVMCreateMCJITCompilerForModule__retval,None if OutJIT._ptr == NULL else OutJIT,None if OutError._ptr == NULL else OutError)
 
 
 @cython.embedsignature(True)
@@ -1150,10 +1150,10 @@ def LLVMRunFunctionAsMain(object EE, object F, unsigned int ArgC, object ArgV, o
         ArgC (`~.int`):
             (undocumented)
 
-        ArgV (`~.rocm.llvm._util.types.Pointer`/`~.object`):
+        ArgV (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
-        EnvP (`~.rocm.llvm._util.types.Pointer`/`~.object`):
+        EnvP (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
     Returns:
@@ -1162,8 +1162,8 @@ def LLVMRunFunctionAsMain(object EE, object F, unsigned int ArgC, object ArgV, o
     cdef int _LLVMRunFunctionAsMain__retval = cexecutionengine.LLVMRunFunctionAsMain(
         LLVMOpaqueExecutionEngine.from_pyobj(EE).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(F).get_element_ptr(),ArgC,
-        <const char *const *>rocm.llvm._util.types.Pointer.from_pyobj(ArgV)._ptr,
-        <const char *const *>rocm.llvm._util.types.Pointer.from_pyobj(EnvP)._ptr)    # fully specified
+        <const char *const *>rocm.llvm._util.types.CStr.from_pyobj(ArgV)._ptr,
+        <const char *const *>rocm.llvm._util.types.CStr.from_pyobj(EnvP)._ptr)    # fully specified
     return _LLVMRunFunctionAsMain__retval
 
 
@@ -1224,7 +1224,7 @@ def LLVMAddModule(object EE, object M):
 
 
 @cython.embedsignature(True)
-def LLVMRemoveModule(object EE, object M, object OutError):
+def LLVMRemoveModule(object EE, object M):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -1234,46 +1234,47 @@ def LLVMRemoveModule(object EE, object M, object OutError):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        OutError (`~.rocm.llvm._util.types.Pointer`/`~.object`):
-            (undocumented)
-
     Returns:
-        A `~.tuple` of size 2 that contains (in that order):
+        A `~.tuple` of size 3 that contains (in that order):
 
         * `~.int`
-        * (`~.LLVMOpaqueModule`):
+        * OutMod (`~.LLVMOpaqueModule`):
+            (undocumented)
+        * OutError (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     OutMod = LLVMOpaqueModule.from_ptr(NULL)
+    OutError = rocm.llvm._util.types.CStr.from_ptr(NULL)
     cdef int _LLVMRemoveModule__retval = cexecutionengine.LLVMRemoveModule(
         LLVMOpaqueExecutionEngine.from_pyobj(EE).get_element_ptr(),
         LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),<cexecutionengine.LLVMOpaqueModule**>&OutMod._ptr,
-        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutError)._ptr)    # fully specified
-    return (_LLVMRemoveModule__retval,OutMod)
+        <char **>&OutError._ptr)    # fully specified
+    return (_LLVMRemoveModule__retval,None if OutMod._ptr == NULL else OutMod,None if OutError._ptr == NULL else OutError)
 
 
 @cython.embedsignature(True)
-def LLVMFindFunction(object EE, const char * Name):
+def LLVMFindFunction(object EE, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
         EE (`~.LLVMOpaqueExecutionEngine`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
     Returns:
         A `~.tuple` of size 2 that contains (in that order):
 
         * `~.int`
-        * (`~.LLVMOpaqueValue`):
+        * OutFn (`~.LLVMOpaqueValue`):
             (undocumented)
     """
     OutFn = LLVMOpaqueValue.from_ptr(NULL)
     cdef int _LLVMFindFunction__retval = cexecutionengine.LLVMFindFunction(
-        LLVMOpaqueExecutionEngine.from_pyobj(EE).get_element_ptr(),Name,<cexecutionengine.LLVMOpaqueValue**>&OutFn._ptr)    # fully specified
-    return (_LLVMFindFunction__retval,OutFn)
+        LLVMOpaqueExecutionEngine.from_pyobj(EE).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,<cexecutionengine.LLVMOpaqueValue**>&OutFn._ptr)    # fully specified
+    return (_LLVMFindFunction__retval,None if OutFn._ptr == NULL else OutFn)
 
 
 @cython.embedsignature(True)
@@ -1287,7 +1288,7 @@ def LLVMRecompileAndRelinkFunction(object EE, object Fn):
         Fn (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMRecompileAndRelinkFunction__retval = rocm.llvm._util.types.Pointer.from_ptr(cexecutionengine.LLVMRecompileAndRelinkFunction(
+    _LLVMRecompileAndRelinkFunction__retval = rocm.llvm._util.types.Pointer.from_ptr(<void*>cexecutionengine.LLVMRecompileAndRelinkFunction(
         LLVMOpaqueExecutionEngine.from_pyobj(EE).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr()))    # fully specified
     return _LLVMRecompileAndRelinkFunction__retval
@@ -1350,52 +1351,54 @@ def LLVMGetPointerToGlobal(object EE, object Global):
         Global (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetPointerToGlobal__retval = rocm.llvm._util.types.Pointer.from_ptr(cexecutionengine.LLVMGetPointerToGlobal(
+    _LLVMGetPointerToGlobal__retval = rocm.llvm._util.types.Pointer.from_ptr(<void*>cexecutionengine.LLVMGetPointerToGlobal(
         LLVMOpaqueExecutionEngine.from_pyobj(EE).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Global).get_element_ptr()))    # fully specified
     return _LLVMGetPointerToGlobal__retval
 
 
 @cython.embedsignature(True)
-def LLVMGetGlobalValueAddress(object EE, const char * Name):
+def LLVMGetGlobalValueAddress(object EE, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
         EE (`~.LLVMOpaqueExecutionEngine`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
     Returns:
         `~.int`
     """
     cdef unsigned long _LLVMGetGlobalValueAddress__retval = cexecutionengine.LLVMGetGlobalValueAddress(
-        LLVMOpaqueExecutionEngine.from_pyobj(EE).get_element_ptr(),Name)    # fully specified
+        LLVMOpaqueExecutionEngine.from_pyobj(EE).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr)    # fully specified
     return _LLVMGetGlobalValueAddress__retval
 
 
 @cython.embedsignature(True)
-def LLVMGetFunctionAddress(object EE, const char * Name):
+def LLVMGetFunctionAddress(object EE, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
         EE (`~.LLVMOpaqueExecutionEngine`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
     Returns:
         `~.int`
     """
     cdef unsigned long _LLVMGetFunctionAddress__retval = cexecutionengine.LLVMGetFunctionAddress(
-        LLVMOpaqueExecutionEngine.from_pyobj(EE).get_element_ptr(),Name)    # fully specified
+        LLVMOpaqueExecutionEngine.from_pyobj(EE).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr)    # fully specified
     return _LLVMGetFunctionAddress__retval
 
 
 @cython.embedsignature(True)
-def LLVMExecutionEngineGetErrMsg(object EE, object OutError):
+def LLVMExecutionEngineGetErrMsg(object EE):
     r"""(No short description, might be part of a group.)
 
     Returns true on error, false on success. If true is returned then the error
@@ -1405,16 +1408,18 @@ def LLVMExecutionEngineGetErrMsg(object EE, object OutError):
         EE (`~.LLVMOpaqueExecutionEngine`/`~.object`):
             (undocumented)
 
-        OutError (`~.rocm.llvm._util.types.Pointer`/`~.object`):
-            (undocumented)
-
     Returns:
-        `~.int`
+        A `~.tuple` of size 2 that contains (in that order):
+
+        * `~.int`
+        * OutError (`~.rocm.llvm._util.types.CStr`/`~.object`):
+            (undocumented)
     """
+    OutError = rocm.llvm._util.types.CStr.from_ptr(NULL)
     cdef int _LLVMExecutionEngineGetErrMsg__retval = cexecutionengine.LLVMExecutionEngineGetErrMsg(
         LLVMOpaqueExecutionEngine.from_pyobj(EE).get_element_ptr(),
-        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutError)._ptr)    # fully specified
-    return _LLVMExecutionEngineGetErrMsg__retval
+        <char **>&OutError._ptr)    # fully specified
+    return (_LLVMExecutionEngineGetErrMsg__retval,None if OutError._ptr == NULL else OutError)
 
 
 cdef class LLVMMemoryManagerAllocateCodeSectionCallback(rocm.llvm._util.types.Pointer):

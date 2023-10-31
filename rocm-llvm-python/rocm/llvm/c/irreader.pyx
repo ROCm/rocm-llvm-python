@@ -56,7 +56,7 @@ from rocm.llvm.c.types import LLVMJITEventListenerRef
 from rocm.llvm.c.types import LLVMBinaryRef
 
 @cython.embedsignature(True)
-def LLVMParseIRInContext(object ContextRef, object MemBuf, object OutMessage):
+def LLVMParseIRInContext(object ContextRef, object MemBuf):
     r"""(No short description, might be part of a group.)
 
     Read LLVM IR from a memory buffer and convert it into an in-memory Module
@@ -75,22 +75,22 @@ def LLVMParseIRInContext(object ContextRef, object MemBuf, object OutMessage):
         MemBuf (`~.LLVMOpaqueMemoryBuffer`/`~.object`):
             (undocumented)
 
-        OutMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
-            (undocumented)
-
     Returns:
-        A `~.tuple` of size 2 that contains (in that order):
+        A `~.tuple` of size 3 that contains (in that order):
 
         * `~.int`
-        * (`~.LLVMOpaqueModule`):
+        * OutM (`~.LLVMOpaqueModule`):
+            (undocumented)
+        * OutMessage (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     OutM = LLVMOpaqueModule.from_ptr(NULL)
+    OutMessage = rocm.llvm._util.types.CStr.from_ptr(NULL)
     cdef int _LLVMParseIRInContext__retval = cirreader.LLVMParseIRInContext(
         LLVMOpaqueContext.from_pyobj(ContextRef).get_element_ptr(),
         LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),<cirreader.LLVMOpaqueModule**>&OutM._ptr,
-        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
-    return (_LLVMParseIRInContext__retval,OutM)
+        <char **>&OutMessage._ptr)    # fully specified
+    return (_LLVMParseIRInContext__retval,None if OutM._ptr == NULL else OutM,None if OutMessage._ptr == NULL else OutMessage)
 
 __all__ = [
     "LLVMParseIRInContext",

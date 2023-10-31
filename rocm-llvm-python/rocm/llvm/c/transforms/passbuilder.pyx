@@ -239,7 +239,7 @@ cdef class LLVMOpaquePassBuilderOptions(rocm.llvm._util.types.Pointer):
 LLVMPassBuilderOptionsRef = LLVMOpaquePassBuilderOptions
 
 @cython.embedsignature(True)
-def LLVMRunPasses(object M, const char * Passes, object TM, object Options):
+def LLVMRunPasses(object M, object Passes, object TM, object Options):
     r"""(No short description, might be part of a group.)
 
     Construct and run a set of passes over a module
@@ -254,7 +254,7 @@ def LLVMRunPasses(object M, const char * Passes, object TM, object Options):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Passes (`~.bytes`):
+        Passes (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         TM (`~.LLVMOpaqueTargetMachine`/`~.object`):
@@ -264,7 +264,8 @@ def LLVMRunPasses(object M, const char * Passes, object TM, object Options):
             (undocumented)
     """
     _LLVMRunPasses__retval = LLVMOpaqueError.from_ptr(cpassbuilder.LLVMRunPasses(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Passes,
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Passes)._ptr,
         LLVMOpaqueTargetMachine.from_pyobj(TM).get_element_ptr(),
         LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr()))    # fully specified
     return _LLVMRunPasses__retval

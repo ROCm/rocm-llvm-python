@@ -261,8 +261,8 @@ def LLVMRemarkStringGetData(object String):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMRemarkStringGetData__retval = cremarks.LLVMRemarkStringGetData(
-        LLVMRemarkOpaqueString.from_pyobj(String).get_element_ptr())    # fully specified
+    _LLVMRemarkStringGetData__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cremarks.LLVMRemarkStringGetData(
+        LLVMRemarkOpaqueString.from_pyobj(String).get_element_ptr()))    # fully specified
     return _LLVMRemarkStringGetData__retval
 
 
@@ -1317,8 +1317,8 @@ def LLVMRemarkParserGetErrorMessage(object Parser):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMRemarkParserGetErrorMessage__retval = cremarks.LLVMRemarkParserGetErrorMessage(
-        LLVMRemarkOpaqueParser.from_pyobj(Parser).get_element_ptr())    # fully specified
+    _LLVMRemarkParserGetErrorMessage__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cremarks.LLVMRemarkParserGetErrorMessage(
+        LLVMRemarkOpaqueParser.from_pyobj(Parser).get_element_ptr()))    # fully specified
     return _LLVMRemarkParserGetErrorMessage__retval
 
 

@@ -6285,7 +6285,7 @@ def LLVMOrcSymbolStringPoolClearDeadEntries(object SSP):
 
 
 @cython.embedsignature(True)
-def LLVMOrcExecutionSessionIntern(object ES, const char * Name):
+def LLVMOrcExecutionSessionIntern(object ES, object Name):
     r"""(No short description, might be part of a group.)
 
     Intern a string in the ExecutionSession's SymbolStringPool and return a
@@ -6303,11 +6303,12 @@ def LLVMOrcExecutionSessionIntern(object ES, const char * Name):
         ES (`~.LLVMOrcOpaqueExecutionSession`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMOrcExecutionSessionIntern__retval = LLVMOrcOpaqueSymbolStringPoolEntry.from_ptr(corc.LLVMOrcExecutionSessionIntern(
-        LLVMOrcOpaqueExecutionSession.from_pyobj(ES).get_element_ptr(),Name))    # fully specified
+        LLVMOrcOpaqueExecutionSession.from_pyobj(ES).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMOrcExecutionSessionIntern__retval
 
 
@@ -6534,8 +6535,8 @@ def LLVMOrcSymbolStringPoolEntryStr(object S):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMOrcSymbolStringPoolEntryStr__retval = corc.LLVMOrcSymbolStringPoolEntryStr(
-        LLVMOrcOpaqueSymbolStringPoolEntry.from_pyobj(S).get_element_ptr())    # fully specified
+    _LLVMOrcSymbolStringPoolEntryStr__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>corc.LLVMOrcSymbolStringPoolEntryStr(
+        LLVMOrcOpaqueSymbolStringPoolEntry.from_pyobj(S).get_element_ptr()))    # fully specified
     return _LLVMOrcSymbolStringPoolEntryStr__retval
 
 
@@ -6619,7 +6620,7 @@ def LLVMOrcDisposeMaterializationUnit(object MU):
 
 
 @cython.embedsignature(True)
-def LLVMOrcCreateCustomMaterializationUnit(const char * Name, object Ctx, object Syms, unsigned long NumSyms, object InitSym, object Materialize, object Discard, object Destroy):
+def LLVMOrcCreateCustomMaterializationUnit(object Name, object Ctx, object Syms, unsigned long NumSyms, object InitSym, object Materialize, object Discard, object Destroy):
     r"""(No short description, might be part of a group.)
 
     Create a custom MaterializationUnit.
@@ -6655,7 +6656,7 @@ def LLVMOrcCreateCustomMaterializationUnit(const char * Name, object Ctx, object
     of it by calling LLVMOrcDisposeMaterializationUnit.
 
     Args:
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         Ctx (`~.rocm.llvm._util.types.Pointer`/`~.object`):
@@ -6679,7 +6680,8 @@ def LLVMOrcCreateCustomMaterializationUnit(const char * Name, object Ctx, object
         Destroy (`~.LLVMOrcMaterializationUnitDestroyFunction`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcCreateCustomMaterializationUnit__retval = LLVMOrcOpaqueMaterializationUnit.from_ptr(corc.LLVMOrcCreateCustomMaterializationUnit(Name,
+    _LLVMOrcCreateCustomMaterializationUnit__retval = LLVMOrcOpaqueMaterializationUnit.from_ptr(corc.LLVMOrcCreateCustomMaterializationUnit(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,
         <void *>rocm.llvm._util.types.Pointer.from_pyobj(Ctx)._ptr,
         LLVMOrcCSymbolFlagsMapPair.from_pyobj(Syms).get_element_ptr(),NumSyms,
         LLVMOrcOpaqueSymbolStringPoolEntry.from_pyobj(InitSym).get_element_ptr(),
@@ -6901,7 +6903,7 @@ def LLVMOrcMaterializationResponsibilityGetRequestedSymbols(object MR, object Nu
         NumSymbols (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcMaterializationResponsibilityGetRequestedSymbols__retval = rocm.llvm._util.types.Pointer.from_ptr(corc.LLVMOrcMaterializationResponsibilityGetRequestedSymbols(
+    _LLVMOrcMaterializationResponsibilityGetRequestedSymbols__retval = rocm.llvm._util.types.Pointer.from_ptr(<void*>corc.LLVMOrcMaterializationResponsibilityGetRequestedSymbols(
         LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR).get_element_ptr(),
         <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NumSymbols)._ptr))    # fully specified
     return _LLVMOrcMaterializationResponsibilityGetRequestedSymbols__retval
@@ -7151,7 +7153,7 @@ def LLVMOrcMaterializationResponsibilityAddDependenciesForAll(object MR, object 
 
 
 @cython.embedsignature(True)
-def LLVMOrcExecutionSessionCreateBareJITDylib(object ES, const char * Name):
+def LLVMOrcExecutionSessionCreateBareJITDylib(object ES, object Name):
     r"""(No short description, might be part of a group.)
 
     Create a "bare" JITDylib.
@@ -7166,16 +7168,17 @@ def LLVMOrcExecutionSessionCreateBareJITDylib(object ES, const char * Name):
         ES (`~.LLVMOrcOpaqueExecutionSession`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMOrcExecutionSessionCreateBareJITDylib__retval = LLVMOrcOpaqueJITDylib.from_ptr(corc.LLVMOrcExecutionSessionCreateBareJITDylib(
-        LLVMOrcOpaqueExecutionSession.from_pyobj(ES).get_element_ptr(),Name))    # fully specified
+        LLVMOrcOpaqueExecutionSession.from_pyobj(ES).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMOrcExecutionSessionCreateBareJITDylib__retval
 
 
 @cython.embedsignature(True)
-def LLVMOrcExecutionSessionCreateJITDylib(object ES, object Result, const char * Name):
+def LLVMOrcExecutionSessionCreateJITDylib(object ES, object Result, object Name):
     r"""(No short description, might be part of a group.)
 
     Create a JITDylib.
@@ -7196,17 +7199,18 @@ def LLVMOrcExecutionSessionCreateJITDylib(object ES, object Result, const char *
         Result (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMOrcExecutionSessionCreateJITDylib__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcExecutionSessionCreateJITDylib(
         LLVMOrcOpaqueExecutionSession.from_pyobj(ES).get_element_ptr(),
-        <corc.LLVMOrcJITDylibRef*>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr,Name))    # fully specified
+        <corc.LLVMOrcJITDylibRef*>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMOrcExecutionSessionCreateJITDylib__retval
 
 
 @cython.embedsignature(True)
-def LLVMOrcExecutionSessionGetJITDylibByName(object ES, const char * Name):
+def LLVMOrcExecutionSessionGetJITDylibByName(object ES, object Name):
     r"""(No short description, might be part of a group.)
 
     Returns the JITDylib with the given name, or NULL if no such JITDylib
@@ -7216,11 +7220,12 @@ def LLVMOrcExecutionSessionGetJITDylibByName(object ES, const char * Name):
         ES (`~.LLVMOrcOpaqueExecutionSession`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMOrcExecutionSessionGetJITDylibByName__retval = LLVMOrcOpaqueJITDylib.from_ptr(corc.LLVMOrcExecutionSessionGetJITDylibByName(
-        LLVMOrcOpaqueExecutionSession.from_pyobj(ES).get_element_ptr(),Name))    # fully specified
+        LLVMOrcOpaqueExecutionSession.from_pyobj(ES).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMOrcExecutionSessionGetJITDylibByName__retval
 
 
@@ -7412,7 +7417,7 @@ def LLVMOrcCreateDynamicLibrarySearchGeneratorForProcess(object Result, char Glo
 
 
 @cython.embedsignature(True)
-def LLVMOrcCreateDynamicLibrarySearchGeneratorForPath(object Result, const char * FileName, char GlobalPrefix, object Filter, object FilterCtx):
+def LLVMOrcCreateDynamicLibrarySearchGeneratorForPath(object Result, object FileName, char GlobalPrefix, object Filter, object FilterCtx):
     r"""(No short description, might be part of a group.)
 
     Get a LLVMOrcCreateDynamicLibararySearchGeneratorForPath that will reflect
@@ -7438,7 +7443,7 @@ def LLVMOrcCreateDynamicLibrarySearchGeneratorForPath(object Result, const char 
         Result (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
-        FileName (`~.bytes`):
+        FileName (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         GlobalPrefix (`~.int`):
@@ -7451,14 +7456,15 @@ def LLVMOrcCreateDynamicLibrarySearchGeneratorForPath(object Result, const char 
             (undocumented)
     """
     _LLVMOrcCreateDynamicLibrarySearchGeneratorForPath__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcCreateDynamicLibrarySearchGeneratorForPath(
-        <corc.LLVMOrcDefinitionGeneratorRef*>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr,FileName,GlobalPrefix,
+        <corc.LLVMOrcDefinitionGeneratorRef*>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(FileName)._ptr,GlobalPrefix,
         LLVMOrcSymbolPredicate.from_pyobj(Filter).get_element_ptr(),
         <void *>rocm.llvm._util.types.Pointer.from_pyobj(FilterCtx)._ptr))    # fully specified
     return _LLVMOrcCreateDynamicLibrarySearchGeneratorForPath__retval
 
 
 @cython.embedsignature(True)
-def LLVMOrcCreateStaticLibrarySearchGeneratorForPath(object Result, object ObjLayer, const char * FileName, const char * TargetTriple):
+def LLVMOrcCreateStaticLibrarySearchGeneratorForPath(object Result, object ObjLayer, object FileName, object TargetTriple):
     r"""(No short description, might be part of a group.)
 
     Get a LLVMOrcCreateStaticLibrarySearchGeneratorForPath that will reflect
@@ -7480,15 +7486,17 @@ def LLVMOrcCreateStaticLibrarySearchGeneratorForPath(object Result, object ObjLa
         ObjLayer (`~.LLVMOrcOpaqueObjectLayer`/`~.object`):
             (undocumented)
 
-        FileName (`~.bytes`):
+        FileName (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
-        TargetTriple (`~.bytes`):
+        TargetTriple (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMOrcCreateStaticLibrarySearchGeneratorForPath__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcCreateStaticLibrarySearchGeneratorForPath(
         <corc.LLVMOrcDefinitionGeneratorRef*>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr,
-        LLVMOrcOpaqueObjectLayer.from_pyobj(ObjLayer).get_element_ptr(),FileName,TargetTriple))    # fully specified
+        LLVMOrcOpaqueObjectLayer.from_pyobj(ObjLayer).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(FileName)._ptr,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(TargetTriple)._ptr))    # fully specified
     return _LLVMOrcCreateStaticLibrarySearchGeneratorForPath__retval
 
 
@@ -7672,13 +7680,13 @@ def LLVMOrcJITTargetMachineBuilderGetTargetTriple(object JTMB):
     Returns:
         `~.bytes`
     """
-    cdef char * _LLVMOrcJITTargetMachineBuilderGetTargetTriple__retval = corc.LLVMOrcJITTargetMachineBuilderGetTargetTriple(
-        LLVMOrcOpaqueJITTargetMachineBuilder.from_pyobj(JTMB).get_element_ptr())    # fully specified
+    _LLVMOrcJITTargetMachineBuilderGetTargetTriple__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>corc.LLVMOrcJITTargetMachineBuilderGetTargetTriple(
+        LLVMOrcOpaqueJITTargetMachineBuilder.from_pyobj(JTMB).get_element_ptr()))    # fully specified
     return _LLVMOrcJITTargetMachineBuilderGetTargetTriple__retval
 
 
 @cython.embedsignature(True)
-def LLVMOrcJITTargetMachineBuilderSetTargetTriple(object JTMB, const char * TargetTriple):
+def LLVMOrcJITTargetMachineBuilderSetTargetTriple(object JTMB, object TargetTriple):
     r"""(No short description, might be part of a group.)
 
     Sets the target triple for the given JITTargetMachineBuilder to the given
@@ -7688,11 +7696,12 @@ def LLVMOrcJITTargetMachineBuilderSetTargetTriple(object JTMB, const char * Targ
         JTMB (`~.LLVMOrcOpaqueJITTargetMachineBuilder`/`~.object`):
             (undocumented)
 
-        TargetTriple (`~.bytes`):
+        TargetTriple (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     corc.LLVMOrcJITTargetMachineBuilderSetTargetTriple(
-        LLVMOrcOpaqueJITTargetMachineBuilder.from_pyobj(JTMB).get_element_ptr(),TargetTriple)    # fully specified
+        LLVMOrcOpaqueJITTargetMachineBuilder.from_pyobj(JTMB).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(TargetTriple)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -7862,7 +7871,7 @@ def LLVMOrcObjectTransformLayerSetTransform(object ObjTransformLayer, object Tra
 
 
 @cython.embedsignature(True)
-def LLVMOrcCreateLocalIndirectStubsManager(const char * TargetTriple):
+def LLVMOrcCreateLocalIndirectStubsManager(object TargetTriple):
     r"""(No short description, might be part of a group.)
 
     Create a LocalIndirectStubsManager from the given target triple.
@@ -7871,10 +7880,11 @@ def LLVMOrcCreateLocalIndirectStubsManager(const char * TargetTriple):
     and must be disposed of by calling LLVMOrcDisposeDisposeIndirectStubsManager.
 
     Args:
-        TargetTriple (`~.bytes`):
+        TargetTriple (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcCreateLocalIndirectStubsManager__retval = LLVMOrcOpaqueIndirectStubsManager.from_ptr(corc.LLVMOrcCreateLocalIndirectStubsManager(TargetTriple))    # fully specified
+    _LLVMOrcCreateLocalIndirectStubsManager__retval = LLVMOrcOpaqueIndirectStubsManager.from_ptr(corc.LLVMOrcCreateLocalIndirectStubsManager(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(TargetTriple)._ptr))    # fully specified
     return _LLVMOrcCreateLocalIndirectStubsManager__retval
 
 
@@ -7893,11 +7903,11 @@ def LLVMOrcDisposeIndirectStubsManager(object ISM):
 
 
 @cython.embedsignature(True)
-def LLVMOrcCreateLocalLazyCallThroughManager(const char * TargetTriple, object ES, unsigned long ErrorHandlerAddr, object LCTM):
+def LLVMOrcCreateLocalLazyCallThroughManager(object TargetTriple, object ES, unsigned long ErrorHandlerAddr, object LCTM):
     r"""(No short description, might be part of a group.)
 
     Args:
-        TargetTriple (`~.bytes`):
+        TargetTriple (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         ES (`~.LLVMOrcOpaqueExecutionSession`/`~.object`):
@@ -7909,7 +7919,8 @@ def LLVMOrcCreateLocalLazyCallThroughManager(const char * TargetTriple, object E
         LCTM (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcCreateLocalLazyCallThroughManager__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcCreateLocalLazyCallThroughManager(TargetTriple,
+    _LLVMOrcCreateLocalLazyCallThroughManager__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcCreateLocalLazyCallThroughManager(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(TargetTriple)._ptr,
         LLVMOrcOpaqueExecutionSession.from_pyobj(ES).get_element_ptr(),ErrorHandlerAddr,
         <corc.LLVMOrcLazyCallThroughManagerRef*>rocm.llvm._util.types.Pointer.from_pyobj(LCTM)._ptr))    # fully specified
     return _LLVMOrcCreateLocalLazyCallThroughManager__retval
@@ -7930,7 +7941,7 @@ def LLVMOrcDisposeLazyCallThroughManager(object LCTM):
 
 
 @cython.embedsignature(True)
-def LLVMOrcCreateDumpObjects(const char * DumpDir, const char * IdentifierOverride):
+def LLVMOrcCreateDumpObjects(object DumpDir, object IdentifierOverride):
     r"""(No short description, might be part of a group.)
 
     Create a DumpObjects instance.
@@ -7947,13 +7958,15 @@ def LLVMOrcCreateDumpObjects(const char * DumpDir, const char * IdentifierOverri
     an extension, as a .o suffix will be added by DumpObjects.
 
     Args:
-        DumpDir (`~.bytes`):
+        DumpDir (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
-        IdentifierOverride (`~.bytes`):
+        IdentifierOverride (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
-    _LLVMOrcCreateDumpObjects__retval = LLVMOrcOpaqueDumpObjects.from_ptr(corc.LLVMOrcCreateDumpObjects(DumpDir,IdentifierOverride))    # fully specified
+    _LLVMOrcCreateDumpObjects__retval = LLVMOrcOpaqueDumpObjects.from_ptr(corc.LLVMOrcCreateDumpObjects(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(DumpDir)._ptr,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(IdentifierOverride)._ptr))    # fully specified
     return _LLVMOrcCreateDumpObjects__retval
 
 

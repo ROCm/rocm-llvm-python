@@ -595,13 +595,13 @@ def LLVMCreateBinary(object MemBuf, object Context, object ErrorMessage):
         Context (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
 
-        ErrorMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
+        ErrorMessage (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMCreateBinary__retval = LLVMOpaqueBinary.from_ptr(cobject.LLVMCreateBinary(
         LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),
         LLVMOpaqueContext.from_pyobj(Context).get_element_ptr(),
-        <char **>rocm.llvm._util.types.Pointer.from_pyobj(ErrorMessage)._ptr))    # fully specified
+        <char **>rocm.llvm._util.types.CStr.from_pyobj(ErrorMessage)._ptr))    # fully specified
     return _LLVMCreateBinary__retval
 
 
@@ -666,25 +666,26 @@ def LLVMBinaryGetType(object BR):
 
 
 @cython.embedsignature(True)
-def LLVMMachOUniversalBinaryCopyObjectForArch(object BR, const char * Arch, unsigned long ArchLen, object ErrorMessage):
+def LLVMMachOUniversalBinaryCopyObjectForArch(object BR, object Arch, unsigned long ArchLen, object ErrorMessage):
     r"""(No short description, might be part of a group.)
 
     Args:
         BR (`~.LLVMOpaqueBinary`/`~.object`):
             (undocumented)
 
-        Arch (`~.bytes`):
+        Arch (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         ArchLen (`~.int`):
             (undocumented)
 
-        ErrorMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
+        ErrorMessage (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMMachOUniversalBinaryCopyObjectForArch__retval = LLVMOpaqueBinary.from_ptr(cobject.LLVMMachOUniversalBinaryCopyObjectForArch(
-        LLVMOpaqueBinary.from_pyobj(BR).get_element_ptr(),Arch,ArchLen,
-        <char **>rocm.llvm._util.types.Pointer.from_pyobj(ErrorMessage)._ptr))    # fully specified
+        LLVMOpaqueBinary.from_pyobj(BR).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Arch)._ptr,ArchLen,
+        <char **>rocm.llvm._util.types.CStr.from_pyobj(ErrorMessage)._ptr))    # fully specified
     return _LLVMMachOUniversalBinaryCopyObjectForArch__retval
 
 
@@ -861,8 +862,8 @@ def LLVMGetSectionName(object SI):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMGetSectionName__retval = cobject.LLVMGetSectionName(
-        LLVMOpaqueSectionIterator.from_pyobj(SI).get_element_ptr())    # fully specified
+    _LLVMGetSectionName__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cobject.LLVMGetSectionName(
+        LLVMOpaqueSectionIterator.from_pyobj(SI).get_element_ptr()))    # fully specified
     return _LLVMGetSectionName__retval
 
 
@@ -893,8 +894,8 @@ def LLVMGetSectionContents(object SI):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMGetSectionContents__retval = cobject.LLVMGetSectionContents(
-        LLVMOpaqueSectionIterator.from_pyobj(SI).get_element_ptr())    # fully specified
+    _LLVMGetSectionContents__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cobject.LLVMGetSectionContents(
+        LLVMOpaqueSectionIterator.from_pyobj(SI).get_element_ptr()))    # fully specified
     return _LLVMGetSectionContents__retval
 
 
@@ -1002,8 +1003,8 @@ def LLVMGetSymbolName(object SI):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMGetSymbolName__retval = cobject.LLVMGetSymbolName(
-        LLVMOpaqueSymbolIterator.from_pyobj(SI).get_element_ptr())    # fully specified
+    _LLVMGetSymbolName__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cobject.LLVMGetSymbolName(
+        LLVMOpaqueSymbolIterator.from_pyobj(SI).get_element_ptr()))    # fully specified
     return _LLVMGetSymbolName__retval
 
 
@@ -1095,8 +1096,8 @@ def LLVMGetRelocationTypeName(object RI):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMGetRelocationTypeName__retval = cobject.LLVMGetRelocationTypeName(
-        LLVMOpaqueRelocationIterator.from_pyobj(RI).get_element_ptr())    # fully specified
+    _LLVMGetRelocationTypeName__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cobject.LLVMGetRelocationTypeName(
+        LLVMOpaqueRelocationIterator.from_pyobj(RI).get_element_ptr()))    # fully specified
     return _LLVMGetRelocationTypeName__retval
 
 
@@ -1111,8 +1112,8 @@ def LLVMGetRelocationValueString(object RI):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMGetRelocationValueString__retval = cobject.LLVMGetRelocationValueString(
-        LLVMOpaqueRelocationIterator.from_pyobj(RI).get_element_ptr())    # fully specified
+    _LLVMGetRelocationValueString__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cobject.LLVMGetRelocationValueString(
+        LLVMOpaqueRelocationIterator.from_pyobj(RI).get_element_ptr()))    # fully specified
     return _LLVMGetRelocationValueString__retval
 
 

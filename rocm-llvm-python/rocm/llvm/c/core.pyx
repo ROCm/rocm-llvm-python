@@ -1117,11 +1117,11 @@ def LLVMGetVersion():
     Returns:
         A `~.tuple` of size 3 that contains (in that order):
 
-        * (`~.int`):
+        * Major (`~.int`):
             (undocumented)
-        * (`~.int`):
+        * Minor (`~.int`):
             (undocumented)
-        * (`~.int`):
+        * Patch (`~.int`):
             (undocumented)
     """
     cdef unsigned int Major
@@ -1132,29 +1132,31 @@ def LLVMGetVersion():
 
 
 @cython.embedsignature(True)
-def LLVMCreateMessage(const char * Message):
+def LLVMCreateMessage(object Message):
     r"""(No short description, might be part of a group.)
 
     Args:
-        Message (`~.bytes`):
+        Message (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
     Returns:
         `~.bytes`
     """
-    cdef char * _LLVMCreateMessage__retval = ccore.LLVMCreateMessage(Message)    # fully specified
+    _LLVMCreateMessage__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMCreateMessage(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Message)._ptr))    # fully specified
     return _LLVMCreateMessage__retval
 
 
 @cython.embedsignature(True)
-def LLVMDisposeMessage(char * Message):
+def LLVMDisposeMessage(object Message):
     r"""(No short description, might be part of a group.)
 
     Args:
-        Message (`~.bytes`):
+        Message (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
-    ccore.LLVMDisposeMessage(Message)    # fully specified
+    ccore.LLVMDisposeMessage(
+        <char *>rocm.llvm._util.types.CStr.from_pyobj(Message)._ptr)    # fully specified
 
 
 cdef class LLVMDiagnosticHandler(rocm.llvm._util.types.Pointer):
@@ -1440,7 +1442,7 @@ def LLVMContextGetDiagnosticHandler(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMContextGetDiagnosticHandler__retval = rocm.llvm._util.types.Pointer.from_ptr(ccore.LLVMContextGetDiagnosticHandler(
+    _LLVMContextGetDiagnosticHandler__retval = rocm.llvm._util.types.Pointer.from_ptr(<void*>ccore.LLVMContextGetDiagnosticHandler(
         LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
     return _LLVMContextGetDiagnosticHandler__retval
 
@@ -1455,7 +1457,7 @@ def LLVMContextGetDiagnosticContext(object C):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMContextGetDiagnosticContext__retval = rocm.llvm._util.types.Pointer.from_ptr(ccore.LLVMContextGetDiagnosticContext(
+    _LLVMContextGetDiagnosticContext__retval = rocm.llvm._util.types.Pointer.from_ptr(<void*>ccore.LLVMContextGetDiagnosticContext(
         LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
     return _LLVMContextGetDiagnosticContext__retval
 
@@ -1583,8 +1585,8 @@ def LLVMGetDiagInfoDescription(object DI):
     Returns:
         `~.bytes`
     """
-    cdef char * _LLVMGetDiagInfoDescription__retval = ccore.LLVMGetDiagInfoDescription(
-        LLVMOpaqueDiagnosticInfo.from_pyobj(DI).get_element_ptr())    # fully specified
+    _LLVMGetDiagInfoDescription__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMGetDiagInfoDescription(
+        LLVMOpaqueDiagnosticInfo.from_pyobj(DI).get_element_ptr()))    # fully specified
     return _LLVMGetDiagInfoDescription__retval
 
 
@@ -1610,14 +1612,14 @@ def LLVMGetDiagInfoSeverity(object DI):
 
 
 @cython.embedsignature(True)
-def LLVMGetMDKindIDInContext(object C, const char * Name, unsigned int SLen):
+def LLVMGetMDKindIDInContext(object C, object Name, unsigned int SLen):
     r"""(No short description, might be part of a group.)
 
     Args:
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         SLen (`~.int`):
@@ -1627,16 +1629,17 @@ def LLVMGetMDKindIDInContext(object C, const char * Name, unsigned int SLen):
         `~.int`
     """
     cdef unsigned int _LLVMGetMDKindIDInContext__retval = ccore.LLVMGetMDKindIDInContext(
-        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),Name,SLen)    # fully specified
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,SLen)    # fully specified
     return _LLVMGetMDKindIDInContext__retval
 
 
 @cython.embedsignature(True)
-def LLVMGetMDKindID(const char * Name, unsigned int SLen):
+def LLVMGetMDKindID(object Name, unsigned int SLen):
     r"""(No short description, might be part of a group.)
 
     Args:
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         SLen (`~.int`):
@@ -1645,12 +1648,13 @@ def LLVMGetMDKindID(const char * Name, unsigned int SLen):
     Returns:
         `~.int`
     """
-    cdef unsigned int _LLVMGetMDKindID__retval = ccore.LLVMGetMDKindID(Name,SLen)    # fully specified
+    cdef unsigned int _LLVMGetMDKindID__retval = ccore.LLVMGetMDKindID(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,SLen)    # fully specified
     return _LLVMGetMDKindID__retval
 
 
 @cython.embedsignature(True)
-def LLVMGetEnumAttributeKindForName(const char * Name, unsigned long SLen):
+def LLVMGetEnumAttributeKindForName(object Name, unsigned long SLen):
     r"""(No short description, might be part of a group.)
 
     Return an unique id given the name of a enum attribute,
@@ -1664,7 +1668,7 @@ def LLVMGetEnumAttributeKindForName(const char * Name, unsigned long SLen):
     going through the C API deprecation cycle.
 
     Args:
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         SLen (`~.int`):
@@ -1673,7 +1677,8 @@ def LLVMGetEnumAttributeKindForName(const char * Name, unsigned long SLen):
     Returns:
         `~.int`
     """
-    cdef unsigned int _LLVMGetEnumAttributeKindForName__retval = ccore.LLVMGetEnumAttributeKindForName(Name,SLen)    # fully specified
+    cdef unsigned int _LLVMGetEnumAttributeKindForName__retval = ccore.LLVMGetEnumAttributeKindForName(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,SLen)    # fully specified
     return _LLVMGetEnumAttributeKindForName__retval
 
 
@@ -1784,7 +1789,7 @@ def LLVMGetTypeAttributeValue(object A):
 
 
 @cython.embedsignature(True)
-def LLVMCreateStringAttribute(object C, const char * K, unsigned int KLength, const char * V, unsigned int VLength):
+def LLVMCreateStringAttribute(object C, object K, unsigned int KLength, object V, unsigned int VLength):
     r"""(No short description, might be part of a group.)
 
     Create a string attribute.
@@ -1793,20 +1798,22 @@ def LLVMCreateStringAttribute(object C, const char * K, unsigned int KLength, co
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
 
-        K (`~.bytes`):
+        K (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         KLength (`~.int`):
             (undocumented)
 
-        V (`~.bytes`):
+        V (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         VLength (`~.int`):
             (undocumented)
     """
     _LLVMCreateStringAttribute__retval = LLVMOpaqueAttributeRef.from_ptr(ccore.LLVMCreateStringAttribute(
-        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),K,KLength,V,VLength))    # fully specified
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(K)._ptr,KLength,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(V)._ptr,VLength))    # fully specified
     return _LLVMCreateStringAttribute__retval
 
 
@@ -1826,9 +1833,9 @@ def LLVMGetStringAttributeKind(object A, object Length):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMGetStringAttributeKind__retval = ccore.LLVMGetStringAttributeKind(
+    _LLVMGetStringAttributeKind__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMGetStringAttributeKind(
         LLVMOpaqueAttributeRef.from_pyobj(A).get_element_ptr(),
-        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr))    # fully specified
     return _LLVMGetStringAttributeKind__retval
 
 
@@ -1848,9 +1855,9 @@ def LLVMGetStringAttributeValue(object A, object Length):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMGetStringAttributeValue__retval = ccore.LLVMGetStringAttributeValue(
+    _LLVMGetStringAttributeValue__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMGetStringAttributeValue(
         LLVMOpaqueAttributeRef.from_pyobj(A).get_element_ptr(),
-        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr))    # fully specified
     return _LLVMGetStringAttributeValue__retval
 
 
@@ -1905,7 +1912,7 @@ def LLVMIsTypeAttribute(object A):
 
 
 @cython.embedsignature(True)
-def LLVMGetTypeByName2(object C, const char * Name):
+def LLVMGetTypeByName2(object C, object Name):
     r"""(No short description, might be part of a group.)
 
     Obtain a Type from a context by its registered name.
@@ -1914,16 +1921,17 @@ def LLVMGetTypeByName2(object C, const char * Name):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMGetTypeByName2__retval = LLVMOpaqueType.from_ptr(ccore.LLVMGetTypeByName2(
-        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMGetTypeByName2__retval
 
 
 @cython.embedsignature(True)
-def LLVMModuleCreateWithName(const char * ModuleID):
+def LLVMModuleCreateWithName(object ModuleID):
     r"""(No short description, might be part of a group.)
 
     Create a new, empty module in the global context.
@@ -1935,15 +1943,16 @@ def LLVMModuleCreateWithName(const char * ModuleID):
     will be leaked.
 
     Args:
-        ModuleID (`~.bytes`):
+        ModuleID (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
-    _LLVMModuleCreateWithName__retval = LLVMOpaqueModule.from_ptr(ccore.LLVMModuleCreateWithName(ModuleID))    # fully specified
+    _LLVMModuleCreateWithName__retval = LLVMOpaqueModule.from_ptr(ccore.LLVMModuleCreateWithName(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(ModuleID)._ptr))    # fully specified
     return _LLVMModuleCreateWithName__retval
 
 
 @cython.embedsignature(True)
-def LLVMModuleCreateWithNameInContext(const char * ModuleID, object C):
+def LLVMModuleCreateWithNameInContext(object ModuleID, object C):
     r"""(No short description, might be part of a group.)
 
     Create a new, empty module in a specific context.
@@ -1952,13 +1961,14 @@ def LLVMModuleCreateWithNameInContext(const char * ModuleID, object C):
     will be leaked.
 
     Args:
-        ModuleID (`~.bytes`):
+        ModuleID (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
     """
-    _LLVMModuleCreateWithNameInContext__retval = LLVMOpaqueModule.from_ptr(ccore.LLVMModuleCreateWithNameInContext(ModuleID,
+    _LLVMModuleCreateWithNameInContext__retval = LLVMOpaqueModule.from_ptr(ccore.LLVMModuleCreateWithNameInContext(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(ModuleID)._ptr,
         LLVMOpaqueContext.from_pyobj(C).get_element_ptr()))    # fully specified
     return _LLVMModuleCreateWithNameInContext__retval
 
@@ -2014,14 +2024,14 @@ def LLVMGetModuleIdentifier(object M, object Len):
     Returns:
         `~.bytes`: The identifier of M.
     """
-    cdef const char * _LLVMGetModuleIdentifier__retval = ccore.LLVMGetModuleIdentifier(
+    _LLVMGetModuleIdentifier__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMGetModuleIdentifier(
         LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
-        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr))    # fully specified
     return _LLVMGetModuleIdentifier__retval
 
 
 @cython.embedsignature(True)
-def LLVMSetModuleIdentifier(object M, const char * Ident, unsigned long Len):
+def LLVMSetModuleIdentifier(object M, object Ident, unsigned long Len):
     r"""(No short description, might be part of a group.)
 
     Set the identifier of a module to a string Ident with length Len.
@@ -2033,14 +2043,15 @@ def LLVMSetModuleIdentifier(object M, const char * Ident, unsigned long Len):
         M (`~.LLVMOpaqueModule`/`~.object`):
             The module to set identifier
 
-        Ident (`~.bytes`):
+        Ident (`~.rocm.llvm._util.types.CStr`/`~.object`):
             The string to set M's identifier to
 
         Len (`~.int`):
             Length of Ident
     """
     ccore.LLVMSetModuleIdentifier(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Ident,Len)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Ident)._ptr,Len)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -2062,14 +2073,14 @@ def LLVMGetSourceFileName(object M, object Len):
     Returns:
         `~.bytes`: The original source file name of M
     """
-    cdef const char * _LLVMGetSourceFileName__retval = ccore.LLVMGetSourceFileName(
+    _LLVMGetSourceFileName__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMGetSourceFileName(
         LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
-        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr))    # fully specified
     return _LLVMGetSourceFileName__retval
 
 
 @cython.embedsignature(True)
-def LLVMSetSourceFileName(object M, const char * Name, unsigned long Len):
+def LLVMSetSourceFileName(object M, object Name, unsigned long Len):
     r"""(No short description, might be part of a group.)
 
     Set the original source file name of a module to a string Name with length
@@ -2082,14 +2093,15 @@ def LLVMSetSourceFileName(object M, const char * Name, unsigned long Len):
         M (`~.LLVMOpaqueModule`/`~.object`):
             The module to set the source file name of
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             The string to set M's source file name to
 
         Len (`~.int`):
             Length of Name
     """
     ccore.LLVMSetSourceFileName(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name,Len)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,Len)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -2112,8 +2124,8 @@ def LLVMGetDataLayoutStr(object M):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMGetDataLayoutStr__retval = ccore.LLVMGetDataLayoutStr(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr())    # fully specified
+    _LLVMGetDataLayoutStr__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMGetDataLayoutStr(
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
     return _LLVMGetDataLayoutStr__retval
 
 
@@ -2128,13 +2140,13 @@ def LLVMGetDataLayout(object M):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMGetDataLayout__retval = ccore.LLVMGetDataLayout(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr())    # fully specified
+    _LLVMGetDataLayout__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMGetDataLayout(
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
     return _LLVMGetDataLayout__retval
 
 
 @cython.embedsignature(True)
-def LLVMSetDataLayout(object M, const char * DataLayoutStr):
+def LLVMSetDataLayout(object M, object DataLayoutStr):
     r"""(No short description, might be part of a group.)
 
     Set the data layout for a module.
@@ -2146,11 +2158,12 @@ def LLVMSetDataLayout(object M, const char * DataLayoutStr):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        DataLayoutStr (`~.bytes`):
+        DataLayoutStr (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     ccore.LLVMSetDataLayout(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),DataLayoutStr)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(DataLayoutStr)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -2169,13 +2182,13 @@ def LLVMGetTarget(object M):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMGetTarget__retval = ccore.LLVMGetTarget(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr())    # fully specified
+    _LLVMGetTarget__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMGetTarget(
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
     return _LLVMGetTarget__retval
 
 
 @cython.embedsignature(True)
-def LLVMSetTarget(object M, const char * Triple):
+def LLVMSetTarget(object M, object Triple):
     r"""(No short description, might be part of a group.)
 
     Set the target triple for a module.
@@ -2187,11 +2200,12 @@ def LLVMSetTarget(object M, const char * Triple):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Triple (`~.bytes`):
+        Triple (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     ccore.LLVMSetTarget(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Triple)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Triple)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -2278,9 +2292,9 @@ def LLVMModuleFlagEntriesGetKey(object Entries, unsigned int Index, object Len):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMModuleFlagEntriesGetKey__retval = ccore.LLVMModuleFlagEntriesGetKey(
+    _LLVMModuleFlagEntriesGetKey__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMModuleFlagEntriesGetKey(
         LLVMOpaqueModuleFlagEntry.from_pyobj(Entries).get_element_ptr(),Index,
-        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr))    # fully specified
     return _LLVMModuleFlagEntriesGetKey__retval
 
 
@@ -2306,7 +2320,7 @@ def LLVMModuleFlagEntriesGetMetadata(object Entries, unsigned int Index):
 
 
 @cython.embedsignature(True)
-def LLVMGetModuleFlag(object M, const char * Key, unsigned long KeyLen):
+def LLVMGetModuleFlag(object M, object Key, unsigned long KeyLen):
     r"""(No short description, might be part of a group.)
 
     Add a module-level flag to the module-level flags metadata if it doesn't
@@ -2319,19 +2333,20 @@ def LLVMGetModuleFlag(object M, const char * Key, unsigned long KeyLen):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Key (`~.bytes`):
+        Key (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         KeyLen (`~.int`):
             (undocumented)
     """
     _LLVMGetModuleFlag__retval = LLVMOpaqueMetadata.from_ptr(ccore.LLVMGetModuleFlag(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Key,KeyLen))    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Key)._ptr,KeyLen))    # fully specified
     return _LLVMGetModuleFlag__retval
 
 
 @cython.embedsignature(True)
-def LLVMAddModuleFlag(object M, object Behavior, const char * Key, unsigned long KeyLen, object Val):
+def LLVMAddModuleFlag(object M, object Behavior, object Key, unsigned long KeyLen, object Val):
     r"""(No short description, might be part of a group.)
 
     Add a module-level flag to the module-level flags metadata if it doesn't
@@ -2347,7 +2362,7 @@ def LLVMAddModuleFlag(object M, object Behavior, const char * Key, unsigned long
         Behavior (`~.LLVMModuleFlagBehavior`):
             (undocumented)
 
-        Key (`~.bytes`):
+        Key (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         KeyLen (`~.int`):
@@ -2359,7 +2374,8 @@ def LLVMAddModuleFlag(object M, object Behavior, const char * Key, unsigned long
     if not isinstance(Behavior,_LLVMModuleFlagBehavior__Base):
         raise TypeError("argument 'Behavior' must be of type '_LLVMModuleFlagBehavior__Base'")
     ccore.LLVMAddModuleFlag(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Behavior.value,Key,KeyLen,
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Behavior.value,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Key)._ptr,KeyLen,
         LLVMOpaqueMetadata.from_pyobj(Val).get_element_ptr())    # fully specified
 
 
@@ -2381,7 +2397,7 @@ def LLVMDumpModule(object M):
 
 
 @cython.embedsignature(True)
-def LLVMPrintModuleToFile(object M, const char * Filename, object ErrorMessage):
+def LLVMPrintModuleToFile(object M, object Filename, object ErrorMessage):
     r"""(No short description, might be part of a group.)
 
     Print a representation of a module to a file. The ErrorMessage needs to be
@@ -2394,18 +2410,19 @@ def LLVMPrintModuleToFile(object M, const char * Filename, object ErrorMessage):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Filename (`~.bytes`):
+        Filename (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
-        ErrorMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
+        ErrorMessage (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
     Returns:
         `~.int`
     """
     cdef int _LLVMPrintModuleToFile__retval = ccore.LLVMPrintModuleToFile(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Filename,
-        <char **>rocm.llvm._util.types.Pointer.from_pyobj(ErrorMessage)._ptr)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Filename)._ptr,
+        <char **>rocm.llvm._util.types.CStr.from_pyobj(ErrorMessage)._ptr)    # fully specified
     return _LLVMPrintModuleToFile__retval
 
 
@@ -2426,8 +2443,8 @@ def LLVMPrintModuleToString(object M):
     Returns:
         `~.bytes`
     """
-    cdef char * _LLVMPrintModuleToString__retval = ccore.LLVMPrintModuleToString(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr())    # fully specified
+    _LLVMPrintModuleToString__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMPrintModuleToString(
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
     return _LLVMPrintModuleToString__retval
 
 
@@ -2450,14 +2467,14 @@ def LLVMGetModuleInlineAsm(object M, object Len):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMGetModuleInlineAsm__retval = ccore.LLVMGetModuleInlineAsm(
+    _LLVMGetModuleInlineAsm__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMGetModuleInlineAsm(
         LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
-        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr))    # fully specified
     return _LLVMGetModuleInlineAsm__retval
 
 
 @cython.embedsignature(True)
-def LLVMSetModuleInlineAsm2(object M, const char * Asm, unsigned long Len):
+def LLVMSetModuleInlineAsm2(object M, object Asm, unsigned long Len):
     r"""(No short description, might be part of a group.)
 
     Set inline assembly for a module.
@@ -2469,18 +2486,19 @@ def LLVMSetModuleInlineAsm2(object M, const char * Asm, unsigned long Len):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Asm (`~.bytes`):
+        Asm (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         Len (`~.int`):
             (undocumented)
     """
     ccore.LLVMSetModuleInlineAsm2(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Asm,Len)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Asm)._ptr,Len)    # fully specified
 
 
 @cython.embedsignature(True)
-def LLVMAppendModuleInlineAsm(object M, const char * Asm, unsigned long Len):
+def LLVMAppendModuleInlineAsm(object M, object Asm, unsigned long Len):
     r"""(No short description, might be part of a group.)
 
     Append inline assembly to a module.
@@ -2492,18 +2510,19 @@ def LLVMAppendModuleInlineAsm(object M, const char * Asm, unsigned long Len):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Asm (`~.bytes`):
+        Asm (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         Len (`~.int`):
             (undocumented)
     """
     ccore.LLVMAppendModuleInlineAsm(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Asm,Len)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Asm)._ptr,Len)    # fully specified
 
 
 @cython.embedsignature(True)
-def LLVMGetInlineAsm(object Ty, char * AsmString, unsigned long AsmStringSize, char * Constraints, unsigned long ConstraintsSize, int HasSideEffects, int IsAlignStack, object Dialect, int CanThrow):
+def LLVMGetInlineAsm(object Ty, object AsmString, unsigned long AsmStringSize, object Constraints, unsigned long ConstraintsSize, int HasSideEffects, int IsAlignStack, object Dialect, int CanThrow):
     r"""(No short description, might be part of a group.)
 
     Create the specified uniqued inline asm string.
@@ -2515,13 +2534,13 @@ def LLVMGetInlineAsm(object Ty, char * AsmString, unsigned long AsmStringSize, c
         Ty (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        AsmString (`~.bytes`):
+        AsmString (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         AsmStringSize (`~.int`):
             (undocumented)
 
-        Constraints (`~.bytes`):
+        Constraints (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         ConstraintsSize (`~.int`):
@@ -2542,7 +2561,9 @@ def LLVMGetInlineAsm(object Ty, char * AsmString, unsigned long AsmStringSize, c
     if not isinstance(Dialect,_LLVMInlineAsmDialect__Base):
         raise TypeError("argument 'Dialect' must be of type '_LLVMInlineAsmDialect__Base'")
     _LLVMGetInlineAsm__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetInlineAsm(
-        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),AsmString,AsmStringSize,Constraints,ConstraintsSize,HasSideEffects,IsAlignStack,Dialect.value,CanThrow))    # fully specified
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
+        <char *>rocm.llvm._util.types.CStr.from_pyobj(AsmString)._ptr,AsmStringSize,
+        <char *>rocm.llvm._util.types.CStr.from_pyobj(Constraints)._ptr,ConstraintsSize,HasSideEffects,IsAlignStack,Dialect.value,CanThrow))    # fully specified
     return _LLVMGetInlineAsm__retval
 
 
@@ -2565,7 +2586,7 @@ def LLVMGetModuleContext(object M):
 
 
 @cython.embedsignature(True)
-def LLVMGetTypeByName(object M, const char * Name):
+def LLVMGetTypeByName(object M, object Name):
     r"""(No short description, might be part of a group.)
 
     Deprecated: Use LLVMGetTypeByName2 instead. */
@@ -2574,11 +2595,12 @@ def LLVMGetTypeByName(object M, const char * Name):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMGetTypeByName__retval = LLVMOpaqueType.from_ptr(ccore.LLVMGetTypeByName(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMGetTypeByName__retval
 
 
@@ -2655,7 +2677,7 @@ def LLVMGetPreviousNamedMetadata(object NamedMDNode):
 
 
 @cython.embedsignature(True)
-def LLVMGetNamedMetadata(object M, const char * Name, unsigned long NameLen):
+def LLVMGetNamedMetadata(object M, object Name, unsigned long NameLen):
     r"""(No short description, might be part of a group.)
 
     Retrieve a NamedMDNode with the given name, returning NULL if no such
@@ -2668,19 +2690,20 @@ def LLVMGetNamedMetadata(object M, const char * Name, unsigned long NameLen):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         NameLen (`~.int`):
             (undocumented)
     """
     _LLVMGetNamedMetadata__retval = LLVMOpaqueNamedMDNode.from_ptr(ccore.LLVMGetNamedMetadata(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name,NameLen))    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen))    # fully specified
     return _LLVMGetNamedMetadata__retval
 
 
 @cython.embedsignature(True)
-def LLVMGetOrInsertNamedMetadata(object M, const char * Name, unsigned long NameLen):
+def LLVMGetOrInsertNamedMetadata(object M, object Name, unsigned long NameLen):
     r"""(No short description, might be part of a group.)
 
     Retrieve a NamedMDNode with the given name, creating a new node if no such
@@ -2693,14 +2716,15 @@ def LLVMGetOrInsertNamedMetadata(object M, const char * Name, unsigned long Name
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         NameLen (`~.int`):
             (undocumented)
     """
     _LLVMGetOrInsertNamedMetadata__retval = LLVMOpaqueNamedMDNode.from_ptr(ccore.LLVMGetOrInsertNamedMetadata(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name,NameLen))    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen))    # fully specified
     return _LLVMGetOrInsertNamedMetadata__retval
 
 
@@ -2723,14 +2747,14 @@ def LLVMGetNamedMetadataName(object NamedMD, object NameLen):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMGetNamedMetadataName__retval = ccore.LLVMGetNamedMetadataName(
+    _LLVMGetNamedMetadataName__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMGetNamedMetadataName(
         LLVMOpaqueNamedMDNode.from_pyobj(NamedMD).get_element_ptr(),
-        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NameLen)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NameLen)._ptr))    # fully specified
     return _LLVMGetNamedMetadataName__retval
 
 
 @cython.embedsignature(True)
-def LLVMGetNamedMetadataNumOperands(object M, const char * Name):
+def LLVMGetNamedMetadataNumOperands(object M, object Name):
     r"""(No short description, might be part of a group.)
 
     Obtain the number of operands for named metadata in a module.
@@ -2742,19 +2766,20 @@ def LLVMGetNamedMetadataNumOperands(object M, const char * Name):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
     Returns:
         `~.int`
     """
     cdef unsigned int _LLVMGetNamedMetadataNumOperands__retval = ccore.LLVMGetNamedMetadataNumOperands(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr)    # fully specified
     return _LLVMGetNamedMetadataNumOperands__retval
 
 
 @cython.embedsignature(True)
-def LLVMGetNamedMetadataOperands(object M, const char * Name, object Dest):
+def LLVMGetNamedMetadataOperands(object M, object Name, object Dest):
     r"""(No short description, might be part of a group.)
 
     Obtain the named metadata operands for a module.
@@ -2774,19 +2799,20 @@ def LLVMGetNamedMetadataOperands(object M, const char * Name, object Dest):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         Dest (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
     ccore.LLVMGetNamedMetadataOperands(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name,
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,
         <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Dest)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
-def LLVMAddNamedMetadataOperand(object M, const char * Name, object Val):
+def LLVMAddNamedMetadataOperand(object M, object Name, object Val):
     r"""(No short description, might be part of a group.)
 
     Add an operand to named metadata.
@@ -2801,14 +2827,15 @@ def LLVMAddNamedMetadataOperand(object M, const char * Name, object Val):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
     ccore.LLVMAddNamedMetadataOperand(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name,
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr())    # fully specified
 
 
@@ -2838,9 +2865,9 @@ def LLVMGetDebugLocDirectory(object Val, object Length):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMGetDebugLocDirectory__retval = ccore.LLVMGetDebugLocDirectory(
+    _LLVMGetDebugLocDirectory__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMGetDebugLocDirectory(
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr))    # fully specified
     return _LLVMGetDebugLocDirectory__retval
 
 
@@ -2870,9 +2897,9 @@ def LLVMGetDebugLocFilename(object Val, object Length):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMGetDebugLocFilename__retval = ccore.LLVMGetDebugLocFilename(
+    _LLVMGetDebugLocFilename__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMGetDebugLocFilename(
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr))    # fully specified
     return _LLVMGetDebugLocFilename__retval
 
 
@@ -2927,7 +2954,7 @@ def LLVMGetDebugLocColumn(object Val):
 
 
 @cython.embedsignature(True)
-def LLVMAddFunction(object M, const char * Name, object FunctionTy):
+def LLVMAddFunction(object M, object Name, object FunctionTy):
     r"""(No short description, might be part of a group.)
 
     Add a function to a module under a specified name.
@@ -2939,20 +2966,21 @@ def LLVMAddFunction(object M, const char * Name, object FunctionTy):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         FunctionTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
     """
     _LLVMAddFunction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMAddFunction(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name,
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,
         LLVMOpaqueType.from_pyobj(FunctionTy).get_element_ptr()))    # fully specified
     return _LLVMAddFunction__retval
 
 
 @cython.embedsignature(True)
-def LLVMGetNamedFunction(object M, const char * Name):
+def LLVMGetNamedFunction(object M, object Name):
     r"""(No short description, might be part of a group.)
 
     Obtain a Function value from a Module by its name.
@@ -2966,11 +2994,12 @@ def LLVMGetNamedFunction(object M, const char * Name):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMGetNamedFunction__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNamedFunction(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMGetNamedFunction__retval
 
 
@@ -3047,7 +3076,7 @@ def LLVMGetPreviousFunction(object Fn):
 
 
 @cython.embedsignature(True)
-def LLVMSetModuleInlineAsm(object M, const char * Asm):
+def LLVMSetModuleInlineAsm(object M, object Asm):
     r"""(No short description, might be part of a group.)
 
     Deprecated: Use LLVMSetModuleInlineAsm2 instead. */
@@ -3056,11 +3085,12 @@ def LLVMSetModuleInlineAsm(object M, const char * Asm):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Asm (`~.bytes`):
+        Asm (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     ccore.LLVMSetModuleInlineAsm(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Asm)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Asm)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -3159,8 +3189,8 @@ def LLVMPrintTypeToString(object Val):
     Returns:
         `~.bytes`
     """
-    cdef char * _LLVMPrintTypeToString__retval = ccore.LLVMPrintTypeToString(
-        LLVMOpaqueType.from_pyobj(Val).get_element_ptr())    # fully specified
+    _LLVMPrintTypeToString__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMPrintTypeToString(
+        LLVMOpaqueType.from_pyobj(Val).get_element_ptr()))    # fully specified
     return _LLVMPrintTypeToString__retval
 
 
@@ -3663,7 +3693,7 @@ def LLVMStructType(object ElementTypes, unsigned int ElementCount, int Packed):
 
 
 @cython.embedsignature(True)
-def LLVMStructCreateNamed(object C, const char * Name):
+def LLVMStructCreateNamed(object C, object Name):
     r"""(No short description, might be part of a group.)
 
     Create an empty structure in a context having a specified name.
@@ -3675,11 +3705,12 @@ def LLVMStructCreateNamed(object C, const char * Name):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMStructCreateNamed__retval = LLVMOpaqueType.from_ptr(ccore.LLVMStructCreateNamed(
-        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMStructCreateNamed__retval
 
 
@@ -3699,8 +3730,8 @@ def LLVMGetStructName(object Ty):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMGetStructName__retval = ccore.LLVMGetStructName(
-        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr())    # fully specified
+    _LLVMGetStructName__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMGetStructName(
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr()))    # fully specified
     return _LLVMGetStructName__retval
 
 
@@ -4260,7 +4291,7 @@ def LLVMX86AMXType():
 
 
 @cython.embedsignature(True)
-def LLVMTargetExtTypeInContext(object C, const char * Name, object TypeParams, unsigned int TypeParamCount, object IntParams, unsigned int IntParamCount):
+def LLVMTargetExtTypeInContext(object C, object Name, object TypeParams, unsigned int TypeParamCount, object IntParams, unsigned int IntParamCount):
     r"""(No short description, might be part of a group.)
 
     Create a target extension type in LLVM context.
@@ -4269,7 +4300,7 @@ def LLVMTargetExtTypeInContext(object C, const char * Name, object TypeParams, u
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         TypeParams (`~.rocm.llvm._util.types.Pointer`/`~.object`):
@@ -4285,7 +4316,8 @@ def LLVMTargetExtTypeInContext(object C, const char * Name, object TypeParams, u
             (undocumented)
     """
     _LLVMTargetExtTypeInContext__retval = LLVMOpaqueType.from_ptr(ccore.LLVMTargetExtTypeInContext(
-        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),Name,
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,
         <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(TypeParams)._ptr,TypeParamCount,
         <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(IntParams)._ptr,IntParamCount))    # fully specified
     return _LLVMTargetExtTypeInContext__retval
@@ -4349,14 +4381,14 @@ def LLVMGetValueName2(object Val, object Length):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMGetValueName2__retval = ccore.LLVMGetValueName2(
+    _LLVMGetValueName2__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMGetValueName2(
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr))    # fully specified
     return _LLVMGetValueName2__retval
 
 
 @cython.embedsignature(True)
-def LLVMSetValueName2(object Val, const char * Name, unsigned long NameLen):
+def LLVMSetValueName2(object Val, object Name, unsigned long NameLen):
     r"""(No short description, might be part of a group.)
 
     Set the string name of a value.
@@ -4368,14 +4400,15 @@ def LLVMSetValueName2(object Val, const char * Name, unsigned long NameLen):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         NameLen (`~.int`):
             (undocumented)
     """
     ccore.LLVMSetValueName2(
-        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),Name,NameLen)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -4412,8 +4445,8 @@ def LLVMPrintValueToString(object Val):
     Returns:
         `~.bytes`
     """
-    cdef char * _LLVMPrintValueToString__retval = ccore.LLVMPrintValueToString(
-        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr())    # fully specified
+    _LLVMPrintValueToString__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMPrintValueToString(
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
     return _LLVMPrintValueToString__retval
 
 
@@ -5675,13 +5708,13 @@ def LLVMGetValueName(object Val):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMGetValueName__retval = ccore.LLVMGetValueName(
-        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr())    # fully specified
+    _LLVMGetValueName__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMGetValueName(
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr()))    # fully specified
     return _LLVMGetValueName__retval
 
 
 @cython.embedsignature(True)
-def LLVMSetValueName(object Val, const char * Name):
+def LLVMSetValueName(object Val, object Name):
     r"""(No short description, might be part of a group.)
 
     Deprecated: Use LLVMSetValueName2 instead. */
@@ -5690,11 +5723,12 @@ def LLVMSetValueName(object Val, const char * Name):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     ccore.LLVMSetValueName(
-        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),Name)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -6027,7 +6061,7 @@ def LLVMConstIntOfArbitraryPrecision(object IntTy, unsigned int NumWords, object
 
 
 @cython.embedsignature(True)
-def LLVMConstIntOfString(object IntTy, const char * Text, unsigned char Radix):
+def LLVMConstIntOfString(object IntTy, object Text, unsigned char Radix):
     r"""(No short description, might be part of a group.)
 
     Obtain a constant value for an integer parsed from a string.
@@ -6043,19 +6077,20 @@ def LLVMConstIntOfString(object IntTy, const char * Text, unsigned char Radix):
         IntTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Text (`~.bytes`):
+        Text (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         Radix (`~.int`):
             (undocumented)
     """
     _LLVMConstIntOfString__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstIntOfString(
-        LLVMOpaqueType.from_pyobj(IntTy).get_element_ptr(),Text,Radix))    # fully specified
+        LLVMOpaqueType.from_pyobj(IntTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Text)._ptr,Radix))    # fully specified
     return _LLVMConstIntOfString__retval
 
 
 @cython.embedsignature(True)
-def LLVMConstIntOfStringAndSize(object IntTy, const char * Text, unsigned int SLen, unsigned char Radix):
+def LLVMConstIntOfStringAndSize(object IntTy, object Text, unsigned int SLen, unsigned char Radix):
     r"""(No short description, might be part of a group.)
 
     Obtain a constant value for an integer parsed from a string with
@@ -6068,7 +6103,7 @@ def LLVMConstIntOfStringAndSize(object IntTy, const char * Text, unsigned int SL
         IntTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Text (`~.bytes`):
+        Text (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         SLen (`~.int`):
@@ -6078,7 +6113,8 @@ def LLVMConstIntOfStringAndSize(object IntTy, const char * Text, unsigned int SL
             (undocumented)
     """
     _LLVMConstIntOfStringAndSize__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstIntOfStringAndSize(
-        LLVMOpaqueType.from_pyobj(IntTy).get_element_ptr(),Text,SLen,Radix))    # fully specified
+        LLVMOpaqueType.from_pyobj(IntTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Text)._ptr,SLen,Radix))    # fully specified
     return _LLVMConstIntOfStringAndSize__retval
 
 
@@ -6101,7 +6137,7 @@ def LLVMConstReal(object RealTy, double N):
 
 
 @cython.embedsignature(True)
-def LLVMConstRealOfString(object RealTy, const char * Text):
+def LLVMConstRealOfString(object RealTy, object Text):
     r"""(No short description, might be part of a group.)
 
     Obtain a constant for a floating point value parsed from a string.
@@ -6113,16 +6149,17 @@ def LLVMConstRealOfString(object RealTy, const char * Text):
         RealTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Text (`~.bytes`):
+        Text (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMConstRealOfString__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstRealOfString(
-        LLVMOpaqueType.from_pyobj(RealTy).get_element_ptr(),Text))    # fully specified
+        LLVMOpaqueType.from_pyobj(RealTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Text)._ptr))    # fully specified
     return _LLVMConstRealOfString__retval
 
 
 @cython.embedsignature(True)
-def LLVMConstRealOfStringAndSize(object RealTy, const char * Text, unsigned int SLen):
+def LLVMConstRealOfStringAndSize(object RealTy, object Text, unsigned int SLen):
     r"""(No short description, might be part of a group.)
 
     Obtain a constant for a floating point value parsed from a string.
@@ -6131,14 +6168,15 @@ def LLVMConstRealOfStringAndSize(object RealTy, const char * Text, unsigned int 
         RealTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Text (`~.bytes`):
+        Text (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         SLen (`~.int`):
             (undocumented)
     """
     _LLVMConstRealOfStringAndSize__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstRealOfStringAndSize(
-        LLVMOpaqueType.from_pyobj(RealTy).get_element_ptr(),Text,SLen))    # fully specified
+        LLVMOpaqueType.from_pyobj(RealTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Text)._ptr,SLen))    # fully specified
     return _LLVMConstRealOfStringAndSize__retval
 
 
@@ -6211,7 +6249,7 @@ def LLVMConstRealGetDouble(object ConstantVal, object losesInfo):
 
 
 @cython.embedsignature(True)
-def LLVMConstStringInContext(object C, const char * Str, unsigned int Length, int DontNullTerminate):
+def LLVMConstStringInContext(object C, object Str, unsigned int Length, int DontNullTerminate):
     r"""(No short description, might be part of a group.)
 
     Create a ConstantDataSequential and initialize it with a string.
@@ -6223,7 +6261,7 @@ def LLVMConstStringInContext(object C, const char * Str, unsigned int Length, in
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
 
-        Str (`~.bytes`):
+        Str (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         Length (`~.int`):
@@ -6233,12 +6271,13 @@ def LLVMConstStringInContext(object C, const char * Str, unsigned int Length, in
             (undocumented)
     """
     _LLVMConstStringInContext__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstStringInContext(
-        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),Str,Length,DontNullTerminate))    # fully specified
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Str)._ptr,Length,DontNullTerminate))    # fully specified
     return _LLVMConstStringInContext__retval
 
 
 @cython.embedsignature(True)
-def LLVMConstString(const char * Str, unsigned int Length, int DontNullTerminate):
+def LLVMConstString(object Str, unsigned int Length, int DontNullTerminate):
     r"""(No short description, might be part of a group.)
 
     Create a ConstantDataSequential with string content in the global context.
@@ -6253,7 +6292,7 @@ def LLVMConstString(const char * Str, unsigned int Length, int DontNullTerminate
         `~.llvm``~.`~.ConstantDataArray`.`~.getString``()
 
     Args:
-        Str (`~.bytes`):
+        Str (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         Length (`~.int`):
@@ -6262,7 +6301,8 @@ def LLVMConstString(const char * Str, unsigned int Length, int DontNullTerminate
         DontNullTerminate (`~.int`):
             (undocumented)
     """
-    _LLVMConstString__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstString(Str,Length,DontNullTerminate))    # fully specified
+    _LLVMConstString__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstString(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Str)._ptr,Length,DontNullTerminate))    # fully specified
     return _LLVMConstString__retval
 
 
@@ -6306,9 +6346,9 @@ def LLVMGetAsString(object c, object Length):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMGetAsString__retval = ccore.LLVMGetAsString(
+    _LLVMGetAsString__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMGetAsString(
         LLVMOpaqueValue.from_pyobj(c).get_element_ptr(),
-        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr))    # fully specified
     return _LLVMGetAsString__retval
 
 
@@ -7350,7 +7390,7 @@ def LLVMBlockAddress(object F, object BB):
 
 
 @cython.embedsignature(True)
-def LLVMConstInlineAsm(object Ty, const char * AsmString, const char * Constraints, int HasSideEffects, int IsAlignStack):
+def LLVMConstInlineAsm(object Ty, object AsmString, object Constraints, int HasSideEffects, int IsAlignStack):
     r"""(No short description, might be part of a group.)
 
     Deprecated: Use LLVMGetInlineAsm instead. */
@@ -7359,10 +7399,10 @@ def LLVMConstInlineAsm(object Ty, const char * AsmString, const char * Constrain
         Ty (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        AsmString (`~.bytes`):
+        AsmString (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
-        Constraints (`~.bytes`):
+        Constraints (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         HasSideEffects (`~.int`):
@@ -7372,7 +7412,9 @@ def LLVMConstInlineAsm(object Ty, const char * AsmString, const char * Constrain
             (undocumented)
     """
     _LLVMConstInlineAsm__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMConstInlineAsm(
-        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),AsmString,Constraints,HasSideEffects,IsAlignStack))    # fully specified
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(AsmString)._ptr,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Constraints)._ptr,HasSideEffects,IsAlignStack))    # fully specified
     return _LLVMConstInlineAsm__retval
 
 
@@ -7457,24 +7499,25 @@ def LLVMGetSection(object Global):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMGetSection__retval = ccore.LLVMGetSection(
-        LLVMOpaqueValue.from_pyobj(Global).get_element_ptr())    # fully specified
+    _LLVMGetSection__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMGetSection(
+        LLVMOpaqueValue.from_pyobj(Global).get_element_ptr()))    # fully specified
     return _LLVMGetSection__retval
 
 
 @cython.embedsignature(True)
-def LLVMSetSection(object Global, const char * Section):
+def LLVMSetSection(object Global, object Section):
     r"""(No short description, might be part of a group.)
 
     Args:
         Global (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Section (`~.bytes`):
+        Section (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     ccore.LLVMSetSection(
-        LLVMOpaqueValue.from_pyobj(Global).get_element_ptr(),Section)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Global).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Section)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -7842,7 +7885,7 @@ def LLVMValueMetadataEntriesGetMetadata(object Entries, unsigned int Index):
 
 
 @cython.embedsignature(True)
-def LLVMAddGlobal(object M, object Ty, const char * Name):
+def LLVMAddGlobal(object M, object Ty, object Name):
     r"""(No short description, might be part of a group.)
 
     This group contains functions that operate on global variable values.
@@ -7859,17 +7902,18 @@ def LLVMAddGlobal(object M, object Ty, const char * Name):
         Ty (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMAddGlobal__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMAddGlobal(
         LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMAddGlobal__retval
 
 
 @cython.embedsignature(True)
-def LLVMAddGlobalInAddressSpace(object M, object Ty, const char * Name, unsigned int AddressSpace):
+def LLVMAddGlobalInAddressSpace(object M, object Ty, object Name, unsigned int AddressSpace):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -7879,7 +7923,7 @@ def LLVMAddGlobalInAddressSpace(object M, object Ty, const char * Name, unsigned
         Ty (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         AddressSpace (`~.int`):
@@ -7887,23 +7931,25 @@ def LLVMAddGlobalInAddressSpace(object M, object Ty, const char * Name, unsigned
     """
     _LLVMAddGlobalInAddressSpace__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMAddGlobalInAddressSpace(
         LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),Name,AddressSpace))    # fully specified
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,AddressSpace))    # fully specified
     return _LLVMAddGlobalInAddressSpace__retval
 
 
 @cython.embedsignature(True)
-def LLVMGetNamedGlobal(object M, const char * Name):
+def LLVMGetNamedGlobal(object M, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMGetNamedGlobal__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNamedGlobal(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMGetNamedGlobal__retval
 
 
@@ -8127,7 +8173,7 @@ def LLVMSetExternallyInitialized(object GlobalVar, int IsExtInit):
 
 
 @cython.embedsignature(True)
-def LLVMAddAlias2(object M, object ValueTy, unsigned int AddrSpace, object Aliasee, const char * Name):
+def LLVMAddAlias2(object M, object ValueTy, unsigned int AddrSpace, object Aliasee, object Name):
     r"""(No short description, might be part of a group.)
 
     Add a GlobalAlias with the given value type, address space and aliasee.
@@ -8148,18 +8194,19 @@ def LLVMAddAlias2(object M, object ValueTy, unsigned int AddrSpace, object Alias
         Aliasee (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMAddAlias2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMAddAlias2(
         LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
         LLVMOpaqueType.from_pyobj(ValueTy).get_element_ptr(),AddrSpace,
-        LLVMOpaqueValue.from_pyobj(Aliasee).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(Aliasee).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMAddAlias2__retval
 
 
 @cython.embedsignature(True)
-def LLVMGetNamedGlobalAlias(object M, const char * Name, unsigned long NameLen):
+def LLVMGetNamedGlobalAlias(object M, object Name, unsigned long NameLen):
     r"""(No short description, might be part of a group.)
 
     Obtain a GlobalAlias value from a Module by its name.
@@ -8173,14 +8220,15 @@ def LLVMGetNamedGlobalAlias(object M, const char * Name, unsigned long NameLen):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         NameLen (`~.int`):
             (undocumented)
     """
     _LLVMGetNamedGlobalAlias__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNamedGlobalAlias(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name,NameLen))    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen))    # fully specified
     return _LLVMGetNamedGlobalAlias__retval
 
 
@@ -8367,7 +8415,7 @@ def LLVMSetPersonalityFn(object Fn, object PersonalityFn):
 
 
 @cython.embedsignature(True)
-def LLVMLookupIntrinsicID(const char * Name, unsigned long NameLen):
+def LLVMLookupIntrinsicID(object Name, unsigned long NameLen):
     r"""(No short description, might be part of a group.)
 
     Obtain the intrinsic ID number which matches the given function name.
@@ -8376,7 +8424,7 @@ def LLVMLookupIntrinsicID(const char * Name, unsigned long NameLen):
         `~.llvm``~.`~.Function`.`~.lookupIntrinsicID``()
 
     Args:
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         NameLen (`~.int`):
@@ -8385,7 +8433,8 @@ def LLVMLookupIntrinsicID(const char * Name, unsigned long NameLen):
     Returns:
         `~.int`
     """
-    cdef unsigned int _LLVMLookupIntrinsicID__retval = ccore.LLVMLookupIntrinsicID(Name,NameLen)    # fully specified
+    cdef unsigned int _LLVMLookupIntrinsicID__retval = ccore.LLVMLookupIntrinsicID(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen)    # fully specified
     return _LLVMLookupIntrinsicID__retval
 
 
@@ -8487,8 +8536,8 @@ def LLVMIntrinsicGetName(unsigned int ID, object NameLength):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMIntrinsicGetName__retval = ccore.LLVMIntrinsicGetName(ID,
-        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NameLength)._ptr)    # fully specified
+    _LLVMIntrinsicGetName__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMIntrinsicGetName(ID,
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NameLength)._ptr))    # fully specified
     return _LLVMIntrinsicGetName__retval
 
 
@@ -8514,9 +8563,9 @@ def LLVMIntrinsicCopyOverloadedName(unsigned int ID, object ParamTypes, unsigned
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMIntrinsicCopyOverloadedName__retval = ccore.LLVMIntrinsicCopyOverloadedName(ID,
+    _LLVMIntrinsicCopyOverloadedName__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMIntrinsicCopyOverloadedName(ID,
         <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(ParamTypes)._ptr,ParamCount,
-        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NameLength)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NameLength)._ptr))    # fully specified
     return _LLVMIntrinsicCopyOverloadedName__retval
 
 
@@ -8554,10 +8603,10 @@ def LLVMIntrinsicCopyOverloadedName2(object Mod, unsigned int ID, object ParamTy
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMIntrinsicCopyOverloadedName2__retval = ccore.LLVMIntrinsicCopyOverloadedName2(
+    _LLVMIntrinsicCopyOverloadedName2__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMIntrinsicCopyOverloadedName2(
         LLVMOpaqueModule.from_pyobj(Mod).get_element_ptr(),ID,
         <ccore.LLVMTypeRef*>rocm.llvm._util.types.Pointer.from_pyobj(ParamTypes)._ptr,ParamCount,
-        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NameLength)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NameLength)._ptr))    # fully specified
     return _LLVMIntrinsicCopyOverloadedName2__retval
 
 
@@ -8641,13 +8690,13 @@ def LLVMGetGC(object Fn):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMGetGC__retval = ccore.LLVMGetGC(
-        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr())    # fully specified
+    _LLVMGetGC__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMGetGC(
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr()))    # fully specified
     return _LLVMGetGC__retval
 
 
 @cython.embedsignature(True)
-def LLVMSetGC(object Fn, const char * Name):
+def LLVMSetGC(object Fn, object Name):
     r"""(No short description, might be part of a group.)
 
     Define the garbage collector to use during code generation.
@@ -8659,11 +8708,12 @@ def LLVMSetGC(object Fn, const char * Name):
         Fn (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     ccore.LLVMSetGC(
-        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),Name)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -8748,7 +8798,7 @@ def LLVMGetEnumAttributeAtIndex(object F, unsigned int Idx, unsigned int KindID)
 
 
 @cython.embedsignature(True)
-def LLVMGetStringAttributeAtIndex(object F, unsigned int Idx, const char * K, unsigned int KLen):
+def LLVMGetStringAttributeAtIndex(object F, unsigned int Idx, object K, unsigned int KLen):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -8758,14 +8808,15 @@ def LLVMGetStringAttributeAtIndex(object F, unsigned int Idx, const char * K, un
         Idx (`~.int`):
             (undocumented)
 
-        K (`~.bytes`):
+        K (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         KLen (`~.int`):
             (undocumented)
     """
     _LLVMGetStringAttributeAtIndex__retval = LLVMOpaqueAttributeRef.from_ptr(ccore.LLVMGetStringAttributeAtIndex(
-        LLVMOpaqueValue.from_pyobj(F).get_element_ptr(),Idx,K,KLen))    # fully specified
+        LLVMOpaqueValue.from_pyobj(F).get_element_ptr(),Idx,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(K)._ptr,KLen))    # fully specified
     return _LLVMGetStringAttributeAtIndex__retval
 
 
@@ -8788,7 +8839,7 @@ def LLVMRemoveEnumAttributeAtIndex(object F, unsigned int Idx, unsigned int Kind
 
 
 @cython.embedsignature(True)
-def LLVMRemoveStringAttributeAtIndex(object F, unsigned int Idx, const char * K, unsigned int KLen):
+def LLVMRemoveStringAttributeAtIndex(object F, unsigned int Idx, object K, unsigned int KLen):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -8798,18 +8849,19 @@ def LLVMRemoveStringAttributeAtIndex(object F, unsigned int Idx, const char * K,
         Idx (`~.int`):
             (undocumented)
 
-        K (`~.bytes`):
+        K (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         KLen (`~.int`):
             (undocumented)
     """
     ccore.LLVMRemoveStringAttributeAtIndex(
-        LLVMOpaqueValue.from_pyobj(F).get_element_ptr(),Idx,K,KLen)    # fully specified
+        LLVMOpaqueValue.from_pyobj(F).get_element_ptr(),Idx,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(K)._ptr,KLen)    # fully specified
 
 
 @cython.embedsignature(True)
-def LLVMAddTargetDependentFunctionAttr(object Fn, const char * A, const char * V):
+def LLVMAddTargetDependentFunctionAttr(object Fn, object A, object V):
     r"""(No short description, might be part of a group.)
 
     Add a target-dependent attribute to a function
@@ -8821,14 +8873,16 @@ def LLVMAddTargetDependentFunctionAttr(object Fn, const char * A, const char * V
         Fn (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        A (`~.bytes`):
+        A (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
-        V (`~.bytes`):
+        V (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     ccore.LLVMAddTargetDependentFunctionAttr(
-        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),A,V)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(A)._ptr,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(V)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -9019,7 +9073,7 @@ def LLVMSetParamAlignment(object Arg, unsigned int Align):
 
 
 @cython.embedsignature(True)
-def LLVMAddGlobalIFunc(object M, const char * Name, unsigned long NameLen, object Ty, unsigned int AddrSpace, object Resolver):
+def LLVMAddGlobalIFunc(object M, object Name, unsigned long NameLen, object Ty, unsigned int AddrSpace, object Resolver):
     r"""(No short description, might be part of a group.)
 
     Add a global indirect function to a module under a specified name.
@@ -9031,7 +9085,7 @@ def LLVMAddGlobalIFunc(object M, const char * Name, unsigned long NameLen, objec
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         NameLen (`~.int`):
@@ -9047,14 +9101,15 @@ def LLVMAddGlobalIFunc(object M, const char * Name, unsigned long NameLen, objec
             (undocumented)
     """
     _LLVMAddGlobalIFunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMAddGlobalIFunc(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name,NameLen,
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),AddrSpace,
         LLVMOpaqueValue.from_pyobj(Resolver).get_element_ptr()))    # fully specified
     return _LLVMAddGlobalIFunc__retval
 
 
 @cython.embedsignature(True)
-def LLVMGetNamedGlobalIFunc(object M, const char * Name, unsigned long NameLen):
+def LLVMGetNamedGlobalIFunc(object M, object Name, unsigned long NameLen):
     r"""(No short description, might be part of a group.)
 
     Obtain a GlobalIFunc value from a Module by its name.
@@ -9068,14 +9123,15 @@ def LLVMGetNamedGlobalIFunc(object M, const char * Name, unsigned long NameLen):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         NameLen (`~.int`):
             (undocumented)
     """
     _LLVMGetNamedGlobalIFunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMGetNamedGlobalIFunc(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name,NameLen))    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen))    # fully specified
     return _LLVMGetNamedGlobalIFunc__retval
 
 
@@ -9229,7 +9285,7 @@ def LLVMRemoveGlobalIFunc(object IFunc):
 
 
 @cython.embedsignature(True)
-def LLVMMDStringInContext2(object C, const char * Str, unsigned long SLen):
+def LLVMMDStringInContext2(object C, object Str, unsigned long SLen):
     r"""(No short description, might be part of a group.)
 
     Create an MDString value from a given string value.
@@ -9244,14 +9300,15 @@ def LLVMMDStringInContext2(object C, const char * Str, unsigned long SLen):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
 
-        Str (`~.bytes`):
+        Str (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         SLen (`~.int`):
             (undocumented)
     """
     _LLVMMDStringInContext2__retval = LLVMOpaqueMetadata.from_ptr(ccore.LLVMMDStringInContext2(
-        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),Str,SLen))    # fully specified
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Str)._ptr,SLen))    # fully specified
     return _LLVMMDStringInContext2__retval
 
 
@@ -9330,9 +9387,9 @@ def LLVMGetMDString(object V, object Length):
     Returns:
         `~.bytes`: String data in MDString.
     """
-    cdef const char * _LLVMGetMDString__retval = ccore.LLVMGetMDString(
+    _LLVMGetMDString__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMGetMDString(
         LLVMOpaqueValue.from_pyobj(V).get_element_ptr(),
-        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr))    # fully specified
     return _LLVMGetMDString__retval
 
 
@@ -9378,7 +9435,7 @@ def LLVMGetMDNodeOperands(object V, object Dest):
 
 
 @cython.embedsignature(True)
-def LLVMMDStringInContext(object C, const char * Str, unsigned int SLen):
+def LLVMMDStringInContext(object C, object Str, unsigned int SLen):
     r"""(No short description, might be part of a group.)
 
     Deprecated: Use LLVMMDStringInContext2 instead. */
@@ -9387,31 +9444,33 @@ def LLVMMDStringInContext(object C, const char * Str, unsigned int SLen):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
 
-        Str (`~.bytes`):
+        Str (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         SLen (`~.int`):
             (undocumented)
     """
     _LLVMMDStringInContext__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMMDStringInContext(
-        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),Str,SLen))    # fully specified
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Str)._ptr,SLen))    # fully specified
     return _LLVMMDStringInContext__retval
 
 
 @cython.embedsignature(True)
-def LLVMMDString(const char * Str, unsigned int SLen):
+def LLVMMDString(object Str, unsigned int SLen):
     r"""(No short description, might be part of a group.)
 
     Deprecated: Use LLVMMDStringInContext2 instead. */
 
     Args:
-        Str (`~.bytes`):
+        Str (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         SLen (`~.int`):
             (undocumented)
     """
-    _LLVMMDString__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMMDString(Str,SLen))    # fully specified
+    _LLVMMDString__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMMDString(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Str)._ptr,SLen))    # fully specified
     return _LLVMMDString__retval
 
 
@@ -9516,8 +9575,8 @@ def LLVMGetBasicBlockName(object BB):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMGetBasicBlockName__retval = ccore.LLVMGetBasicBlockName(
-        LLVMOpaqueBasicBlock.from_pyobj(BB).get_element_ptr())    # fully specified
+    _LLVMGetBasicBlockName__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMGetBasicBlockName(
+        LLVMOpaqueBasicBlock.from_pyobj(BB).get_element_ptr()))    # fully specified
     return _LLVMGetBasicBlockName__retval
 
 
@@ -9736,7 +9795,7 @@ def LLVMAppendExistingBasicBlock(object Fn, object BB):
 
 
 @cython.embedsignature(True)
-def LLVMCreateBasicBlockInContext(object C, const char * Name):
+def LLVMCreateBasicBlockInContext(object C, object Name):
     r"""(No short description, might be part of a group.)
 
     Create a new basic block without inserting it into a function.
@@ -9748,16 +9807,17 @@ def LLVMCreateBasicBlockInContext(object C, const char * Name):
         C (`~.LLVMOpaqueContext`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMCreateBasicBlockInContext__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMCreateBasicBlockInContext(
-        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMCreateBasicBlockInContext__retval
 
 
 @cython.embedsignature(True)
-def LLVMAppendBasicBlockInContext(object C, object Fn, const char * Name):
+def LLVMAppendBasicBlockInContext(object C, object Fn, object Name):
     r"""(No short description, might be part of a group.)
 
     Append a basic block to the end of a function.
@@ -9772,17 +9832,18 @@ def LLVMAppendBasicBlockInContext(object C, object Fn, const char * Name):
         Fn (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMAppendBasicBlockInContext__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMAppendBasicBlockInContext(
         LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMAppendBasicBlockInContext__retval
 
 
 @cython.embedsignature(True)
-def LLVMAppendBasicBlock(object Fn, const char * Name):
+def LLVMAppendBasicBlock(object Fn, object Name):
     r"""(No short description, might be part of a group.)
 
     Append a basic block to the end of a function using the global
@@ -9795,16 +9856,17 @@ def LLVMAppendBasicBlock(object Fn, const char * Name):
         Fn (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMAppendBasicBlock__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMAppendBasicBlock(
-        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMAppendBasicBlock__retval
 
 
 @cython.embedsignature(True)
-def LLVMInsertBasicBlockInContext(object C, object BB, const char * Name):
+def LLVMInsertBasicBlockInContext(object C, object BB, object Name):
     r"""(No short description, might be part of a group.)
 
     Insert a basic block in a function before another basic block.
@@ -9822,17 +9884,18 @@ def LLVMInsertBasicBlockInContext(object C, object BB, const char * Name):
         BB (`~.LLVMOpaqueBasicBlock`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMInsertBasicBlockInContext__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMInsertBasicBlockInContext(
         LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),
-        LLVMOpaqueBasicBlock.from_pyobj(BB).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueBasicBlock.from_pyobj(BB).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMInsertBasicBlockInContext__retval
 
 
 @cython.embedsignature(True)
-def LLVMInsertBasicBlock(object InsertBeforeBB, const char * Name):
+def LLVMInsertBasicBlock(object InsertBeforeBB, object Name):
     r"""(No short description, might be part of a group.)
 
     Insert a basic block in a function using the global context.
@@ -9844,11 +9907,12 @@ def LLVMInsertBasicBlock(object InsertBeforeBB, const char * Name):
         InsertBeforeBB (`~.LLVMOpaqueBasicBlock`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMInsertBasicBlock__retval = LLVMOpaqueBasicBlock.from_ptr(ccore.LLVMInsertBasicBlock(
-        LLVMOpaqueBasicBlock.from_pyobj(InsertBeforeBB).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueBasicBlock.from_pyobj(InsertBeforeBB).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMInsertBasicBlock__retval
 
 
@@ -10450,7 +10514,7 @@ def LLVMGetCallSiteEnumAttribute(object C, unsigned int Idx, unsigned int KindID
 
 
 @cython.embedsignature(True)
-def LLVMGetCallSiteStringAttribute(object C, unsigned int Idx, const char * K, unsigned int KLen):
+def LLVMGetCallSiteStringAttribute(object C, unsigned int Idx, object K, unsigned int KLen):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -10460,14 +10524,15 @@ def LLVMGetCallSiteStringAttribute(object C, unsigned int Idx, const char * K, u
         Idx (`~.int`):
             (undocumented)
 
-        K (`~.bytes`):
+        K (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         KLen (`~.int`):
             (undocumented)
     """
     _LLVMGetCallSiteStringAttribute__retval = LLVMOpaqueAttributeRef.from_ptr(ccore.LLVMGetCallSiteStringAttribute(
-        LLVMOpaqueValue.from_pyobj(C).get_element_ptr(),Idx,K,KLen))    # fully specified
+        LLVMOpaqueValue.from_pyobj(C).get_element_ptr(),Idx,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(K)._ptr,KLen))    # fully specified
     return _LLVMGetCallSiteStringAttribute__retval
 
 
@@ -10490,7 +10555,7 @@ def LLVMRemoveCallSiteEnumAttribute(object C, unsigned int Idx, unsigned int Kin
 
 
 @cython.embedsignature(True)
-def LLVMRemoveCallSiteStringAttribute(object C, unsigned int Idx, const char * K, unsigned int KLen):
+def LLVMRemoveCallSiteStringAttribute(object C, unsigned int Idx, object K, unsigned int KLen):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -10500,14 +10565,15 @@ def LLVMRemoveCallSiteStringAttribute(object C, unsigned int Idx, const char * K
         Idx (`~.int`):
             (undocumented)
 
-        K (`~.bytes`):
+        K (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         KLen (`~.int`):
             (undocumented)
     """
     ccore.LLVMRemoveCallSiteStringAttribute(
-        LLVMOpaqueValue.from_pyobj(C).get_element_ptr(),Idx,K,KLen)    # fully specified
+        LLVMOpaqueValue.from_pyobj(C).get_element_ptr(),Idx,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(K)._ptr,KLen)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -11022,7 +11088,7 @@ def LLVMGetIndices(object Inst):
         Inst (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
     """
-    _LLVMGetIndices__retval = rocm.llvm._util.types.Pointer.from_ptr(ccore.LLVMGetIndices(
+    _LLVMGetIndices__retval = rocm.llvm._util.types.Pointer.from_ptr(<void*>ccore.LLVMGetIndices(
         LLVMOpaqueValue.from_pyobj(Inst).get_element_ptr()))    # fully specified
     return _LLVMGetIndices__retval
 
@@ -11147,7 +11213,7 @@ def LLVMInsertIntoBuilder(object Builder, object Instr):
 
 
 @cython.embedsignature(True)
-def LLVMInsertIntoBuilderWithName(object Builder, object Instr, const char * Name):
+def LLVMInsertIntoBuilderWithName(object Builder, object Instr, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -11157,12 +11223,13 @@ def LLVMInsertIntoBuilderWithName(object Builder, object Instr, const char * Nam
         Instr (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     ccore.LLVMInsertIntoBuilderWithName(
         LLVMOpaqueBuilder.from_pyobj(Builder).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(Instr).get_element_ptr(),Name)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Instr).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -11479,7 +11546,7 @@ def LLVMBuildIndirectBr(object B, object Addr, unsigned int NumDests):
 
 
 @cython.embedsignature(True)
-def LLVMBuildInvoke2(object arg0, object Ty, object Fn, object Args, unsigned int NumArgs, object Then, object Catch, const char * Name):
+def LLVMBuildInvoke2(object arg0, object Ty, object Fn, object Args, unsigned int NumArgs, object Then, object Catch, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -11504,7 +11571,7 @@ def LLVMBuildInvoke2(object arg0, object Ty, object Fn, object Args, unsigned in
         Catch (`~.LLVMOpaqueBasicBlock`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildInvoke2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildInvoke2(
@@ -11513,7 +11580,8 @@ def LLVMBuildInvoke2(object arg0, object Ty, object Fn, object Args, unsigned in
         LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),
         <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Args)._ptr,NumArgs,
         LLVMOpaqueBasicBlock.from_pyobj(Then).get_element_ptr(),
-        LLVMOpaqueBasicBlock.from_pyobj(Catch).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueBasicBlock.from_pyobj(Catch).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildInvoke2__retval
 
 
@@ -11548,7 +11616,7 @@ def LLVMBuildResume(object B, object Exn):
 
 
 @cython.embedsignature(True)
-def LLVMBuildLandingPad(object B, object Ty, object PersFn, unsigned int NumClauses, const char * Name):
+def LLVMBuildLandingPad(object B, object Ty, object PersFn, unsigned int NumClauses, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -11564,13 +11632,14 @@ def LLVMBuildLandingPad(object B, object Ty, object PersFn, unsigned int NumClau
         NumClauses (`~.int`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildLandingPad__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildLandingPad(
         LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
         LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(PersFn).get_element_ptr(),NumClauses,Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(PersFn).get_element_ptr(),NumClauses,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildLandingPad__retval
 
 
@@ -11617,7 +11686,7 @@ def LLVMBuildCatchRet(object B, object CatchPad, object BB):
 
 
 @cython.embedsignature(True)
-def LLVMBuildCatchPad(object B, object ParentPad, object Args, unsigned int NumArgs, const char * Name):
+def LLVMBuildCatchPad(object B, object ParentPad, object Args, unsigned int NumArgs, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -11633,18 +11702,19 @@ def LLVMBuildCatchPad(object B, object ParentPad, object Args, unsigned int NumA
         NumArgs (`~.int`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildCatchPad__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildCatchPad(
         LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(ParentPad).get_element_ptr(),
-        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Args)._ptr,NumArgs,Name))    # fully specified
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Args)._ptr,NumArgs,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildCatchPad__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildCleanupPad(object B, object ParentPad, object Args, unsigned int NumArgs, const char * Name):
+def LLVMBuildCleanupPad(object B, object ParentPad, object Args, unsigned int NumArgs, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -11660,18 +11730,19 @@ def LLVMBuildCleanupPad(object B, object ParentPad, object Args, unsigned int Nu
         NumArgs (`~.int`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildCleanupPad__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildCleanupPad(
         LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(ParentPad).get_element_ptr(),
-        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Args)._ptr,NumArgs,Name))    # fully specified
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Args)._ptr,NumArgs,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildCleanupPad__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildCatchSwitch(object B, object ParentPad, object UnwindBB, unsigned int NumHandlers, const char * Name):
+def LLVMBuildCatchSwitch(object B, object ParentPad, object UnwindBB, unsigned int NumHandlers, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -11687,13 +11758,14 @@ def LLVMBuildCatchSwitch(object B, object ParentPad, object UnwindBB, unsigned i
         NumHandlers (`~.int`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildCatchSwitch__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildCatchSwitch(
         LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(ParentPad).get_element_ptr(),
-        LLVMOpaqueBasicBlock.from_pyobj(UnwindBB).get_element_ptr(),NumHandlers,Name))    # fully specified
+        LLVMOpaqueBasicBlock.from_pyobj(UnwindBB).get_element_ptr(),NumHandlers,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildCatchSwitch__retval
 
 
@@ -11946,7 +12018,7 @@ def LLVMSetParentCatchSwitch(object CatchPad, object CatchSwitch):
 
 
 @cython.embedsignature(True)
-def LLVMBuildAdd(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildAdd(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -11959,18 +12031,19 @@ def LLVMBuildAdd(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildAdd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildAdd(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildAdd__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildNSWAdd(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildNSWAdd(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -11983,18 +12056,19 @@ def LLVMBuildNSWAdd(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildNSWAdd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNSWAdd(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildNSWAdd__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildNUWAdd(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildNUWAdd(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12007,18 +12081,19 @@ def LLVMBuildNUWAdd(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildNUWAdd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNUWAdd(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildNUWAdd__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildFAdd(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildFAdd(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12031,18 +12106,19 @@ def LLVMBuildFAdd(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildFAdd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFAdd(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildFAdd__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildSub(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildSub(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12055,18 +12131,19 @@ def LLVMBuildSub(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildSub__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSub(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildSub__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildNSWSub(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildNSWSub(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12079,18 +12156,19 @@ def LLVMBuildNSWSub(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildNSWSub__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNSWSub(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildNSWSub__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildNUWSub(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildNUWSub(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12103,18 +12181,19 @@ def LLVMBuildNUWSub(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildNUWSub__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNUWSub(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildNUWSub__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildFSub(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildFSub(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12127,18 +12206,19 @@ def LLVMBuildFSub(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildFSub__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFSub(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildFSub__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildMul(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildMul(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12151,18 +12231,19 @@ def LLVMBuildMul(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildMul__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildMul(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildMul__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildNSWMul(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildNSWMul(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12175,18 +12256,19 @@ def LLVMBuildNSWMul(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildNSWMul__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNSWMul(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildNSWMul__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildNUWMul(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildNUWMul(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12199,18 +12281,19 @@ def LLVMBuildNUWMul(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildNUWMul__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNUWMul(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildNUWMul__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildFMul(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildFMul(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12223,18 +12306,19 @@ def LLVMBuildFMul(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildFMul__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFMul(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildFMul__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildUDiv(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildUDiv(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12247,18 +12331,19 @@ def LLVMBuildUDiv(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildUDiv__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildUDiv(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildUDiv__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildExactUDiv(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildExactUDiv(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12271,18 +12356,19 @@ def LLVMBuildExactUDiv(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildExactUDiv__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildExactUDiv(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildExactUDiv__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildSDiv(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildSDiv(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12295,18 +12381,19 @@ def LLVMBuildSDiv(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildSDiv__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSDiv(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildSDiv__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildExactSDiv(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildExactSDiv(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12319,18 +12406,19 @@ def LLVMBuildExactSDiv(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildExactSDiv__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildExactSDiv(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildExactSDiv__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildFDiv(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildFDiv(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12343,18 +12431,19 @@ def LLVMBuildFDiv(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildFDiv__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFDiv(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildFDiv__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildURem(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildURem(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12367,18 +12456,19 @@ def LLVMBuildURem(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildURem__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildURem(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildURem__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildSRem(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildSRem(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12391,18 +12481,19 @@ def LLVMBuildSRem(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildSRem__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSRem(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildSRem__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildFRem(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildFRem(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12415,18 +12506,19 @@ def LLVMBuildFRem(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildFRem__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFRem(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildFRem__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildShl(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildShl(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12439,18 +12531,19 @@ def LLVMBuildShl(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildShl__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildShl(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildShl__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildLShr(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildLShr(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12463,18 +12556,19 @@ def LLVMBuildLShr(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildLShr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildLShr(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildLShr__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildAShr(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildAShr(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12487,18 +12581,19 @@ def LLVMBuildAShr(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildAShr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildAShr(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildAShr__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildAnd(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildAnd(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12511,18 +12606,19 @@ def LLVMBuildAnd(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildAnd__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildAnd(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildAnd__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildOr(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildOr(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12535,18 +12631,19 @@ def LLVMBuildOr(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildOr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildOr(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildOr__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildXor(object arg0, object LHS, object RHS, const char * Name):
+def LLVMBuildXor(object arg0, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12559,18 +12656,19 @@ def LLVMBuildXor(object arg0, object LHS, object RHS, const char * Name):
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildXor__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildXor(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildXor__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildBinOp(object B, object Op, object LHS, object RHS, const char * Name):
+def LLVMBuildBinOp(object B, object Op, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12586,7 +12684,7 @@ def LLVMBuildBinOp(object B, object Op, object LHS, object RHS, const char * Nam
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     if not isinstance(Op,_LLVMOpcode__Base):
@@ -12594,12 +12692,13 @@ def LLVMBuildBinOp(object B, object Op, object LHS, object RHS, const char * Nam
     _LLVMBuildBinOp__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildBinOp(
         LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),Op.value,
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildBinOp__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildNeg(object arg0, object V, const char * Name):
+def LLVMBuildNeg(object arg0, object V, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12609,17 +12708,18 @@ def LLVMBuildNeg(object arg0, object V, const char * Name):
         V (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildNeg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNeg(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(V).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(V).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildNeg__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildNSWNeg(object B, object V, const char * Name):
+def LLVMBuildNSWNeg(object B, object V, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12629,17 +12729,18 @@ def LLVMBuildNSWNeg(object B, object V, const char * Name):
         V (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildNSWNeg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNSWNeg(
         LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(V).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(V).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildNSWNeg__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildNUWNeg(object B, object V, const char * Name):
+def LLVMBuildNUWNeg(object B, object V, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12649,17 +12750,18 @@ def LLVMBuildNUWNeg(object B, object V, const char * Name):
         V (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildNUWNeg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNUWNeg(
         LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(V).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(V).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildNUWNeg__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildFNeg(object arg0, object V, const char * Name):
+def LLVMBuildFNeg(object arg0, object V, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12669,17 +12771,18 @@ def LLVMBuildFNeg(object arg0, object V, const char * Name):
         V (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildFNeg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFNeg(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(V).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(V).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildFNeg__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildNot(object arg0, object V, const char * Name):
+def LLVMBuildNot(object arg0, object V, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12689,17 +12792,18 @@ def LLVMBuildNot(object arg0, object V, const char * Name):
         V (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildNot__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildNot(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(V).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(V).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildNot__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildMalloc(object arg0, object Ty, const char * Name):
+def LLVMBuildMalloc(object arg0, object Ty, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12709,17 +12813,18 @@ def LLVMBuildMalloc(object arg0, object Ty, const char * Name):
         Ty (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildMalloc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildMalloc(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildMalloc__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildArrayMalloc(object arg0, object Ty, object Val, const char * Name):
+def LLVMBuildArrayMalloc(object arg0, object Ty, object Val, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12732,13 +12837,14 @@ def LLVMBuildArrayMalloc(object arg0, object Ty, object Val, const char * Name):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildArrayMalloc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildArrayMalloc(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildArrayMalloc__retval
 
 
@@ -12849,7 +12955,7 @@ def LLVMBuildMemMove(object B, object Dst, unsigned int DstAlign, object Src, un
 
 
 @cython.embedsignature(True)
-def LLVMBuildAlloca(object arg0, object Ty, const char * Name):
+def LLVMBuildAlloca(object arg0, object Ty, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12859,17 +12965,18 @@ def LLVMBuildAlloca(object arg0, object Ty, const char * Name):
         Ty (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildAlloca__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildAlloca(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildAlloca__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildArrayAlloca(object arg0, object Ty, object Val, const char * Name):
+def LLVMBuildArrayAlloca(object arg0, object Ty, object Val, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12882,13 +12989,14 @@ def LLVMBuildArrayAlloca(object arg0, object Ty, object Val, const char * Name):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildArrayAlloca__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildArrayAlloca(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildArrayAlloca__retval
 
 
@@ -12910,7 +13018,7 @@ def LLVMBuildFree(object arg0, object PointerVal):
 
 
 @cython.embedsignature(True)
-def LLVMBuildLoad2(object arg0, object Ty, object PointerVal, const char * Name):
+def LLVMBuildLoad2(object arg0, object Ty, object PointerVal, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12923,13 +13031,14 @@ def LLVMBuildLoad2(object arg0, object Ty, object PointerVal, const char * Name)
         PointerVal (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildLoad2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildLoad2(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(PointerVal).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(PointerVal).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildLoad2__retval
 
 
@@ -12955,7 +13064,7 @@ def LLVMBuildStore(object arg0, object Val, object Ptr):
 
 
 @cython.embedsignature(True)
-def LLVMBuildGEP2(object B, object Ty, object Pointer, object Indices, unsigned int NumIndices, const char * Name):
+def LLVMBuildGEP2(object B, object Ty, object Pointer, object Indices, unsigned int NumIndices, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -12974,19 +13083,20 @@ def LLVMBuildGEP2(object B, object Ty, object Pointer, object Indices, unsigned 
         NumIndices (`~.int`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildGEP2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildGEP2(
         LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
         LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Pointer).get_element_ptr(),
-        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Indices)._ptr,NumIndices,Name))    # fully specified
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Indices)._ptr,NumIndices,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildGEP2__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildInBoundsGEP2(object B, object Ty, object Pointer, object Indices, unsigned int NumIndices, const char * Name):
+def LLVMBuildInBoundsGEP2(object B, object Ty, object Pointer, object Indices, unsigned int NumIndices, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13005,19 +13115,20 @@ def LLVMBuildInBoundsGEP2(object B, object Ty, object Pointer, object Indices, u
         NumIndices (`~.int`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildInBoundsGEP2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildInBoundsGEP2(
         LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
         LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Pointer).get_element_ptr(),
-        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Indices)._ptr,NumIndices,Name))    # fully specified
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Indices)._ptr,NumIndices,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildInBoundsGEP2__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildStructGEP2(object B, object Ty, object Pointer, unsigned int Idx, const char * Name):
+def LLVMBuildStructGEP2(object B, object Ty, object Pointer, unsigned int Idx, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13033,51 +13144,56 @@ def LLVMBuildStructGEP2(object B, object Ty, object Pointer, unsigned int Idx, c
         Idx (`~.int`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildStructGEP2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildStructGEP2(
         LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
         LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(Pointer).get_element_ptr(),Idx,Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(Pointer).get_element_ptr(),Idx,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildStructGEP2__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildGlobalString(object B, const char * Str, const char * Name):
+def LLVMBuildGlobalString(object B, object Str, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
         B (`~.LLVMOpaqueBuilder`/`~.object`):
             (undocumented)
 
-        Str (`~.bytes`):
+        Str (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildGlobalString__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildGlobalString(
-        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),Str,Name))    # fully specified
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Str)._ptr,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildGlobalString__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildGlobalStringPtr(object B, const char * Str, const char * Name):
+def LLVMBuildGlobalStringPtr(object B, object Str, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
         B (`~.LLVMOpaqueBuilder`/`~.object`):
             (undocumented)
 
-        Str (`~.bytes`):
+        Str (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildGlobalStringPtr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildGlobalStringPtr(
-        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),Str,Name))    # fully specified
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Str)._ptr,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildGlobalStringPtr__retval
 
 
@@ -13210,7 +13326,7 @@ def LLVMSetAtomicRMWBinOp(object AtomicRMWInst, object BinOp):
 
 
 @cython.embedsignature(True)
-def LLVMBuildTrunc(object arg0, object Val, object DestTy, const char * Name):
+def LLVMBuildTrunc(object arg0, object Val, object DestTy, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13223,18 +13339,19 @@ def LLVMBuildTrunc(object arg0, object Val, object DestTy, const char * Name):
         DestTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildTrunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildTrunc(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildTrunc__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildZExt(object arg0, object Val, object DestTy, const char * Name):
+def LLVMBuildZExt(object arg0, object Val, object DestTy, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13247,18 +13364,19 @@ def LLVMBuildZExt(object arg0, object Val, object DestTy, const char * Name):
         DestTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildZExt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildZExt(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildZExt__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildSExt(object arg0, object Val, object DestTy, const char * Name):
+def LLVMBuildSExt(object arg0, object Val, object DestTy, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13271,18 +13389,19 @@ def LLVMBuildSExt(object arg0, object Val, object DestTy, const char * Name):
         DestTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildSExt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSExt(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildSExt__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildFPToUI(object arg0, object Val, object DestTy, const char * Name):
+def LLVMBuildFPToUI(object arg0, object Val, object DestTy, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13295,18 +13414,19 @@ def LLVMBuildFPToUI(object arg0, object Val, object DestTy, const char * Name):
         DestTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildFPToUI__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFPToUI(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildFPToUI__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildFPToSI(object arg0, object Val, object DestTy, const char * Name):
+def LLVMBuildFPToSI(object arg0, object Val, object DestTy, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13319,18 +13439,19 @@ def LLVMBuildFPToSI(object arg0, object Val, object DestTy, const char * Name):
         DestTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildFPToSI__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFPToSI(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildFPToSI__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildUIToFP(object arg0, object Val, object DestTy, const char * Name):
+def LLVMBuildUIToFP(object arg0, object Val, object DestTy, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13343,18 +13464,19 @@ def LLVMBuildUIToFP(object arg0, object Val, object DestTy, const char * Name):
         DestTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildUIToFP__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildUIToFP(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildUIToFP__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildSIToFP(object arg0, object Val, object DestTy, const char * Name):
+def LLVMBuildSIToFP(object arg0, object Val, object DestTy, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13367,18 +13489,19 @@ def LLVMBuildSIToFP(object arg0, object Val, object DestTy, const char * Name):
         DestTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildSIToFP__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSIToFP(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildSIToFP__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildFPTrunc(object arg0, object Val, object DestTy, const char * Name):
+def LLVMBuildFPTrunc(object arg0, object Val, object DestTy, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13391,18 +13514,19 @@ def LLVMBuildFPTrunc(object arg0, object Val, object DestTy, const char * Name):
         DestTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildFPTrunc__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFPTrunc(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildFPTrunc__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildFPExt(object arg0, object Val, object DestTy, const char * Name):
+def LLVMBuildFPExt(object arg0, object Val, object DestTy, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13415,18 +13539,19 @@ def LLVMBuildFPExt(object arg0, object Val, object DestTy, const char * Name):
         DestTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildFPExt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFPExt(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildFPExt__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildPtrToInt(object arg0, object Val, object DestTy, const char * Name):
+def LLVMBuildPtrToInt(object arg0, object Val, object DestTy, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13439,18 +13564,19 @@ def LLVMBuildPtrToInt(object arg0, object Val, object DestTy, const char * Name)
         DestTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildPtrToInt__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildPtrToInt(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildPtrToInt__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildIntToPtr(object arg0, object Val, object DestTy, const char * Name):
+def LLVMBuildIntToPtr(object arg0, object Val, object DestTy, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13463,18 +13589,19 @@ def LLVMBuildIntToPtr(object arg0, object Val, object DestTy, const char * Name)
         DestTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildIntToPtr__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildIntToPtr(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildIntToPtr__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildBitCast(object arg0, object Val, object DestTy, const char * Name):
+def LLVMBuildBitCast(object arg0, object Val, object DestTy, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13487,18 +13614,19 @@ def LLVMBuildBitCast(object arg0, object Val, object DestTy, const char * Name):
         DestTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildBitCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildBitCast(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildBitCast__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildAddrSpaceCast(object arg0, object Val, object DestTy, const char * Name):
+def LLVMBuildAddrSpaceCast(object arg0, object Val, object DestTy, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13511,18 +13639,19 @@ def LLVMBuildAddrSpaceCast(object arg0, object Val, object DestTy, const char * 
         DestTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildAddrSpaceCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildAddrSpaceCast(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildAddrSpaceCast__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildZExtOrBitCast(object arg0, object Val, object DestTy, const char * Name):
+def LLVMBuildZExtOrBitCast(object arg0, object Val, object DestTy, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13535,18 +13664,19 @@ def LLVMBuildZExtOrBitCast(object arg0, object Val, object DestTy, const char * 
         DestTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildZExtOrBitCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildZExtOrBitCast(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildZExtOrBitCast__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildSExtOrBitCast(object arg0, object Val, object DestTy, const char * Name):
+def LLVMBuildSExtOrBitCast(object arg0, object Val, object DestTy, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13559,18 +13689,19 @@ def LLVMBuildSExtOrBitCast(object arg0, object Val, object DestTy, const char * 
         DestTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildSExtOrBitCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSExtOrBitCast(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildSExtOrBitCast__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildTruncOrBitCast(object arg0, object Val, object DestTy, const char * Name):
+def LLVMBuildTruncOrBitCast(object arg0, object Val, object DestTy, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13583,18 +13714,19 @@ def LLVMBuildTruncOrBitCast(object arg0, object Val, object DestTy, const char *
         DestTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildTruncOrBitCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildTruncOrBitCast(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildTruncOrBitCast__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildCast(object B, object Op, object Val, object DestTy, const char * Name):
+def LLVMBuildCast(object B, object Op, object Val, object DestTy, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13610,7 +13742,7 @@ def LLVMBuildCast(object B, object Op, object Val, object DestTy, const char * N
         DestTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     if not isinstance(Op,_LLVMOpcode__Base):
@@ -13618,12 +13750,13 @@ def LLVMBuildCast(object B, object Op, object Val, object DestTy, const char * N
     _LLVMBuildCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildCast(
         LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),Op.value,
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildCast__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildPointerCast(object arg0, object Val, object DestTy, const char * Name):
+def LLVMBuildPointerCast(object arg0, object Val, object DestTy, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13636,18 +13769,19 @@ def LLVMBuildPointerCast(object arg0, object Val, object DestTy, const char * Na
         DestTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildPointerCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildPointerCast(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildPointerCast__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildIntCast2(object arg0, object Val, object DestTy, int IsSigned, const char * Name):
+def LLVMBuildIntCast2(object arg0, object Val, object DestTy, int IsSigned, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13663,18 +13797,19 @@ def LLVMBuildIntCast2(object arg0, object Val, object DestTy, int IsSigned, cons
         IsSigned (`~.int`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildIntCast2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildIntCast2(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),IsSigned,Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),IsSigned,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildIntCast2__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildFPCast(object arg0, object Val, object DestTy, const char * Name):
+def LLVMBuildFPCast(object arg0, object Val, object DestTy, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13687,18 +13822,19 @@ def LLVMBuildFPCast(object arg0, object Val, object DestTy, const char * Name):
         DestTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildFPCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFPCast(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildFPCast__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildIntCast(object arg0, object Val, object DestTy, const char * Name):
+def LLVMBuildIntCast(object arg0, object Val, object DestTy, object Name):
     r"""(No short description, might be part of a group.)
 
     Deprecated: This cast is always signed. Use LLVMBuildIntCast2 instead. */
@@ -13713,13 +13849,14 @@ def LLVMBuildIntCast(object arg0, object Val, object DestTy, const char * Name):
         DestTy (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildIntCast__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildIntCast(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(DestTy).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildIntCast__retval
 
 
@@ -13750,7 +13887,7 @@ def LLVMGetCastOpcode(object Src, int SrcIsSigned, object DestTy, int DestIsSign
 
 
 @cython.embedsignature(True)
-def LLVMBuildICmp(object arg0, object Op, object LHS, object RHS, const char * Name):
+def LLVMBuildICmp(object arg0, object Op, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13766,7 +13903,7 @@ def LLVMBuildICmp(object arg0, object Op, object LHS, object RHS, const char * N
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     if not isinstance(Op,_LLVMIntPredicate__Base):
@@ -13774,12 +13911,13 @@ def LLVMBuildICmp(object arg0, object Op, object LHS, object RHS, const char * N
     _LLVMBuildICmp__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildICmp(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),Op.value,
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildICmp__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildFCmp(object arg0, object Op, object LHS, object RHS, const char * Name):
+def LLVMBuildFCmp(object arg0, object Op, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13795,7 +13933,7 @@ def LLVMBuildFCmp(object arg0, object Op, object LHS, object RHS, const char * N
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     if not isinstance(Op,_LLVMRealPredicate__Base):
@@ -13803,12 +13941,13 @@ def LLVMBuildFCmp(object arg0, object Op, object LHS, object RHS, const char * N
     _LLVMBuildFCmp__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFCmp(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),Op.value,
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildFCmp__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildPhi(object arg0, object Ty, const char * Name):
+def LLVMBuildPhi(object arg0, object Ty, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13818,17 +13957,18 @@ def LLVMBuildPhi(object arg0, object Ty, const char * Name):
         Ty (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildPhi__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildPhi(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildPhi__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildCall2(object arg0, object arg1, object Fn, object Args, unsigned int NumArgs, const char * Name):
+def LLVMBuildCall2(object arg0, object arg1, object Fn, object Args, unsigned int NumArgs, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13847,19 +13987,20 @@ def LLVMBuildCall2(object arg0, object arg1, object Fn, object Args, unsigned in
         NumArgs (`~.int`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildCall2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildCall2(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueType.from_pyobj(arg1).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),
-        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Args)._ptr,NumArgs,Name))    # fully specified
+        <ccore.LLVMValueRef*>rocm.llvm._util.types.Pointer.from_pyobj(Args)._ptr,NumArgs,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildCall2__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildSelect(object arg0, object If, object Then, object Else, const char * Name):
+def LLVMBuildSelect(object arg0, object If, object Then, object Else, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13875,19 +14016,20 @@ def LLVMBuildSelect(object arg0, object If, object Then, object Else, const char
         Else (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildSelect__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildSelect(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(If).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(Then).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(Else).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(Else).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildSelect__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildVAArg(object arg0, object List, object Ty, const char * Name):
+def LLVMBuildVAArg(object arg0, object List, object Ty, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13900,18 +14042,19 @@ def LLVMBuildVAArg(object arg0, object List, object Ty, const char * Name):
         Ty (`~.LLVMOpaqueType`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildVAArg__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildVAArg(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(List).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildVAArg__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildExtractElement(object arg0, object VecVal, object Index, const char * Name):
+def LLVMBuildExtractElement(object arg0, object VecVal, object Index, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13924,18 +14067,19 @@ def LLVMBuildExtractElement(object arg0, object VecVal, object Index, const char
         Index (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildExtractElement__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildExtractElement(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(VecVal).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(Index).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(Index).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildExtractElement__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildInsertElement(object arg0, object VecVal, object EltVal, object Index, const char * Name):
+def LLVMBuildInsertElement(object arg0, object VecVal, object EltVal, object Index, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13951,19 +14095,20 @@ def LLVMBuildInsertElement(object arg0, object VecVal, object EltVal, object Ind
         Index (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildInsertElement__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildInsertElement(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(VecVal).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(EltVal).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(Index).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(Index).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildInsertElement__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildShuffleVector(object arg0, object V1, object V2, object Mask, const char * Name):
+def LLVMBuildShuffleVector(object arg0, object V1, object V2, object Mask, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -13979,19 +14124,20 @@ def LLVMBuildShuffleVector(object arg0, object V1, object V2, object Mask, const
         Mask (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildShuffleVector__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildShuffleVector(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(V1).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(V2).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(Mask).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(Mask).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildShuffleVector__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildExtractValue(object arg0, object AggVal, unsigned int Index, const char * Name):
+def LLVMBuildExtractValue(object arg0, object AggVal, unsigned int Index, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -14004,17 +14150,18 @@ def LLVMBuildExtractValue(object arg0, object AggVal, unsigned int Index, const 
         Index (`~.int`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildExtractValue__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildExtractValue(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(AggVal).get_element_ptr(),Index,Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(AggVal).get_element_ptr(),Index,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildExtractValue__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildInsertValue(object arg0, object AggVal, object EltVal, unsigned int Index, const char * Name):
+def LLVMBuildInsertValue(object arg0, object AggVal, object EltVal, unsigned int Index, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -14030,18 +14177,19 @@ def LLVMBuildInsertValue(object arg0, object AggVal, object EltVal, unsigned int
         Index (`~.int`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildInsertValue__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildInsertValue(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(AggVal).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(EltVal).get_element_ptr(),Index,Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(EltVal).get_element_ptr(),Index,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildInsertValue__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildFreeze(object arg0, object Val, const char * Name):
+def LLVMBuildFreeze(object arg0, object Val, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -14051,17 +14199,18 @@ def LLVMBuildFreeze(object arg0, object Val, const char * Name):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildFreeze__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFreeze(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildFreeze__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildIsNull(object arg0, object Val, const char * Name):
+def LLVMBuildIsNull(object arg0, object Val, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -14071,17 +14220,18 @@ def LLVMBuildIsNull(object arg0, object Val, const char * Name):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildIsNull__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildIsNull(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildIsNull__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildIsNotNull(object arg0, object Val, const char * Name):
+def LLVMBuildIsNotNull(object arg0, object Val, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -14091,17 +14241,18 @@ def LLVMBuildIsNotNull(object arg0, object Val, const char * Name):
         Val (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildIsNotNull__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildIsNotNull(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(Val).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildIsNotNull__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildPtrDiff2(object arg0, object ElemTy, object LHS, object RHS, const char * Name):
+def LLVMBuildPtrDiff2(object arg0, object ElemTy, object LHS, object RHS, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -14117,19 +14268,20 @@ def LLVMBuildPtrDiff2(object arg0, object ElemTy, object LHS, object RHS, const 
         RHS (`~.LLVMOpaqueValue`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMBuildPtrDiff2__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildPtrDiff2(
         LLVMOpaqueBuilder.from_pyobj(arg0).get_element_ptr(),
         LLVMOpaqueType.from_pyobj(ElemTy).get_element_ptr(),
         LLVMOpaqueValue.from_pyobj(LHS).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueValue.from_pyobj(RHS).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildPtrDiff2__retval
 
 
 @cython.embedsignature(True)
-def LLVMBuildFence(object B, object ordering, int singleThread, const char * Name):
+def LLVMBuildFence(object B, object ordering, int singleThread, object Name):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -14142,13 +14294,14 @@ def LLVMBuildFence(object B, object ordering, int singleThread, const char * Nam
         singleThread (`~.int`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     if not isinstance(ordering,_LLVMAtomicOrdering__Base):
         raise TypeError("argument 'ordering' must be of type '_LLVMAtomicOrdering__Base'")
     _LLVMBuildFence__retval = LLVMOpaqueValue.from_ptr(ccore.LLVMBuildFence(
-        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),ordering.value,singleThread,Name))    # fully specified
+        LLVMOpaqueBuilder.from_pyobj(B).get_element_ptr(),ordering.value,singleThread,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMBuildFence__retval
 
 
@@ -14407,88 +14560,92 @@ def LLVMDisposeModuleProvider(object M):
 
 
 @cython.embedsignature(True)
-def LLVMCreateMemoryBufferWithContentsOfFile(const char * Path, object OutMessage):
+def LLVMCreateMemoryBufferWithContentsOfFile(object Path):
     r"""(No short description, might be part of a group.)
 
     @{
 
     Args:
-        Path (`~.bytes`):
-            (undocumented)
-
-        OutMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
+        Path (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
     Returns:
-        A `~.tuple` of size 2 that contains (in that order):
+        A `~.tuple` of size 3 that contains (in that order):
 
         * `~.int`
-        * (`~.LLVMOpaqueMemoryBuffer`):
+        * OutMemBuf (`~.LLVMOpaqueMemoryBuffer`):
+            (undocumented)
+        * OutMessage (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     OutMemBuf = LLVMOpaqueMemoryBuffer.from_ptr(NULL)
-    cdef int _LLVMCreateMemoryBufferWithContentsOfFile__retval = ccore.LLVMCreateMemoryBufferWithContentsOfFile(Path,<ccore.LLVMOpaqueMemoryBuffer**>&OutMemBuf._ptr,
-        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
-    return (_LLVMCreateMemoryBufferWithContentsOfFile__retval,OutMemBuf)
+    OutMessage = rocm.llvm._util.types.CStr.from_ptr(NULL)
+    cdef int _LLVMCreateMemoryBufferWithContentsOfFile__retval = ccore.LLVMCreateMemoryBufferWithContentsOfFile(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Path)._ptr,<ccore.LLVMOpaqueMemoryBuffer**>&OutMemBuf._ptr,
+        <char **>&OutMessage._ptr)    # fully specified
+    return (_LLVMCreateMemoryBufferWithContentsOfFile__retval,None if OutMemBuf._ptr == NULL else OutMemBuf,None if OutMessage._ptr == NULL else OutMessage)
 
 
 @cython.embedsignature(True)
-def LLVMCreateMemoryBufferWithSTDIN(object OutMessage):
+def LLVMCreateMemoryBufferWithSTDIN():
     r"""(No short description, might be part of a group.)
 
-    Args:
-        OutMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
-            (undocumented)
-
     Returns:
-        A `~.tuple` of size 2 that contains (in that order):
+        A `~.tuple` of size 3 that contains (in that order):
 
         * `~.int`
-        * (`~.LLVMOpaqueMemoryBuffer`):
+        * OutMemBuf (`~.LLVMOpaqueMemoryBuffer`):
+            (undocumented)
+        * OutMessage (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     OutMemBuf = LLVMOpaqueMemoryBuffer.from_ptr(NULL)
+    OutMessage = rocm.llvm._util.types.CStr.from_ptr(NULL)
     cdef int _LLVMCreateMemoryBufferWithSTDIN__retval = ccore.LLVMCreateMemoryBufferWithSTDIN(<ccore.LLVMOpaqueMemoryBuffer**>&OutMemBuf._ptr,
-        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
-    return (_LLVMCreateMemoryBufferWithSTDIN__retval,OutMemBuf)
+        <char **>&OutMessage._ptr)    # fully specified
+    return (_LLVMCreateMemoryBufferWithSTDIN__retval,None if OutMemBuf._ptr == NULL else OutMemBuf,None if OutMessage._ptr == NULL else OutMessage)
 
 
 @cython.embedsignature(True)
-def LLVMCreateMemoryBufferWithMemoryRange(const char * InputData, unsigned long InputDataLength, const char * BufferName, int RequiresNullTerminator):
+def LLVMCreateMemoryBufferWithMemoryRange(object InputData, unsigned long InputDataLength, object BufferName, int RequiresNullTerminator):
     r"""(No short description, might be part of a group.)
 
     Args:
-        InputData (`~.bytes`):
+        InputData (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         InputDataLength (`~.int`):
             (undocumented)
 
-        BufferName (`~.bytes`):
+        BufferName (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         RequiresNullTerminator (`~.int`):
             (undocumented)
     """
-    _LLVMCreateMemoryBufferWithMemoryRange__retval = LLVMOpaqueMemoryBuffer.from_ptr(ccore.LLVMCreateMemoryBufferWithMemoryRange(InputData,InputDataLength,BufferName,RequiresNullTerminator))    # fully specified
+    _LLVMCreateMemoryBufferWithMemoryRange__retval = LLVMOpaqueMemoryBuffer.from_ptr(ccore.LLVMCreateMemoryBufferWithMemoryRange(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(InputData)._ptr,InputDataLength,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(BufferName)._ptr,RequiresNullTerminator))    # fully specified
     return _LLVMCreateMemoryBufferWithMemoryRange__retval
 
 
 @cython.embedsignature(True)
-def LLVMCreateMemoryBufferWithMemoryRangeCopy(const char * InputData, unsigned long InputDataLength, const char * BufferName):
+def LLVMCreateMemoryBufferWithMemoryRangeCopy(object InputData, unsigned long InputDataLength, object BufferName):
     r"""(No short description, might be part of a group.)
 
     Args:
-        InputData (`~.bytes`):
+        InputData (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         InputDataLength (`~.int`):
             (undocumented)
 
-        BufferName (`~.bytes`):
+        BufferName (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
-    _LLVMCreateMemoryBufferWithMemoryRangeCopy__retval = LLVMOpaqueMemoryBuffer.from_ptr(ccore.LLVMCreateMemoryBufferWithMemoryRangeCopy(InputData,InputDataLength,BufferName))    # fully specified
+    _LLVMCreateMemoryBufferWithMemoryRangeCopy__retval = LLVMOpaqueMemoryBuffer.from_ptr(ccore.LLVMCreateMemoryBufferWithMemoryRangeCopy(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(InputData)._ptr,InputDataLength,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(BufferName)._ptr))    # fully specified
     return _LLVMCreateMemoryBufferWithMemoryRangeCopy__retval
 
 
@@ -14503,8 +14660,8 @@ def LLVMGetBufferStart(object MemBuf):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMGetBufferStart__retval = ccore.LLVMGetBufferStart(
-        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr())    # fully specified
+    _LLVMGetBufferStart__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ccore.LLVMGetBufferStart(
+        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr()))    # fully specified
     return _LLVMGetBufferStart__retval
 
 

@@ -614,7 +614,7 @@ def llvm_blake3_version():
     Returns:
         `~.bytes`
     """
-    cdef const char * _llvm_blake3_version__retval = cblake3.llvm_blake3_version()    # fully specified
+    _llvm_blake3_version__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cblake3.llvm_blake3_version())    # fully specified
     return _llvm_blake3_version__retval
 
 
@@ -646,18 +646,19 @@ def llvm_blake3_hasher_init_keyed(object self, const unsigned char[32] key):
 
 
 @cython.embedsignature(True)
-def llvm_blake3_hasher_init_derive_key(object self, const char * context):
+def llvm_blake3_hasher_init_derive_key(object self, object context):
     r"""(No short description, might be part of a group.)
 
     Args:
         self (`~.llvm_blake3_hasher`/`~.object`):
             (undocumented)
 
-        context (`~.bytes`):
+        context (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     cblake3.llvm_blake3_hasher_init_derive_key(
-        llvm_blake3_hasher.from_pyobj(self).get_element_ptr(),context)    # fully specified
+        llvm_blake3_hasher.from_pyobj(self).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(context)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)

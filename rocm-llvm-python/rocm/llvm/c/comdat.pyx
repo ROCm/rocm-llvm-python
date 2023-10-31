@@ -86,7 +86,7 @@ class LLVMComdatSelectionKind(_LLVMComdatSelectionKind__Base):
 
 
 @cython.embedsignature(True)
-def LLVMGetOrInsertComdat(object M, const char * Name):
+def LLVMGetOrInsertComdat(object M, object Name):
     r"""(No short description, might be part of a group.)
 
     Return the Comdat in the module with the specified name. It is created
@@ -99,11 +99,12 @@ def LLVMGetOrInsertComdat(object M, const char * Name):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMGetOrInsertComdat__retval = LLVMComdat.from_ptr(ccomdat.LLVMGetOrInsertComdat(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Name))    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMGetOrInsertComdat__retval
 
 

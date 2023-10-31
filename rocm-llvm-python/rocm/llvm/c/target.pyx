@@ -547,17 +547,18 @@ def LLVMSetModuleDataLayout(object M, object DL):
 
 
 @cython.embedsignature(True)
-def LLVMCreateTargetData(const char * StringRep):
+def LLVMCreateTargetData(object StringRep):
     r"""(No short description, might be part of a group.)
 
     Creates target data from a target layout string.
     See the constructor llvm`~.DataLayout.DataLayout`.
 
     Args:
-        StringRep (`~.bytes`):
+        StringRep (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
-    _LLVMCreateTargetData__retval = LLVMOpaqueTargetData.from_ptr(ctarget.LLVMCreateTargetData(StringRep))    # fully specified
+    _LLVMCreateTargetData__retval = LLVMOpaqueTargetData.from_ptr(ctarget.LLVMCreateTargetData(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(StringRep)._ptr))    # fully specified
     return _LLVMCreateTargetData__retval
 
 
@@ -611,8 +612,8 @@ def LLVMCopyStringRepOfTargetData(object TD):
     Returns:
         `~.bytes`
     """
-    cdef char * _LLVMCopyStringRepOfTargetData__retval = ctarget.LLVMCopyStringRepOfTargetData(
-        LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr())    # fully specified
+    _LLVMCopyStringRepOfTargetData__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ctarget.LLVMCopyStringRepOfTargetData(
+        LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr()))    # fully specified
     return _LLVMCopyStringRepOfTargetData__retval
 
 

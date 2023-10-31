@@ -593,7 +593,7 @@ def lto_get_version():
     Returns:
         `~.bytes`
     """
-    cdef const char * _lto_get_version__retval = clto.lto_get_version()    # fully specified
+    _lto_get_version__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>clto.lto_get_version())    # fully specified
     return _lto_get_version__retval
 
 
@@ -609,12 +609,12 @@ def lto_get_error_message():
     Returns:
         `~.bytes`
     """
-    cdef const char * _lto_get_error_message__retval = clto.lto_get_error_message()    # fully specified
+    _lto_get_error_message__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>clto.lto_get_error_message())    # fully specified
     return _lto_get_error_message__retval
 
 
 @cython.embedsignature(True)
-def lto_module_is_object_file(const char * path):
+def lto_module_is_object_file(object path):
     r"""(No short description, might be part of a group.)
 
     Checks if a file is a loadable object file.
@@ -623,18 +623,19 @@ def lto_module_is_object_file(const char * path):
         prior to LTO_API_VERSION=3
 
     Args:
-        path (`~.bytes`):
+        path (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
     Returns:
         `~.list`
     """
-    cdef _Bool _lto_module_is_object_file__retval = clto.lto_module_is_object_file(path)    # fully specified
+    cdef _Bool _lto_module_is_object_file__retval = clto.lto_module_is_object_file(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr)    # fully specified
     return _lto_module_is_object_file__retval
 
 
 @cython.embedsignature(True)
-def lto_module_is_object_file_for_target(const char * path, const char * target_triple_prefix):
+def lto_module_is_object_file_for_target(object path, object target_triple_prefix):
     r"""(No short description, might be part of a group.)
 
     Checks if a file is a loadable object compiled for requested target.
@@ -643,16 +644,18 @@ def lto_module_is_object_file_for_target(const char * path, const char * target_
         prior to LTO_API_VERSION=3
 
     Args:
-        path (`~.bytes`):
+        path (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
-        target_triple_prefix (`~.bytes`):
+        target_triple_prefix (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
     Returns:
         `~.list`
     """
-    cdef _Bool _lto_module_is_object_file_for_target__retval = clto.lto_module_is_object_file_for_target(path,target_triple_prefix)    # fully specified
+    cdef _Bool _lto_module_is_object_file_for_target__retval = clto.lto_module_is_object_file_for_target(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(target_triple_prefix)._ptr)    # fully specified
     return _lto_module_is_object_file_for_target__retval
 
 
@@ -706,7 +709,7 @@ def lto_module_is_object_file_in_memory(object mem, unsigned long length):
 
 
 @cython.embedsignature(True)
-def lto_module_is_object_file_in_memory_for_target(object mem, unsigned long length, const char * target_triple_prefix):
+def lto_module_is_object_file_in_memory_for_target(object mem, unsigned long length, object target_triple_prefix):
     r"""(No short description, might be part of a group.)
 
     Checks if a buffer is a loadable object compiled for requested target.
@@ -721,19 +724,20 @@ def lto_module_is_object_file_in_memory_for_target(object mem, unsigned long len
         length (`~.int`):
             (undocumented)
 
-        target_triple_prefix (`~.bytes`):
+        target_triple_prefix (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
     Returns:
         `~.list`
     """
     cdef _Bool _lto_module_is_object_file_in_memory_for_target__retval = clto.lto_module_is_object_file_in_memory_for_target(
-        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(mem)._ptr,length,target_triple_prefix)    # fully specified
+        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(mem)._ptr,length,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(target_triple_prefix)._ptr)    # fully specified
     return _lto_module_is_object_file_in_memory_for_target__retval
 
 
 @cython.embedsignature(True)
-def lto_module_create(const char * path):
+def lto_module_create(object path):
     r"""(No short description, might be part of a group.)
 
     Loads an object file from disk.
@@ -743,10 +747,11 @@ def lto_module_create(const char * path):
         prior to LTO_API_VERSION=3
 
     Args:
-        path (`~.bytes`):
+        path (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
-    _lto_module_create__retval = LLVMOpaqueLTOModule.from_ptr(clto.lto_module_create(path))    # fully specified
+    _lto_module_create__retval = LLVMOpaqueLTOModule.from_ptr(clto.lto_module_create(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr))    # fully specified
     return _lto_module_create__retval
 
 
@@ -773,7 +778,7 @@ def lto_module_create_from_memory(object mem, unsigned long length):
 
 
 @cython.embedsignature(True)
-def lto_module_create_from_memory_with_path(object mem, unsigned long length, const char * path):
+def lto_module_create_from_memory_with_path(object mem, unsigned long length, object path):
     r"""(No short description, might be part of a group.)
 
     Loads an object file from memory with an extra path argument.
@@ -789,16 +794,17 @@ def lto_module_create_from_memory_with_path(object mem, unsigned long length, co
         length (`~.int`):
             (undocumented)
 
-        path (`~.bytes`):
+        path (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _lto_module_create_from_memory_with_path__retval = LLVMOpaqueLTOModule.from_ptr(clto.lto_module_create_from_memory_with_path(
-        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(mem)._ptr,length,path))    # fully specified
+        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(mem)._ptr,length,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr))    # fully specified
     return _lto_module_create_from_memory_with_path__retval
 
 
 @cython.embedsignature(True)
-def lto_module_create_in_local_context(object mem, unsigned long length, const char * path):
+def lto_module_create_in_local_context(object mem, unsigned long length, object path):
     r"""(No short description, might be part of a group.)
 
     Loads an object file in its own context.
@@ -819,16 +825,17 @@ def lto_module_create_in_local_context(object mem, unsigned long length, const c
         length (`~.int`):
             (undocumented)
 
-        path (`~.bytes`):
+        path (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _lto_module_create_in_local_context__retval = LLVMOpaqueLTOModule.from_ptr(clto.lto_module_create_in_local_context(
-        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(mem)._ptr,length,path))    # fully specified
+        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(mem)._ptr,length,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr))    # fully specified
     return _lto_module_create_in_local_context__retval
 
 
 @cython.embedsignature(True)
-def lto_module_create_in_codegen_context(object mem, unsigned long length, const char * path, object cg):
+def lto_module_create_in_codegen_context(object mem, unsigned long length, object path, object cg):
     r"""(No short description, might be part of a group.)
 
     Loads an object file in the codegen context.
@@ -848,20 +855,21 @@ def lto_module_create_in_codegen_context(object mem, unsigned long length, const
         length (`~.int`):
             (undocumented)
 
-        path (`~.bytes`):
+        path (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         cg (`~.LLVMOpaqueLTOCodeGenerator`/`~.object`):
             (undocumented)
     """
     _lto_module_create_in_codegen_context__retval = LLVMOpaqueLTOModule.from_ptr(clto.lto_module_create_in_codegen_context(
-        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(mem)._ptr,length,path,
+        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(mem)._ptr,length,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr,
         LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr()))    # fully specified
     return _lto_module_create_in_codegen_context__retval
 
 
 @cython.embedsignature(True)
-def lto_module_create_from_fd(int fd, const char * path, unsigned long file_size):
+def lto_module_create_from_fd(int fd, object path, unsigned long file_size):
     r"""(No short description, might be part of a group.)
 
     Loads an object file from disk. The seek point of fd is not preserved.
@@ -874,18 +882,19 @@ def lto_module_create_from_fd(int fd, const char * path, unsigned long file_size
         fd (`~.int`):
             (undocumented)
 
-        path (`~.bytes`):
+        path (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         file_size (`~.int`):
             (undocumented)
     """
-    _lto_module_create_from_fd__retval = LLVMOpaqueLTOModule.from_ptr(clto.lto_module_create_from_fd(fd,path,file_size))    # fully specified
+    _lto_module_create_from_fd__retval = LLVMOpaqueLTOModule.from_ptr(clto.lto_module_create_from_fd(fd,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr,file_size))    # fully specified
     return _lto_module_create_from_fd__retval
 
 
 @cython.embedsignature(True)
-def lto_module_create_from_fd_at_offset(int fd, const char * path, unsigned long file_size, unsigned long map_size, long offset):
+def lto_module_create_from_fd_at_offset(int fd, object path, unsigned long file_size, unsigned long map_size, long offset):
     r"""(No short description, might be part of a group.)
 
     Loads an object file from disk. The seek point of fd is not preserved.
@@ -898,7 +907,7 @@ def lto_module_create_from_fd_at_offset(int fd, const char * path, unsigned long
         fd (`~.int`):
             (undocumented)
 
-        path (`~.bytes`):
+        path (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         file_size (`~.int`):
@@ -910,7 +919,8 @@ def lto_module_create_from_fd_at_offset(int fd, const char * path, unsigned long
         offset (`~.int`):
             (undocumented)
     """
-    _lto_module_create_from_fd_at_offset__retval = LLVMOpaqueLTOModule.from_ptr(clto.lto_module_create_from_fd_at_offset(fd,path,file_size,map_size,offset))    # fully specified
+    _lto_module_create_from_fd_at_offset__retval = LLVMOpaqueLTOModule.from_ptr(clto.lto_module_create_from_fd_at_offset(fd,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr,file_size,map_size,offset))    # fully specified
     return _lto_module_create_from_fd_at_offset__retval
 
 
@@ -948,13 +958,13 @@ def lto_module_get_target_triple(object mod):
     Returns:
         `~.bytes`
     """
-    cdef const char * _lto_module_get_target_triple__retval = clto.lto_module_get_target_triple(
-        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr())    # fully specified
+    _lto_module_get_target_triple__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>clto.lto_module_get_target_triple(
+        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr()))    # fully specified
     return _lto_module_get_target_triple__retval
 
 
 @cython.embedsignature(True)
-def lto_module_set_target_triple(object mod, const char * triple):
+def lto_module_set_target_triple(object mod, object triple):
     r"""(No short description, might be part of a group.)
 
     Sets triple string with which the object will be codegened.
@@ -966,11 +976,12 @@ def lto_module_set_target_triple(object mod, const char * triple):
         mod (`~.LLVMOpaqueLTOModule`/`~.object`):
             (undocumented)
 
-        triple (`~.bytes`):
+        triple (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     clto.lto_module_set_target_triple(
-        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr(),triple)    # fully specified
+        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(triple)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -1013,8 +1024,8 @@ def lto_module_get_symbol_name(object mod, unsigned int index):
     Returns:
         `~.bytes`
     """
-    cdef const char * _lto_module_get_symbol_name__retval = clto.lto_module_get_symbol_name(
-        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr(),index)    # fully specified
+    _lto_module_get_symbol_name__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>clto.lto_module_get_symbol_name(
+        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr(),index))    # fully specified
     return _lto_module_get_symbol_name__retval
 
 
@@ -1061,8 +1072,8 @@ def lto_module_get_linkeropts(object mod):
     Returns:
         `~.bytes`
     """
-    cdef const char * _lto_module_get_linkeropts__retval = clto.lto_module_get_linkeropts(
-        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr())    # fully specified
+    _lto_module_get_linkeropts__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>clto.lto_module_get_linkeropts(
+        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr()))    # fully specified
     return _lto_module_get_linkeropts__retval
 
 
@@ -1455,7 +1466,7 @@ def lto_codegen_set_pic_model(object cg, object arg1):
 
 
 @cython.embedsignature(True)
-def lto_codegen_set_cpu(object cg, const char * cpu):
+def lto_codegen_set_cpu(object cg, object cpu):
     r"""(No short description, might be part of a group.)
 
     Sets the cpu to generate code for.
@@ -1467,15 +1478,16 @@ def lto_codegen_set_cpu(object cg, const char * cpu):
         cg (`~.LLVMOpaqueLTOCodeGenerator`/`~.object`):
             (undocumented)
 
-        cpu (`~.bytes`):
+        cpu (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     clto.lto_codegen_set_cpu(
-        LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),cpu)    # fully specified
+        LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(cpu)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
-def lto_codegen_set_assembler_path(object cg, const char * path):
+def lto_codegen_set_assembler_path(object cg, object path):
     r"""(No short description, might be part of a group.)
 
     Sets the location of the assembler tool to run. If not set, libLTO
@@ -1488,11 +1500,12 @@ def lto_codegen_set_assembler_path(object cg, const char * path):
         cg (`~.LLVMOpaqueLTOCodeGenerator`/`~.object`):
             (undocumented)
 
-        path (`~.bytes`):
+        path (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     clto.lto_codegen_set_assembler_path(
-        LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),path)    # fully specified
+        LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -1508,7 +1521,7 @@ def lto_codegen_set_assembler_args(object cg, object args, int nargs):
         cg (`~.LLVMOpaqueLTOCodeGenerator`/`~.object`):
             (undocumented)
 
-        args (`~.rocm.llvm._util.types.Pointer`/`~.object`):
+        args (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         nargs (`~.int`):
@@ -1516,11 +1529,11 @@ def lto_codegen_set_assembler_args(object cg, object args, int nargs):
     """
     clto.lto_codegen_set_assembler_args(
         LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
-        <const char **>rocm.llvm._util.types.Pointer.from_pyobj(args)._ptr,nargs)    # fully specified
+        <const char **>rocm.llvm._util.types.CStr.from_pyobj(args)._ptr,nargs)    # fully specified
 
 
 @cython.embedsignature(True)
-def lto_codegen_add_must_preserve_symbol(object cg, const char * symbol):
+def lto_codegen_add_must_preserve_symbol(object cg, object symbol):
     r"""(No short description, might be part of a group.)
 
     Adds to a list of all global symbols that must exist in the final generated
@@ -1534,15 +1547,16 @@ def lto_codegen_add_must_preserve_symbol(object cg, const char * symbol):
         cg (`~.LLVMOpaqueLTOCodeGenerator`/`~.object`):
             (undocumented)
 
-        symbol (`~.bytes`):
+        symbol (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     clto.lto_codegen_add_must_preserve_symbol(
-        LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),symbol)    # fully specified
+        LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(symbol)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
-def lto_codegen_write_merged_modules(object cg, const char * path):
+def lto_codegen_write_merged_modules(object cg, object path):
     r"""(No short description, might be part of a group.)
 
     Writes a new object file at the specified path that contains the
@@ -1556,14 +1570,15 @@ def lto_codegen_write_merged_modules(object cg, const char * path):
         cg (`~.LLVMOpaqueLTOCodeGenerator`/`~.object`):
             (undocumented)
 
-        path (`~.bytes`):
+        path (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
     Returns:
         `~.list`
     """
     cdef _Bool _lto_codegen_write_merged_modules__retval = clto.lto_codegen_write_merged_modules(
-        LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),path)    # fully specified
+        LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr)    # fully specified
     return _lto_codegen_write_merged_modules__retval
 
 
@@ -1590,7 +1605,7 @@ def lto_codegen_compile(object cg, object length):
         length (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
-    _lto_codegen_compile__retval = rocm.llvm._util.types.Pointer.from_ptr(clto.lto_codegen_compile(
+    _lto_codegen_compile__retval = rocm.llvm._util.types.Pointer.from_ptr(<void*>clto.lto_codegen_compile(
         LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
         <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(length)._ptr))    # fully specified
     return _lto_codegen_compile__retval
@@ -1613,7 +1628,7 @@ def lto_codegen_compile_to_file(object cg, object name):
         cg (`~.LLVMOpaqueLTOCodeGenerator`/`~.object`):
             (undocumented)
 
-        name (`~.rocm.llvm._util.types.Pointer`/`~.object`):
+        name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
     Returns:
@@ -1621,7 +1636,7 @@ def lto_codegen_compile_to_file(object cg, object name):
     """
     cdef _Bool _lto_codegen_compile_to_file__retval = clto.lto_codegen_compile_to_file(
         LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
-        <const char **>rocm.llvm._util.types.Pointer.from_pyobj(name)._ptr)    # fully specified
+        <const char **>rocm.llvm._util.types.CStr.from_pyobj(name)._ptr)    # fully specified
     return _lto_codegen_compile_to_file__retval
 
 
@@ -1669,7 +1684,7 @@ def lto_codegen_compile_optimized(object cg, object length):
         length (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
-    _lto_codegen_compile_optimized__retval = rocm.llvm._util.types.Pointer.from_ptr(clto.lto_codegen_compile_optimized(
+    _lto_codegen_compile_optimized__retval = rocm.llvm._util.types.Pointer.from_ptr(<void*>clto.lto_codegen_compile_optimized(
         LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
         <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(length)._ptr))    # fully specified
     return _lto_codegen_compile_optimized__retval
@@ -1708,18 +1723,18 @@ def lto_set_debug_options(object options, int number):
         LTO_API_VERSION=28
 
     Args:
-        options (`~.rocm.llvm._util.types.Pointer`/`~.object`):
+        options (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         number (`~.int`):
             (undocumented)
     """
     clto.lto_set_debug_options(
-        <const char *const *>rocm.llvm._util.types.Pointer.from_pyobj(options)._ptr,number)    # fully specified
+        <const char *const *>rocm.llvm._util.types.CStr.from_pyobj(options)._ptr,number)    # fully specified
 
 
 @cython.embedsignature(True)
-def lto_codegen_debug_options(object cg, const char * arg1):
+def lto_codegen_debug_options(object cg, object arg1):
     r"""(No short description, might be part of a group.)
 
     Sets options to help debug codegen bugs. Since parsing shud only happen once,
@@ -1737,11 +1752,12 @@ def lto_codegen_debug_options(object cg, const char * arg1):
         cg (`~.LLVMOpaqueLTOCodeGenerator`/`~.object`):
             (undocumented)
 
-        arg1 (`~.bytes`):
+        arg1 (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     clto.lto_codegen_debug_options(
-        LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),arg1)    # fully specified
+        LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(arg1)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -1758,7 +1774,7 @@ def lto_codegen_debug_options_array(object cg, object arg1, int number):
         cg (`~.LLVMOpaqueLTOCodeGenerator`/`~.object`):
             (undocumented)
 
-        arg1 (`~.rocm.llvm._util.types.Pointer`/`~.object`):
+        arg1 (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         number (`~.int`):
@@ -1766,7 +1782,7 @@ def lto_codegen_debug_options_array(object cg, object arg1, int number):
     """
     clto.lto_codegen_debug_options_array(
         LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
-        <const char *const *>rocm.llvm._util.types.Pointer.from_pyobj(arg1)._ptr,number)    # fully specified
+        <const char *const *>rocm.llvm._util.types.CStr.from_pyobj(arg1)._ptr,number)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -1966,7 +1982,7 @@ cdef class LLVMOpaqueLTOInput(rocm.llvm._util.types.Pointer):
 lto_input_t = LLVMOpaqueLTOInput
 
 @cython.embedsignature(True)
-def lto_input_create(object buffer, unsigned long buffer_size, const char * path):
+def lto_input_create(object buffer, unsigned long buffer_size, object path):
     r"""(No short description, might be part of a group.)
 
     Creates an LTO input file from a buffer. The path
@@ -1984,11 +2000,12 @@ def lto_input_create(object buffer, unsigned long buffer_size, const char * path
         buffer_size (`~.int`):
             (undocumented)
 
-        path (`~.bytes`):
+        path (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _lto_input_create__retval = LLVMOpaqueLTOInput.from_ptr(clto.lto_input_create(
-        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(buffer)._ptr,buffer_size,path))    # fully specified
+        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(buffer)._ptr,buffer_size,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr))    # fully specified
     return _lto_input_create__retval
 
 
@@ -2056,9 +2073,9 @@ def lto_input_get_dependent_library(object input, unsigned long index, object si
     Returns:
         `~.bytes`
     """
-    cdef const char * _lto_input_get_dependent_library__retval = clto.lto_input_get_dependent_library(
+    _lto_input_get_dependent_library__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>clto.lto_input_get_dependent_library(
         LLVMOpaqueLTOInput.from_pyobj(input).get_element_ptr(),index,
-        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(size)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(size)._ptr))    # fully specified
     return _lto_input_get_dependent_library__retval
 
 
@@ -2076,7 +2093,7 @@ def lto_runtime_lib_symbols_list(object size):
         size (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
-    _lto_runtime_lib_symbols_list__retval = rocm.llvm._util.types.Pointer.from_ptr(clto.lto_runtime_lib_symbols_list(
+    _lto_runtime_lib_symbols_list__retval = rocm.llvm._util.types.Pointer.from_ptr(<void*>clto.lto_runtime_lib_symbols_list(
         <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(size)._ptr))    # fully specified
     return _lto_runtime_lib_symbols_list__retval
 
@@ -2358,7 +2375,7 @@ def thinlto_codegen_dispose(object cg):
 
 
 @cython.embedsignature(True)
-def thinlto_codegen_add_module(object cg, const char * identifier, const char * data, int length):
+def thinlto_codegen_add_module(object cg, object identifier, object data, int length):
     r"""(No short description, might be part of a group.)
 
     Add a module to a ThinLTO code generator. Identifier has to be unique among
@@ -2375,17 +2392,19 @@ def thinlto_codegen_add_module(object cg, const char * identifier, const char * 
         cg (`~.LLVMOpaqueThinLTOCodeGenerator`/`~.object`):
             (undocumented)
 
-        identifier (`~.bytes`):
+        identifier (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
-        data (`~.bytes`):
+        data (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         length (`~.int`):
             (undocumented)
     """
     clto.thinlto_codegen_add_module(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),identifier,data,length)    # fully specified
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(identifier)._ptr,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(data)._ptr,length)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -2507,8 +2526,8 @@ def thinlto_module_get_object_file(object cg, unsigned int index):
     Returns:
         `~.bytes`
     """
-    cdef const char * _thinlto_module_get_object_file__retval = clto.thinlto_module_get_object_file(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),index)    # fully specified
+    _thinlto_module_get_object_file__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>clto.thinlto_module_get_object_file(
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),index))    # fully specified
     return _thinlto_module_get_object_file__retval
 
 
@@ -2540,7 +2559,7 @@ def thinlto_codegen_set_pic_model(object cg, object arg1):
 
 
 @cython.embedsignature(True)
-def thinlto_codegen_set_savetemps_dir(object cg, const char * save_temps_dir):
+def thinlto_codegen_set_savetemps_dir(object cg, object save_temps_dir):
     r"""(No short description, might be part of a group.)
 
     Sets the path to a directory to use as a storage for temporary bitcode files.
@@ -2554,15 +2573,16 @@ def thinlto_codegen_set_savetemps_dir(object cg, const char * save_temps_dir):
         cg (`~.LLVMOpaqueThinLTOCodeGenerator`/`~.object`):
             (undocumented)
 
-        save_temps_dir (`~.bytes`):
+        save_temps_dir (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     clto.thinlto_codegen_set_savetemps_dir(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),save_temps_dir)    # fully specified
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(save_temps_dir)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
-def thinlto_set_generated_objects_dir(object cg, const char * save_temps_dir):
+def thinlto_set_generated_objects_dir(object cg, object save_temps_dir):
     r"""(No short description, might be part of a group.)
 
     Set the path to a directory where to save generated object files. This
@@ -2577,15 +2597,16 @@ def thinlto_set_generated_objects_dir(object cg, const char * save_temps_dir):
         cg (`~.LLVMOpaqueThinLTOCodeGenerator`/`~.object`):
             (undocumented)
 
-        save_temps_dir (`~.bytes`):
+        save_temps_dir (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     clto.thinlto_set_generated_objects_dir(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),save_temps_dir)    # fully specified
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(save_temps_dir)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
-def thinlto_codegen_set_cpu(object cg, const char * cpu):
+def thinlto_codegen_set_cpu(object cg, object cpu):
     r"""(No short description, might be part of a group.)
 
     Sets the cpu to generate code for.
@@ -2597,11 +2618,12 @@ def thinlto_codegen_set_cpu(object cg, const char * cpu):
         cg (`~.LLVMOpaqueThinLTOCodeGenerator`/`~.object`):
             (undocumented)
 
-        cpu (`~.bytes`):
+        cpu (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     clto.thinlto_codegen_set_cpu(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),cpu)    # fully specified
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(cpu)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -2655,14 +2677,14 @@ def thinlto_debug_options(object options, int number):
         LTO_API_VERSION=18
 
     Args:
-        options (`~.rocm.llvm._util.types.Pointer`/`~.object`):
+        options (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         number (`~.int`):
             (undocumented)
     """
     clto.thinlto_debug_options(
-        <const char *const *>rocm.llvm._util.types.Pointer.from_pyobj(options)._ptr,number)    # fully specified
+        <const char *const *>rocm.llvm._util.types.CStr.from_pyobj(options)._ptr,number)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -2687,7 +2709,7 @@ def lto_module_is_thinlto(object mod):
 
 
 @cython.embedsignature(True)
-def thinlto_codegen_add_must_preserve_symbol(object cg, const char * name, int length):
+def thinlto_codegen_add_must_preserve_symbol(object cg, object name, int length):
     r"""(No short description, might be part of a group.)
 
     Adds a symbol to the list of global symbols that must exist in the final
@@ -2702,18 +2724,19 @@ def thinlto_codegen_add_must_preserve_symbol(object cg, const char * name, int l
         cg (`~.LLVMOpaqueThinLTOCodeGenerator`/`~.object`):
             (undocumented)
 
-        name (`~.bytes`):
+        name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         length (`~.int`):
             (undocumented)
     """
     clto.thinlto_codegen_add_must_preserve_symbol(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),name,length)    # fully specified
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(name)._ptr,length)    # fully specified
 
 
 @cython.embedsignature(True)
-def thinlto_codegen_add_cross_referenced_symbol(object cg, const char * name, int length):
+def thinlto_codegen_add_cross_referenced_symbol(object cg, object name, int length):
     r"""(No short description, might be part of a group.)
 
     Adds a symbol to the list of global symbols that are cross-referenced between
@@ -2728,18 +2751,19 @@ def thinlto_codegen_add_cross_referenced_symbol(object cg, const char * name, in
         cg (`~.LLVMOpaqueThinLTOCodeGenerator`/`~.object`):
             (undocumented)
 
-        name (`~.bytes`):
+        name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         length (`~.int`):
             (undocumented)
     """
     clto.thinlto_codegen_add_cross_referenced_symbol(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),name,length)    # fully specified
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(name)._ptr,length)    # fully specified
 
 
 @cython.embedsignature(True)
-def thinlto_codegen_set_cache_dir(object cg, const char * cache_dir):
+def thinlto_codegen_set_cache_dir(object cg, object cache_dir):
     r"""(No short description, might be part of a group.)
 
     Sets the path to a directory to use as a cache storage for incremental build.
@@ -2752,11 +2776,12 @@ def thinlto_codegen_set_cache_dir(object cg, const char * cache_dir):
         cg (`~.LLVMOpaqueThinLTOCodeGenerator`/`~.object`):
             (undocumented)
 
-        cache_dir (`~.bytes`):
+        cache_dir (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     clto.thinlto_codegen_set_cache_dir(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),cache_dir)    # fully specified
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(cache_dir)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)

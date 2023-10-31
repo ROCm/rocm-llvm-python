@@ -58,7 +58,7 @@ from rocm.llvm.c.types import LLVMJITEventListenerRef
 from rocm.llvm.c.types import LLVMBinaryRef
 
 @cython.embedsignature(True)
-def LLVMLoadLibraryPermanently(const char * Filename):
+def LLVMLoadLibraryPermanently(object Filename):
     r"""(No short description, might be part of a group.)
 
     This function permanently loads the dynamic library at the given path.
@@ -68,18 +68,19 @@ def LLVMLoadLibraryPermanently(const char * Filename):
         `~.sys``~.`~.DynamicLibrary`.`~.LoadLibraryPermanently``()
 
     Args:
-        Filename (`~.bytes`):
+        Filename (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
     Returns:
         `~.int`
     """
-    cdef int _LLVMLoadLibraryPermanently__retval = csupport.LLVMLoadLibraryPermanently(Filename)    # fully specified
+    cdef int _LLVMLoadLibraryPermanently__retval = csupport.LLVMLoadLibraryPermanently(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Filename)._ptr)    # fully specified
     return _LLVMLoadLibraryPermanently__retval
 
 
 @cython.embedsignature(True)
-def LLVMParseCommandLineOptions(int argc, object argv, const char * Overview):
+def LLVMParseCommandLineOptions(int argc, object argv, object Overview):
     r"""(No short description, might be part of a group.)
 
     This function parses the given arguments using the LLVM command line parser.
@@ -94,18 +95,19 @@ def LLVMParseCommandLineOptions(int argc, object argv, const char * Overview):
         argc (`~.int`):
             (undocumented)
 
-        argv (`~.rocm.llvm._util.types.Pointer`/`~.object`):
+        argv (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
-        Overview (`~.bytes`):
+        Overview (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     csupport.LLVMParseCommandLineOptions(argc,
-        <const char *const *>rocm.llvm._util.types.Pointer.from_pyobj(argv)._ptr,Overview)    # fully specified
+        <const char *const *>rocm.llvm._util.types.CStr.from_pyobj(argv)._ptr,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Overview)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
-def LLVMSearchForAddressOfSymbol(const char * symbolName):
+def LLVMSearchForAddressOfSymbol(object symbolName):
     r"""(No short description, might be part of a group.)
 
     This function will search through all previously loaded dynamic
@@ -116,15 +118,16 @@ def LLVMSearchForAddressOfSymbol(const char * symbolName):
         `~.sys``~.`~.DynamicLibrary`.`~.SearchForAddressOfSymbol``()
 
     Args:
-        symbolName (`~.bytes`):
+        symbolName (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
-    _LLVMSearchForAddressOfSymbol__retval = rocm.llvm._util.types.Pointer.from_ptr(csupport.LLVMSearchForAddressOfSymbol(symbolName))    # fully specified
+    _LLVMSearchForAddressOfSymbol__retval = rocm.llvm._util.types.Pointer.from_ptr(<void*>csupport.LLVMSearchForAddressOfSymbol(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(symbolName)._ptr))    # fully specified
     return _LLVMSearchForAddressOfSymbol__retval
 
 
 @cython.embedsignature(True)
-def LLVMAddSymbol(const char * symbolName, object symbolValue):
+def LLVMAddSymbol(object symbolName, object symbolValue):
     r"""(No short description, might be part of a group.)
 
     This functions permanently adds the symbol ``symbolName`` with the
@@ -135,13 +138,14 @@ def LLVMAddSymbol(const char * symbolName, object symbolValue):
         `~.sys``~.`~.DynamicLibrary`.`~.AddSymbol``()
 
     Args:
-        symbolName (`~.bytes`):
+        symbolName (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
         symbolValue (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
     """
-    csupport.LLVMAddSymbol(symbolName,
+    csupport.LLVMAddSymbol(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(symbolName)._ptr,
         <void *>rocm.llvm._util.types.Pointer.from_pyobj(symbolValue)._ptr)    # fully specified
 
 __all__ = [

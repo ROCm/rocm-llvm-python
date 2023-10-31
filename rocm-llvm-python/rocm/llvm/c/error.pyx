@@ -185,7 +185,7 @@ def LLVMGetErrorTypeId(object Err):
         Err (`~.LLVMOpaqueError`/`~.object`):
             (undocumented)
     """
-    _LLVMGetErrorTypeId__retval = rocm.llvm._util.types.Pointer.from_ptr(cerror.LLVMGetErrorTypeId(
+    _LLVMGetErrorTypeId__retval = rocm.llvm._util.types.Pointer.from_ptr(<void*>cerror.LLVMGetErrorTypeId(
         LLVMOpaqueError.from_pyobj(Err).get_element_ptr()))    # fully specified
     return _LLVMGetErrorTypeId__retval
 
@@ -223,22 +223,23 @@ def LLVMGetErrorMessage(object Err):
     Returns:
         `~.bytes`
     """
-    cdef char * _LLVMGetErrorMessage__retval = cerror.LLVMGetErrorMessage(
-        LLVMOpaqueError.from_pyobj(Err).get_element_ptr())    # fully specified
+    _LLVMGetErrorMessage__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cerror.LLVMGetErrorMessage(
+        LLVMOpaqueError.from_pyobj(Err).get_element_ptr()))    # fully specified
     return _LLVMGetErrorMessage__retval
 
 
 @cython.embedsignature(True)
-def LLVMDisposeErrorMessage(char * ErrMsg):
+def LLVMDisposeErrorMessage(object ErrMsg):
     r"""(No short description, might be part of a group.)
 
     Dispose of the given error message.
 
     Args:
-        ErrMsg (`~.bytes`):
+        ErrMsg (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
-    cerror.LLVMDisposeErrorMessage(ErrMsg)    # fully specified
+    cerror.LLVMDisposeErrorMessage(
+        <char *>rocm.llvm._util.types.CStr.from_pyobj(ErrMsg)._ptr)    # fully specified
 
 
 @cython.embedsignature(True)
@@ -247,21 +248,22 @@ def LLVMGetStringErrorTypeId():
 
     Returns the type id for llvm StringError.
     """
-    _LLVMGetStringErrorTypeId__retval = rocm.llvm._util.types.Pointer.from_ptr(cerror.LLVMGetStringErrorTypeId())    # fully specified
+    _LLVMGetStringErrorTypeId__retval = rocm.llvm._util.types.Pointer.from_ptr(<void*>cerror.LLVMGetStringErrorTypeId())    # fully specified
     return _LLVMGetStringErrorTypeId__retval
 
 
 @cython.embedsignature(True)
-def LLVMCreateStringError(const char * ErrMsg):
+def LLVMCreateStringError(object ErrMsg):
     r"""(No short description, might be part of a group.)
 
     Create a StringError.
 
     Args:
-        ErrMsg (`~.bytes`):
+        ErrMsg (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
-    _LLVMCreateStringError__retval = LLVMOpaqueError.from_ptr(cerror.LLVMCreateStringError(ErrMsg))    # fully specified
+    _LLVMCreateStringError__retval = LLVMOpaqueError.from_ptr(cerror.LLVMCreateStringError(
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(ErrMsg)._ptr))    # fully specified
     return _LLVMCreateStringError__retval
 
 __all__ = [

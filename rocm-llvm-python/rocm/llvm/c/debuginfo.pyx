@@ -3609,7 +3609,7 @@ def LLVMDIBuilderFinalizeSubprogram(object Builder, object Subprogram):
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateCompileUnit(object Builder, object Lang, object FileRef, const char * Producer, unsigned long ProducerLen, int isOptimized, const char * Flags, unsigned long FlagsLen, unsigned int RuntimeVer, const char * SplitName, unsigned long SplitNameLen, object Kind, unsigned int DWOId, int SplitDebugInlining, int DebugInfoForProfiling, const char * SysRoot, unsigned long SysRootLen, const char * SDK, unsigned long SDKLen):
+def LLVMDIBuilderCreateCompileUnit(object Builder, object Lang, object FileRef, object Producer, unsigned long ProducerLen, int isOptimized, object Flags, unsigned long FlagsLen, unsigned int RuntimeVer, object SplitName, unsigned long SplitNameLen, object Kind, unsigned int DWOId, int SplitDebugInlining, int DebugInfoForProfiling, object SysRoot, unsigned long SysRootLen, object SDK, unsigned long SDKLen):
     r"""(No short description, might be part of a group.)
 
     A CompileUnit provides an anchor for all debugging
@@ -3626,7 +3626,7 @@ def LLVMDIBuilderCreateCompileUnit(object Builder, object Lang, object FileRef, 
         FileRef (`~.LLVMOpaqueMetadata`/`~.object`):
             File info.
 
-        Producer (`~.bytes`):
+        Producer (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Identify the producer of debugging information
             and code.  Usually this is a compiler
             version string.
@@ -3638,7 +3638,7 @@ def LLVMDIBuilderCreateCompileUnit(object Builder, object Lang, object FileRef, 
             A boolean flag which indicates whether optimization
             is enabled or not.
 
-        Flags (`~.bytes`):
+        Flags (`~.rocm.llvm._util.types.CStr`/`~.object`):
             This string lists command line options. This
             string is directly embedded in debug info
             output which may be used by a tool
@@ -3651,7 +3651,7 @@ def LLVMDIBuilderCreateCompileUnit(object Builder, object Lang, object FileRef, 
             This indicates runtime version for languages like
             Objective-C.
 
-        SplitName (`~.bytes`):
+        SplitName (`~.rocm.llvm._util.types.CStr`/`~.object`):
             The name of the file that we'll split debug info
             out into.
 
@@ -3671,13 +3671,13 @@ def LLVMDIBuilderCreateCompileUnit(object Builder, object Lang, object FileRef, 
             Whether to emit extra debug info for
             profile collection.
 
-        SysRoot (`~.bytes`):
+        SysRoot (`~.rocm.llvm._util.types.CStr`/`~.object`):
             The Clang system root (value of -isysroot).
 
         SysRootLen (`~.int`):
             The length of the C string passed to ``SysRoot.``
 
-        SDK (`~.bytes`):
+        SDK (`~.rocm.llvm._util.types.CStr`/`~.object`):
             The SDK. On Darwin, the last component of the sysroot.
 
         SDKLen (`~.int`):
@@ -3689,12 +3689,17 @@ def LLVMDIBuilderCreateCompileUnit(object Builder, object Lang, object FileRef, 
         raise TypeError("argument 'Kind' must be of type '_LLVMDWARFEmissionKind__Base'")
     _LLVMDIBuilderCreateCompileUnit__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateCompileUnit(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),Lang.value,
-        LLVMOpaqueMetadata.from_pyobj(FileRef).get_element_ptr(),Producer,ProducerLen,isOptimized,Flags,FlagsLen,RuntimeVer,SplitName,SplitNameLen,Kind.value,DWOId,SplitDebugInlining,DebugInfoForProfiling,SysRoot,SysRootLen,SDK,SDKLen))    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(FileRef).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Producer)._ptr,ProducerLen,isOptimized,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Flags)._ptr,FlagsLen,RuntimeVer,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(SplitName)._ptr,SplitNameLen,Kind.value,DWOId,SplitDebugInlining,DebugInfoForProfiling,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(SysRoot)._ptr,SysRootLen,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(SDK)._ptr,SDKLen))    # fully specified
     return _LLVMDIBuilderCreateCompileUnit__retval
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateFile(object Builder, const char * Filename, unsigned long FilenameLen, const char * Directory, unsigned long DirectoryLen):
+def LLVMDIBuilderCreateFile(object Builder, object Filename, unsigned long FilenameLen, object Directory, unsigned long DirectoryLen):
     r"""(No short description, might be part of a group.)
 
     Create a file descriptor to hold debugging information for a file.
@@ -3703,25 +3708,27 @@ def LLVMDIBuilderCreateFile(object Builder, const char * Filename, unsigned long
         Builder (`~.LLVMOpaqueDIBuilder`/`~.object`):
             The ``DIBuilder.``
 
-        Filename (`~.bytes`):
+        Filename (`~.rocm.llvm._util.types.CStr`/`~.object`):
             File name.
 
         FilenameLen (`~.int`):
             The length of the C string passed to ``Filename.``
 
-        Directory (`~.bytes`):
+        Directory (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Directory.
 
         DirectoryLen (`~.int`):
             The length of the C string passed to ``Directory.``
     """
     _LLVMDIBuilderCreateFile__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateFile(
-        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),Filename,FilenameLen,Directory,DirectoryLen))    # fully specified
+        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Filename)._ptr,FilenameLen,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Directory)._ptr,DirectoryLen))    # fully specified
     return _LLVMDIBuilderCreateFile__retval
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateModule(object Builder, object ParentScope, const char * Name, unsigned long NameLen, const char * ConfigMacros, unsigned long ConfigMacrosLen, const char * IncludePath, unsigned long IncludePathLen, const char * APINotesFile, unsigned long APINotesFileLen):
+def LLVMDIBuilderCreateModule(object Builder, object ParentScope, object Name, unsigned long NameLen, object ConfigMacros, unsigned long ConfigMacrosLen, object IncludePath, unsigned long IncludePathLen, object APINotesFile, unsigned long APINotesFileLen):
     r"""(No short description, might be part of a group.)
 
     Creates a new descriptor for a module with the specified parent scope.
@@ -3733,26 +3740,26 @@ def LLVMDIBuilderCreateModule(object Builder, object ParentScope, const char * N
         ParentScope (`~.LLVMOpaqueMetadata`/`~.object`):
             The parent scope containing this module declaration.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Module name.
 
         NameLen (`~.int`):
             The length of the C string passed to ``Name.``
 
-        ConfigMacros (`~.bytes`):
+        ConfigMacros (`~.rocm.llvm._util.types.CStr`/`~.object`):
             A space-separated shell-quoted list of -D macro
             definitions as they would appear on a command line.
 
         ConfigMacrosLen (`~.int`):
             The length of the C string passed to ``ConfigMacros.``
 
-        IncludePath (`~.bytes`):
+        IncludePath (`~.rocm.llvm._util.types.CStr`/`~.object`):
             The path to the module map file.
 
         IncludePathLen (`~.int`):
             The length of the C string passed to ``IncludePath.``
 
-        APINotesFile (`~.bytes`):
+        APINotesFile (`~.rocm.llvm._util.types.CStr`/`~.object`):
             The path to an API notes file for the module.
 
         APINotesFileLen (`~.int`):
@@ -3760,12 +3767,16 @@ def LLVMDIBuilderCreateModule(object Builder, object ParentScope, const char * N
     """
     _LLVMDIBuilderCreateModule__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateModule(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(ParentScope).get_element_ptr(),Name,NameLen,ConfigMacros,ConfigMacrosLen,IncludePath,IncludePathLen,APINotesFile,APINotesFileLen))    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(ParentScope).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(ConfigMacros)._ptr,ConfigMacrosLen,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(IncludePath)._ptr,IncludePathLen,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(APINotesFile)._ptr,APINotesFileLen))    # fully specified
     return _LLVMDIBuilderCreateModule__retval
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateNameSpace(object Builder, object ParentScope, const char * Name, unsigned long NameLen, int ExportSymbols):
+def LLVMDIBuilderCreateNameSpace(object Builder, object ParentScope, object Name, unsigned long NameLen, int ExportSymbols):
     r"""(No short description, might be part of a group.)
 
     Creates a new descriptor for a namespace with the specified parent scope.
@@ -3777,7 +3788,7 @@ def LLVMDIBuilderCreateNameSpace(object Builder, object ParentScope, const char 
         ParentScope (`~.LLVMOpaqueMetadata`/`~.object`):
             The parent scope containing this module declaration.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             NameSpace name.
 
         NameLen (`~.int`):
@@ -3789,12 +3800,13 @@ def LLVMDIBuilderCreateNameSpace(object Builder, object ParentScope, const char 
     """
     _LLVMDIBuilderCreateNameSpace__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateNameSpace(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(ParentScope).get_element_ptr(),Name,NameLen,ExportSymbols))    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(ParentScope).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,ExportSymbols))    # fully specified
     return _LLVMDIBuilderCreateNameSpace__retval
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateFunction(object Builder, object Scope, const char * Name, unsigned long NameLen, const char * LinkageName, unsigned long LinkageNameLen, object File, unsigned int LineNo, object Ty, int IsLocalToUnit, int IsDefinition, unsigned int ScopeLine, object Flags, int IsOptimized):
+def LLVMDIBuilderCreateFunction(object Builder, object Scope, object Name, unsigned long NameLen, object LinkageName, unsigned long LinkageNameLen, object File, unsigned int LineNo, object Ty, int IsLocalToUnit, int IsDefinition, unsigned int ScopeLine, object Flags, int IsOptimized):
     r"""(No short description, might be part of a group.)
 
     Create a new descriptor for the specified subprogram.
@@ -3806,13 +3818,13 @@ def LLVMDIBuilderCreateFunction(object Builder, object Scope, const char * Name,
         Scope (`~.LLVMOpaqueMetadata`/`~.object`):
             Function scope.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Function name.
 
         NameLen (`~.int`):
             Length of enumeration name.
 
-        LinkageName (`~.bytes`):
+        LinkageName (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Mangled function name.
 
         LinkageNameLen (`~.int`):
@@ -3847,7 +3859,9 @@ def LLVMDIBuilderCreateFunction(object Builder, object Scope, const char * Name,
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
     _LLVMDIBuilderCreateFunction__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateFunction(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),Name,NameLen,LinkageName,LinkageNameLen,
+        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(LinkageName)._ptr,LinkageNameLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNo,
         LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr(),IsLocalToUnit,IsDefinition,ScopeLine,Flags.value,IsOptimized))    # fully specified
     return _LLVMDIBuilderCreateFunction__retval
@@ -4015,7 +4029,7 @@ def LLVMDIBuilderCreateImportedModuleFromModule(object Builder, object Scope, ob
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateImportedDeclaration(object Builder, object Scope, object Decl, object File, unsigned int Line, const char * Name, unsigned long NameLen, object Elements, unsigned int NumElements):
+def LLVMDIBuilderCreateImportedDeclaration(object Builder, object Scope, object Decl, object File, unsigned int Line, object Name, unsigned long NameLen, object Elements, unsigned int NumElements):
     r"""(No short description, might be part of a group.)
 
     Create a descriptor for an imported function, type, or variable.  Suitable
@@ -4038,7 +4052,7 @@ def LLVMDIBuilderCreateImportedDeclaration(object Builder, object Scope, object 
         Line (`~.int`):
             Line number of the declaration.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             A name that uniquely identifies this imported
             declaration.
 
@@ -4055,7 +4069,8 @@ def LLVMDIBuilderCreateImportedDeclaration(object Builder, object Scope, object 
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(Decl).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),Line,Name,NameLen,
+        LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),Line,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements))    # fully specified
     return _LLVMDIBuilderCreateImportedDeclaration__retval
 
@@ -4209,9 +4224,9 @@ def LLVMDIFileGetDirectory(object File, object Len):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMDIFileGetDirectory__retval = cdebuginfo.LLVMDIFileGetDirectory(
+    _LLVMDIFileGetDirectory__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cdebuginfo.LLVMDIFileGetDirectory(
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),
-        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr))    # fully specified
     return _LLVMDIFileGetDirectory__retval
 
 
@@ -4234,9 +4249,9 @@ def LLVMDIFileGetFilename(object File, object Len):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMDIFileGetFilename__retval = cdebuginfo.LLVMDIFileGetFilename(
+    _LLVMDIFileGetFilename__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cdebuginfo.LLVMDIFileGetFilename(
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),
-        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr))    # fully specified
     return _LLVMDIFileGetFilename__retval
 
 
@@ -4259,9 +4274,9 @@ def LLVMDIFileGetSource(object File, object Len):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMDIFileGetSource__retval = cdebuginfo.LLVMDIFileGetSource(
+    _LLVMDIFileGetSource__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cdebuginfo.LLVMDIFileGetSource(
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),
-        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr))    # fully specified
     return _LLVMDIFileGetSource__retval
 
 
@@ -4321,7 +4336,7 @@ def LLVMDIBuilderCreateSubroutineType(object Builder, object File, object Parame
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateMacro(object Builder, object ParentMacroFile, unsigned int Line, object RecordType, const char * Name, unsigned long NameLen, const char * Value, unsigned long ValueLen):
+def LLVMDIBuilderCreateMacro(object Builder, object ParentMacroFile, unsigned int Line, object RecordType, object Name, unsigned long NameLen, object Value, unsigned long ValueLen):
     r"""(No short description, might be part of a group.)
 
     Create debugging information entry for a macro.
@@ -4339,13 +4354,13 @@ def LLVMDIBuilderCreateMacro(object Builder, object ParentMacroFile, unsigned in
         RecordType (`~.LLVMDWARFMacinfoRecordType`):
             DW_MACINFO_define or DW_MACINFO_undef.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Macro name.
 
         NameLen (`~.int`):
             Macro name length.
 
-        Value (`~.bytes`):
+        Value (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Macro value.
 
         ValueLen (`~.int`):
@@ -4355,7 +4370,9 @@ def LLVMDIBuilderCreateMacro(object Builder, object ParentMacroFile, unsigned in
         raise TypeError("argument 'RecordType' must be of type '_LLVMDWARFMacinfoRecordType__Base'")
     _LLVMDIBuilderCreateMacro__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateMacro(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(ParentMacroFile).get_element_ptr(),Line,RecordType.value,Name,NameLen,Value,ValueLen))    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(ParentMacroFile).get_element_ptr(),Line,RecordType.value,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Value)._ptr,ValueLen))    # fully specified
     return _LLVMDIBuilderCreateMacro__retval
 
 
@@ -4388,7 +4405,7 @@ def LLVMDIBuilderCreateTempMacroFile(object Builder, object ParentMacroFile, uns
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateEnumerator(object Builder, const char * Name, unsigned long NameLen, long Value, int IsUnsigned):
+def LLVMDIBuilderCreateEnumerator(object Builder, object Name, unsigned long NameLen, long Value, int IsUnsigned):
     r"""(No short description, might be part of a group.)
 
     Create debugging information entry for an enumerator.
@@ -4397,7 +4414,7 @@ def LLVMDIBuilderCreateEnumerator(object Builder, const char * Name, unsigned lo
         Builder (`~.LLVMOpaqueDIBuilder`/`~.object`):
             The DIBuilder.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Enumerator name.
 
         NameLen (`~.int`):
@@ -4410,12 +4427,13 @@ def LLVMDIBuilderCreateEnumerator(object Builder, const char * Name, unsigned lo
             True if the value is unsigned.
     """
     _LLVMDIBuilderCreateEnumerator__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateEnumerator(
-        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),Name,NameLen,Value,IsUnsigned))    # fully specified
+        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,Value,IsUnsigned))    # fully specified
     return _LLVMDIBuilderCreateEnumerator__retval
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateEnumerationType(object Builder, object Scope, const char * Name, unsigned long NameLen, object File, unsigned int LineNumber, unsigned long SizeInBits, unsigned int AlignInBits, object Elements, unsigned int NumElements, object ClassTy):
+def LLVMDIBuilderCreateEnumerationType(object Builder, object Scope, object Name, unsigned long NameLen, object File, unsigned int LineNumber, unsigned long SizeInBits, unsigned int AlignInBits, object Elements, unsigned int NumElements, object ClassTy):
     r"""(No short description, might be part of a group.)
 
     Create debugging information entry for an enumeration.
@@ -4427,7 +4445,7 @@ def LLVMDIBuilderCreateEnumerationType(object Builder, object Scope, const char 
         Scope (`~.LLVMOpaqueMetadata`/`~.object`):
             Scope in which this enumeration is defined.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Enumeration name.
 
         NameLen (`~.int`):
@@ -4456,7 +4474,8 @@ def LLVMDIBuilderCreateEnumerationType(object Builder, object Scope, const char 
     """
     _LLVMDIBuilderCreateEnumerationType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateEnumerationType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),Name,NameLen,
+        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNumber,SizeInBits,AlignInBits,
         <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements,
         LLVMOpaqueMetadata.from_pyobj(ClassTy).get_element_ptr()))    # fully specified
@@ -4464,7 +4483,7 @@ def LLVMDIBuilderCreateEnumerationType(object Builder, object Scope, const char 
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateUnionType(object Builder, object Scope, const char * Name, unsigned long NameLen, object File, unsigned int LineNumber, unsigned long SizeInBits, unsigned int AlignInBits, object Flags, object Elements, unsigned int NumElements, unsigned int RunTimeLang, const char * UniqueId, unsigned long UniqueIdLen):
+def LLVMDIBuilderCreateUnionType(object Builder, object Scope, object Name, unsigned long NameLen, object File, unsigned int LineNumber, unsigned long SizeInBits, unsigned int AlignInBits, object Flags, object Elements, unsigned int NumElements, unsigned int RunTimeLang, object UniqueId, unsigned long UniqueIdLen):
     r"""(No short description, might be part of a group.)
 
     Create debugging information entry for a union.
@@ -4476,7 +4495,7 @@ def LLVMDIBuilderCreateUnionType(object Builder, object Scope, const char * Name
         Scope (`~.LLVMOpaqueMetadata`/`~.object`):
             Scope in which this union is defined.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Union name.
 
         NameLen (`~.int`):
@@ -4506,7 +4525,7 @@ def LLVMDIBuilderCreateUnionType(object Builder, object Scope, const char * Name
         RunTimeLang (`~.int`):
             Optional parameter, Objective-C runtime version.
 
-        UniqueId (`~.bytes`):
+        UniqueId (`~.rocm.llvm._util.types.CStr`/`~.object`):
             A unique identifier for the union.
 
         UniqueIdLen (`~.int`):
@@ -4516,9 +4535,11 @@ def LLVMDIBuilderCreateUnionType(object Builder, object Scope, const char * Name
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
     _LLVMDIBuilderCreateUnionType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateUnionType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),Name,NameLen,
+        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNumber,SizeInBits,AlignInBits,Flags.value,
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements,RunTimeLang,UniqueId,UniqueIdLen))    # fully specified
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements,RunTimeLang,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(UniqueId)._ptr,UniqueIdLen))    # fully specified
     return _LLVMDIBuilderCreateUnionType__retval
 
 
@@ -4587,7 +4608,7 @@ def LLVMDIBuilderCreateVectorType(object Builder, unsigned long Size, unsigned i
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateUnspecifiedType(object Builder, const char * Name, unsigned long NameLen):
+def LLVMDIBuilderCreateUnspecifiedType(object Builder, object Name, unsigned long NameLen):
     r"""(No short description, might be part of a group.)
 
     Create a DWARF unspecified type.
@@ -4596,19 +4617,20 @@ def LLVMDIBuilderCreateUnspecifiedType(object Builder, const char * Name, unsign
         Builder (`~.LLVMOpaqueDIBuilder`/`~.object`):
             The DIBuilder.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             The unspecified type's name.
 
         NameLen (`~.int`):
             Length of type name.
     """
     _LLVMDIBuilderCreateUnspecifiedType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateUnspecifiedType(
-        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),Name,NameLen))    # fully specified
+        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen))    # fully specified
     return _LLVMDIBuilderCreateUnspecifiedType__retval
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateBasicType(object Builder, const char * Name, unsigned long NameLen, unsigned long SizeInBits, unsigned int Encoding, object Flags):
+def LLVMDIBuilderCreateBasicType(object Builder, object Name, unsigned long NameLen, unsigned long SizeInBits, unsigned int Encoding, object Flags):
     r"""(No short description, might be part of a group.)
 
     Create debugging information entry for a basic
@@ -4618,7 +4640,7 @@ def LLVMDIBuilderCreateBasicType(object Builder, const char * Name, unsigned lon
         Builder (`~.LLVMOpaqueDIBuilder`/`~.object`):
             The DIBuilder.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Type name.
 
         NameLen (`~.int`):
@@ -4636,12 +4658,13 @@ def LLVMDIBuilderCreateBasicType(object Builder, const char * Name, unsigned lon
     if not isinstance(Flags,_LLVMDIFlags__Base):
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
     _LLVMDIBuilderCreateBasicType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateBasicType(
-        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),Name,NameLen,SizeInBits,Encoding,Flags.value))    # fully specified
+        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,SizeInBits,Encoding,Flags.value))    # fully specified
     return _LLVMDIBuilderCreateBasicType__retval
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreatePointerType(object Builder, object PointeeTy, unsigned long SizeInBits, unsigned int AlignInBits, unsigned int AddressSpace, const char * Name, unsigned long NameLen):
+def LLVMDIBuilderCreatePointerType(object Builder, object PointeeTy, unsigned long SizeInBits, unsigned int AlignInBits, unsigned int AddressSpace, object Name, unsigned long NameLen):
     r"""(No short description, might be part of a group.)
 
     Create debugging information entry for a pointer.
@@ -4662,7 +4685,7 @@ def LLVMDIBuilderCreatePointerType(object Builder, object PointeeTy, unsigned lo
         AddressSpace (`~.int`):
             DWARF address space. (optional, pass 0 to ignore)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Pointer type name. (optional)
 
         NameLen (`~.int`):
@@ -4670,12 +4693,13 @@ def LLVMDIBuilderCreatePointerType(object Builder, object PointeeTy, unsigned lo
     """
     _LLVMDIBuilderCreatePointerType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreatePointerType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(PointeeTy).get_element_ptr(),SizeInBits,AlignInBits,AddressSpace,Name,NameLen))    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(PointeeTy).get_element_ptr(),SizeInBits,AlignInBits,AddressSpace,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen))    # fully specified
     return _LLVMDIBuilderCreatePointerType__retval
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateStructType(object Builder, object Scope, const char * Name, unsigned long NameLen, object File, unsigned int LineNumber, unsigned long SizeInBits, unsigned int AlignInBits, object Flags, object DerivedFrom, object Elements, unsigned int NumElements, unsigned int RunTimeLang, object VTableHolder, const char * UniqueId, unsigned long UniqueIdLen):
+def LLVMDIBuilderCreateStructType(object Builder, object Scope, object Name, unsigned long NameLen, object File, unsigned int LineNumber, unsigned long SizeInBits, unsigned int AlignInBits, object Flags, object DerivedFrom, object Elements, unsigned int NumElements, unsigned int RunTimeLang, object VTableHolder, object UniqueId, unsigned long UniqueIdLen):
     r"""(No short description, might be part of a group.)
 
     Create debugging information entry for a struct.
@@ -4687,7 +4711,7 @@ def LLVMDIBuilderCreateStructType(object Builder, object Scope, const char * Nam
         Scope (`~.LLVMOpaqueMetadata`/`~.object`):
             Scope in which this struct is defined.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Struct name.
 
         NameLen (`~.int`):
@@ -4723,7 +4747,7 @@ def LLVMDIBuilderCreateStructType(object Builder, object Scope, const char * Nam
         VTableHolder (`~.LLVMOpaqueMetadata`/`~.object`):
             The object containing the vtable for the struct.
 
-        UniqueId (`~.bytes`):
+        UniqueId (`~.rocm.llvm._util.types.CStr`/`~.object`):
             A unique identifier for the struct.
 
         UniqueIdLen (`~.int`):
@@ -4733,16 +4757,18 @@ def LLVMDIBuilderCreateStructType(object Builder, object Scope, const char * Nam
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
     _LLVMDIBuilderCreateStructType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateStructType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),Name,NameLen,
+        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNumber,SizeInBits,AlignInBits,Flags.value,
         LLVMOpaqueMetadata.from_pyobj(DerivedFrom).get_element_ptr(),
         <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements,RunTimeLang,
-        LLVMOpaqueMetadata.from_pyobj(VTableHolder).get_element_ptr(),UniqueId,UniqueIdLen))    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(VTableHolder).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(UniqueId)._ptr,UniqueIdLen))    # fully specified
     return _LLVMDIBuilderCreateStructType__retval
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateMemberType(object Builder, object Scope, const char * Name, unsigned long NameLen, object File, unsigned int LineNo, unsigned long SizeInBits, unsigned int AlignInBits, unsigned long OffsetInBits, object Flags, object Ty):
+def LLVMDIBuilderCreateMemberType(object Builder, object Scope, object Name, unsigned long NameLen, object File, unsigned int LineNo, unsigned long SizeInBits, unsigned int AlignInBits, unsigned long OffsetInBits, object Flags, object Ty):
     r"""(No short description, might be part of a group.)
 
     Create debugging information entry for a member.
@@ -4754,7 +4780,7 @@ def LLVMDIBuilderCreateMemberType(object Builder, object Scope, const char * Nam
         Scope (`~.LLVMOpaqueMetadata`/`~.object`):
             Member scope.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Member name.
 
         NameLen (`~.int`):
@@ -4785,14 +4811,15 @@ def LLVMDIBuilderCreateMemberType(object Builder, object Scope, const char * Nam
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
     _LLVMDIBuilderCreateMemberType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateMemberType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),Name,NameLen,
+        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNo,SizeInBits,AlignInBits,OffsetInBits,Flags.value,
         LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr()))    # fully specified
     return _LLVMDIBuilderCreateMemberType__retval
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateStaticMemberType(object Builder, object Scope, const char * Name, unsigned long NameLen, object File, unsigned int LineNumber, object Type, object Flags, object ConstantVal, unsigned int AlignInBits):
+def LLVMDIBuilderCreateStaticMemberType(object Builder, object Scope, object Name, unsigned long NameLen, object File, unsigned int LineNumber, object Type, object Flags, object ConstantVal, unsigned int AlignInBits):
     r"""(No short description, might be part of a group.)
 
     Create debugging information entry for a
@@ -4805,7 +4832,7 @@ def LLVMDIBuilderCreateStaticMemberType(object Builder, object Scope, const char
         Scope (`~.LLVMOpaqueMetadata`/`~.object`):
             Member scope.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Member name.
 
         NameLen (`~.int`):
@@ -4833,7 +4860,8 @@ def LLVMDIBuilderCreateStaticMemberType(object Builder, object Scope, const char
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
     _LLVMDIBuilderCreateStaticMemberType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateStaticMemberType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),Name,NameLen,
+        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNumber,
         LLVMOpaqueMetadata.from_pyobj(Type).get_element_ptr(),Flags.value,
         LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),AlignInBits))    # fully specified
@@ -4875,7 +4903,7 @@ def LLVMDIBuilderCreateMemberPointerType(object Builder, object PointeeType, obj
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateObjCIVar(object Builder, const char * Name, unsigned long NameLen, object File, unsigned int LineNo, unsigned long SizeInBits, unsigned int AlignInBits, unsigned long OffsetInBits, object Flags, object Ty, object PropertyNode):
+def LLVMDIBuilderCreateObjCIVar(object Builder, object Name, unsigned long NameLen, object File, unsigned int LineNo, unsigned long SizeInBits, unsigned int AlignInBits, unsigned long OffsetInBits, object Flags, object Ty, object PropertyNode):
     r"""(No short description, might be part of a group.)
 
     Create debugging information entry for Objective-C instance variable.
@@ -4884,7 +4912,7 @@ def LLVMDIBuilderCreateObjCIVar(object Builder, const char * Name, unsigned long
         Builder (`~.LLVMOpaqueDIBuilder`/`~.object`):
             The DIBuilder.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Member name.
 
         NameLen (`~.int`):
@@ -4917,7 +4945,8 @@ def LLVMDIBuilderCreateObjCIVar(object Builder, const char * Name, unsigned long
     if not isinstance(Flags,_LLVMDIFlags__Base):
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
     _LLVMDIBuilderCreateObjCIVar__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateObjCIVar(
-        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),Name,NameLen,
+        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNo,SizeInBits,AlignInBits,OffsetInBits,Flags.value,
         LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(PropertyNode).get_element_ptr()))    # fully specified
@@ -4925,7 +4954,7 @@ def LLVMDIBuilderCreateObjCIVar(object Builder, const char * Name, unsigned long
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateObjCProperty(object Builder, const char * Name, unsigned long NameLen, object File, unsigned int LineNo, const char * GetterName, unsigned long GetterNameLen, const char * SetterName, unsigned long SetterNameLen, unsigned int PropertyAttributes, object Ty):
+def LLVMDIBuilderCreateObjCProperty(object Builder, object Name, unsigned long NameLen, object File, unsigned int LineNo, object GetterName, unsigned long GetterNameLen, object SetterName, unsigned long SetterNameLen, unsigned int PropertyAttributes, object Ty):
     r"""(No short description, might be part of a group.)
 
     Create debugging information entry for Objective-C property.
@@ -4934,7 +4963,7 @@ def LLVMDIBuilderCreateObjCProperty(object Builder, const char * Name, unsigned 
         Builder (`~.LLVMOpaqueDIBuilder`/`~.object`):
             The DIBuilder.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Property name.
 
         NameLen (`~.int`):
@@ -4946,13 +4975,13 @@ def LLVMDIBuilderCreateObjCProperty(object Builder, const char * Name, unsigned 
         LineNo (`~.int`):
             Line number.
 
-        GetterName (`~.bytes`):
+        GetterName (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Name of the Objective C property getter selector.
 
         GetterNameLen (`~.int`):
             The length of the C string passed to ``GetterName.``
 
-        SetterName (`~.bytes`):
+        SetterName (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Name of the Objective C property setter selector.
 
         SetterNameLen (`~.int`):
@@ -4965,8 +4994,11 @@ def LLVMDIBuilderCreateObjCProperty(object Builder, const char * Name, unsigned 
             Type.
     """
     _LLVMDIBuilderCreateObjCProperty__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateObjCProperty(
-        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),Name,NameLen,
-        LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNo,GetterName,GetterNameLen,SetterName,SetterNameLen,PropertyAttributes,
+        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
+        LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNo,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(GetterName)._ptr,GetterNameLen,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(SetterName)._ptr,SetterNameLen,PropertyAttributes,
         LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr()))    # fully specified
     return _LLVMDIBuilderCreateObjCProperty__retval
 
@@ -5053,7 +5085,7 @@ def LLVMDIBuilderCreateNullPtrType(object Builder):
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateTypedef(object Builder, object Type, const char * Name, unsigned long NameLen, object File, unsigned int LineNo, object Scope, unsigned int AlignInBits):
+def LLVMDIBuilderCreateTypedef(object Builder, object Type, object Name, unsigned long NameLen, object File, unsigned int LineNo, object Scope, unsigned int AlignInBits):
     r"""(No short description, might be part of a group.)
 
     Create debugging information entry for a typedef.
@@ -5065,7 +5097,7 @@ def LLVMDIBuilderCreateTypedef(object Builder, object Type, const char * Name, u
         Type (`~.LLVMOpaqueMetadata`/`~.object`):
             Original type.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Typedef name.
 
         NameLen (`~.int`):
@@ -5085,7 +5117,8 @@ def LLVMDIBuilderCreateTypedef(object Builder, object Type, const char * Name, u
     """
     _LLVMDIBuilderCreateTypedef__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateTypedef(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(Type).get_element_ptr(),Name,NameLen,
+        LLVMOpaqueMetadata.from_pyobj(Type).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNo,
         LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),AlignInBits))    # fully specified
     return _LLVMDIBuilderCreateTypedef__retval
@@ -5127,7 +5160,7 @@ def LLVMDIBuilderCreateInheritance(object Builder, object Ty, object BaseTy, uns
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateForwardDecl(object Builder, unsigned int Tag, const char * Name, unsigned long NameLen, object Scope, object File, unsigned int Line, unsigned int RuntimeLang, unsigned long SizeInBits, unsigned int AlignInBits, const char * UniqueIdentifier, unsigned long UniqueIdentifierLen):
+def LLVMDIBuilderCreateForwardDecl(object Builder, unsigned int Tag, object Name, unsigned long NameLen, object Scope, object File, unsigned int Line, unsigned int RuntimeLang, unsigned long SizeInBits, unsigned int AlignInBits, object UniqueIdentifier, unsigned long UniqueIdentifierLen):
     r"""(No short description, might be part of a group.)
 
     Create a permanent forward-declared type.
@@ -5139,7 +5172,7 @@ def LLVMDIBuilderCreateForwardDecl(object Builder, unsigned int Tag, const char 
         Tag (`~.int`):
             A unique tag for this type.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Type name.
 
         NameLen (`~.int`):
@@ -5164,21 +5197,23 @@ def LLVMDIBuilderCreateForwardDecl(object Builder, unsigned int Tag, const char 
         AlignInBits (`~.int`):
             Member alignment.
 
-        UniqueIdentifier (`~.bytes`):
+        UniqueIdentifier (`~.rocm.llvm._util.types.CStr`/`~.object`):
             A unique identifier for the type.
 
         UniqueIdentifierLen (`~.int`):
             Length of the unique identifier.
     """
     _LLVMDIBuilderCreateForwardDecl__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateForwardDecl(
-        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),Tag,Name,NameLen,
+        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),Tag,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),Line,RuntimeLang,SizeInBits,AlignInBits,UniqueIdentifier,UniqueIdentifierLen))    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),Line,RuntimeLang,SizeInBits,AlignInBits,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(UniqueIdentifier)._ptr,UniqueIdentifierLen))    # fully specified
     return _LLVMDIBuilderCreateForwardDecl__retval
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateReplaceableCompositeType(object Builder, unsigned int Tag, const char * Name, unsigned long NameLen, object Scope, object File, unsigned int Line, unsigned int RuntimeLang, unsigned long SizeInBits, unsigned int AlignInBits, object Flags, const char * UniqueIdentifier, unsigned long UniqueIdentifierLen):
+def LLVMDIBuilderCreateReplaceableCompositeType(object Builder, unsigned int Tag, object Name, unsigned long NameLen, object Scope, object File, unsigned int Line, unsigned int RuntimeLang, unsigned long SizeInBits, unsigned int AlignInBits, object Flags, object UniqueIdentifier, unsigned long UniqueIdentifierLen):
     r"""(No short description, might be part of a group.)
 
     Create a temporary forward-declared type.
@@ -5190,7 +5225,7 @@ def LLVMDIBuilderCreateReplaceableCompositeType(object Builder, unsigned int Tag
         Tag (`~.int`):
             A unique tag for this type.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Type name.
 
         NameLen (`~.int`):
@@ -5218,7 +5253,7 @@ def LLVMDIBuilderCreateReplaceableCompositeType(object Builder, unsigned int Tag
         Flags (`~.LLVMDIFlags`):
             Flags.
 
-        UniqueIdentifier (`~.bytes`):
+        UniqueIdentifier (`~.rocm.llvm._util.types.CStr`/`~.object`):
             A unique identifier for the type.
 
         UniqueIdentifierLen (`~.int`):
@@ -5227,14 +5262,16 @@ def LLVMDIBuilderCreateReplaceableCompositeType(object Builder, unsigned int Tag
     if not isinstance(Flags,_LLVMDIFlags__Base):
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
     _LLVMDIBuilderCreateReplaceableCompositeType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateReplaceableCompositeType(
-        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),Tag,Name,NameLen,
+        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),Tag,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),Line,RuntimeLang,SizeInBits,AlignInBits,Flags.value,UniqueIdentifier,UniqueIdentifierLen))    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),Line,RuntimeLang,SizeInBits,AlignInBits,Flags.value,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(UniqueIdentifier)._ptr,UniqueIdentifierLen))    # fully specified
     return _LLVMDIBuilderCreateReplaceableCompositeType__retval
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateBitFieldMemberType(object Builder, object Scope, const char * Name, unsigned long NameLen, object File, unsigned int LineNumber, unsigned long SizeInBits, unsigned long OffsetInBits, unsigned long StorageOffsetInBits, object Flags, object Type):
+def LLVMDIBuilderCreateBitFieldMemberType(object Builder, object Scope, object Name, unsigned long NameLen, object File, unsigned int LineNumber, unsigned long SizeInBits, unsigned long OffsetInBits, unsigned long StorageOffsetInBits, object Flags, object Type):
     r"""(No short description, might be part of a group.)
 
     Create debugging information entry for a bit field member.
@@ -5246,7 +5283,7 @@ def LLVMDIBuilderCreateBitFieldMemberType(object Builder, object Scope, const ch
         Scope (`~.LLVMOpaqueMetadata`/`~.object`):
             Member scope.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Member name.
 
         NameLen (`~.int`):
@@ -5277,14 +5314,15 @@ def LLVMDIBuilderCreateBitFieldMemberType(object Builder, object Scope, const ch
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
     _LLVMDIBuilderCreateBitFieldMemberType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateBitFieldMemberType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),Name,NameLen,
+        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNumber,SizeInBits,OffsetInBits,StorageOffsetInBits,Flags.value,
         LLVMOpaqueMetadata.from_pyobj(Type).get_element_ptr()))    # fully specified
     return _LLVMDIBuilderCreateBitFieldMemberType__retval
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateClassType(object Builder, object Scope, const char * Name, unsigned long NameLen, object File, unsigned int LineNumber, unsigned long SizeInBits, unsigned int AlignInBits, unsigned long OffsetInBits, object Flags, object DerivedFrom, object Elements, unsigned int NumElements, object VTableHolder, object TemplateParamsNode, const char * UniqueIdentifier, unsigned long UniqueIdentifierLen):
+def LLVMDIBuilderCreateClassType(object Builder, object Scope, object Name, unsigned long NameLen, object File, unsigned int LineNumber, unsigned long SizeInBits, unsigned int AlignInBits, unsigned long OffsetInBits, object Flags, object DerivedFrom, object Elements, unsigned int NumElements, object VTableHolder, object TemplateParamsNode, object UniqueIdentifier, unsigned long UniqueIdentifierLen):
     r"""(No short description, might be part of a group.)
 
     Create debugging information entry for a class.
@@ -5296,7 +5334,7 @@ def LLVMDIBuilderCreateClassType(object Builder, object Scope, const char * Name
         Scope (`~.LLVMOpaqueMetadata`/`~.object`):
             Scope in which this class is defined.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Class name.
 
         NameLen (`~.int`):
@@ -5338,7 +5376,7 @@ def LLVMDIBuilderCreateClassType(object Builder, object Scope, const char * Name
         TemplateParamsNode (`~.LLVMOpaqueMetadata`/`~.object`):
             Template type parameters.
 
-        UniqueIdentifier (`~.bytes`):
+        UniqueIdentifier (`~.rocm.llvm._util.types.CStr`/`~.object`):
             A unique identifier for the type.
 
         UniqueIdentifierLen (`~.int`):
@@ -5348,12 +5386,14 @@ def LLVMDIBuilderCreateClassType(object Builder, object Scope, const char * Name
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
     _LLVMDIBuilderCreateClassType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateClassType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),Name,NameLen,
+        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNumber,SizeInBits,AlignInBits,OffsetInBits,Flags.value,
         LLVMOpaqueMetadata.from_pyobj(DerivedFrom).get_element_ptr(),
         <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements,
         LLVMOpaqueMetadata.from_pyobj(VTableHolder).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(TemplateParamsNode).get_element_ptr(),UniqueIdentifier,UniqueIdentifierLen))    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(TemplateParamsNode).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(UniqueIdentifier)._ptr,UniqueIdentifierLen))    # fully specified
     return _LLVMDIBuilderCreateClassType__retval
 
 
@@ -5395,9 +5435,9 @@ def LLVMDITypeGetName(object DType, object Length):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMDITypeGetName__retval = cdebuginfo.LLVMDITypeGetName(
+    _LLVMDITypeGetName__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cdebuginfo.LLVMDITypeGetName(
         LLVMOpaqueMetadata.from_pyobj(DType).get_element_ptr(),
-        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr)    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr))    # fully specified
     return _LLVMDITypeGetName__retval
 
 
@@ -5592,7 +5632,7 @@ def LLVMDIBuilderCreateConstantValueExpression(object Builder, unsigned long Val
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateGlobalVariableExpression(object Builder, object Scope, const char * Name, unsigned long NameLen, const char * Linkage, unsigned long LinkLen, object File, unsigned int LineNo, object Ty, int LocalToUnit, object Expr, object Decl, unsigned int AlignInBits):
+def LLVMDIBuilderCreateGlobalVariableExpression(object Builder, object Scope, object Name, unsigned long NameLen, object Linkage, unsigned long LinkLen, object File, unsigned int LineNo, object Ty, int LocalToUnit, object Expr, object Decl, unsigned int AlignInBits):
     r"""(No short description, might be part of a group.)
 
     Create a new descriptor for the specified variable.
@@ -5604,13 +5644,13 @@ def LLVMDIBuilderCreateGlobalVariableExpression(object Builder, object Scope, co
         Scope (`~.LLVMOpaqueMetadata`/`~.object`):
             Variable scope.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Name of the variable.
 
         NameLen (`~.int`):
             The length of the C string passed to ``Name.``
 
-        Linkage (`~.bytes`):
+        Linkage (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Mangled  name of the variable.
 
         LinkLen (`~.int`):
@@ -5643,7 +5683,9 @@ def LLVMDIBuilderCreateGlobalVariableExpression(object Builder, object Scope, co
     """
     _LLVMDIBuilderCreateGlobalVariableExpression__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateGlobalVariableExpression(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),Name,NameLen,Linkage,LinkLen,
+        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Linkage)._ptr,LinkLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNo,
         LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr(),LocalToUnit,
         LLVMOpaqueMetadata.from_pyobj(Expr).get_element_ptr(),
@@ -5804,7 +5846,7 @@ def LLVMMetadataReplaceAllUsesWith(object TempTargetMetadata, object Replacement
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateTempGlobalVariableFwdDecl(object Builder, object Scope, const char * Name, unsigned long NameLen, const char * Linkage, unsigned long LnkLen, object File, unsigned int LineNo, object Ty, int LocalToUnit, object Decl, unsigned int AlignInBits):
+def LLVMDIBuilderCreateTempGlobalVariableFwdDecl(object Builder, object Scope, object Name, unsigned long NameLen, object Linkage, unsigned long LnkLen, object File, unsigned int LineNo, object Ty, int LocalToUnit, object Decl, unsigned int AlignInBits):
     r"""(No short description, might be part of a group.)
 
     Create a new descriptor for the specified global variable that is temporary
@@ -5817,13 +5859,13 @@ def LLVMDIBuilderCreateTempGlobalVariableFwdDecl(object Builder, object Scope, c
         Scope (`~.LLVMOpaqueMetadata`/`~.object`):
             Variable scope.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Name of the variable.
 
         NameLen (`~.int`):
             The length of the C string passed to ``Name.``
 
-        Linkage (`~.bytes`):
+        Linkage (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Mangled  name of the variable.
 
         LnkLen (`~.int`):
@@ -5851,7 +5893,9 @@ def LLVMDIBuilderCreateTempGlobalVariableFwdDecl(object Builder, object Scope, c
     """
     _LLVMDIBuilderCreateTempGlobalVariableFwdDecl__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateTempGlobalVariableFwdDecl(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),Name,NameLen,Linkage,LnkLen,
+        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Linkage)._ptr,LnkLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNo,
         LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr(),LocalToUnit,
         LLVMOpaqueMetadata.from_pyobj(Decl).get_element_ptr(),AlignInBits))    # fully specified
@@ -6003,7 +6047,7 @@ def LLVMDIBuilderInsertDbgValueAtEnd(object Builder, object Val, object VarInfo,
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateAutoVariable(object Builder, object Scope, const char * Name, unsigned long NameLen, object File, unsigned int LineNo, object Ty, int AlwaysPreserve, object Flags, unsigned int AlignInBits):
+def LLVMDIBuilderCreateAutoVariable(object Builder, object Scope, object Name, unsigned long NameLen, object File, unsigned int LineNo, object Ty, int AlwaysPreserve, object Flags, unsigned int AlignInBits):
     r"""(No short description, might be part of a group.)
 
     Create a new descriptor for a local auto variable.
@@ -6015,7 +6059,7 @@ def LLVMDIBuilderCreateAutoVariable(object Builder, object Scope, const char * N
         Scope (`~.LLVMOpaqueMetadata`/`~.object`):
             The local scope the variable is declared in.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Variable name.
 
         NameLen (`~.int`):
@@ -6043,14 +6087,15 @@ def LLVMDIBuilderCreateAutoVariable(object Builder, object Scope, const char * N
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
     _LLVMDIBuilderCreateAutoVariable__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateAutoVariable(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),Name,NameLen,
+        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNo,
         LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr(),AlwaysPreserve,Flags.value,AlignInBits))    # fully specified
     return _LLVMDIBuilderCreateAutoVariable__retval
 
 
 @cython.embedsignature(True)
-def LLVMDIBuilderCreateParameterVariable(object Builder, object Scope, const char * Name, unsigned long NameLen, unsigned int ArgNo, object File, unsigned int LineNo, object Ty, int AlwaysPreserve, object Flags):
+def LLVMDIBuilderCreateParameterVariable(object Builder, object Scope, object Name, unsigned long NameLen, unsigned int ArgNo, object File, unsigned int LineNo, object Ty, int AlwaysPreserve, object Flags):
     r"""(No short description, might be part of a group.)
 
     Create a new descriptor for a function parameter variable.
@@ -6062,7 +6107,7 @@ def LLVMDIBuilderCreateParameterVariable(object Builder, object Scope, const cha
         Scope (`~.LLVMOpaqueMetadata`/`~.object`):
             The local scope the variable is declared in.
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             Variable name.
 
         NameLen (`~.int`):
@@ -6090,7 +6135,8 @@ def LLVMDIBuilderCreateParameterVariable(object Builder, object Scope, const cha
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
     _LLVMDIBuilderCreateParameterVariable__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateParameterVariable(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),Name,NameLen,ArgNo,
+        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,ArgNo,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNo,
         LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr(),AlwaysPreserve,Flags.value))    # fully specified
     return _LLVMDIBuilderCreateParameterVariable__retval

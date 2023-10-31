@@ -765,8 +765,8 @@ def LLVMOrcLLJITGetTripleString(object J):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMOrcLLJITGetTripleString__retval = clljit.LLVMOrcLLJITGetTripleString(
-        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr())    # fully specified
+    _LLVMOrcLLJITGetTripleString__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>clljit.LLVMOrcLLJITGetTripleString(
+        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr()))    # fully specified
     return _LLVMOrcLLJITGetTripleString__retval
 
 
@@ -789,7 +789,7 @@ def LLVMOrcLLJITGetGlobalPrefix(object J):
 
 
 @cython.embedsignature(True)
-def LLVMOrcLLJITMangleAndIntern(object J, const char * UnmangledName):
+def LLVMOrcLLJITMangleAndIntern(object J, object UnmangledName):
     r"""(No short description, might be part of a group.)
 
     Mangles the given string according to the LLJIT instance's DataLayout, then
@@ -802,11 +802,12 @@ def LLVMOrcLLJITMangleAndIntern(object J, const char * UnmangledName):
         J (`~.LLVMOrcOpaqueLLJIT`/`~.object`):
             (undocumented)
 
-        UnmangledName (`~.bytes`):
+        UnmangledName (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMOrcLLJITMangleAndIntern__retval = LLVMOrcOpaqueSymbolStringPoolEntry.from_ptr(clljit.LLVMOrcLLJITMangleAndIntern(
-        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr(),UnmangledName))    # fully specified
+        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(UnmangledName)._ptr))    # fully specified
     return _LLVMOrcLLJITMangleAndIntern__retval
 
 
@@ -927,7 +928,7 @@ def LLVMOrcLLJITAddLLVMIRModuleWithRT(object J, object JD, object TSM):
 
 
 @cython.embedsignature(True)
-def LLVMOrcLLJITLookup(object J, object Result, const char * Name):
+def LLVMOrcLLJITLookup(object J, object Result, object Name):
     r"""(No short description, might be part of a group.)
 
     Look up the given symbol in the main JITDylib of the given LLJIT instance.
@@ -941,12 +942,13 @@ def LLVMOrcLLJITLookup(object J, object Result, const char * Name):
         Result (`~.rocm.llvm._util.types.Pointer`/`~.object`):
             (undocumented)
 
-        Name (`~.bytes`):
+        Name (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
     """
     _LLVMOrcLLJITLookup__retval = LLVMOpaqueError.from_ptr(clljit.LLVMOrcLLJITLookup(
         LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr(),
-        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr,Name))    # fully specified
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr,
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
     return _LLVMOrcLLJITLookup__retval
 
 
@@ -1011,8 +1013,8 @@ def LLVMOrcLLJITGetDataLayoutStr(object J):
     Returns:
         `~.bytes`
     """
-    cdef const char * _LLVMOrcLLJITGetDataLayoutStr__retval = clljit.LLVMOrcLLJITGetDataLayoutStr(
-        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr())    # fully specified
+    _LLVMOrcLLJITGetDataLayoutStr__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>clljit.LLVMOrcLLJITGetDataLayoutStr(
+        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr()))    # fully specified
     return _LLVMOrcLLJITGetDataLayoutStr__retval
 
 __all__ = [

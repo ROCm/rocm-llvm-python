@@ -56,7 +56,7 @@ from rocm.llvm.c.types import LLVMJITEventListenerRef
 from rocm.llvm.c.types import LLVMBinaryRef
 
 @cython.embedsignature(True)
-def LLVMWriteBitcodeToFile(object M, const char * Path):
+def LLVMWriteBitcodeToFile(object M, object Path):
     r"""(No short description, might be part of a group.)
 
     Writes a module to the specified path. Returns 0 on success. */
@@ -65,14 +65,15 @@ def LLVMWriteBitcodeToFile(object M, const char * Path):
         M (`~.LLVMOpaqueModule`/`~.object`):
             (undocumented)
 
-        Path (`~.bytes`):
+        Path (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
     Returns:
         `~.int`
     """
     cdef int _LLVMWriteBitcodeToFile__retval = cbitwriter.LLVMWriteBitcodeToFile(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Path)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Path)._ptr)    # fully specified
     return _LLVMWriteBitcodeToFile__retval
 
 

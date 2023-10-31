@@ -80,7 +80,7 @@ class LLVMVerifierFailureAction(_LLVMVerifierFailureAction__Base):
 
 
 @cython.embedsignature(True)
-def LLVMVerifyModule(object M, object Action, object OutMessage):
+def LLVMVerifyModule(object M, object Action):
     r"""(No short description, might be part of a group.)
 
     Args:
@@ -90,18 +90,20 @@ def LLVMVerifyModule(object M, object Action, object OutMessage):
         Action (`~.LLVMVerifierFailureAction`):
             (undocumented)
 
-        OutMessage (`~.rocm.llvm._util.types.Pointer`/`~.object`):
-            (undocumented)
-
     Returns:
-        `~.int`
+        A `~.tuple` of size 2 that contains (in that order):
+
+        * `~.int`
+        * OutMessage (`~.rocm.llvm._util.types.CStr`/`~.object`):
+            (undocumented)
     """
     if not isinstance(Action,_LLVMVerifierFailureAction__Base):
-        raise TypeError("argument 'Action' must be of type '_LLVMVerifierFailureAction__Base'")
+        raise TypeError("argument 'Action' must be of type '_LLVMVerifierFailureAction__Base'")                    
+    OutMessage = rocm.llvm._util.types.CStr.from_ptr(NULL)
     cdef int _LLVMVerifyModule__retval = canalysis.LLVMVerifyModule(
         LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Action.value,
-        <char **>rocm.llvm._util.types.Pointer.from_pyobj(OutMessage)._ptr)    # fully specified
-    return _LLVMVerifyModule__retval
+        <char **>&OutMessage._ptr)    # fully specified
+    return (_LLVMVerifyModule__retval,None if OutMessage._ptr == NULL else OutMessage)
 
 
 @cython.embedsignature(True)
