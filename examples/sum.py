@@ -31,6 +31,7 @@
 # }
 
 import sys
+import argparse
 
 from rocm.llvm.c.core import *
 from rocm.llvm.c.executionengine import *
@@ -40,49 +41,63 @@ from rocm.llvm.c.analysis import *
 from rocm.llvm.c.bitwriter import *
 from rocm.llvm._util.types import Pointer
 
-mod = LLVMModuleCreateWithName(b"my_module")
+parser = argparse.ArgumentParser(description="Computes `x + y` via the LLVM interpreter")
+parser.add_argument("x",type=int)
+parser.add_argument("y",type=int)
+args = parser.parse_args()
+
+# Build the code
+builder = LLVMCreateBuilder()
+
+# Note that the LLVM C will typically not copy 
+# bytes/strings. Hence the Pyhton objects that you supply
+# should not go out of scope during the lifetime
+# of the respective LLVM C object.
+
+mod = LLVMModuleCreateWithName(b"my_module") 
 
 param_types = [ LLVMInt32Type(), LLVMInt32Type() ]
 ret_type = LLVMFunctionType(LLVMInt32Type(), param_types, 2, 0)
-sum = LLVMAddFunction(mod, b"sum", ret_type)
+sumfn = LLVMAddFunction(mod, b"sum", ret_type)
 
-entry = LLVMAppendBasicBlock(sum, b"entry")
+entry = LLVMAppendBasicBlock(sumfn, b"entry")
 
-builder = LLVMCreateBuilder()
 LLVMPositionBuilderAtEnd(builder, entry)
-tmp = LLVMBuildAdd(builder, LLVMGetParam(sum, 0), LLVMGetParam(sum, 1), b"tmp")
+tmp = LLVMBuildAdd(builder, LLVMGetParam(sumfn, 0), LLVMGetParam(sumfn, 1), b"tmp")
 LLVMBuildRet(builder, tmp)
 
+# Verify
+_, error = LLVMVerifyModule(mod, LLVMVerifierFailureAction.LLVMAbortProcessAction)
+if error:
+    print(f"error: {error}",file=sys.stderr)
+    LLVMDisposeMessage(error)
 
-error = Pointer(None)
-LLVMVerifyModule(mod, LLVMVerifierFailureAction.LLVMAbortProcessAction,error) # `error` carries address of char* -> char**
-#LLVMDisposeMessage(error) # FIXME error is assumed as bytes
-
-LLVMLinkInMCJIT()
-# LLVMInitializeNativeTarget() # TODO undefined because of static inline in header
-# LLVMInitializeAllTargets()   # TODO undefined because of static inline in header
-(status, engine) = LLVMCreateExecutionEngineForModule(mod,error)
-if status != 0: # FIXME memory leak bc of error mesage
+# Interpret the code with arguments from CLI
+LLVMLinkInInterpreter()
+# LLVMInitializeNativeTarget() # TODO symbol undefined because of static inline in header
+# LLVMInitializeAllTargets()   # TODO symbol undefined because of static inline in header
+status, engine, error = LLVMCreateExecutionEngineForModule(mod)
+if status != 0:
     print("failed to create execution engine",file=sys.stderr)
-    sys.abort()
-# if error:# FIXME error is semicolon, what does that mean?
-#     print(f"error: {error}",file=sys.stderr)
-#     LLVMDisposeMessage(error) # FIXME error is assumed as bytes
-#     # sys.exit(1)
+    if error:
+        print(f"error: {error}",file=sys.stderr)
+        LLVMDisposeMessage(error)
+        sys.abort()
 
-x =  11
-y = 111
-
-args = [
-    LLVMCreateGenericValueOfInt(LLVMInt32Type(), x, 0),
-    LLVMCreateGenericValueOfInt(LLVMInt32Type(), y, 0),
+sumfn = LLVMGetNamedFunction(mod, b"sum")
+parms = [
+    LLVMCreateGenericValueOfInt(LLVMInt32Type(), args.x, 0),
+    LLVMCreateGenericValueOfInt(LLVMInt32Type(), args.y, 0),
 ]
-res = LLVMRunFunction(engine, sum, 2, args) # FIXME make list of pointer
+res = LLVMRunFunction(engine, sumfn, 2, parms)
 print(f"{LLVMGenericValueToInt(res, 0)}")
-# 
-# out to file
+        
+# Out to file
 if LLVMWriteBitcodeToFile(mod, b"sum.bc") != 0:
     print(f"error while writing file 'sum.bc', skipping",file=sys.stderr)
 
-LLVMDisposeBuilder(builder)
+# shutdown
 LLVMDisposeExecutionEngine(engine)
+# LLVMDisposeModule(mod) # TODO you can either call this or the above, 
+                         # Investigate further.
+LLVMDisposeBuilder(builder)
