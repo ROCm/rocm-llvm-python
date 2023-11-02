@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # MIT License
 # 
 # Copyright (c) 2023 Advanced Micro Devices, Inc.
@@ -20,16 +21,29 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# This is derivative work based on https://github.com/paulsmith/getting-started-llvm-c-api/blob/master/sum.c ,
-# which was placed into the public domain (https://github.com/paulsmith/getting-started-llvm-c-api/blob/master/COPYING).
+"""Example showcasing LLVM IR builder and interpreter
 
-#!/usr/bin/env python3
+In this example, we implement the LLVM equivalent of
 
-# LLVM equivalent of:
-# int sum(int a, int b) {
-#     return a + b
-# }
+```c
+int sum(int a, int b) {
+    return a + b
+}
+```
 
+by first constructing the LLVM IR tree in memory,
+and then executing the resulting LLVM IR function via the 
+LLVM Interpreter ("Execution Engine")
+We supply operands that the user of this script
+specifies via the command line.
+
+Acknowledgements:
+
+    This example is derived from https://github.com/paulsmith/getting-started-llvm-c-api/blob/master/sum.c ,
+    which was placed into the public domain (https://github.com/paulsmith/getting-started-llvm-c-api/blob/master/COPYING).
+"""
+
+# [include
 import sys
 import argparse
 
@@ -101,3 +115,4 @@ LLVMDisposeExecutionEngine(engine)
 # LLVMDisposeModule(mod) # TODO you can either call this or the above.
                          # Otherwise you get a segfualt, investigate further.
 LLVMDisposeBuilder(builder)
+
