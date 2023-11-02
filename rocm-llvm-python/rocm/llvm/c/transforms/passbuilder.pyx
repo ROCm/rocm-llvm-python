@@ -267,8 +267,8 @@ def LLVMRunPasses(object M, object Passes, object TM, object Options):
         LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(Passes)._ptr,
         LLVMOpaqueTargetMachine.from_pyobj(TM).get_element_ptr(),
-        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr()))    # fully specified
-    return _LLVMRunPasses__retval
+        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr()))
+    return None if _LLVMRunPasses__retval._ptr == NULL else _LLVMRunPasses__retval
 
 
 @cython.embedsignature(True)
@@ -281,8 +281,8 @@ def LLVMCreatePassBuilderOptions():
     responsible for it. The client should call LLVMDisposePassBuilderOptions
     to free the pass builder options.
     """
-    _LLVMCreatePassBuilderOptions__retval = LLVMOpaquePassBuilderOptions.from_ptr(cpassbuilder.LLVMCreatePassBuilderOptions())    # fully specified
-    return _LLVMCreatePassBuilderOptions__retval
+    _LLVMCreatePassBuilderOptions__retval = LLVMOpaquePassBuilderOptions.from_ptr(cpassbuilder.LLVMCreatePassBuilderOptions())
+    return None if _LLVMCreatePassBuilderOptions__retval._ptr == NULL else _LLVMCreatePassBuilderOptions__retval
 
 
 @cython.embedsignature(True)
@@ -300,7 +300,7 @@ def LLVMPassBuilderOptionsSetVerifyEach(object Options, int VerifyEach):
             (undocumented)
     """
     cpassbuilder.LLVMPassBuilderOptionsSetVerifyEach(
-        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr(),VerifyEach)    # fully specified
+        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr(),VerifyEach)
 
 
 @cython.embedsignature(True)
@@ -317,7 +317,7 @@ def LLVMPassBuilderOptionsSetDebugLogging(object Options, int DebugLogging):
             (undocumented)
     """
     cpassbuilder.LLVMPassBuilderOptionsSetDebugLogging(
-        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr(),DebugLogging)    # fully specified
+        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr(),DebugLogging)
 
 
 @cython.embedsignature(True)
@@ -332,7 +332,7 @@ def LLVMPassBuilderOptionsSetLoopInterleaving(object Options, int LoopInterleavi
             (undocumented)
     """
     cpassbuilder.LLVMPassBuilderOptionsSetLoopInterleaving(
-        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr(),LoopInterleaving)    # fully specified
+        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr(),LoopInterleaving)
 
 
 @cython.embedsignature(True)
@@ -347,7 +347,7 @@ def LLVMPassBuilderOptionsSetLoopVectorization(object Options, int LoopVectoriza
             (undocumented)
     """
     cpassbuilder.LLVMPassBuilderOptionsSetLoopVectorization(
-        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr(),LoopVectorization)    # fully specified
+        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr(),LoopVectorization)
 
 
 @cython.embedsignature(True)
@@ -362,7 +362,7 @@ def LLVMPassBuilderOptionsSetSLPVectorization(object Options, int SLPVectorizati
             (undocumented)
     """
     cpassbuilder.LLVMPassBuilderOptionsSetSLPVectorization(
-        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr(),SLPVectorization)    # fully specified
+        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr(),SLPVectorization)
 
 
 @cython.embedsignature(True)
@@ -377,7 +377,7 @@ def LLVMPassBuilderOptionsSetLoopUnrolling(object Options, int LoopUnrolling):
             (undocumented)
     """
     cpassbuilder.LLVMPassBuilderOptionsSetLoopUnrolling(
-        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr(),LoopUnrolling)    # fully specified
+        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr(),LoopUnrolling)
 
 
 @cython.embedsignature(True)
@@ -392,7 +392,7 @@ def LLVMPassBuilderOptionsSetForgetAllSCEVInLoopUnroll(object Options, int Forge
             (undocumented)
     """
     cpassbuilder.LLVMPassBuilderOptionsSetForgetAllSCEVInLoopUnroll(
-        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr(),ForgetAllSCEVInLoopUnroll)    # fully specified
+        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr(),ForgetAllSCEVInLoopUnroll)
 
 
 @cython.embedsignature(True)
@@ -407,7 +407,7 @@ def LLVMPassBuilderOptionsSetLicmMssaOptCap(object Options, unsigned int LicmMss
             (undocumented)
     """
     cpassbuilder.LLVMPassBuilderOptionsSetLicmMssaOptCap(
-        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr(),LicmMssaOptCap)    # fully specified
+        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr(),LicmMssaOptCap)
 
 
 @cython.embedsignature(True)
@@ -422,7 +422,7 @@ def LLVMPassBuilderOptionsSetLicmMssaNoAccForPromotionCap(object Options, unsign
             (undocumented)
     """
     cpassbuilder.LLVMPassBuilderOptionsSetLicmMssaNoAccForPromotionCap(
-        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr(),LicmMssaNoAccForPromotionCap)    # fully specified
+        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr(),LicmMssaNoAccForPromotionCap)
 
 
 @cython.embedsignature(True)
@@ -437,7 +437,7 @@ def LLVMPassBuilderOptionsSetCallGraphProfile(object Options, int CallGraphProfi
             (undocumented)
     """
     cpassbuilder.LLVMPassBuilderOptionsSetCallGraphProfile(
-        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr(),CallGraphProfile)    # fully specified
+        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr(),CallGraphProfile)
 
 
 @cython.embedsignature(True)
@@ -452,7 +452,7 @@ def LLVMPassBuilderOptionsSetMergeFunctions(object Options, int MergeFunctions):
             (undocumented)
     """
     cpassbuilder.LLVMPassBuilderOptionsSetMergeFunctions(
-        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr(),MergeFunctions)    # fully specified
+        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr(),MergeFunctions)
 
 
 @cython.embedsignature(True)
@@ -466,7 +466,7 @@ def LLVMDisposePassBuilderOptions(object Options):
             (undocumented)
     """
     cpassbuilder.LLVMDisposePassBuilderOptions(
-        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr())    # fully specified
+        LLVMOpaquePassBuilderOptions.from_pyobj(Options).get_element_ptr())
 
 __all__ = [
     "LLVMOpaquePassBuilderOptions",

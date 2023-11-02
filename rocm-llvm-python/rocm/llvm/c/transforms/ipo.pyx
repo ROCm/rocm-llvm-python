@@ -66,7 +66,7 @@ def LLVMAddConstantMergePass(object PM):
             (undocumented)
     """
     cipo.LLVMAddConstantMergePass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -80,7 +80,7 @@ def LLVMAddMergeFunctionsPass(object PM):
             (undocumented)
     """
     cipo.LLVMAddMergeFunctionsPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -94,7 +94,7 @@ def LLVMAddCalledValuePropagationPass(object PM):
             (undocumented)
     """
     cipo.LLVMAddCalledValuePropagationPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -108,7 +108,7 @@ def LLVMAddDeadArgEliminationPass(object PM):
             (undocumented)
     """
     cipo.LLVMAddDeadArgEliminationPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -122,7 +122,7 @@ def LLVMAddFunctionAttrsPass(object PM):
             (undocumented)
     """
     cipo.LLVMAddFunctionAttrsPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -136,7 +136,7 @@ def LLVMAddFunctionInliningPass(object PM):
             (undocumented)
     """
     cipo.LLVMAddFunctionInliningPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -150,7 +150,7 @@ def LLVMAddAlwaysInlinerPass(object PM):
             (undocumented)
     """
     cipo.LLVMAddAlwaysInlinerPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -164,7 +164,7 @@ def LLVMAddGlobalDCEPass(object PM):
             (undocumented)
     """
     cipo.LLVMAddGlobalDCEPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -178,7 +178,7 @@ def LLVMAddGlobalOptimizerPass(object PM):
             (undocumented)
     """
     cipo.LLVMAddGlobalOptimizerPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -192,7 +192,7 @@ def LLVMAddIPSCCPPass(object PM):
             (undocumented)
     """
     cipo.LLVMAddIPSCCPPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -209,7 +209,7 @@ def LLVMAddInternalizePass(object arg0, unsigned int AllButMain):
             (undocumented)
     """
     cipo.LLVMAddInternalizePass(
-        LLVMOpaquePassManager.from_pyobj(arg0).get_element_ptr(),AllButMain)    # fully specified
+        LLVMOpaquePassManager.from_pyobj(arg0).get_element_ptr(),AllButMain)
 
 
 cdef class LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0(rocm.llvm._util.types.Pointer):
@@ -353,7 +353,7 @@ def LLVMAddInternalizePassWithMustPreservePredicate(object PM, object Context, o
     cipo.LLVMAddInternalizePassWithMustPreservePredicate(
         LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr(),
         <void *>rocm.llvm._util.types.Pointer.from_pyobj(Context)._ptr,
-        LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0.from_pyobj(MustPreserve).get_element_ptr())    # fully specified
+        LLVMAddInternalizePassWithMustPreservePredicate_anon_funptr_0.from_pyobj(MustPreserve).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -367,7 +367,7 @@ def LLVMAddStripDeadPrototypesPass(object PM):
             (undocumented)
     """
     cipo.LLVMAddStripDeadPrototypesPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -381,7 +381,7 @@ def LLVMAddStripSymbolsPass(object PM):
             (undocumented)
     """
     cipo.LLVMAddStripSymbolsPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 __all__ = [
     "LLVMAddConstantMergePass",

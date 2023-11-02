@@ -92,7 +92,7 @@ def LLVMLinkModules2(object Dest, object Src):
     """
     cdef int _LLVMLinkModules2__retval = clinker.LLVMLinkModules2(
         LLVMOpaqueModule.from_pyobj(Dest).get_element_ptr(),
-        LLVMOpaqueModule.from_pyobj(Src).get_element_ptr())    # fully specified
+        LLVMOpaqueModule.from_pyobj(Src).get_element_ptr())
     return _LLVMLinkModules2__retval
 
 __all__ = [

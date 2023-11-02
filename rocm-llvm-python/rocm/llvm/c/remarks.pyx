@@ -262,8 +262,8 @@ def LLVMRemarkStringGetData(object String):
         `~.bytes`
     """
     _LLVMRemarkStringGetData__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cremarks.LLVMRemarkStringGetData(
-        LLVMRemarkOpaqueString.from_pyobj(String).get_element_ptr()))    # fully specified
-    return _LLVMRemarkStringGetData__retval
+        LLVMRemarkOpaqueString.from_pyobj(String).get_element_ptr()))
+    return None if _LLVMRemarkStringGetData__retval._ptr == NULL else _LLVMRemarkStringGetData__retval
 
 
 @cython.embedsignature(True)
@@ -283,7 +283,7 @@ def LLVMRemarkStringGetLen(object String):
         `~.int`
     """
     cdef unsigned int _LLVMRemarkStringGetLen__retval = cremarks.LLVMRemarkStringGetLen(
-        LLVMRemarkOpaqueString.from_pyobj(String).get_element_ptr())    # fully specified
+        LLVMRemarkOpaqueString.from_pyobj(String).get_element_ptr())
     return _LLVMRemarkStringGetLen__retval
 
 
@@ -440,8 +440,8 @@ def LLVMRemarkDebugLocGetSourceFilePath(object DL):
             (undocumented)
     """
     _LLVMRemarkDebugLocGetSourceFilePath__retval = LLVMRemarkOpaqueString.from_ptr(cremarks.LLVMRemarkDebugLocGetSourceFilePath(
-        LLVMRemarkOpaqueDebugLoc.from_pyobj(DL).get_element_ptr()))    # fully specified
-    return _LLVMRemarkDebugLocGetSourceFilePath__retval
+        LLVMRemarkOpaqueDebugLoc.from_pyobj(DL).get_element_ptr()))
+    return None if _LLVMRemarkDebugLocGetSourceFilePath__retval._ptr == NULL else _LLVMRemarkDebugLocGetSourceFilePath__retval
 
 
 @cython.embedsignature(True)
@@ -461,7 +461,7 @@ def LLVMRemarkDebugLocGetSourceLine(object DL):
         `~.int`
     """
     cdef unsigned int _LLVMRemarkDebugLocGetSourceLine__retval = cremarks.LLVMRemarkDebugLocGetSourceLine(
-        LLVMRemarkOpaqueDebugLoc.from_pyobj(DL).get_element_ptr())    # fully specified
+        LLVMRemarkOpaqueDebugLoc.from_pyobj(DL).get_element_ptr())
     return _LLVMRemarkDebugLocGetSourceLine__retval
 
 
@@ -482,7 +482,7 @@ def LLVMRemarkDebugLocGetSourceColumn(object DL):
         `~.int`
     """
     cdef unsigned int _LLVMRemarkDebugLocGetSourceColumn__retval = cremarks.LLVMRemarkDebugLocGetSourceColumn(
-        LLVMRemarkOpaqueDebugLoc.from_pyobj(DL).get_element_ptr())    # fully specified
+        LLVMRemarkOpaqueDebugLoc.from_pyobj(DL).get_element_ptr())
     return _LLVMRemarkDebugLocGetSourceColumn__retval
 
 
@@ -640,8 +640,8 @@ def LLVMRemarkArgGetKey(object Arg):
             (undocumented)
     """
     _LLVMRemarkArgGetKey__retval = LLVMRemarkOpaqueString.from_ptr(cremarks.LLVMRemarkArgGetKey(
-        LLVMRemarkOpaqueArg.from_pyobj(Arg).get_element_ptr()))    # fully specified
-    return _LLVMRemarkArgGetKey__retval
+        LLVMRemarkOpaqueArg.from_pyobj(Arg).get_element_ptr()))
+    return None if _LLVMRemarkArgGetKey__retval._ptr == NULL else _LLVMRemarkArgGetKey__retval
 
 
 @cython.embedsignature(True)
@@ -658,8 +658,8 @@ def LLVMRemarkArgGetValue(object Arg):
             (undocumented)
     """
     _LLVMRemarkArgGetValue__retval = LLVMRemarkOpaqueString.from_ptr(cremarks.LLVMRemarkArgGetValue(
-        LLVMRemarkOpaqueArg.from_pyobj(Arg).get_element_ptr()))    # fully specified
-    return _LLVMRemarkArgGetValue__retval
+        LLVMRemarkOpaqueArg.from_pyobj(Arg).get_element_ptr()))
+    return None if _LLVMRemarkArgGetValue__retval._ptr == NULL else _LLVMRemarkArgGetValue__retval
 
 
 @cython.embedsignature(True)
@@ -678,8 +678,8 @@ def LLVMRemarkArgGetDebugLoc(object Arg):
             (undocumented)
     """
     _LLVMRemarkArgGetDebugLoc__retval = LLVMRemarkOpaqueDebugLoc.from_ptr(cremarks.LLVMRemarkArgGetDebugLoc(
-        LLVMRemarkOpaqueArg.from_pyobj(Arg).get_element_ptr()))    # fully specified
-    return _LLVMRemarkArgGetDebugLoc__retval
+        LLVMRemarkOpaqueArg.from_pyobj(Arg).get_element_ptr()))
+    return None if _LLVMRemarkArgGetDebugLoc__retval._ptr == NULL else _LLVMRemarkArgGetDebugLoc__retval
 
 
 cdef class LLVMRemarkOpaqueEntry(rocm.llvm._util.types.Pointer):
@@ -835,7 +835,7 @@ def LLVMRemarkEntryDispose(object Remark):
             (undocumented)
     """
     cremarks.LLVMRemarkEntryDispose(
-        LLVMRemarkOpaqueEntry.from_pyobj(Remark).get_element_ptr())    # fully specified
+        LLVMRemarkOpaqueEntry.from_pyobj(Remark).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -856,7 +856,7 @@ def LLVMRemarkEntryGetType(object Remark):
         `~.LLVMRemarkType`
     """
     _LLVMRemarkEntryGetType__retval = LLVMRemarkType(cremarks.LLVMRemarkEntryGetType(
-        LLVMRemarkOpaqueEntry.from_pyobj(Remark).get_element_ptr()))    # fully specified
+        LLVMRemarkOpaqueEntry.from_pyobj(Remark).get_element_ptr()))
     return _LLVMRemarkEntryGetType__retval
 
 
@@ -874,8 +874,8 @@ def LLVMRemarkEntryGetPassName(object Remark):
             (undocumented)
     """
     _LLVMRemarkEntryGetPassName__retval = LLVMRemarkOpaqueString.from_ptr(cremarks.LLVMRemarkEntryGetPassName(
-        LLVMRemarkOpaqueEntry.from_pyobj(Remark).get_element_ptr()))    # fully specified
-    return _LLVMRemarkEntryGetPassName__retval
+        LLVMRemarkOpaqueEntry.from_pyobj(Remark).get_element_ptr()))
+    return None if _LLVMRemarkEntryGetPassName__retval._ptr == NULL else _LLVMRemarkEntryGetPassName__retval
 
 
 @cython.embedsignature(True)
@@ -892,8 +892,8 @@ def LLVMRemarkEntryGetRemarkName(object Remark):
             (undocumented)
     """
     _LLVMRemarkEntryGetRemarkName__retval = LLVMRemarkOpaqueString.from_ptr(cremarks.LLVMRemarkEntryGetRemarkName(
-        LLVMRemarkOpaqueEntry.from_pyobj(Remark).get_element_ptr()))    # fully specified
-    return _LLVMRemarkEntryGetRemarkName__retval
+        LLVMRemarkOpaqueEntry.from_pyobj(Remark).get_element_ptr()))
+    return None if _LLVMRemarkEntryGetRemarkName__retval._ptr == NULL else _LLVMRemarkEntryGetRemarkName__retval
 
 
 @cython.embedsignature(True)
@@ -910,8 +910,8 @@ def LLVMRemarkEntryGetFunctionName(object Remark):
             (undocumented)
     """
     _LLVMRemarkEntryGetFunctionName__retval = LLVMRemarkOpaqueString.from_ptr(cremarks.LLVMRemarkEntryGetFunctionName(
-        LLVMRemarkOpaqueEntry.from_pyobj(Remark).get_element_ptr()))    # fully specified
-    return _LLVMRemarkEntryGetFunctionName__retval
+        LLVMRemarkOpaqueEntry.from_pyobj(Remark).get_element_ptr()))
+    return None if _LLVMRemarkEntryGetFunctionName__retval._ptr == NULL else _LLVMRemarkEntryGetFunctionName__retval
 
 
 @cython.embedsignature(True)
@@ -930,8 +930,8 @@ def LLVMRemarkEntryGetDebugLoc(object Remark):
             (undocumented)
     """
     _LLVMRemarkEntryGetDebugLoc__retval = LLVMRemarkOpaqueDebugLoc.from_ptr(cremarks.LLVMRemarkEntryGetDebugLoc(
-        LLVMRemarkOpaqueEntry.from_pyobj(Remark).get_element_ptr()))    # fully specified
-    return _LLVMRemarkEntryGetDebugLoc__retval
+        LLVMRemarkOpaqueEntry.from_pyobj(Remark).get_element_ptr()))
+    return None if _LLVMRemarkEntryGetDebugLoc__retval._ptr == NULL else _LLVMRemarkEntryGetDebugLoc__retval
 
 
 @cython.embedsignature(True)
@@ -953,7 +953,7 @@ def LLVMRemarkEntryGetHotness(object Remark):
         `~.int`
     """
     cdef unsigned long _LLVMRemarkEntryGetHotness__retval = cremarks.LLVMRemarkEntryGetHotness(
-        LLVMRemarkOpaqueEntry.from_pyobj(Remark).get_element_ptr())    # fully specified
+        LLVMRemarkOpaqueEntry.from_pyobj(Remark).get_element_ptr())
     return _LLVMRemarkEntryGetHotness__retval
 
 
@@ -974,7 +974,7 @@ def LLVMRemarkEntryGetNumArgs(object Remark):
         `~.int`
     """
     cdef unsigned int _LLVMRemarkEntryGetNumArgs__retval = cremarks.LLVMRemarkEntryGetNumArgs(
-        LLVMRemarkOpaqueEntry.from_pyobj(Remark).get_element_ptr())    # fully specified
+        LLVMRemarkOpaqueEntry.from_pyobj(Remark).get_element_ptr())
     return _LLVMRemarkEntryGetNumArgs__retval
 
 
@@ -996,8 +996,8 @@ def LLVMRemarkEntryGetFirstArg(object Remark):
             (undocumented)
     """
     _LLVMRemarkEntryGetFirstArg__retval = LLVMRemarkOpaqueArg.from_ptr(cremarks.LLVMRemarkEntryGetFirstArg(
-        LLVMRemarkOpaqueEntry.from_pyobj(Remark).get_element_ptr()))    # fully specified
-    return _LLVMRemarkEntryGetFirstArg__retval
+        LLVMRemarkOpaqueEntry.from_pyobj(Remark).get_element_ptr()))
+    return None if _LLVMRemarkEntryGetFirstArg__retval._ptr == NULL else _LLVMRemarkEntryGetFirstArg__retval
 
 
 @cython.embedsignature(True)
@@ -1022,8 +1022,8 @@ def LLVMRemarkEntryGetNextArg(object It, object Remark):
     """
     _LLVMRemarkEntryGetNextArg__retval = LLVMRemarkOpaqueArg.from_ptr(cremarks.LLVMRemarkEntryGetNextArg(
         LLVMRemarkOpaqueArg.from_pyobj(It).get_element_ptr(),
-        LLVMRemarkOpaqueEntry.from_pyobj(Remark).get_element_ptr()))    # fully specified
-    return _LLVMRemarkEntryGetNextArg__retval
+        LLVMRemarkOpaqueEntry.from_pyobj(Remark).get_element_ptr()))
+    return None if _LLVMRemarkEntryGetNextArg__retval._ptr == NULL else _LLVMRemarkEntryGetNextArg__retval
 
 
 cdef class LLVMRemarkOpaqueParser(rocm.llvm._util.types.Pointer):
@@ -1188,8 +1188,8 @@ def LLVMRemarkParserCreateYAML(object Buf, unsigned long Size):
             (undocumented)
     """
     _LLVMRemarkParserCreateYAML__retval = LLVMRemarkOpaqueParser.from_ptr(cremarks.LLVMRemarkParserCreateYAML(
-        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(Buf)._ptr,Size))    # fully specified
-    return _LLVMRemarkParserCreateYAML__retval
+        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(Buf)._ptr,Size))
+    return None if _LLVMRemarkParserCreateYAML__retval._ptr == NULL else _LLVMRemarkParserCreateYAML__retval
 
 
 @cython.embedsignature(True)
@@ -1215,8 +1215,8 @@ def LLVMRemarkParserCreateBitstream(object Buf, unsigned long Size):
             (undocumented)
     """
     _LLVMRemarkParserCreateBitstream__retval = LLVMRemarkOpaqueParser.from_ptr(cremarks.LLVMRemarkParserCreateBitstream(
-        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(Buf)._ptr,Size))    # fully specified
-    return _LLVMRemarkParserCreateBitstream__retval
+        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(Buf)._ptr,Size))
+    return None if _LLVMRemarkParserCreateBitstream__retval._ptr == NULL else _LLVMRemarkParserCreateBitstream__retval
 
 
 @cython.embedsignature(True)
@@ -1270,8 +1270,8 @@ def LLVMRemarkParserGetNext(object Parser):
             (undocumented)
     """
     _LLVMRemarkParserGetNext__retval = LLVMRemarkOpaqueEntry.from_ptr(cremarks.LLVMRemarkParserGetNext(
-        LLVMRemarkOpaqueParser.from_pyobj(Parser).get_element_ptr()))    # fully specified
-    return _LLVMRemarkParserGetNext__retval
+        LLVMRemarkOpaqueParser.from_pyobj(Parser).get_element_ptr()))
+    return None if _LLVMRemarkParserGetNext__retval._ptr == NULL else _LLVMRemarkParserGetNext__retval
 
 
 @cython.embedsignature(True)
@@ -1291,7 +1291,7 @@ def LLVMRemarkParserHasError(object Parser):
         `~.int`
     """
     cdef int _LLVMRemarkParserHasError__retval = cremarks.LLVMRemarkParserHasError(
-        LLVMRemarkOpaqueParser.from_pyobj(Parser).get_element_ptr())    # fully specified
+        LLVMRemarkOpaqueParser.from_pyobj(Parser).get_element_ptr())
     return _LLVMRemarkParserHasError__retval
 
 
@@ -1318,8 +1318,8 @@ def LLVMRemarkParserGetErrorMessage(object Parser):
         `~.bytes`
     """
     _LLVMRemarkParserGetErrorMessage__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cremarks.LLVMRemarkParserGetErrorMessage(
-        LLVMRemarkOpaqueParser.from_pyobj(Parser).get_element_ptr()))    # fully specified
-    return _LLVMRemarkParserGetErrorMessage__retval
+        LLVMRemarkOpaqueParser.from_pyobj(Parser).get_element_ptr()))
+    return None if _LLVMRemarkParserGetErrorMessage__retval._ptr == NULL else _LLVMRemarkParserGetErrorMessage__retval
 
 
 @cython.embedsignature(True)
@@ -1336,7 +1336,7 @@ def LLVMRemarkParserDispose(object Parser):
             (undocumented)
     """
     cremarks.LLVMRemarkParserDispose(
-        LLVMRemarkOpaqueParser.from_pyobj(Parser).get_element_ptr())    # fully specified
+        LLVMRemarkOpaqueParser.from_pyobj(Parser).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -1351,7 +1351,7 @@ def LLVMRemarkVersion():
     Returns:
         `~.int`
     """
-    cdef unsigned int _LLVMRemarkVersion__retval = cremarks.LLVMRemarkVersion()    # fully specified
+    cdef unsigned int _LLVMRemarkVersion__retval = cremarks.LLVMRemarkVersion()
     return _LLVMRemarkVersion__retval
 
 __all__ = [

@@ -3482,7 +3482,7 @@ def LLVMDebugMetadataVersion():
     Returns:
         `~.int`
     """
-    cdef unsigned int _LLVMDebugMetadataVersion__retval = cdebuginfo.LLVMDebugMetadataVersion()    # fully specified
+    cdef unsigned int _LLVMDebugMetadataVersion__retval = cdebuginfo.LLVMDebugMetadataVersion()
     return _LLVMDebugMetadataVersion__retval
 
 
@@ -3500,7 +3500,7 @@ def LLVMGetModuleDebugMetadataVersion(object Module):
         `~.int`
     """
     cdef unsigned int _LLVMGetModuleDebugMetadataVersion__retval = cdebuginfo.LLVMGetModuleDebugMetadataVersion(
-        LLVMOpaqueModule.from_pyobj(Module).get_element_ptr())    # fully specified
+        LLVMOpaqueModule.from_pyobj(Module).get_element_ptr())
     return _LLVMGetModuleDebugMetadataVersion__retval
 
 
@@ -3521,7 +3521,7 @@ def LLVMStripModuleDebugInfo(object Module):
         `~.int`
     """
     cdef int _LLVMStripModuleDebugInfo__retval = cdebuginfo.LLVMStripModuleDebugInfo(
-        LLVMOpaqueModule.from_pyobj(Module).get_element_ptr())    # fully specified
+        LLVMOpaqueModule.from_pyobj(Module).get_element_ptr())
     return _LLVMStripModuleDebugInfo__retval
 
 
@@ -3537,8 +3537,8 @@ def LLVMCreateDIBuilderDisallowUnresolved(object M):
             (undocumented)
     """
     _LLVMCreateDIBuilderDisallowUnresolved__retval = LLVMOpaqueDIBuilder.from_ptr(cdebuginfo.LLVMCreateDIBuilderDisallowUnresolved(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
-    return _LLVMCreateDIBuilderDisallowUnresolved__retval
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))
+    return None if _LLVMCreateDIBuilderDisallowUnresolved__retval._ptr == NULL else _LLVMCreateDIBuilderDisallowUnresolved__retval
 
 
 @cython.embedsignature(True)
@@ -3554,8 +3554,8 @@ def LLVMCreateDIBuilder(object M):
             (undocumented)
     """
     _LLVMCreateDIBuilder__retval = LLVMOpaqueDIBuilder.from_ptr(cdebuginfo.LLVMCreateDIBuilder(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
-    return _LLVMCreateDIBuilder__retval
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))
+    return None if _LLVMCreateDIBuilder__retval._ptr == NULL else _LLVMCreateDIBuilder__retval
 
 
 @cython.embedsignature(True)
@@ -3572,7 +3572,7 @@ def LLVMDisposeDIBuilder(object Builder):
             (undocumented)
     """
     cdebuginfo.LLVMDisposeDIBuilder(
-        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr())    # fully specified
+        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -3586,7 +3586,7 @@ def LLVMDIBuilderFinalize(object Builder):
             (undocumented)
     """
     cdebuginfo.LLVMDIBuilderFinalize(
-        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr())    # fully specified
+        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -3605,7 +3605,7 @@ def LLVMDIBuilderFinalizeSubprogram(object Builder, object Subprogram):
     """
     cdebuginfo.LLVMDIBuilderFinalizeSubprogram(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(Subprogram).get_element_ptr())    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(Subprogram).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -3694,8 +3694,8 @@ def LLVMDIBuilderCreateCompileUnit(object Builder, object Lang, object FileRef, 
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(Flags)._ptr,FlagsLen,RuntimeVer,
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(SplitName)._ptr,SplitNameLen,Kind.value,DWOId,SplitDebugInlining,DebugInfoForProfiling,
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(SysRoot)._ptr,SysRootLen,
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(SDK)._ptr,SDKLen))    # fully specified
-    return _LLVMDIBuilderCreateCompileUnit__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(SDK)._ptr,SDKLen))
+    return None if _LLVMDIBuilderCreateCompileUnit__retval._ptr == NULL else _LLVMDIBuilderCreateCompileUnit__retval
 
 
 @cython.embedsignature(True)
@@ -3723,8 +3723,8 @@ def LLVMDIBuilderCreateFile(object Builder, object Filename, unsigned long Filen
     _LLVMDIBuilderCreateFile__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateFile(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(Filename)._ptr,FilenameLen,
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Directory)._ptr,DirectoryLen))    # fully specified
-    return _LLVMDIBuilderCreateFile__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Directory)._ptr,DirectoryLen))
+    return None if _LLVMDIBuilderCreateFile__retval._ptr == NULL else _LLVMDIBuilderCreateFile__retval
 
 
 @cython.embedsignature(True)
@@ -3771,8 +3771,8 @@ def LLVMDIBuilderCreateModule(object Builder, object ParentScope, object Name, u
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(ConfigMacros)._ptr,ConfigMacrosLen,
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(IncludePath)._ptr,IncludePathLen,
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(APINotesFile)._ptr,APINotesFileLen))    # fully specified
-    return _LLVMDIBuilderCreateModule__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(APINotesFile)._ptr,APINotesFileLen))
+    return None if _LLVMDIBuilderCreateModule__retval._ptr == NULL else _LLVMDIBuilderCreateModule__retval
 
 
 @cython.embedsignature(True)
@@ -3801,8 +3801,8 @@ def LLVMDIBuilderCreateNameSpace(object Builder, object ParentScope, object Name
     _LLVMDIBuilderCreateNameSpace__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateNameSpace(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(ParentScope).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,ExportSymbols))    # fully specified
-    return _LLVMDIBuilderCreateNameSpace__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,ExportSymbols))
+    return None if _LLVMDIBuilderCreateNameSpace__retval._ptr == NULL else _LLVMDIBuilderCreateNameSpace__retval
 
 
 @cython.embedsignature(True)
@@ -3863,8 +3863,8 @@ def LLVMDIBuilderCreateFunction(object Builder, object Scope, object Name, unsig
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(LinkageName)._ptr,LinkageNameLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNo,
-        LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr(),IsLocalToUnit,IsDefinition,ScopeLine,Flags.value,IsOptimized))    # fully specified
-    return _LLVMDIBuilderCreateFunction__retval
+        LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr(),IsLocalToUnit,IsDefinition,ScopeLine,Flags.value,IsOptimized))
+    return None if _LLVMDIBuilderCreateFunction__retval._ptr == NULL else _LLVMDIBuilderCreateFunction__retval
 
 
 @cython.embedsignature(True)
@@ -3892,8 +3892,8 @@ def LLVMDIBuilderCreateLexicalBlock(object Builder, object Scope, object File, u
     _LLVMDIBuilderCreateLexicalBlock__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateLexicalBlock(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),Line,Column))    # fully specified
-    return _LLVMDIBuilderCreateLexicalBlock__retval
+        LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),Line,Column))
+    return None if _LLVMDIBuilderCreateLexicalBlock__retval._ptr == NULL else _LLVMDIBuilderCreateLexicalBlock__retval
 
 
 @cython.embedsignature(True)
@@ -3918,8 +3918,8 @@ def LLVMDIBuilderCreateLexicalBlockFile(object Builder, object Scope, object Fil
     _LLVMDIBuilderCreateLexicalBlockFile__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateLexicalBlockFile(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),Discriminator))    # fully specified
-    return _LLVMDIBuilderCreateLexicalBlockFile__retval
+        LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),Discriminator))
+    return None if _LLVMDIBuilderCreateLexicalBlockFile__retval._ptr == NULL else _LLVMDIBuilderCreateLexicalBlockFile__retval
 
 
 @cython.embedsignature(True)
@@ -3949,8 +3949,8 @@ def LLVMDIBuilderCreateImportedModuleFromNamespace(object Builder, object Scope,
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(NS).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),Line))    # fully specified
-    return _LLVMDIBuilderCreateImportedModuleFromNamespace__retval
+        LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),Line))
+    return None if _LLVMDIBuilderCreateImportedModuleFromNamespace__retval._ptr == NULL else _LLVMDIBuilderCreateImportedModuleFromNamespace__retval
 
 
 @cython.embedsignature(True)
@@ -3987,8 +3987,8 @@ def LLVMDIBuilderCreateImportedModuleFromAlias(object Builder, object Scope, obj
         LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(ImportedEntity).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),Line,
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements))    # fully specified
-    return _LLVMDIBuilderCreateImportedModuleFromAlias__retval
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements))
+    return None if _LLVMDIBuilderCreateImportedModuleFromAlias__retval._ptr == NULL else _LLVMDIBuilderCreateImportedModuleFromAlias__retval
 
 
 @cython.embedsignature(True)
@@ -4024,8 +4024,8 @@ def LLVMDIBuilderCreateImportedModuleFromModule(object Builder, object Scope, ob
         LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(M).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),Line,
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements))    # fully specified
-    return _LLVMDIBuilderCreateImportedModuleFromModule__retval
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements))
+    return None if _LLVMDIBuilderCreateImportedModuleFromModule__retval._ptr == NULL else _LLVMDIBuilderCreateImportedModuleFromModule__retval
 
 
 @cython.embedsignature(True)
@@ -4071,8 +4071,8 @@ def LLVMDIBuilderCreateImportedDeclaration(object Builder, object Scope, object 
         LLVMOpaqueMetadata.from_pyobj(Decl).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),Line,
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements))    # fully specified
-    return _LLVMDIBuilderCreateImportedDeclaration__retval
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements))
+    return None if _LLVMDIBuilderCreateImportedDeclaration__retval._ptr == NULL else _LLVMDIBuilderCreateImportedDeclaration__retval
 
 
 @cython.embedsignature(True)
@@ -4105,8 +4105,8 @@ def LLVMDIBuilderCreateDebugLocation(object Ctx, unsigned int Line, unsigned int
     _LLVMDIBuilderCreateDebugLocation__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateDebugLocation(
         LLVMOpaqueContext.from_pyobj(Ctx).get_element_ptr(),Line,Column,
         LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(InlinedAt).get_element_ptr()))    # fully specified
-    return _LLVMDIBuilderCreateDebugLocation__retval
+        LLVMOpaqueMetadata.from_pyobj(InlinedAt).get_element_ptr()))
+    return None if _LLVMDIBuilderCreateDebugLocation__retval._ptr == NULL else _LLVMDIBuilderCreateDebugLocation__retval
 
 
 @cython.embedsignature(True)
@@ -4126,7 +4126,7 @@ def LLVMDILocationGetLine(object Location):
         `~.int`
     """
     cdef unsigned int _LLVMDILocationGetLine__retval = cdebuginfo.LLVMDILocationGetLine(
-        LLVMOpaqueMetadata.from_pyobj(Location).get_element_ptr())    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(Location).get_element_ptr())
     return _LLVMDILocationGetLine__retval
 
 
@@ -4147,7 +4147,7 @@ def LLVMDILocationGetColumn(object Location):
         `~.int`
     """
     cdef unsigned int _LLVMDILocationGetColumn__retval = cdebuginfo.LLVMDILocationGetColumn(
-        LLVMOpaqueMetadata.from_pyobj(Location).get_element_ptr())    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(Location).get_element_ptr())
     return _LLVMDILocationGetColumn__retval
 
 
@@ -4165,8 +4165,8 @@ def LLVMDILocationGetScope(object Location):
             The debug location.
     """
     _LLVMDILocationGetScope__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDILocationGetScope(
-        LLVMOpaqueMetadata.from_pyobj(Location).get_element_ptr()))    # fully specified
-    return _LLVMDILocationGetScope__retval
+        LLVMOpaqueMetadata.from_pyobj(Location).get_element_ptr()))
+    return None if _LLVMDILocationGetScope__retval._ptr == NULL else _LLVMDILocationGetScope__retval
 
 
 @cython.embedsignature(True)
@@ -4183,8 +4183,8 @@ def LLVMDILocationGetInlinedAt(object Location):
             The debug location.
     """
     _LLVMDILocationGetInlinedAt__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDILocationGetInlinedAt(
-        LLVMOpaqueMetadata.from_pyobj(Location).get_element_ptr()))    # fully specified
-    return _LLVMDILocationGetInlinedAt__retval
+        LLVMOpaqueMetadata.from_pyobj(Location).get_element_ptr()))
+    return None if _LLVMDILocationGetInlinedAt__retval._ptr == NULL else _LLVMDILocationGetInlinedAt__retval
 
 
 @cython.embedsignature(True)
@@ -4201,8 +4201,8 @@ def LLVMDIScopeGetFile(object Scope):
             The scope object.
     """
     _LLVMDIScopeGetFile__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIScopeGetFile(
-        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr()))    # fully specified
-    return _LLVMDIScopeGetFile__retval
+        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr()))
+    return None if _LLVMDIScopeGetFile__retval._ptr == NULL else _LLVMDIScopeGetFile__retval
 
 
 @cython.embedsignature(True)
@@ -4226,8 +4226,8 @@ def LLVMDIFileGetDirectory(object File, object Len):
     """
     _LLVMDIFileGetDirectory__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cdebuginfo.LLVMDIFileGetDirectory(
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),
-        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr))    # fully specified
-    return _LLVMDIFileGetDirectory__retval
+        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr))
+    return None if _LLVMDIFileGetDirectory__retval._ptr == NULL else _LLVMDIFileGetDirectory__retval
 
 
 @cython.embedsignature(True)
@@ -4251,8 +4251,8 @@ def LLVMDIFileGetFilename(object File, object Len):
     """
     _LLVMDIFileGetFilename__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cdebuginfo.LLVMDIFileGetFilename(
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),
-        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr))    # fully specified
-    return _LLVMDIFileGetFilename__retval
+        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr))
+    return None if _LLVMDIFileGetFilename__retval._ptr == NULL else _LLVMDIFileGetFilename__retval
 
 
 @cython.embedsignature(True)
@@ -4276,8 +4276,8 @@ def LLVMDIFileGetSource(object File, object Len):
     """
     _LLVMDIFileGetSource__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cdebuginfo.LLVMDIFileGetSource(
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),
-        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr))    # fully specified
-    return _LLVMDIFileGetSource__retval
+        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(Len)._ptr))
+    return None if _LLVMDIFileGetSource__retval._ptr == NULL else _LLVMDIFileGetSource__retval
 
 
 @cython.embedsignature(True)
@@ -4298,8 +4298,8 @@ def LLVMDIBuilderGetOrCreateTypeArray(object Builder, object Data, unsigned long
     """
     _LLVMDIBuilderGetOrCreateTypeArray__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderGetOrCreateTypeArray(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Data)._ptr,NumElements))    # fully specified
-    return _LLVMDIBuilderGetOrCreateTypeArray__retval
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Data)._ptr,NumElements))
+    return None if _LLVMDIBuilderGetOrCreateTypeArray__retval._ptr == NULL else _LLVMDIBuilderGetOrCreateTypeArray__retval
 
 
 @cython.embedsignature(True)
@@ -4331,8 +4331,8 @@ def LLVMDIBuilderCreateSubroutineType(object Builder, object File, object Parame
     _LLVMDIBuilderCreateSubroutineType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateSubroutineType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(ParameterTypes)._ptr,NumParameterTypes,Flags.value))    # fully specified
-    return _LLVMDIBuilderCreateSubroutineType__retval
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(ParameterTypes)._ptr,NumParameterTypes,Flags.value))
+    return None if _LLVMDIBuilderCreateSubroutineType__retval._ptr == NULL else _LLVMDIBuilderCreateSubroutineType__retval
 
 
 @cython.embedsignature(True)
@@ -4372,8 +4372,8 @@ def LLVMDIBuilderCreateMacro(object Builder, object ParentMacroFile, unsigned in
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(ParentMacroFile).get_element_ptr(),Line,RecordType.value,
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Value)._ptr,ValueLen))    # fully specified
-    return _LLVMDIBuilderCreateMacro__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Value)._ptr,ValueLen))
+    return None if _LLVMDIBuilderCreateMacro__retval._ptr == NULL else _LLVMDIBuilderCreateMacro__retval
 
 
 @cython.embedsignature(True)
@@ -4400,8 +4400,8 @@ def LLVMDIBuilderCreateTempMacroFile(object Builder, object ParentMacroFile, uns
     _LLVMDIBuilderCreateTempMacroFile__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateTempMacroFile(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(ParentMacroFile).get_element_ptr(),Line,
-        LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr()))    # fully specified
-    return _LLVMDIBuilderCreateTempMacroFile__retval
+        LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr()))
+    return None if _LLVMDIBuilderCreateTempMacroFile__retval._ptr == NULL else _LLVMDIBuilderCreateTempMacroFile__retval
 
 
 @cython.embedsignature(True)
@@ -4428,8 +4428,8 @@ def LLVMDIBuilderCreateEnumerator(object Builder, object Name, unsigned long Nam
     """
     _LLVMDIBuilderCreateEnumerator__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateEnumerator(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,Value,IsUnsigned))    # fully specified
-    return _LLVMDIBuilderCreateEnumerator__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,Value,IsUnsigned))
+    return None if _LLVMDIBuilderCreateEnumerator__retval._ptr == NULL else _LLVMDIBuilderCreateEnumerator__retval
 
 
 @cython.embedsignature(True)
@@ -4478,8 +4478,8 @@ def LLVMDIBuilderCreateEnumerationType(object Builder, object Scope, object Name
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNumber,SizeInBits,AlignInBits,
         <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements,
-        LLVMOpaqueMetadata.from_pyobj(ClassTy).get_element_ptr()))    # fully specified
-    return _LLVMDIBuilderCreateEnumerationType__retval
+        LLVMOpaqueMetadata.from_pyobj(ClassTy).get_element_ptr()))
+    return None if _LLVMDIBuilderCreateEnumerationType__retval._ptr == NULL else _LLVMDIBuilderCreateEnumerationType__retval
 
 
 @cython.embedsignature(True)
@@ -4539,8 +4539,8 @@ def LLVMDIBuilderCreateUnionType(object Builder, object Scope, object Name, unsi
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNumber,SizeInBits,AlignInBits,Flags.value,
         <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements,RunTimeLang,
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(UniqueId)._ptr,UniqueIdLen))    # fully specified
-    return _LLVMDIBuilderCreateUnionType__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(UniqueId)._ptr,UniqueIdLen))
+    return None if _LLVMDIBuilderCreateUnionType__retval._ptr == NULL else _LLVMDIBuilderCreateUnionType__retval
 
 
 @cython.embedsignature(True)
@@ -4571,8 +4571,8 @@ def LLVMDIBuilderCreateArrayType(object Builder, unsigned long Size, unsigned in
     _LLVMDIBuilderCreateArrayType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateArrayType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),Size,AlignInBits,
         LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr(),
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Subscripts)._ptr,NumSubscripts))    # fully specified
-    return _LLVMDIBuilderCreateArrayType__retval
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Subscripts)._ptr,NumSubscripts))
+    return None if _LLVMDIBuilderCreateArrayType__retval._ptr == NULL else _LLVMDIBuilderCreateArrayType__retval
 
 
 @cython.embedsignature(True)
@@ -4603,8 +4603,8 @@ def LLVMDIBuilderCreateVectorType(object Builder, unsigned long Size, unsigned i
     _LLVMDIBuilderCreateVectorType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateVectorType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),Size,AlignInBits,
         LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr(),
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Subscripts)._ptr,NumSubscripts))    # fully specified
-    return _LLVMDIBuilderCreateVectorType__retval
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Subscripts)._ptr,NumSubscripts))
+    return None if _LLVMDIBuilderCreateVectorType__retval._ptr == NULL else _LLVMDIBuilderCreateVectorType__retval
 
 
 @cython.embedsignature(True)
@@ -4625,8 +4625,8 @@ def LLVMDIBuilderCreateUnspecifiedType(object Builder, object Name, unsigned lon
     """
     _LLVMDIBuilderCreateUnspecifiedType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateUnspecifiedType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen))    # fully specified
-    return _LLVMDIBuilderCreateUnspecifiedType__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen))
+    return None if _LLVMDIBuilderCreateUnspecifiedType__retval._ptr == NULL else _LLVMDIBuilderCreateUnspecifiedType__retval
 
 
 @cython.embedsignature(True)
@@ -4659,8 +4659,8 @@ def LLVMDIBuilderCreateBasicType(object Builder, object Name, unsigned long Name
         raise TypeError("argument 'Flags' must be of type '_LLVMDIFlags__Base'")
     _LLVMDIBuilderCreateBasicType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateBasicType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,SizeInBits,Encoding,Flags.value))    # fully specified
-    return _LLVMDIBuilderCreateBasicType__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,SizeInBits,Encoding,Flags.value))
+    return None if _LLVMDIBuilderCreateBasicType__retval._ptr == NULL else _LLVMDIBuilderCreateBasicType__retval
 
 
 @cython.embedsignature(True)
@@ -4694,8 +4694,8 @@ def LLVMDIBuilderCreatePointerType(object Builder, object PointeeTy, unsigned lo
     _LLVMDIBuilderCreatePointerType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreatePointerType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(PointeeTy).get_element_ptr(),SizeInBits,AlignInBits,AddressSpace,
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen))    # fully specified
-    return _LLVMDIBuilderCreatePointerType__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen))
+    return None if _LLVMDIBuilderCreatePointerType__retval._ptr == NULL else _LLVMDIBuilderCreatePointerType__retval
 
 
 @cython.embedsignature(True)
@@ -4763,8 +4763,8 @@ def LLVMDIBuilderCreateStructType(object Builder, object Scope, object Name, uns
         LLVMOpaqueMetadata.from_pyobj(DerivedFrom).get_element_ptr(),
         <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements,RunTimeLang,
         LLVMOpaqueMetadata.from_pyobj(VTableHolder).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(UniqueId)._ptr,UniqueIdLen))    # fully specified
-    return _LLVMDIBuilderCreateStructType__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(UniqueId)._ptr,UniqueIdLen))
+    return None if _LLVMDIBuilderCreateStructType__retval._ptr == NULL else _LLVMDIBuilderCreateStructType__retval
 
 
 @cython.embedsignature(True)
@@ -4814,8 +4814,8 @@ def LLVMDIBuilderCreateMemberType(object Builder, object Scope, object Name, uns
         LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNo,SizeInBits,AlignInBits,OffsetInBits,Flags.value,
-        LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr()))    # fully specified
-    return _LLVMDIBuilderCreateMemberType__retval
+        LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr()))
+    return None if _LLVMDIBuilderCreateMemberType__retval._ptr == NULL else _LLVMDIBuilderCreateMemberType__retval
 
 
 @cython.embedsignature(True)
@@ -4864,8 +4864,8 @@ def LLVMDIBuilderCreateStaticMemberType(object Builder, object Scope, object Nam
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNumber,
         LLVMOpaqueMetadata.from_pyobj(Type).get_element_ptr(),Flags.value,
-        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),AlignInBits))    # fully specified
-    return _LLVMDIBuilderCreateStaticMemberType__retval
+        LLVMOpaqueValue.from_pyobj(ConstantVal).get_element_ptr(),AlignInBits))
+    return None if _LLVMDIBuilderCreateStaticMemberType__retval._ptr == NULL else _LLVMDIBuilderCreateStaticMemberType__retval
 
 
 @cython.embedsignature(True)
@@ -4898,8 +4898,8 @@ def LLVMDIBuilderCreateMemberPointerType(object Builder, object PointeeType, obj
     _LLVMDIBuilderCreateMemberPointerType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateMemberPointerType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(PointeeType).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(ClassType).get_element_ptr(),SizeInBits,AlignInBits,Flags.value))    # fully specified
-    return _LLVMDIBuilderCreateMemberPointerType__retval
+        LLVMOpaqueMetadata.from_pyobj(ClassType).get_element_ptr(),SizeInBits,AlignInBits,Flags.value))
+    return None if _LLVMDIBuilderCreateMemberPointerType__retval._ptr == NULL else _LLVMDIBuilderCreateMemberPointerType__retval
 
 
 @cython.embedsignature(True)
@@ -4949,8 +4949,8 @@ def LLVMDIBuilderCreateObjCIVar(object Builder, object Name, unsigned long NameL
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNo,SizeInBits,AlignInBits,OffsetInBits,Flags.value,
         LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(PropertyNode).get_element_ptr()))    # fully specified
-    return _LLVMDIBuilderCreateObjCIVar__retval
+        LLVMOpaqueMetadata.from_pyobj(PropertyNode).get_element_ptr()))
+    return None if _LLVMDIBuilderCreateObjCIVar__retval._ptr == NULL else _LLVMDIBuilderCreateObjCIVar__retval
 
 
 @cython.embedsignature(True)
@@ -4999,8 +4999,8 @@ def LLVMDIBuilderCreateObjCProperty(object Builder, object Name, unsigned long N
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNo,
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(GetterName)._ptr,GetterNameLen,
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(SetterName)._ptr,SetterNameLen,PropertyAttributes,
-        LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr()))    # fully specified
-    return _LLVMDIBuilderCreateObjCProperty__retval
+        LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr()))
+    return None if _LLVMDIBuilderCreateObjCProperty__retval._ptr == NULL else _LLVMDIBuilderCreateObjCProperty__retval
 
 
 @cython.embedsignature(True)
@@ -5018,8 +5018,8 @@ def LLVMDIBuilderCreateObjectPointerType(object Builder, object Type):
     """
     _LLVMDIBuilderCreateObjectPointerType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateObjectPointerType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(Type).get_element_ptr()))    # fully specified
-    return _LLVMDIBuilderCreateObjectPointerType__retval
+        LLVMOpaqueMetadata.from_pyobj(Type).get_element_ptr()))
+    return None if _LLVMDIBuilderCreateObjectPointerType__retval._ptr == NULL else _LLVMDIBuilderCreateObjectPointerType__retval
 
 
 @cython.embedsignature(True)
@@ -5042,8 +5042,8 @@ def LLVMDIBuilderCreateQualifiedType(object Builder, unsigned int Tag, object Ty
     """
     _LLVMDIBuilderCreateQualifiedType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateQualifiedType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),Tag,
-        LLVMOpaqueMetadata.from_pyobj(Type).get_element_ptr()))    # fully specified
-    return _LLVMDIBuilderCreateQualifiedType__retval
+        LLVMOpaqueMetadata.from_pyobj(Type).get_element_ptr()))
+    return None if _LLVMDIBuilderCreateQualifiedType__retval._ptr == NULL else _LLVMDIBuilderCreateQualifiedType__retval
 
 
 @cython.embedsignature(True)
@@ -5065,8 +5065,8 @@ def LLVMDIBuilderCreateReferenceType(object Builder, unsigned int Tag, object Ty
     """
     _LLVMDIBuilderCreateReferenceType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateReferenceType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),Tag,
-        LLVMOpaqueMetadata.from_pyobj(Type).get_element_ptr()))    # fully specified
-    return _LLVMDIBuilderCreateReferenceType__retval
+        LLVMOpaqueMetadata.from_pyobj(Type).get_element_ptr()))
+    return None if _LLVMDIBuilderCreateReferenceType__retval._ptr == NULL else _LLVMDIBuilderCreateReferenceType__retval
 
 
 @cython.embedsignature(True)
@@ -5080,8 +5080,8 @@ def LLVMDIBuilderCreateNullPtrType(object Builder):
             The DIBuilder.
     """
     _LLVMDIBuilderCreateNullPtrType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateNullPtrType(
-        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr()))    # fully specified
-    return _LLVMDIBuilderCreateNullPtrType__retval
+        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr()))
+    return None if _LLVMDIBuilderCreateNullPtrType__retval._ptr == NULL else _LLVMDIBuilderCreateNullPtrType__retval
 
 
 @cython.embedsignature(True)
@@ -5120,8 +5120,8 @@ def LLVMDIBuilderCreateTypedef(object Builder, object Type, object Name, unsigne
         LLVMOpaqueMetadata.from_pyobj(Type).get_element_ptr(),
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNo,
-        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),AlignInBits))    # fully specified
-    return _LLVMDIBuilderCreateTypedef__retval
+        LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),AlignInBits))
+    return None if _LLVMDIBuilderCreateTypedef__retval._ptr == NULL else _LLVMDIBuilderCreateTypedef__retval
 
 
 @cython.embedsignature(True)
@@ -5155,8 +5155,8 @@ def LLVMDIBuilderCreateInheritance(object Builder, object Ty, object BaseTy, uns
     _LLVMDIBuilderCreateInheritance__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateInheritance(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(BaseTy).get_element_ptr(),BaseOffset,VBPtrOffset,Flags.value))    # fully specified
-    return _LLVMDIBuilderCreateInheritance__retval
+        LLVMOpaqueMetadata.from_pyobj(BaseTy).get_element_ptr(),BaseOffset,VBPtrOffset,Flags.value))
+    return None if _LLVMDIBuilderCreateInheritance__retval._ptr == NULL else _LLVMDIBuilderCreateInheritance__retval
 
 
 @cython.embedsignature(True)
@@ -5208,8 +5208,8 @@ def LLVMDIBuilderCreateForwardDecl(object Builder, unsigned int Tag, object Name
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),Line,RuntimeLang,SizeInBits,AlignInBits,
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(UniqueIdentifier)._ptr,UniqueIdentifierLen))    # fully specified
-    return _LLVMDIBuilderCreateForwardDecl__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(UniqueIdentifier)._ptr,UniqueIdentifierLen))
+    return None if _LLVMDIBuilderCreateForwardDecl__retval._ptr == NULL else _LLVMDIBuilderCreateForwardDecl__retval
 
 
 @cython.embedsignature(True)
@@ -5266,8 +5266,8 @@ def LLVMDIBuilderCreateReplaceableCompositeType(object Builder, unsigned int Tag
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),Line,RuntimeLang,SizeInBits,AlignInBits,Flags.value,
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(UniqueIdentifier)._ptr,UniqueIdentifierLen))    # fully specified
-    return _LLVMDIBuilderCreateReplaceableCompositeType__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(UniqueIdentifier)._ptr,UniqueIdentifierLen))
+    return None if _LLVMDIBuilderCreateReplaceableCompositeType__retval._ptr == NULL else _LLVMDIBuilderCreateReplaceableCompositeType__retval
 
 
 @cython.embedsignature(True)
@@ -5317,8 +5317,8 @@ def LLVMDIBuilderCreateBitFieldMemberType(object Builder, object Scope, object N
         LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNumber,SizeInBits,OffsetInBits,StorageOffsetInBits,Flags.value,
-        LLVMOpaqueMetadata.from_pyobj(Type).get_element_ptr()))    # fully specified
-    return _LLVMDIBuilderCreateBitFieldMemberType__retval
+        LLVMOpaqueMetadata.from_pyobj(Type).get_element_ptr()))
+    return None if _LLVMDIBuilderCreateBitFieldMemberType__retval._ptr == NULL else _LLVMDIBuilderCreateBitFieldMemberType__retval
 
 
 @cython.embedsignature(True)
@@ -5393,8 +5393,8 @@ def LLVMDIBuilderCreateClassType(object Builder, object Scope, object Name, unsi
         <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Elements)._ptr,NumElements,
         LLVMOpaqueMetadata.from_pyobj(VTableHolder).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(TemplateParamsNode).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(UniqueIdentifier)._ptr,UniqueIdentifierLen))    # fully specified
-    return _LLVMDIBuilderCreateClassType__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(UniqueIdentifier)._ptr,UniqueIdentifierLen))
+    return None if _LLVMDIBuilderCreateClassType__retval._ptr == NULL else _LLVMDIBuilderCreateClassType__retval
 
 
 @cython.embedsignature(True)
@@ -5412,8 +5412,8 @@ def LLVMDIBuilderCreateArtificialType(object Builder, object Type):
     """
     _LLVMDIBuilderCreateArtificialType__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateArtificialType(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(Type).get_element_ptr()))    # fully specified
-    return _LLVMDIBuilderCreateArtificialType__retval
+        LLVMOpaqueMetadata.from_pyobj(Type).get_element_ptr()))
+    return None if _LLVMDIBuilderCreateArtificialType__retval._ptr == NULL else _LLVMDIBuilderCreateArtificialType__retval
 
 
 @cython.embedsignature(True)
@@ -5437,8 +5437,8 @@ def LLVMDITypeGetName(object DType, object Length):
     """
     _LLVMDITypeGetName__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cdebuginfo.LLVMDITypeGetName(
         LLVMOpaqueMetadata.from_pyobj(DType).get_element_ptr(),
-        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr))    # fully specified
-    return _LLVMDITypeGetName__retval
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Length)._ptr))
+    return None if _LLVMDITypeGetName__retval._ptr == NULL else _LLVMDITypeGetName__retval
 
 
 @cython.embedsignature(True)
@@ -5458,7 +5458,7 @@ def LLVMDITypeGetSizeInBits(object DType):
         `~.int`
     """
     cdef unsigned long _LLVMDITypeGetSizeInBits__retval = cdebuginfo.LLVMDITypeGetSizeInBits(
-        LLVMOpaqueMetadata.from_pyobj(DType).get_element_ptr())    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(DType).get_element_ptr())
     return _LLVMDITypeGetSizeInBits__retval
 
 
@@ -5479,7 +5479,7 @@ def LLVMDITypeGetOffsetInBits(object DType):
         `~.int`
     """
     cdef unsigned long _LLVMDITypeGetOffsetInBits__retval = cdebuginfo.LLVMDITypeGetOffsetInBits(
-        LLVMOpaqueMetadata.from_pyobj(DType).get_element_ptr())    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(DType).get_element_ptr())
     return _LLVMDITypeGetOffsetInBits__retval
 
 
@@ -5500,7 +5500,7 @@ def LLVMDITypeGetAlignInBits(object DType):
         `~.int`
     """
     cdef unsigned int _LLVMDITypeGetAlignInBits__retval = cdebuginfo.LLVMDITypeGetAlignInBits(
-        LLVMOpaqueMetadata.from_pyobj(DType).get_element_ptr())    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(DType).get_element_ptr())
     return _LLVMDITypeGetAlignInBits__retval
 
 
@@ -5521,7 +5521,7 @@ def LLVMDITypeGetLine(object DType):
         `~.int`
     """
     cdef unsigned int _LLVMDITypeGetLine__retval = cdebuginfo.LLVMDITypeGetLine(
-        LLVMOpaqueMetadata.from_pyobj(DType).get_element_ptr())    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(DType).get_element_ptr())
     return _LLVMDITypeGetLine__retval
 
 
@@ -5542,7 +5542,7 @@ def LLVMDITypeGetFlags(object DType):
         `~.LLVMDIFlags`
     """
     _LLVMDITypeGetFlags__retval = LLVMDIFlags(cdebuginfo.LLVMDITypeGetFlags(
-        LLVMOpaqueMetadata.from_pyobj(DType).get_element_ptr()))    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(DType).get_element_ptr()))
     return _LLVMDITypeGetFlags__retval
 
 
@@ -5563,8 +5563,8 @@ def LLVMDIBuilderGetOrCreateSubrange(object Builder, long LowerBound, long Count
             Count of elements in the subrange.
     """
     _LLVMDIBuilderGetOrCreateSubrange__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderGetOrCreateSubrange(
-        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),LowerBound,Count))    # fully specified
-    return _LLVMDIBuilderGetOrCreateSubrange__retval
+        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),LowerBound,Count))
+    return None if _LLVMDIBuilderGetOrCreateSubrange__retval._ptr == NULL else _LLVMDIBuilderGetOrCreateSubrange__retval
 
 
 @cython.embedsignature(True)
@@ -5585,8 +5585,8 @@ def LLVMDIBuilderGetOrCreateArray(object Builder, object Data, unsigned long Num
     """
     _LLVMDIBuilderGetOrCreateArray__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderGetOrCreateArray(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Data)._ptr,NumElements))    # fully specified
-    return _LLVMDIBuilderGetOrCreateArray__retval
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Data)._ptr,NumElements))
+    return None if _LLVMDIBuilderGetOrCreateArray__retval._ptr == NULL else _LLVMDIBuilderGetOrCreateArray__retval
 
 
 @cython.embedsignature(True)
@@ -5608,8 +5608,8 @@ def LLVMDIBuilderCreateExpression(object Builder, object Addr, unsigned long Len
     """
     _LLVMDIBuilderCreateExpression__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateExpression(
         LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),
-        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Addr)._ptr,Length))    # fully specified
-    return _LLVMDIBuilderCreateExpression__retval
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Addr)._ptr,Length))
+    return None if _LLVMDIBuilderCreateExpression__retval._ptr == NULL else _LLVMDIBuilderCreateExpression__retval
 
 
 @cython.embedsignature(True)
@@ -5627,8 +5627,8 @@ def LLVMDIBuilderCreateConstantValueExpression(object Builder, unsigned long Val
             The constant value.
     """
     _LLVMDIBuilderCreateConstantValueExpression__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIBuilderCreateConstantValueExpression(
-        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),Value))    # fully specified
-    return _LLVMDIBuilderCreateConstantValueExpression__retval
+        LLVMOpaqueDIBuilder.from_pyobj(Builder).get_element_ptr(),Value))
+    return None if _LLVMDIBuilderCreateConstantValueExpression__retval._ptr == NULL else _LLVMDIBuilderCreateConstantValueExpression__retval
 
 
 @cython.embedsignature(True)
@@ -5689,8 +5689,8 @@ def LLVMDIBuilderCreateGlobalVariableExpression(object Builder, object Scope, ob
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNo,
         LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr(),LocalToUnit,
         LLVMOpaqueMetadata.from_pyobj(Expr).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(Decl).get_element_ptr(),AlignInBits))    # fully specified
-    return _LLVMDIBuilderCreateGlobalVariableExpression__retval
+        LLVMOpaqueMetadata.from_pyobj(Decl).get_element_ptr(),AlignInBits))
+    return None if _LLVMDIBuilderCreateGlobalVariableExpression__retval._ptr == NULL else _LLVMDIBuilderCreateGlobalVariableExpression__retval
 
 
 @cython.embedsignature(True)
@@ -5707,8 +5707,8 @@ def LLVMDIGlobalVariableExpressionGetVariable(object GVE):
             The global variable expression.
     """
     _LLVMDIGlobalVariableExpressionGetVariable__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIGlobalVariableExpressionGetVariable(
-        LLVMOpaqueMetadata.from_pyobj(GVE).get_element_ptr()))    # fully specified
-    return _LLVMDIGlobalVariableExpressionGetVariable__retval
+        LLVMOpaqueMetadata.from_pyobj(GVE).get_element_ptr()))
+    return None if _LLVMDIGlobalVariableExpressionGetVariable__retval._ptr == NULL else _LLVMDIGlobalVariableExpressionGetVariable__retval
 
 
 @cython.embedsignature(True)
@@ -5725,8 +5725,8 @@ def LLVMDIGlobalVariableExpressionGetExpression(object GVE):
             The global variable expression.
     """
     _LLVMDIGlobalVariableExpressionGetExpression__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIGlobalVariableExpressionGetExpression(
-        LLVMOpaqueMetadata.from_pyobj(GVE).get_element_ptr()))    # fully specified
-    return _LLVMDIGlobalVariableExpressionGetExpression__retval
+        LLVMOpaqueMetadata.from_pyobj(GVE).get_element_ptr()))
+    return None if _LLVMDIGlobalVariableExpressionGetExpression__retval._ptr == NULL else _LLVMDIGlobalVariableExpressionGetExpression__retval
 
 
 @cython.embedsignature(True)
@@ -5743,8 +5743,8 @@ def LLVMDIVariableGetFile(object Var):
             The variable object.
     """
     _LLVMDIVariableGetFile__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIVariableGetFile(
-        LLVMOpaqueMetadata.from_pyobj(Var).get_element_ptr()))    # fully specified
-    return _LLVMDIVariableGetFile__retval
+        LLVMOpaqueMetadata.from_pyobj(Var).get_element_ptr()))
+    return None if _LLVMDIVariableGetFile__retval._ptr == NULL else _LLVMDIVariableGetFile__retval
 
 
 @cython.embedsignature(True)
@@ -5761,8 +5761,8 @@ def LLVMDIVariableGetScope(object Var):
             The variable object.
     """
     _LLVMDIVariableGetScope__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMDIVariableGetScope(
-        LLVMOpaqueMetadata.from_pyobj(Var).get_element_ptr()))    # fully specified
-    return _LLVMDIVariableGetScope__retval
+        LLVMOpaqueMetadata.from_pyobj(Var).get_element_ptr()))
+    return None if _LLVMDIVariableGetScope__retval._ptr == NULL else _LLVMDIVariableGetScope__retval
 
 
 @cython.embedsignature(True)
@@ -5782,7 +5782,7 @@ def LLVMDIVariableGetLine(object Var):
         `~.int`
     """
     cdef unsigned int _LLVMDIVariableGetLine__retval = cdebuginfo.LLVMDIVariableGetLine(
-        LLVMOpaqueMetadata.from_pyobj(Var).get_element_ptr())    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(Var).get_element_ptr())
     return _LLVMDIVariableGetLine__retval
 
 
@@ -5806,8 +5806,8 @@ def LLVMTemporaryMDNode(object Ctx, object Data, unsigned long NumElements):
     """
     _LLVMTemporaryMDNode__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMTemporaryMDNode(
         LLVMOpaqueContext.from_pyobj(Ctx).get_element_ptr(),
-        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Data)._ptr,NumElements))    # fully specified
-    return _LLVMTemporaryMDNode__retval
+        <cdebuginfo.LLVMMetadataRef*>rocm.llvm._util.types.Pointer.from_pyobj(Data)._ptr,NumElements))
+    return None if _LLVMTemporaryMDNode__retval._ptr == NULL else _LLVMTemporaryMDNode__retval
 
 
 @cython.embedsignature(True)
@@ -5824,7 +5824,7 @@ def LLVMDisposeTemporaryMDNode(object TempNode):
             The temporary metadata node.
     """
     cdebuginfo.LLVMDisposeTemporaryMDNode(
-        LLVMOpaqueMetadata.from_pyobj(TempNode).get_element_ptr())    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(TempNode).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -5842,7 +5842,7 @@ def LLVMMetadataReplaceAllUsesWith(object TempTargetMetadata, object Replacement
     """
     cdebuginfo.LLVMMetadataReplaceAllUsesWith(
         LLVMOpaqueMetadata.from_pyobj(TempTargetMetadata).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(Replacement).get_element_ptr())    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(Replacement).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -5898,8 +5898,8 @@ def LLVMDIBuilderCreateTempGlobalVariableFwdDecl(object Builder, object Scope, o
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(Linkage)._ptr,LnkLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNo,
         LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr(),LocalToUnit,
-        LLVMOpaqueMetadata.from_pyobj(Decl).get_element_ptr(),AlignInBits))    # fully specified
-    return _LLVMDIBuilderCreateTempGlobalVariableFwdDecl__retval
+        LLVMOpaqueMetadata.from_pyobj(Decl).get_element_ptr(),AlignInBits))
+    return None if _LLVMDIBuilderCreateTempGlobalVariableFwdDecl__retval._ptr == NULL else _LLVMDIBuilderCreateTempGlobalVariableFwdDecl__retval
 
 
 @cython.embedsignature(True)
@@ -5933,8 +5933,8 @@ def LLVMDIBuilderInsertDeclareBefore(object Builder, object Storage, object VarI
         LLVMOpaqueMetadata.from_pyobj(VarInfo).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(Expr).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(DebugLoc).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(Instr).get_element_ptr()))    # fully specified
-    return _LLVMDIBuilderInsertDeclareBefore__retval
+        LLVMOpaqueValue.from_pyobj(Instr).get_element_ptr()))
+    return None if _LLVMDIBuilderInsertDeclareBefore__retval._ptr == NULL else _LLVMDIBuilderInsertDeclareBefore__retval
 
 
 @cython.embedsignature(True)
@@ -5970,8 +5970,8 @@ def LLVMDIBuilderInsertDeclareAtEnd(object Builder, object Storage, object VarIn
         LLVMOpaqueMetadata.from_pyobj(VarInfo).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(Expr).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(DebugLoc).get_element_ptr(),
-        LLVMOpaqueBasicBlock.from_pyobj(Block).get_element_ptr()))    # fully specified
-    return _LLVMDIBuilderInsertDeclareAtEnd__retval
+        LLVMOpaqueBasicBlock.from_pyobj(Block).get_element_ptr()))
+    return None if _LLVMDIBuilderInsertDeclareAtEnd__retval._ptr == NULL else _LLVMDIBuilderInsertDeclareAtEnd__retval
 
 
 @cython.embedsignature(True)
@@ -6005,8 +6005,8 @@ def LLVMDIBuilderInsertDbgValueBefore(object Builder, object Val, object VarInfo
         LLVMOpaqueMetadata.from_pyobj(VarInfo).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(Expr).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(DebugLoc).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(Instr).get_element_ptr()))    # fully specified
-    return _LLVMDIBuilderInsertDbgValueBefore__retval
+        LLVMOpaqueValue.from_pyobj(Instr).get_element_ptr()))
+    return None if _LLVMDIBuilderInsertDbgValueBefore__retval._ptr == NULL else _LLVMDIBuilderInsertDbgValueBefore__retval
 
 
 @cython.embedsignature(True)
@@ -6042,8 +6042,8 @@ def LLVMDIBuilderInsertDbgValueAtEnd(object Builder, object Val, object VarInfo,
         LLVMOpaqueMetadata.from_pyobj(VarInfo).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(Expr).get_element_ptr(),
         LLVMOpaqueMetadata.from_pyobj(DebugLoc).get_element_ptr(),
-        LLVMOpaqueBasicBlock.from_pyobj(Block).get_element_ptr()))    # fully specified
-    return _LLVMDIBuilderInsertDbgValueAtEnd__retval
+        LLVMOpaqueBasicBlock.from_pyobj(Block).get_element_ptr()))
+    return None if _LLVMDIBuilderInsertDbgValueAtEnd__retval._ptr == NULL else _LLVMDIBuilderInsertDbgValueAtEnd__retval
 
 
 @cython.embedsignature(True)
@@ -6090,8 +6090,8 @@ def LLVMDIBuilderCreateAutoVariable(object Builder, object Scope, object Name, u
         LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNo,
-        LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr(),AlwaysPreserve,Flags.value,AlignInBits))    # fully specified
-    return _LLVMDIBuilderCreateAutoVariable__retval
+        LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr(),AlwaysPreserve,Flags.value,AlignInBits))
+    return None if _LLVMDIBuilderCreateAutoVariable__retval._ptr == NULL else _LLVMDIBuilderCreateAutoVariable__retval
 
 
 @cython.embedsignature(True)
@@ -6138,8 +6138,8 @@ def LLVMDIBuilderCreateParameterVariable(object Builder, object Scope, object Na
         LLVMOpaqueMetadata.from_pyobj(Scope).get_element_ptr(),
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr,NameLen,ArgNo,
         LLVMOpaqueMetadata.from_pyobj(File).get_element_ptr(),LineNo,
-        LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr(),AlwaysPreserve,Flags.value))    # fully specified
-    return _LLVMDIBuilderCreateParameterVariable__retval
+        LLVMOpaqueMetadata.from_pyobj(Ty).get_element_ptr(),AlwaysPreserve,Flags.value))
+    return None if _LLVMDIBuilderCreateParameterVariable__retval._ptr == NULL else _LLVMDIBuilderCreateParameterVariable__retval
 
 
 @cython.embedsignature(True)
@@ -6156,8 +6156,8 @@ def LLVMGetSubprogram(object Func):
             (undocumented)
     """
     _LLVMGetSubprogram__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMGetSubprogram(
-        LLVMOpaqueValue.from_pyobj(Func).get_element_ptr()))    # fully specified
-    return _LLVMGetSubprogram__retval
+        LLVMOpaqueValue.from_pyobj(Func).get_element_ptr()))
+    return None if _LLVMGetSubprogram__retval._ptr == NULL else _LLVMGetSubprogram__retval
 
 
 @cython.embedsignature(True)
@@ -6178,7 +6178,7 @@ def LLVMSetSubprogram(object Func, object SP):
     """
     cdebuginfo.LLVMSetSubprogram(
         LLVMOpaqueValue.from_pyobj(Func).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(SP).get_element_ptr())    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(SP).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -6198,7 +6198,7 @@ def LLVMDISubprogramGetLine(object Subprogram):
         `~.int`
     """
     cdef unsigned int _LLVMDISubprogramGetLine__retval = cdebuginfo.LLVMDISubprogramGetLine(
-        LLVMOpaqueMetadata.from_pyobj(Subprogram).get_element_ptr())    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(Subprogram).get_element_ptr())
     return _LLVMDISubprogramGetLine__retval
 
 
@@ -6216,8 +6216,8 @@ def LLVMInstructionGetDebugLoc(object Inst):
             (undocumented)
     """
     _LLVMInstructionGetDebugLoc__retval = LLVMOpaqueMetadata.from_ptr(cdebuginfo.LLVMInstructionGetDebugLoc(
-        LLVMOpaqueValue.from_pyobj(Inst).get_element_ptr()))    # fully specified
-    return _LLVMInstructionGetDebugLoc__retval
+        LLVMOpaqueValue.from_pyobj(Inst).get_element_ptr()))
+    return None if _LLVMInstructionGetDebugLoc__retval._ptr == NULL else _LLVMInstructionGetDebugLoc__retval
 
 
 @cython.embedsignature(True)
@@ -6240,7 +6240,7 @@ def LLVMInstructionSetDebugLoc(object Inst, object Loc):
     """
     cdebuginfo.LLVMInstructionSetDebugLoc(
         LLVMOpaqueValue.from_pyobj(Inst).get_element_ptr(),
-        LLVMOpaqueMetadata.from_pyobj(Loc).get_element_ptr())    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(Loc).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -6260,7 +6260,7 @@ def LLVMGetMetadataKind(object Metadata):
         `~.int`
     """
     cdef unsigned int _LLVMGetMetadataKind__retval = cdebuginfo.LLVMGetMetadataKind(
-        LLVMOpaqueMetadata.from_pyobj(Metadata).get_element_ptr())    # fully specified
+        LLVMOpaqueMetadata.from_pyobj(Metadata).get_element_ptr())
     return _LLVMGetMetadataKind__retval
 
 __all__ = [

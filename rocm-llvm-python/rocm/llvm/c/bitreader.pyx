@@ -78,7 +78,7 @@ def LLVMParseBitcode(object MemBuf):
     OutMessage = rocm.llvm._util.types.CStr.from_ptr(NULL)
     cdef int _LLVMParseBitcode__retval = cbitreader.LLVMParseBitcode(
         LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),<cbitreader.LLVMOpaqueModule**>&OutModule._ptr,
-        <char **>&OutMessage._ptr)    # fully specified
+        <char **>&OutMessage._ptr)
     return (_LLVMParseBitcode__retval,None if OutModule._ptr == NULL else OutModule,None if OutMessage._ptr == NULL else OutMessage)
 
 
@@ -99,7 +99,7 @@ def LLVMParseBitcode2(object MemBuf):
     """
     OutModule = LLVMOpaqueModule.from_ptr(NULL)
     cdef int _LLVMParseBitcode2__retval = cbitreader.LLVMParseBitcode2(
-        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),<cbitreader.LLVMOpaqueModule**>&OutModule._ptr)    # fully specified
+        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),<cbitreader.LLVMOpaqueModule**>&OutModule._ptr)
     return (_LLVMParseBitcode2__retval,None if OutModule._ptr == NULL else OutModule)
 
 
@@ -128,7 +128,7 @@ def LLVMParseBitcodeInContext(object ContextRef, object MemBuf):
     cdef int _LLVMParseBitcodeInContext__retval = cbitreader.LLVMParseBitcodeInContext(
         LLVMOpaqueContext.from_pyobj(ContextRef).get_element_ptr(),
         LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),<cbitreader.LLVMOpaqueModule**>&OutModule._ptr,
-        <char **>&OutMessage._ptr)    # fully specified
+        <char **>&OutMessage._ptr)
     return (_LLVMParseBitcodeInContext__retval,None if OutModule._ptr == NULL else OutModule,None if OutMessage._ptr == NULL else OutMessage)
 
 
@@ -153,7 +153,7 @@ def LLVMParseBitcodeInContext2(object ContextRef, object MemBuf):
     OutModule = LLVMOpaqueModule.from_ptr(NULL)
     cdef int _LLVMParseBitcodeInContext2__retval = cbitreader.LLVMParseBitcodeInContext2(
         LLVMOpaqueContext.from_pyobj(ContextRef).get_element_ptr(),
-        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),<cbitreader.LLVMOpaqueModule**>&OutModule._ptr)    # fully specified
+        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),<cbitreader.LLVMOpaqueModule**>&OutModule._ptr)
     return (_LLVMParseBitcodeInContext2__retval,None if OutModule._ptr == NULL else OutModule)
 
 
@@ -187,7 +187,7 @@ def LLVMGetBitcodeModuleInContext(object ContextRef, object MemBuf):
     cdef int _LLVMGetBitcodeModuleInContext__retval = cbitreader.LLVMGetBitcodeModuleInContext(
         LLVMOpaqueContext.from_pyobj(ContextRef).get_element_ptr(),
         LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),<cbitreader.LLVMOpaqueModule**>&OutM._ptr,
-        <char **>&OutMessage._ptr)    # fully specified
+        <char **>&OutMessage._ptr)
     return (_LLVMGetBitcodeModuleInContext__retval,None if OutM._ptr == NULL else OutM,None if OutMessage._ptr == NULL else OutMessage)
 
 
@@ -220,7 +220,7 @@ def LLVMGetBitcodeModuleInContext2(object ContextRef, object MemBuf):
     OutM = LLVMOpaqueModule.from_ptr(NULL)
     cdef int _LLVMGetBitcodeModuleInContext2__retval = cbitreader.LLVMGetBitcodeModuleInContext2(
         LLVMOpaqueContext.from_pyobj(ContextRef).get_element_ptr(),
-        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),<cbitreader.LLVMOpaqueModule**>&OutM._ptr)    # fully specified
+        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),<cbitreader.LLVMOpaqueModule**>&OutM._ptr)
     return (_LLVMGetBitcodeModuleInContext2__retval,None if OutM._ptr == NULL else OutM)
 
 
@@ -245,7 +245,7 @@ def LLVMGetBitcodeModule(object MemBuf):
     OutMessage = rocm.llvm._util.types.CStr.from_ptr(NULL)
     cdef int _LLVMGetBitcodeModule__retval = cbitreader.LLVMGetBitcodeModule(
         LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),<cbitreader.LLVMOpaqueModule**>&OutM._ptr,
-        <char **>&OutMessage._ptr)    # fully specified
+        <char **>&OutMessage._ptr)
     return (_LLVMGetBitcodeModule__retval,None if OutM._ptr == NULL else OutM,None if OutMessage._ptr == NULL else OutMessage)
 
 
@@ -266,7 +266,7 @@ def LLVMGetBitcodeModule2(object MemBuf):
     """
     OutM = LLVMOpaqueModule.from_ptr(NULL)
     cdef int _LLVMGetBitcodeModule2__retval = cbitreader.LLVMGetBitcodeModule2(
-        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),<cbitreader.LLVMOpaqueModule**>&OutM._ptr)    # fully specified
+        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),<cbitreader.LLVMOpaqueModule**>&OutM._ptr)
     return (_LLVMGetBitcodeModule2__retval,None if OutM._ptr == NULL else OutM)
 
 __all__ = [

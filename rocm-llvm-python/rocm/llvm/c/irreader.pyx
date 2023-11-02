@@ -89,7 +89,7 @@ def LLVMParseIRInContext(object ContextRef, object MemBuf):
     cdef int _LLVMParseIRInContext__retval = cirreader.LLVMParseIRInContext(
         LLVMOpaqueContext.from_pyobj(ContextRef).get_element_ptr(),
         LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),<cirreader.LLVMOpaqueModule**>&OutM._ptr,
-        <char **>&OutMessage._ptr)    # fully specified
+        <char **>&OutMessage._ptr)
     return (_LLVMParseIRInContext__retval,None if OutM._ptr == NULL else OutM,None if OutMessage._ptr == NULL else OutMessage)
 
 __all__ = [

@@ -593,8 +593,8 @@ def lto_get_version():
     Returns:
         `~.bytes`
     """
-    _lto_get_version__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>clto.lto_get_version())    # fully specified
-    return _lto_get_version__retval
+    _lto_get_version__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>clto.lto_get_version())
+    return None if _lto_get_version__retval._ptr == NULL else _lto_get_version__retval
 
 
 @cython.embedsignature(True)
@@ -609,8 +609,8 @@ def lto_get_error_message():
     Returns:
         `~.bytes`
     """
-    _lto_get_error_message__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>clto.lto_get_error_message())    # fully specified
-    return _lto_get_error_message__retval
+    _lto_get_error_message__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>clto.lto_get_error_message())
+    return None if _lto_get_error_message__retval._ptr == NULL else _lto_get_error_message__retval
 
 
 @cython.embedsignature(True)
@@ -630,7 +630,7 @@ def lto_module_is_object_file(object path):
         `~.list`
     """
     cdef _Bool _lto_module_is_object_file__retval = clto.lto_module_is_object_file(
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr)    # fully specified
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr)
     return _lto_module_is_object_file__retval
 
 
@@ -655,7 +655,7 @@ def lto_module_is_object_file_for_target(object path, object target_triple_prefi
     """
     cdef _Bool _lto_module_is_object_file_for_target__retval = clto.lto_module_is_object_file_for_target(
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr,
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(target_triple_prefix)._ptr)    # fully specified
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(target_triple_prefix)._ptr)
     return _lto_module_is_object_file_for_target__retval
 
 
@@ -680,7 +680,7 @@ def lto_module_has_objc_category(object mem, unsigned long length):
         `~.list`
     """
     cdef _Bool _lto_module_has_objc_category__retval = clto.lto_module_has_objc_category(
-        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(mem)._ptr,length)    # fully specified
+        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(mem)._ptr,length)
     return _lto_module_has_objc_category__retval
 
 
@@ -704,7 +704,7 @@ def lto_module_is_object_file_in_memory(object mem, unsigned long length):
         `~.list`
     """
     cdef _Bool _lto_module_is_object_file_in_memory__retval = clto.lto_module_is_object_file_in_memory(
-        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(mem)._ptr,length)    # fully specified
+        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(mem)._ptr,length)
     return _lto_module_is_object_file_in_memory__retval
 
 
@@ -732,7 +732,7 @@ def lto_module_is_object_file_in_memory_for_target(object mem, unsigned long len
     """
     cdef _Bool _lto_module_is_object_file_in_memory_for_target__retval = clto.lto_module_is_object_file_in_memory_for_target(
         <const void *>rocm.llvm._util.types.Pointer.from_pyobj(mem)._ptr,length,
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(target_triple_prefix)._ptr)    # fully specified
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(target_triple_prefix)._ptr)
     return _lto_module_is_object_file_in_memory_for_target__retval
 
 
@@ -751,8 +751,8 @@ def lto_module_create(object path):
             (undocumented)
     """
     _lto_module_create__retval = LLVMOpaqueLTOModule.from_ptr(clto.lto_module_create(
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr))    # fully specified
-    return _lto_module_create__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr))
+    return None if _lto_module_create__retval._ptr == NULL else _lto_module_create__retval
 
 
 @cython.embedsignature(True)
@@ -773,8 +773,8 @@ def lto_module_create_from_memory(object mem, unsigned long length):
             (undocumented)
     """
     _lto_module_create_from_memory__retval = LLVMOpaqueLTOModule.from_ptr(clto.lto_module_create_from_memory(
-        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(mem)._ptr,length))    # fully specified
-    return _lto_module_create_from_memory__retval
+        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(mem)._ptr,length))
+    return None if _lto_module_create_from_memory__retval._ptr == NULL else _lto_module_create_from_memory__retval
 
 
 @cython.embedsignature(True)
@@ -799,8 +799,8 @@ def lto_module_create_from_memory_with_path(object mem, unsigned long length, ob
     """
     _lto_module_create_from_memory_with_path__retval = LLVMOpaqueLTOModule.from_ptr(clto.lto_module_create_from_memory_with_path(
         <const void *>rocm.llvm._util.types.Pointer.from_pyobj(mem)._ptr,length,
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr))    # fully specified
-    return _lto_module_create_from_memory_with_path__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr))
+    return None if _lto_module_create_from_memory_with_path__retval._ptr == NULL else _lto_module_create_from_memory_with_path__retval
 
 
 @cython.embedsignature(True)
@@ -830,8 +830,8 @@ def lto_module_create_in_local_context(object mem, unsigned long length, object 
     """
     _lto_module_create_in_local_context__retval = LLVMOpaqueLTOModule.from_ptr(clto.lto_module_create_in_local_context(
         <const void *>rocm.llvm._util.types.Pointer.from_pyobj(mem)._ptr,length,
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr))    # fully specified
-    return _lto_module_create_in_local_context__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr))
+    return None if _lto_module_create_in_local_context__retval._ptr == NULL else _lto_module_create_in_local_context__retval
 
 
 @cython.embedsignature(True)
@@ -864,8 +864,8 @@ def lto_module_create_in_codegen_context(object mem, unsigned long length, objec
     _lto_module_create_in_codegen_context__retval = LLVMOpaqueLTOModule.from_ptr(clto.lto_module_create_in_codegen_context(
         <const void *>rocm.llvm._util.types.Pointer.from_pyobj(mem)._ptr,length,
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr,
-        LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr()))    # fully specified
-    return _lto_module_create_in_codegen_context__retval
+        LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr()))
+    return None if _lto_module_create_in_codegen_context__retval._ptr == NULL else _lto_module_create_in_codegen_context__retval
 
 
 @cython.embedsignature(True)
@@ -889,8 +889,8 @@ def lto_module_create_from_fd(int fd, object path, unsigned long file_size):
             (undocumented)
     """
     _lto_module_create_from_fd__retval = LLVMOpaqueLTOModule.from_ptr(clto.lto_module_create_from_fd(fd,
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr,file_size))    # fully specified
-    return _lto_module_create_from_fd__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr,file_size))
+    return None if _lto_module_create_from_fd__retval._ptr == NULL else _lto_module_create_from_fd__retval
 
 
 @cython.embedsignature(True)
@@ -920,8 +920,8 @@ def lto_module_create_from_fd_at_offset(int fd, object path, unsigned long file_
             (undocumented)
     """
     _lto_module_create_from_fd_at_offset__retval = LLVMOpaqueLTOModule.from_ptr(clto.lto_module_create_from_fd_at_offset(fd,
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr,file_size,map_size,offset))    # fully specified
-    return _lto_module_create_from_fd_at_offset__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr,file_size,map_size,offset))
+    return None if _lto_module_create_from_fd_at_offset__retval._ptr == NULL else _lto_module_create_from_fd_at_offset__retval
 
 
 @cython.embedsignature(True)
@@ -939,7 +939,7 @@ def lto_module_dispose(object mod):
             (undocumented)
     """
     clto.lto_module_dispose(
-        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr())    # fully specified
+        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -959,8 +959,8 @@ def lto_module_get_target_triple(object mod):
         `~.bytes`
     """
     _lto_module_get_target_triple__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>clto.lto_module_get_target_triple(
-        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr()))    # fully specified
-    return _lto_module_get_target_triple__retval
+        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr()))
+    return None if _lto_module_get_target_triple__retval._ptr == NULL else _lto_module_get_target_triple__retval
 
 
 @cython.embedsignature(True)
@@ -981,7 +981,7 @@ def lto_module_set_target_triple(object mod, object triple):
     """
     clto.lto_module_set_target_triple(
         LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(triple)._ptr)    # fully specified
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(triple)._ptr)
 
 
 @cython.embedsignature(True)
@@ -1001,7 +1001,7 @@ def lto_module_get_num_symbols(object mod):
         `~.int`
     """
     cdef unsigned int _lto_module_get_num_symbols__retval = clto.lto_module_get_num_symbols(
-        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr())    # fully specified
+        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr())
     return _lto_module_get_num_symbols__retval
 
 
@@ -1025,8 +1025,8 @@ def lto_module_get_symbol_name(object mod, unsigned int index):
         `~.bytes`
     """
     _lto_module_get_symbol_name__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>clto.lto_module_get_symbol_name(
-        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr(),index))    # fully specified
-    return _lto_module_get_symbol_name__retval
+        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr(),index))
+    return None if _lto_module_get_symbol_name__retval._ptr == NULL else _lto_module_get_symbol_name__retval
 
 
 @cython.embedsignature(True)
@@ -1049,7 +1049,7 @@ def lto_module_get_symbol_attribute(object mod, unsigned int index):
         `~.lto_symbol_attributes`
     """
     _lto_module_get_symbol_attribute__retval = lto_symbol_attributes(clto.lto_module_get_symbol_attribute(
-        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr(),index))    # fully specified
+        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr(),index))
     return _lto_module_get_symbol_attribute__retval
 
 
@@ -1073,8 +1073,8 @@ def lto_module_get_linkeropts(object mod):
         `~.bytes`
     """
     _lto_module_get_linkeropts__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>clto.lto_module_get_linkeropts(
-        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr()))    # fully specified
-    return _lto_module_get_linkeropts__retval
+        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr()))
+    return None if _lto_module_get_linkeropts__retval._ptr == NULL else _lto_module_get_linkeropts__retval
 
 
 @cython.embedsignature(True)
@@ -1108,7 +1108,7 @@ def lto_module_get_macho_cputype(object mod, object out_cputype, object out_cpus
     cdef _Bool _lto_module_get_macho_cputype__retval = clto.lto_module_get_macho_cputype(
         LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr(),
         <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(out_cputype)._ptr,
-        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(out_cpusubtype)._ptr)    # fully specified
+        <unsigned int *>rocm.llvm._util.types.Pointer.from_pyobj(out_cpusubtype)._ptr)
     return _lto_module_get_macho_cputype__retval
 
 
@@ -1133,7 +1133,7 @@ def lto_module_has_ctor_dtor(object mod):
         `~.list`
     """
     cdef _Bool _lto_module_has_ctor_dtor__retval = clto.lto_module_has_ctor_dtor(
-        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr())    # fully specified
+        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr())
     return _lto_module_has_ctor_dtor__retval
 
 
@@ -1302,7 +1302,7 @@ def lto_codegen_set_diagnostic_handler(object arg0, object arg1, object arg2):
     clto.lto_codegen_set_diagnostic_handler(
         LLVMOpaqueLTOCodeGenerator.from_pyobj(arg0).get_element_ptr(),
         lto_diagnostic_handler_t.from_pyobj(arg1).get_element_ptr(),
-        <void *>rocm.llvm._util.types.Pointer.from_pyobj(arg2)._ptr)    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(arg2)._ptr)
 
 
 @cython.embedsignature(True)
@@ -1318,8 +1318,8 @@ def lto_codegen_create():
     Since:
         prior to LTO_API_VERSION=3
     """
-    _lto_codegen_create__retval = LLVMOpaqueLTOCodeGenerator.from_ptr(clto.lto_codegen_create())    # fully specified
-    return _lto_codegen_create__retval
+    _lto_codegen_create__retval = LLVMOpaqueLTOCodeGenerator.from_ptr(clto.lto_codegen_create())
+    return None if _lto_codegen_create__retval._ptr == NULL else _lto_codegen_create__retval
 
 
 @cython.embedsignature(True)
@@ -1335,8 +1335,8 @@ def lto_codegen_create_in_local_context():
     Since:
         LTO_API_VERSION=11
     """
-    _lto_codegen_create_in_local_context__retval = LLVMOpaqueLTOCodeGenerator.from_ptr(clto.lto_codegen_create_in_local_context())    # fully specified
-    return _lto_codegen_create_in_local_context__retval
+    _lto_codegen_create_in_local_context__retval = LLVMOpaqueLTOCodeGenerator.from_ptr(clto.lto_codegen_create_in_local_context())
+    return None if _lto_codegen_create_in_local_context__retval._ptr == NULL else _lto_codegen_create_in_local_context__retval
 
 
 @cython.embedsignature(True)
@@ -1354,7 +1354,7 @@ def lto_codegen_dispose(object arg0):
             (undocumented)
     """
     clto.lto_codegen_dispose(
-        LLVMOpaqueLTOCodeGenerator.from_pyobj(arg0).get_element_ptr())    # fully specified
+        LLVMOpaqueLTOCodeGenerator.from_pyobj(arg0).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -1383,7 +1383,7 @@ def lto_codegen_add_module(object cg, object mod):
     """
     cdef _Bool _lto_codegen_add_module__retval = clto.lto_codegen_add_module(
         LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
-        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr())    # fully specified
+        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr())
     return _lto_codegen_add_module__retval
 
 
@@ -1408,7 +1408,7 @@ def lto_codegen_set_module(object cg, object mod):
     """
     clto.lto_codegen_set_module(
         LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
-        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr())    # fully specified
+        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -1434,7 +1434,7 @@ def lto_codegen_set_debug_model(object cg, object arg1):
     if not isinstance(arg1,_lto_debug_model__Base):
         raise TypeError("argument 'arg1' must be of type '_lto_debug_model__Base'")
     cdef _Bool _lto_codegen_set_debug_model__retval = clto.lto_codegen_set_debug_model(
-        LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),arg1.value)    # fully specified
+        LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),arg1.value)
     return _lto_codegen_set_debug_model__retval
 
 
@@ -1461,7 +1461,7 @@ def lto_codegen_set_pic_model(object cg, object arg1):
     if not isinstance(arg1,_lto_codegen_model__Base):
         raise TypeError("argument 'arg1' must be of type '_lto_codegen_model__Base'")
     cdef _Bool _lto_codegen_set_pic_model__retval = clto.lto_codegen_set_pic_model(
-        LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),arg1.value)    # fully specified
+        LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),arg1.value)
     return _lto_codegen_set_pic_model__retval
 
 
@@ -1483,7 +1483,7 @@ def lto_codegen_set_cpu(object cg, object cpu):
     """
     clto.lto_codegen_set_cpu(
         LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(cpu)._ptr)    # fully specified
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(cpu)._ptr)
 
 
 @cython.embedsignature(True)
@@ -1505,7 +1505,7 @@ def lto_codegen_set_assembler_path(object cg, object path):
     """
     clto.lto_codegen_set_assembler_path(
         LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr)    # fully specified
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr)
 
 
 @cython.embedsignature(True)
@@ -1529,7 +1529,7 @@ def lto_codegen_set_assembler_args(object cg, object args, int nargs):
     """
     clto.lto_codegen_set_assembler_args(
         LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
-        <const char **>rocm.llvm._util.types.CStr.from_pyobj(args)._ptr,nargs)    # fully specified
+        <const char **>rocm.llvm._util.types.CStr.from_pyobj(args)._ptr,nargs)
 
 
 @cython.embedsignature(True)
@@ -1552,7 +1552,7 @@ def lto_codegen_add_must_preserve_symbol(object cg, object symbol):
     """
     clto.lto_codegen_add_must_preserve_symbol(
         LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(symbol)._ptr)    # fully specified
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(symbol)._ptr)
 
 
 @cython.embedsignature(True)
@@ -1578,7 +1578,7 @@ def lto_codegen_write_merged_modules(object cg, object path):
     """
     cdef _Bool _lto_codegen_write_merged_modules__retval = clto.lto_codegen_write_merged_modules(
         LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr)    # fully specified
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr)
     return _lto_codegen_write_merged_modules__retval
 
 
@@ -1607,8 +1607,8 @@ def lto_codegen_compile(object cg, object length):
     """
     _lto_codegen_compile__retval = rocm.llvm._util.types.Pointer.from_ptr(<void*>clto.lto_codegen_compile(
         LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
-        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(length)._ptr))    # fully specified
-    return _lto_codegen_compile__retval
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(length)._ptr))
+    return None if _lto_codegen_compile__retval._ptr == NULL else _lto_codegen_compile__retval
 
 
 @cython.embedsignature(True)
@@ -1636,7 +1636,7 @@ def lto_codegen_compile_to_file(object cg, object name):
     """
     cdef _Bool _lto_codegen_compile_to_file__retval = clto.lto_codegen_compile_to_file(
         LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
-        <const char **>rocm.llvm._util.types.CStr.from_pyobj(name)._ptr)    # fully specified
+        <const char **>rocm.llvm._util.types.CStr.from_pyobj(name)._ptr)
     return _lto_codegen_compile_to_file__retval
 
 
@@ -1657,7 +1657,7 @@ def lto_codegen_optimize(object cg):
         `~.list`
     """
     cdef _Bool _lto_codegen_optimize__retval = clto.lto_codegen_optimize(
-        LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr())    # fully specified
+        LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr())
     return _lto_codegen_optimize__retval
 
 
@@ -1686,8 +1686,8 @@ def lto_codegen_compile_optimized(object cg, object length):
     """
     _lto_codegen_compile_optimized__retval = rocm.llvm._util.types.Pointer.from_ptr(<void*>clto.lto_codegen_compile_optimized(
         LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
-        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(length)._ptr))    # fully specified
-    return _lto_codegen_compile_optimized__retval
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(length)._ptr))
+    return None if _lto_codegen_compile_optimized__retval._ptr == NULL else _lto_codegen_compile_optimized__retval
 
 
 @cython.embedsignature(True)
@@ -1702,7 +1702,7 @@ def lto_api_version():
     Returns:
         `~.int`
     """
-    cdef unsigned int _lto_api_version__retval = clto.lto_api_version()    # fully specified
+    cdef unsigned int _lto_api_version__retval = clto.lto_api_version()
     return _lto_api_version__retval
 
 
@@ -1730,7 +1730,7 @@ def lto_set_debug_options(object options, int number):
             (undocumented)
     """
     clto.lto_set_debug_options(
-        <const char *const *>rocm.llvm._util.types.CStr.from_pyobj(options)._ptr,number)    # fully specified
+        <const char *const *>rocm.llvm._util.types.CStr.from_pyobj(options)._ptr,number)
 
 
 @cython.embedsignature(True)
@@ -1757,7 +1757,7 @@ def lto_codegen_debug_options(object cg, object arg1):
     """
     clto.lto_codegen_debug_options(
         LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(arg1)._ptr)    # fully specified
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(arg1)._ptr)
 
 
 @cython.embedsignature(True)
@@ -1782,7 +1782,7 @@ def lto_codegen_debug_options_array(object cg, object arg1, int number):
     """
     clto.lto_codegen_debug_options_array(
         LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
-        <const char *const *>rocm.llvm._util.types.CStr.from_pyobj(arg1)._ptr,number)    # fully specified
+        <const char *const *>rocm.llvm._util.types.CStr.from_pyobj(arg1)._ptr,number)
 
 
 @cython.embedsignature(True)
@@ -1795,7 +1795,7 @@ def lto_initialize_disassembler():
     Since:
         LTO_API_VERSION=5
     """
-    clto.lto_initialize_disassembler()    # fully specified
+    clto.lto_initialize_disassembler()
 
 
 @cython.embedsignature(True)
@@ -1816,7 +1816,7 @@ def lto_codegen_set_should_internalize(object cg, _Bool ShouldInternalize):
             (undocumented)
     """
     clto.lto_codegen_set_should_internalize(
-        LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),ShouldInternalize)    # fully specified
+        LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),ShouldInternalize)
 
 
 @cython.embedsignature(True)
@@ -1839,7 +1839,7 @@ def lto_codegen_set_should_embed_uselists(object cg, _Bool ShouldEmbedUselists):
             (undocumented)
     """
     clto.lto_codegen_set_should_embed_uselists(
-        LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),ShouldEmbedUselists)    # fully specified
+        LLVMOpaqueLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),ShouldEmbedUselists)
 
 
 cdef class LLVMOpaqueLTOInput(rocm.llvm._util.types.Pointer):
@@ -2005,8 +2005,8 @@ def lto_input_create(object buffer, unsigned long buffer_size, object path):
     """
     _lto_input_create__retval = LLVMOpaqueLTOInput.from_ptr(clto.lto_input_create(
         <const void *>rocm.llvm._util.types.Pointer.from_pyobj(buffer)._ptr,buffer_size,
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr))    # fully specified
-    return _lto_input_create__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(path)._ptr))
+    return None if _lto_input_create__retval._ptr == NULL else _lto_input_create__retval
 
 
 @cython.embedsignature(True)
@@ -2024,7 +2024,7 @@ def lto_input_dispose(object input):
             (undocumented)
     """
     clto.lto_input_dispose(
-        LLVMOpaqueLTOInput.from_pyobj(input).get_element_ptr())    # fully specified
+        LLVMOpaqueLTOInput.from_pyobj(input).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -2045,7 +2045,7 @@ def lto_input_get_num_dependent_libraries(object input):
         `~.int`
     """
     cdef unsigned int _lto_input_get_num_dependent_libraries__retval = clto.lto_input_get_num_dependent_libraries(
-        LLVMOpaqueLTOInput.from_pyobj(input).get_element_ptr())    # fully specified
+        LLVMOpaqueLTOInput.from_pyobj(input).get_element_ptr())
     return _lto_input_get_num_dependent_libraries__retval
 
 
@@ -2075,8 +2075,8 @@ def lto_input_get_dependent_library(object input, unsigned long index, object si
     """
     _lto_input_get_dependent_library__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>clto.lto_input_get_dependent_library(
         LLVMOpaqueLTOInput.from_pyobj(input).get_element_ptr(),index,
-        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(size)._ptr))    # fully specified
-    return _lto_input_get_dependent_library__retval
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(size)._ptr))
+    return None if _lto_input_get_dependent_library__retval._ptr == NULL else _lto_input_get_dependent_library__retval
 
 
 @cython.embedsignature(True)
@@ -2094,8 +2094,8 @@ def lto_runtime_lib_symbols_list(object size):
             (undocumented)
     """
     _lto_runtime_lib_symbols_list__retval = rocm.llvm._util.types.Pointer.from_ptr(<void*>clto.lto_runtime_lib_symbols_list(
-        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(size)._ptr))    # fully specified
-    return _lto_runtime_lib_symbols_list__retval
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(size)._ptr))
+    return None if _lto_runtime_lib_symbols_list__retval._ptr == NULL else _lto_runtime_lib_symbols_list__retval
 
 
 cdef class LTOObjectBuffer(rocm.llvm._util.types.Pointer):
@@ -2352,8 +2352,8 @@ def thinlto_create_codegen():
     Since:
         LTO_API_VERSION=18
     """
-    _thinlto_create_codegen__retval = LLVMOpaqueThinLTOCodeGenerator.from_ptr(clto.thinlto_create_codegen())    # fully specified
-    return _thinlto_create_codegen__retval
+    _thinlto_create_codegen__retval = LLVMOpaqueThinLTOCodeGenerator.from_ptr(clto.thinlto_create_codegen())
+    return None if _thinlto_create_codegen__retval._ptr == NULL else _thinlto_create_codegen__retval
 
 
 @cython.embedsignature(True)
@@ -2371,7 +2371,7 @@ def thinlto_codegen_dispose(object cg):
             (undocumented)
     """
     clto.thinlto_codegen_dispose(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr())    # fully specified
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -2404,7 +2404,7 @@ def thinlto_codegen_add_module(object cg, object identifier, object data, int le
     clto.thinlto_codegen_add_module(
         LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(identifier)._ptr,
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(data)._ptr,length)    # fully specified
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(data)._ptr,length)
 
 
 @cython.embedsignature(True)
@@ -2422,7 +2422,7 @@ def thinlto_codegen_process(object cg):
             (undocumented)
     """
     clto.thinlto_codegen_process(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr())    # fully specified
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -2446,7 +2446,7 @@ def thinlto_module_get_num_objects(object cg):
         `~.int`
     """
     cdef unsigned int _thinlto_module_get_num_objects__retval = clto.thinlto_module_get_num_objects(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr())    # fully specified
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr())
     return _thinlto_module_get_num_objects__retval
 
 
@@ -2474,7 +2474,7 @@ def thinlto_module_get_object(object cg, unsigned int index):
         `~.LTOObjectBuffer`
     """
     _thinlto_module_get_object__retval = LTOObjectBuffer.from_value(clto.thinlto_module_get_object(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),index))    # fully specified
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),index))
     return _thinlto_module_get_object__retval
 
 
@@ -2499,7 +2499,7 @@ def thinlto_module_get_num_object_files(object cg):
         `~.int`
     """
     cdef unsigned int _thinlto_module_get_num_object_files__retval = clto.thinlto_module_get_num_object_files(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr())    # fully specified
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr())
     return _thinlto_module_get_num_object_files__retval
 
 
@@ -2527,8 +2527,8 @@ def thinlto_module_get_object_file(object cg, unsigned int index):
         `~.bytes`
     """
     _thinlto_module_get_object_file__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>clto.thinlto_module_get_object_file(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),index))    # fully specified
-    return _thinlto_module_get_object_file__retval
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),index))
+    return None if _thinlto_module_get_object_file__retval._ptr == NULL else _thinlto_module_get_object_file__retval
 
 
 @cython.embedsignature(True)
@@ -2554,7 +2554,7 @@ def thinlto_codegen_set_pic_model(object cg, object arg1):
     if not isinstance(arg1,_lto_codegen_model__Base):
         raise TypeError("argument 'arg1' must be of type '_lto_codegen_model__Base'")
     cdef _Bool _thinlto_codegen_set_pic_model__retval = clto.thinlto_codegen_set_pic_model(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),arg1.value)    # fully specified
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),arg1.value)
     return _thinlto_codegen_set_pic_model__retval
 
 
@@ -2578,7 +2578,7 @@ def thinlto_codegen_set_savetemps_dir(object cg, object save_temps_dir):
     """
     clto.thinlto_codegen_set_savetemps_dir(
         LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(save_temps_dir)._ptr)    # fully specified
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(save_temps_dir)._ptr)
 
 
 @cython.embedsignature(True)
@@ -2602,7 +2602,7 @@ def thinlto_set_generated_objects_dir(object cg, object save_temps_dir):
     """
     clto.thinlto_set_generated_objects_dir(
         LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(save_temps_dir)._ptr)    # fully specified
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(save_temps_dir)._ptr)
 
 
 @cython.embedsignature(True)
@@ -2623,7 +2623,7 @@ def thinlto_codegen_set_cpu(object cg, object cpu):
     """
     clto.thinlto_codegen_set_cpu(
         LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(cpu)._ptr)    # fully specified
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(cpu)._ptr)
 
 
 @cython.embedsignature(True)
@@ -2644,7 +2644,7 @@ def thinlto_codegen_disable_codegen(object cg, _Bool disable):
             (undocumented)
     """
     clto.thinlto_codegen_disable_codegen(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),disable)    # fully specified
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),disable)
 
 
 @cython.embedsignature(True)
@@ -2664,7 +2664,7 @@ def thinlto_codegen_set_codegen_only(object cg, _Bool codegen_only):
             (undocumented)
     """
     clto.thinlto_codegen_set_codegen_only(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),codegen_only)    # fully specified
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),codegen_only)
 
 
 @cython.embedsignature(True)
@@ -2684,7 +2684,7 @@ def thinlto_debug_options(object options, int number):
             (undocumented)
     """
     clto.thinlto_debug_options(
-        <const char *const *>rocm.llvm._util.types.CStr.from_pyobj(options)._ptr,number)    # fully specified
+        <const char *const *>rocm.llvm._util.types.CStr.from_pyobj(options)._ptr,number)
 
 
 @cython.embedsignature(True)
@@ -2704,7 +2704,7 @@ def lto_module_is_thinlto(object mod):
         `~.list`
     """
     cdef _Bool _lto_module_is_thinlto__retval = clto.lto_module_is_thinlto(
-        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr())    # fully specified
+        LLVMOpaqueLTOModule.from_pyobj(mod).get_element_ptr())
     return _lto_module_is_thinlto__retval
 
 
@@ -2732,7 +2732,7 @@ def thinlto_codegen_add_must_preserve_symbol(object cg, object name, int length)
     """
     clto.thinlto_codegen_add_must_preserve_symbol(
         LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(name)._ptr,length)    # fully specified
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(name)._ptr,length)
 
 
 @cython.embedsignature(True)
@@ -2759,7 +2759,7 @@ def thinlto_codegen_add_cross_referenced_symbol(object cg, object name, int leng
     """
     clto.thinlto_codegen_add_cross_referenced_symbol(
         LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(name)._ptr,length)    # fully specified
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(name)._ptr,length)
 
 
 @cython.embedsignature(True)
@@ -2781,7 +2781,7 @@ def thinlto_codegen_set_cache_dir(object cg, object cache_dir):
     """
     clto.thinlto_codegen_set_cache_dir(
         LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(cache_dir)._ptr)    # fully specified
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(cache_dir)._ptr)
 
 
 @cython.embedsignature(True)
@@ -2803,7 +2803,7 @@ def thinlto_codegen_set_cache_pruning_interval(object cg, int interval):
             (undocumented)
     """
     clto.thinlto_codegen_set_cache_pruning_interval(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),interval)    # fully specified
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),interval)
 
 
 @cython.embedsignature(True)
@@ -2831,7 +2831,7 @@ def thinlto_codegen_set_final_cache_size_relative_to_available_space(object cg, 
             (undocumented)
     """
     clto.thinlto_codegen_set_final_cache_size_relative_to_available_space(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),percentage)    # fully specified
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),percentage)
 
 
 @cython.embedsignature(True)
@@ -2852,7 +2852,7 @@ def thinlto_codegen_set_cache_entry_expiration(object cg, unsigned int expiratio
             (undocumented)
     """
     clto.thinlto_codegen_set_cache_entry_expiration(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),expiration)    # fully specified
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),expiration)
 
 
 @cython.embedsignature(True)
@@ -2875,7 +2875,7 @@ def thinlto_codegen_set_cache_size_bytes(object cg, unsigned int max_size_bytes)
             (undocumented)
     """
     clto.thinlto_codegen_set_cache_size_bytes(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),max_size_bytes)    # fully specified
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),max_size_bytes)
 
 
 @cython.embedsignature(True)
@@ -2896,7 +2896,7 @@ def thinlto_codegen_set_cache_size_megabytes(object cg, unsigned int max_size_me
             (undocumented)
     """
     clto.thinlto_codegen_set_cache_size_megabytes(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),max_size_megabytes)    # fully specified
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),max_size_megabytes)
 
 
 @cython.embedsignature(True)
@@ -2917,7 +2917,7 @@ def thinlto_codegen_set_cache_size_files(object cg, unsigned int max_size_files)
             (undocumented)
     """
     clto.thinlto_codegen_set_cache_size_files(
-        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),max_size_files)    # fully specified
+        LLVMOpaqueThinLTOCodeGenerator.from_pyobj(cg).get_element_ptr(),max_size_files)
 
 __all__ = [
     "_lto_symbol_attributes__Base",

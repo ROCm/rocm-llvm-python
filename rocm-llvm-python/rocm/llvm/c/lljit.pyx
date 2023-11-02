@@ -604,8 +604,8 @@ def LLVMOrcCreateLLJITBuilder():
     The client owns the resulting LLJITBuilder and should dispose of it using
     LLVMOrcDisposeLLJITBuilder once they are done with it.
     """
-    _LLVMOrcCreateLLJITBuilder__retval = LLVMOrcOpaqueLLJITBuilder.from_ptr(clljit.LLVMOrcCreateLLJITBuilder())    # fully specified
-    return _LLVMOrcCreateLLJITBuilder__retval
+    _LLVMOrcCreateLLJITBuilder__retval = LLVMOrcOpaqueLLJITBuilder.from_ptr(clljit.LLVMOrcCreateLLJITBuilder())
+    return None if _LLVMOrcCreateLLJITBuilder__retval._ptr == NULL else _LLVMOrcCreateLLJITBuilder__retval
 
 
 @cython.embedsignature(True)
@@ -621,7 +621,7 @@ def LLVMOrcDisposeLLJITBuilder(object Builder):
             (undocumented)
     """
     clljit.LLVMOrcDisposeLLJITBuilder(
-        LLVMOrcOpaqueLLJITBuilder.from_pyobj(Builder).get_element_ptr())    # fully specified
+        LLVMOrcOpaqueLLJITBuilder.from_pyobj(Builder).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -645,7 +645,7 @@ def LLVMOrcLLJITBuilderSetJITTargetMachineBuilder(object Builder, object JTMB):
     """
     clljit.LLVMOrcLLJITBuilderSetJITTargetMachineBuilder(
         LLVMOrcOpaqueLLJITBuilder.from_pyobj(Builder).get_element_ptr(),
-        LLVMOrcOpaqueJITTargetMachineBuilder.from_pyobj(JTMB).get_element_ptr())    # fully specified
+        LLVMOrcOpaqueJITTargetMachineBuilder.from_pyobj(JTMB).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -667,7 +667,7 @@ def LLVMOrcLLJITBuilderSetObjectLinkingLayerCreator(object Builder, object F, ob
     clljit.LLVMOrcLLJITBuilderSetObjectLinkingLayerCreator(
         LLVMOrcOpaqueLLJITBuilder.from_pyobj(Builder).get_element_ptr(),
         LLVMOrcLLJITBuilderObjectLinkingLayerCreatorFunction.from_pyobj(F).get_element_ptr(),
-        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Ctx)._ptr)    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Ctx)._ptr)
 
 
 @cython.embedsignature(True)
@@ -696,8 +696,8 @@ def LLVMOrcCreateLLJIT(object Result, object Builder):
     """
     _LLVMOrcCreateLLJIT__retval = LLVMOpaqueError.from_ptr(clljit.LLVMOrcCreateLLJIT(
         <clljit.LLVMOrcLLJITRef*>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr,
-        LLVMOrcOpaqueLLJITBuilder.from_pyobj(Builder).get_element_ptr()))    # fully specified
-    return _LLVMOrcCreateLLJIT__retval
+        LLVMOrcOpaqueLLJITBuilder.from_pyobj(Builder).get_element_ptr()))
+    return None if _LLVMOrcCreateLLJIT__retval._ptr == NULL else _LLVMOrcCreateLLJIT__retval
 
 
 @cython.embedsignature(True)
@@ -711,8 +711,8 @@ def LLVMOrcDisposeLLJIT(object J):
             (undocumented)
     """
     _LLVMOrcDisposeLLJIT__retval = LLVMOpaqueError.from_ptr(clljit.LLVMOrcDisposeLLJIT(
-        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr()))    # fully specified
-    return _LLVMOrcDisposeLLJIT__retval
+        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr()))
+    return None if _LLVMOrcDisposeLLJIT__retval._ptr == NULL else _LLVMOrcDisposeLLJIT__retval
 
 
 @cython.embedsignature(True)
@@ -729,8 +729,8 @@ def LLVMOrcLLJITGetExecutionSession(object J):
             (undocumented)
     """
     _LLVMOrcLLJITGetExecutionSession__retval = LLVMOrcOpaqueExecutionSession.from_ptr(clljit.LLVMOrcLLJITGetExecutionSession(
-        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr()))    # fully specified
-    return _LLVMOrcLLJITGetExecutionSession__retval
+        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr()))
+    return None if _LLVMOrcLLJITGetExecutionSession__retval._ptr == NULL else _LLVMOrcLLJITGetExecutionSession__retval
 
 
 @cython.embedsignature(True)
@@ -747,8 +747,8 @@ def LLVMOrcLLJITGetMainJITDylib(object J):
             (undocumented)
     """
     _LLVMOrcLLJITGetMainJITDylib__retval = LLVMOrcOpaqueJITDylib.from_ptr(clljit.LLVMOrcLLJITGetMainJITDylib(
-        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr()))    # fully specified
-    return _LLVMOrcLLJITGetMainJITDylib__retval
+        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr()))
+    return None if _LLVMOrcLLJITGetMainJITDylib__retval._ptr == NULL else _LLVMOrcLLJITGetMainJITDylib__retval
 
 
 @cython.embedsignature(True)
@@ -766,8 +766,8 @@ def LLVMOrcLLJITGetTripleString(object J):
         `~.bytes`
     """
     _LLVMOrcLLJITGetTripleString__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>clljit.LLVMOrcLLJITGetTripleString(
-        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr()))    # fully specified
-    return _LLVMOrcLLJITGetTripleString__retval
+        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr()))
+    return None if _LLVMOrcLLJITGetTripleString__retval._ptr == NULL else _LLVMOrcLLJITGetTripleString__retval
 
 
 @cython.embedsignature(True)
@@ -784,7 +784,7 @@ def LLVMOrcLLJITGetGlobalPrefix(object J):
         `~.int`
     """
     cdef char _LLVMOrcLLJITGetGlobalPrefix__retval = clljit.LLVMOrcLLJITGetGlobalPrefix(
-        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr())    # fully specified
+        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr())
     return _LLVMOrcLLJITGetGlobalPrefix__retval
 
 
@@ -807,8 +807,8 @@ def LLVMOrcLLJITMangleAndIntern(object J, object UnmangledName):
     """
     _LLVMOrcLLJITMangleAndIntern__retval = LLVMOrcOpaqueSymbolStringPoolEntry.from_ptr(clljit.LLVMOrcLLJITMangleAndIntern(
         LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(UnmangledName)._ptr))    # fully specified
-    return _LLVMOrcLLJITMangleAndIntern__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(UnmangledName)._ptr))
+    return None if _LLVMOrcLLJITMangleAndIntern__retval._ptr == NULL else _LLVMOrcLLJITMangleAndIntern__retval
 
 
 @cython.embedsignature(True)
@@ -836,8 +836,8 @@ def LLVMOrcLLJITAddObjectFile(object J, object JD, object ObjBuffer):
     _LLVMOrcLLJITAddObjectFile__retval = LLVMOpaqueError.from_ptr(clljit.LLVMOrcLLJITAddObjectFile(
         LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr(),
         LLVMOrcOpaqueJITDylib.from_pyobj(JD).get_element_ptr(),
-        LLVMOpaqueMemoryBuffer.from_pyobj(ObjBuffer).get_element_ptr()))    # fully specified
-    return _LLVMOrcLLJITAddObjectFile__retval
+        LLVMOpaqueMemoryBuffer.from_pyobj(ObjBuffer).get_element_ptr()))
+    return None if _LLVMOrcLLJITAddObjectFile__retval._ptr == NULL else _LLVMOrcLLJITAddObjectFile__retval
 
 
 @cython.embedsignature(True)
@@ -865,8 +865,8 @@ def LLVMOrcLLJITAddObjectFileWithRT(object J, object RT, object ObjBuffer):
     _LLVMOrcLLJITAddObjectFileWithRT__retval = LLVMOpaqueError.from_ptr(clljit.LLVMOrcLLJITAddObjectFileWithRT(
         LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr(),
         LLVMOrcOpaqueResourceTracker.from_pyobj(RT).get_element_ptr(),
-        LLVMOpaqueMemoryBuffer.from_pyobj(ObjBuffer).get_element_ptr()))    # fully specified
-    return _LLVMOrcLLJITAddObjectFileWithRT__retval
+        LLVMOpaqueMemoryBuffer.from_pyobj(ObjBuffer).get_element_ptr()))
+    return None if _LLVMOrcLLJITAddObjectFileWithRT__retval._ptr == NULL else _LLVMOrcLLJITAddObjectFileWithRT__retval
 
 
 @cython.embedsignature(True)
@@ -894,8 +894,8 @@ def LLVMOrcLLJITAddLLVMIRModule(object J, object JD, object TSM):
     _LLVMOrcLLJITAddLLVMIRModule__retval = LLVMOpaqueError.from_ptr(clljit.LLVMOrcLLJITAddLLVMIRModule(
         LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr(),
         LLVMOrcOpaqueJITDylib.from_pyobj(JD).get_element_ptr(),
-        LLVMOrcOpaqueThreadSafeModule.from_pyobj(TSM).get_element_ptr()))    # fully specified
-    return _LLVMOrcLLJITAddLLVMIRModule__retval
+        LLVMOrcOpaqueThreadSafeModule.from_pyobj(TSM).get_element_ptr()))
+    return None if _LLVMOrcLLJITAddLLVMIRModule__retval._ptr == NULL else _LLVMOrcLLJITAddLLVMIRModule__retval
 
 
 @cython.embedsignature(True)
@@ -923,8 +923,8 @@ def LLVMOrcLLJITAddLLVMIRModuleWithRT(object J, object JD, object TSM):
     _LLVMOrcLLJITAddLLVMIRModuleWithRT__retval = LLVMOpaqueError.from_ptr(clljit.LLVMOrcLLJITAddLLVMIRModuleWithRT(
         LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr(),
         LLVMOrcOpaqueResourceTracker.from_pyobj(JD).get_element_ptr(),
-        LLVMOrcOpaqueThreadSafeModule.from_pyobj(TSM).get_element_ptr()))    # fully specified
-    return _LLVMOrcLLJITAddLLVMIRModuleWithRT__retval
+        LLVMOrcOpaqueThreadSafeModule.from_pyobj(TSM).get_element_ptr()))
+    return None if _LLVMOrcLLJITAddLLVMIRModuleWithRT__retval._ptr == NULL else _LLVMOrcLLJITAddLLVMIRModuleWithRT__retval
 
 
 @cython.embedsignature(True)
@@ -948,8 +948,8 @@ def LLVMOrcLLJITLookup(object J, object Result, object Name):
     _LLVMOrcLLJITLookup__retval = LLVMOpaqueError.from_ptr(clljit.LLVMOrcLLJITLookup(
         LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr(),
         <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr,
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
-    return _LLVMOrcLLJITLookup__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))
+    return None if _LLVMOrcLLJITLookup__retval._ptr == NULL else _LLVMOrcLLJITLookup__retval
 
 
 @cython.embedsignature(True)
@@ -963,8 +963,8 @@ def LLVMOrcLLJITGetObjLinkingLayer(object J):
             (undocumented)
     """
     _LLVMOrcLLJITGetObjLinkingLayer__retval = LLVMOrcOpaqueObjectLayer.from_ptr(clljit.LLVMOrcLLJITGetObjLinkingLayer(
-        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr()))    # fully specified
-    return _LLVMOrcLLJITGetObjLinkingLayer__retval
+        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr()))
+    return None if _LLVMOrcLLJITGetObjLinkingLayer__retval._ptr == NULL else _LLVMOrcLLJITGetObjLinkingLayer__retval
 
 
 @cython.embedsignature(True)
@@ -978,8 +978,8 @@ def LLVMOrcLLJITGetObjTransformLayer(object J):
             (undocumented)
     """
     _LLVMOrcLLJITGetObjTransformLayer__retval = LLVMOrcOpaqueObjectTransformLayer.from_ptr(clljit.LLVMOrcLLJITGetObjTransformLayer(
-        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr()))    # fully specified
-    return _LLVMOrcLLJITGetObjTransformLayer__retval
+        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr()))
+    return None if _LLVMOrcLLJITGetObjTransformLayer__retval._ptr == NULL else _LLVMOrcLLJITGetObjTransformLayer__retval
 
 
 @cython.embedsignature(True)
@@ -993,8 +993,8 @@ def LLVMOrcLLJITGetIRTransformLayer(object J):
             (undocumented)
     """
     _LLVMOrcLLJITGetIRTransformLayer__retval = LLVMOrcOpaqueIRTransformLayer.from_ptr(clljit.LLVMOrcLLJITGetIRTransformLayer(
-        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr()))    # fully specified
-    return _LLVMOrcLLJITGetIRTransformLayer__retval
+        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr()))
+    return None if _LLVMOrcLLJITGetIRTransformLayer__retval._ptr == NULL else _LLVMOrcLLJITGetIRTransformLayer__retval
 
 
 @cython.embedsignature(True)
@@ -1014,8 +1014,8 @@ def LLVMOrcLLJITGetDataLayoutStr(object J):
         `~.bytes`
     """
     _LLVMOrcLLJITGetDataLayoutStr__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>clljit.LLVMOrcLLJITGetDataLayoutStr(
-        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr()))    # fully specified
-    return _LLVMOrcLLJITGetDataLayoutStr__retval
+        LLVMOrcOpaqueLLJIT.from_pyobj(J).get_element_ptr()))
+    return None if _LLVMOrcLLJITGetDataLayoutStr__retval._ptr == NULL else _LLVMOrcLLJITGetDataLayoutStr__retval
 
 __all__ = [
     "LLVMOrcLLJITBuilderObjectLinkingLayerCreatorFunction",

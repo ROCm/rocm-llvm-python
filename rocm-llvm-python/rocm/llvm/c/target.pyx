@@ -389,7 +389,7 @@ def LLVMInitializeAllTargetInfos():
     it wants access to all available targets that LLVM is configured to
     support.
     """
-    ctarget.LLVMInitializeAllTargetInfos()    # fully specified
+    ctarget.LLVMInitializeAllTargetInfos()
 
 
 @cython.embedsignature(True)
@@ -400,7 +400,7 @@ def LLVMInitializeAllTargets():
     wants to link in all available targets that LLVM is configured to
     support.
     """
-    ctarget.LLVMInitializeAllTargets()    # fully specified
+    ctarget.LLVMInitializeAllTargets()
 
 
 @cython.embedsignature(True)
@@ -411,7 +411,7 @@ def LLVMInitializeAllTargetMCs():
     it wants access to all available target MC that LLVM is configured to
     support.
     """
-    ctarget.LLVMInitializeAllTargetMCs()    # fully specified
+    ctarget.LLVMInitializeAllTargetMCs()
 
 
 @cython.embedsignature(True)
@@ -422,7 +422,7 @@ def LLVMInitializeAllAsmPrinters():
     it wants all asm printers that LLVM is configured to support, to make them
     available via the TargetRegistry.
     """
-    ctarget.LLVMInitializeAllAsmPrinters()    # fully specified
+    ctarget.LLVMInitializeAllAsmPrinters()
 
 
 @cython.embedsignature(True)
@@ -433,7 +433,7 @@ def LLVMInitializeAllAsmParsers():
     it wants all asm parsers that LLVM is configured to support, to make them
     available via the TargetRegistry.
     """
-    ctarget.LLVMInitializeAllAsmParsers()    # fully specified
+    ctarget.LLVMInitializeAllAsmParsers()
 
 
 @cython.embedsignature(True)
@@ -444,7 +444,7 @@ def LLVMInitializeAllDisassemblers():
     if it wants all disassemblers that LLVM is configured to support, to make
     them available via the TargetRegistry.
     """
-    ctarget.LLVMInitializeAllDisassemblers()    # fully specified
+    ctarget.LLVMInitializeAllDisassemblers()
 
 
 @cython.embedsignature(True)
@@ -458,7 +458,7 @@ def LLVMInitializeNativeTarget():
     Returns:
         `~.int`
     """
-    cdef int _LLVMInitializeNativeTarget__retval = ctarget.LLVMInitializeNativeTarget()    # fully specified
+    cdef int _LLVMInitializeNativeTarget__retval = ctarget.LLVMInitializeNativeTarget()
     return _LLVMInitializeNativeTarget__retval
 
 
@@ -473,7 +473,7 @@ def LLVMInitializeNativeAsmParser():
     Returns:
         `~.int`
     """
-    cdef int _LLVMInitializeNativeAsmParser__retval = ctarget.LLVMInitializeNativeAsmParser()    # fully specified
+    cdef int _LLVMInitializeNativeAsmParser__retval = ctarget.LLVMInitializeNativeAsmParser()
     return _LLVMInitializeNativeAsmParser__retval
 
 
@@ -488,7 +488,7 @@ def LLVMInitializeNativeAsmPrinter():
     Returns:
         `~.int`
     """
-    cdef int _LLVMInitializeNativeAsmPrinter__retval = ctarget.LLVMInitializeNativeAsmPrinter()    # fully specified
+    cdef int _LLVMInitializeNativeAsmPrinter__retval = ctarget.LLVMInitializeNativeAsmPrinter()
     return _LLVMInitializeNativeAsmPrinter__retval
 
 
@@ -503,7 +503,7 @@ def LLVMInitializeNativeDisassembler():
     Returns:
         `~.int`
     """
-    cdef int _LLVMInitializeNativeDisassembler__retval = ctarget.LLVMInitializeNativeDisassembler()    # fully specified
+    cdef int _LLVMInitializeNativeDisassembler__retval = ctarget.LLVMInitializeNativeDisassembler()
     return _LLVMInitializeNativeDisassembler__retval
 
 
@@ -521,8 +521,8 @@ def LLVMGetModuleDataLayout(object M):
             (undocumented)
     """
     _LLVMGetModuleDataLayout__retval = LLVMOpaqueTargetData.from_ptr(ctarget.LLVMGetModuleDataLayout(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
-    return _LLVMGetModuleDataLayout__retval
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))
+    return None if _LLVMGetModuleDataLayout__retval._ptr == NULL else _LLVMGetModuleDataLayout__retval
 
 
 @cython.embedsignature(True)
@@ -543,7 +543,7 @@ def LLVMSetModuleDataLayout(object M, object DL):
     """
     ctarget.LLVMSetModuleDataLayout(
         LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
-        LLVMOpaqueTargetData.from_pyobj(DL).get_element_ptr())    # fully specified
+        LLVMOpaqueTargetData.from_pyobj(DL).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -558,8 +558,8 @@ def LLVMCreateTargetData(object StringRep):
             (undocumented)
     """
     _LLVMCreateTargetData__retval = LLVMOpaqueTargetData.from_ptr(ctarget.LLVMCreateTargetData(
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(StringRep)._ptr))    # fully specified
-    return _LLVMCreateTargetData__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(StringRep)._ptr))
+    return None if _LLVMCreateTargetData__retval._ptr == NULL else _LLVMCreateTargetData__retval
 
 
 @cython.embedsignature(True)
@@ -574,7 +574,7 @@ def LLVMDisposeTargetData(object TD):
             (undocumented)
     """
     ctarget.LLVMDisposeTargetData(
-        LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr())    # fully specified
+        LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -594,7 +594,7 @@ def LLVMAddTargetLibraryInfo(object TLI, object PM):
     """
     ctarget.LLVMAddTargetLibraryInfo(
         LLVMOpaqueTargetLibraryInfotData.from_pyobj(TLI).get_element_ptr(),
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -613,8 +613,8 @@ def LLVMCopyStringRepOfTargetData(object TD):
         `~.bytes`
     """
     _LLVMCopyStringRepOfTargetData__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ctarget.LLVMCopyStringRepOfTargetData(
-        LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr()))    # fully specified
-    return _LLVMCopyStringRepOfTargetData__retval
+        LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr()))
+    return None if _LLVMCopyStringRepOfTargetData__retval._ptr == NULL else _LLVMCopyStringRepOfTargetData__retval
 
 
 @cython.embedsignature(True)
@@ -633,7 +633,7 @@ def LLVMByteOrder(object TD):
         `~.LLVMByteOrdering`
     """
     _LLVMByteOrder__retval = LLVMByteOrdering(ctarget.LLVMByteOrder(
-        LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr()))    # fully specified
+        LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr()))
     return _LLVMByteOrder__retval
 
 
@@ -652,7 +652,7 @@ def LLVMPointerSize(object TD):
         `~.int`
     """
     cdef unsigned int _LLVMPointerSize__retval = ctarget.LLVMPointerSize(
-        LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr())    # fully specified
+        LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr())
     return _LLVMPointerSize__retval
 
 
@@ -675,7 +675,7 @@ def LLVMPointerSizeForAS(object TD, unsigned int AS):
         `~.int`
     """
     cdef unsigned int _LLVMPointerSizeForAS__retval = ctarget.LLVMPointerSizeForAS(
-        LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr(),AS)    # fully specified
+        LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr(),AS)
     return _LLVMPointerSizeForAS__retval
 
 
@@ -691,8 +691,8 @@ def LLVMIntPtrType(object TD):
             (undocumented)
     """
     _LLVMIntPtrType__retval = LLVMOpaqueType.from_ptr(ctarget.LLVMIntPtrType(
-        LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr()))    # fully specified
-    return _LLVMIntPtrType__retval
+        LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr()))
+    return None if _LLVMIntPtrType__retval._ptr == NULL else _LLVMIntPtrType__retval
 
 
 @cython.embedsignature(True)
@@ -711,8 +711,8 @@ def LLVMIntPtrTypeForAS(object TD, unsigned int AS):
             (undocumented)
     """
     _LLVMIntPtrTypeForAS__retval = LLVMOpaqueType.from_ptr(ctarget.LLVMIntPtrTypeForAS(
-        LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr(),AS))    # fully specified
-    return _LLVMIntPtrTypeForAS__retval
+        LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr(),AS))
+    return None if _LLVMIntPtrTypeForAS__retval._ptr == NULL else _LLVMIntPtrTypeForAS__retval
 
 
 @cython.embedsignature(True)
@@ -731,8 +731,8 @@ def LLVMIntPtrTypeInContext(object C, object TD):
     """
     _LLVMIntPtrTypeInContext__retval = LLVMOpaqueType.from_ptr(ctarget.LLVMIntPtrTypeInContext(
         LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),
-        LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr()))    # fully specified
-    return _LLVMIntPtrTypeInContext__retval
+        LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr()))
+    return None if _LLVMIntPtrTypeInContext__retval._ptr == NULL else _LLVMIntPtrTypeInContext__retval
 
 
 @cython.embedsignature(True)
@@ -755,8 +755,8 @@ def LLVMIntPtrTypeForASInContext(object C, object TD, unsigned int AS):
     """
     _LLVMIntPtrTypeForASInContext__retval = LLVMOpaqueType.from_ptr(ctarget.LLVMIntPtrTypeForASInContext(
         LLVMOpaqueContext.from_pyobj(C).get_element_ptr(),
-        LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr(),AS))    # fully specified
-    return _LLVMIntPtrTypeForASInContext__retval
+        LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr(),AS))
+    return None if _LLVMIntPtrTypeForASInContext__retval._ptr == NULL else _LLVMIntPtrTypeForASInContext__retval
 
 
 @cython.embedsignature(True)
@@ -778,7 +778,7 @@ def LLVMSizeOfTypeInBits(object TD, object Ty):
     """
     cdef unsigned long long _LLVMSizeOfTypeInBits__retval = ctarget.LLVMSizeOfTypeInBits(
         LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr())    # fully specified
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr())
     return _LLVMSizeOfTypeInBits__retval
 
 
@@ -801,7 +801,7 @@ def LLVMStoreSizeOfType(object TD, object Ty):
     """
     cdef unsigned long long _LLVMStoreSizeOfType__retval = ctarget.LLVMStoreSizeOfType(
         LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr())    # fully specified
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr())
     return _LLVMStoreSizeOfType__retval
 
 
@@ -824,7 +824,7 @@ def LLVMABISizeOfType(object TD, object Ty):
     """
     cdef unsigned long long _LLVMABISizeOfType__retval = ctarget.LLVMABISizeOfType(
         LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr())    # fully specified
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr())
     return _LLVMABISizeOfType__retval
 
 
@@ -847,7 +847,7 @@ def LLVMABIAlignmentOfType(object TD, object Ty):
     """
     cdef unsigned int _LLVMABIAlignmentOfType__retval = ctarget.LLVMABIAlignmentOfType(
         LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr())    # fully specified
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr())
     return _LLVMABIAlignmentOfType__retval
 
 
@@ -870,7 +870,7 @@ def LLVMCallFrameAlignmentOfType(object TD, object Ty):
     """
     cdef unsigned int _LLVMCallFrameAlignmentOfType__retval = ctarget.LLVMCallFrameAlignmentOfType(
         LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr())    # fully specified
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr())
     return _LLVMCallFrameAlignmentOfType__retval
 
 
@@ -893,7 +893,7 @@ def LLVMPreferredAlignmentOfType(object TD, object Ty):
     """
     cdef unsigned int _LLVMPreferredAlignmentOfType__retval = ctarget.LLVMPreferredAlignmentOfType(
         LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr())    # fully specified
+        LLVMOpaqueType.from_pyobj(Ty).get_element_ptr())
     return _LLVMPreferredAlignmentOfType__retval
 
 
@@ -916,7 +916,7 @@ def LLVMPreferredAlignmentOfGlobal(object TD, object GlobalVar):
     """
     cdef unsigned int _LLVMPreferredAlignmentOfGlobal__retval = ctarget.LLVMPreferredAlignmentOfGlobal(
         LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr(),
-        LLVMOpaqueValue.from_pyobj(GlobalVar).get_element_ptr())    # fully specified
+        LLVMOpaqueValue.from_pyobj(GlobalVar).get_element_ptr())
     return _LLVMPreferredAlignmentOfGlobal__retval
 
 
@@ -942,7 +942,7 @@ def LLVMElementAtOffset(object TD, object StructTy, unsigned long long Offset):
     """
     cdef unsigned int _LLVMElementAtOffset__retval = ctarget.LLVMElementAtOffset(
         LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(StructTy).get_element_ptr(),Offset)    # fully specified
+        LLVMOpaqueType.from_pyobj(StructTy).get_element_ptr(),Offset)
     return _LLVMElementAtOffset__retval
 
 
@@ -968,7 +968,7 @@ def LLVMOffsetOfElement(object TD, object StructTy, unsigned int Element):
     """
     cdef unsigned long long _LLVMOffsetOfElement__retval = ctarget.LLVMOffsetOfElement(
         LLVMOpaqueTargetData.from_pyobj(TD).get_element_ptr(),
-        LLVMOpaqueType.from_pyobj(StructTy).get_element_ptr(),Element)    # fully specified
+        LLVMOpaqueType.from_pyobj(StructTy).get_element_ptr(),Element)
     return _LLVMOffsetOfElement__retval
 
 __all__ = [

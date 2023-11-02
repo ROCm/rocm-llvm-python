@@ -161,7 +161,7 @@ def LLVMInstallFatalErrorHandler(object Handler):
             (undocumented)
     """
     cerrorhandling.LLVMInstallFatalErrorHandler(
-        LLVMFatalErrorHandler.from_pyobj(Handler).get_element_ptr())    # fully specified
+        LLVMFatalErrorHandler.from_pyobj(Handler).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -171,7 +171,7 @@ def LLVMResetFatalErrorHandler():
     Reset the fatal error handler. This resets LLVM's fatal error handling
     behavior to the default.
     """
-    cerrorhandling.LLVMResetFatalErrorHandler()    # fully specified
+    cerrorhandling.LLVMResetFatalErrorHandler()
 
 
 @cython.embedsignature(True)
@@ -182,7 +182,7 @@ def LLVMEnablePrettyStackTrace():
     signals and prints which component of LLVM you were in at the time if the
     crash.
     """
-    cerrorhandling.LLVMEnablePrettyStackTrace()    # fully specified
+    cerrorhandling.LLVMEnablePrettyStackTrace()
 
 __all__ = [
     "LLVMFatalErrorHandler",

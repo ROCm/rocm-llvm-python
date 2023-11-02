@@ -502,8 +502,8 @@ def LLVMGetFirstTarget():
 
     Returns the first llvm`~.Target` in the registered targets list. */
     """
-    _LLVMGetFirstTarget__retval = LLVMTarget.from_ptr(ctargetmachine.LLVMGetFirstTarget())    # fully specified
-    return _LLVMGetFirstTarget__retval
+    _LLVMGetFirstTarget__retval = LLVMTarget.from_ptr(ctargetmachine.LLVMGetFirstTarget())
+    return None if _LLVMGetFirstTarget__retval._ptr == NULL else _LLVMGetFirstTarget__retval
 
 
 @cython.embedsignature(True)
@@ -517,8 +517,8 @@ def LLVMGetNextTarget(object T):
             (undocumented)
     """
     _LLVMGetNextTarget__retval = LLVMTarget.from_ptr(ctargetmachine.LLVMGetNextTarget(
-        LLVMTarget.from_pyobj(T).get_element_ptr()))    # fully specified
-    return _LLVMGetNextTarget__retval
+        LLVMTarget.from_pyobj(T).get_element_ptr()))
+    return None if _LLVMGetNextTarget__retval._ptr == NULL else _LLVMGetNextTarget__retval
 
 
 @cython.embedsignature(True)
@@ -533,12 +533,12 @@ def LLVMGetTargetFromName(object Name):
             (undocumented)
     """
     _LLVMGetTargetFromName__retval = LLVMTarget.from_ptr(ctargetmachine.LLVMGetTargetFromName(
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
-    return _LLVMGetTargetFromName__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))
+    return None if _LLVMGetTargetFromName__retval._ptr == NULL else _LLVMGetTargetFromName__retval
 
 
 @cython.embedsignature(True)
-def LLVMGetTargetFromTriple(object Triple, object T, object ErrorMessage):
+def LLVMGetTargetFromTriple(object Triple):
     r"""(No short description, might be part of a group.)
 
     Finds the target corresponding to the given triple and stores it in ``T.``
@@ -549,20 +549,21 @@ def LLVMGetTargetFromTriple(object Triple, object T, object ErrorMessage):
         Triple (`~.rocm.llvm._util.types.CStr`/`~.object`):
             (undocumented)
 
-        T (`~.rocm.llvm._util.types.Pointer`/`~.object`):
-            (undocumented)
-
-        ErrorMessage (`~.rocm.llvm._util.types.CStr`/`~.object`):
-            (undocumented)
-
     Returns:
-        `~.int`
+        A `~.tuple` of size 3 that contains (in that order):
+
+        * `~.int`
+        * T (`~.LLVMTarget`):
+            (undocumented)
+        * ErrorMessage (`~.rocm.llvm._util.types.CStr`/`~.object`):
+            (undocumented)
     """
+    T = LLVMTarget.from_ptr(NULL)
+    ErrorMessage = rocm.llvm._util.types.CStr.from_ptr(NULL)
     cdef int _LLVMGetTargetFromTriple__retval = ctargetmachine.LLVMGetTargetFromTriple(
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Triple)._ptr,
-        <ctargetmachine.LLVMTargetRef*>rocm.llvm._util.types.Pointer.from_pyobj(T)._ptr,
-        <char **>rocm.llvm._util.types.CStr.from_pyobj(ErrorMessage)._ptr)    # fully specified
-    return _LLVMGetTargetFromTriple__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Triple)._ptr,<ctargetmachine.LLVMTarget**>&T._ptr,
+        <char **>&ErrorMessage._ptr)
+    return (_LLVMGetTargetFromTriple__retval,None if T._ptr == NULL else T,None if ErrorMessage._ptr == NULL else ErrorMessage)
 
 
 @cython.embedsignature(True)
@@ -579,8 +580,8 @@ def LLVMGetTargetName(object T):
         `~.bytes`
     """
     _LLVMGetTargetName__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ctargetmachine.LLVMGetTargetName(
-        LLVMTarget.from_pyobj(T).get_element_ptr()))    # fully specified
-    return _LLVMGetTargetName__retval
+        LLVMTarget.from_pyobj(T).get_element_ptr()))
+    return None if _LLVMGetTargetName__retval._ptr == NULL else _LLVMGetTargetName__retval
 
 
 @cython.embedsignature(True)
@@ -597,8 +598,8 @@ def LLVMGetTargetDescription(object T):
         `~.bytes`
     """
     _LLVMGetTargetDescription__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ctargetmachine.LLVMGetTargetDescription(
-        LLVMTarget.from_pyobj(T).get_element_ptr()))    # fully specified
-    return _LLVMGetTargetDescription__retval
+        LLVMTarget.from_pyobj(T).get_element_ptr()))
+    return None if _LLVMGetTargetDescription__retval._ptr == NULL else _LLVMGetTargetDescription__retval
 
 
 @cython.embedsignature(True)
@@ -615,7 +616,7 @@ def LLVMTargetHasJIT(object T):
         `~.int`
     """
     cdef int _LLVMTargetHasJIT__retval = ctargetmachine.LLVMTargetHasJIT(
-        LLVMTarget.from_pyobj(T).get_element_ptr())    # fully specified
+        LLVMTarget.from_pyobj(T).get_element_ptr())
     return _LLVMTargetHasJIT__retval
 
 
@@ -633,7 +634,7 @@ def LLVMTargetHasTargetMachine(object T):
         `~.int`
     """
     cdef int _LLVMTargetHasTargetMachine__retval = ctargetmachine.LLVMTargetHasTargetMachine(
-        LLVMTarget.from_pyobj(T).get_element_ptr())    # fully specified
+        LLVMTarget.from_pyobj(T).get_element_ptr())
     return _LLVMTargetHasTargetMachine__retval
 
 
@@ -651,7 +652,7 @@ def LLVMTargetHasAsmBackend(object T):
         `~.int`
     """
     cdef int _LLVMTargetHasAsmBackend__retval = ctargetmachine.LLVMTargetHasAsmBackend(
-        LLVMTarget.from_pyobj(T).get_element_ptr())    # fully specified
+        LLVMTarget.from_pyobj(T).get_element_ptr())
     return _LLVMTargetHasAsmBackend__retval
 
 
@@ -693,8 +694,8 @@ def LLVMCreateTargetMachine(object T, object Triple, object CPU, object Features
         LLVMTarget.from_pyobj(T).get_element_ptr(),
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(Triple)._ptr,
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(CPU)._ptr,
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Features)._ptr,Level.value,Reloc.value,CodeModel.value))    # fully specified
-    return _LLVMCreateTargetMachine__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Features)._ptr,Level.value,Reloc.value,CodeModel.value))
+    return None if _LLVMCreateTargetMachine__retval._ptr == NULL else _LLVMCreateTargetMachine__retval
 
 
 @cython.embedsignature(True)
@@ -709,7 +710,7 @@ def LLVMDisposeTargetMachine(object T):
             (undocumented)
     """
     ctargetmachine.LLVMDisposeTargetMachine(
-        LLVMOpaqueTargetMachine.from_pyobj(T).get_element_ptr())    # fully specified
+        LLVMOpaqueTargetMachine.from_pyobj(T).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -723,8 +724,8 @@ def LLVMGetTargetMachineTarget(object T):
             (undocumented)
     """
     _LLVMGetTargetMachineTarget__retval = LLVMTarget.from_ptr(ctargetmachine.LLVMGetTargetMachineTarget(
-        LLVMOpaqueTargetMachine.from_pyobj(T).get_element_ptr()))    # fully specified
-    return _LLVMGetTargetMachineTarget__retval
+        LLVMOpaqueTargetMachine.from_pyobj(T).get_element_ptr()))
+    return None if _LLVMGetTargetMachineTarget__retval._ptr == NULL else _LLVMGetTargetMachineTarget__retval
 
 
 @cython.embedsignature(True)
@@ -743,8 +744,8 @@ def LLVMGetTargetMachineTriple(object T):
         `~.bytes`
     """
     _LLVMGetTargetMachineTriple__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ctargetmachine.LLVMGetTargetMachineTriple(
-        LLVMOpaqueTargetMachine.from_pyobj(T).get_element_ptr()))    # fully specified
-    return _LLVMGetTargetMachineTriple__retval
+        LLVMOpaqueTargetMachine.from_pyobj(T).get_element_ptr()))
+    return None if _LLVMGetTargetMachineTriple__retval._ptr == NULL else _LLVMGetTargetMachineTriple__retval
 
 
 @cython.embedsignature(True)
@@ -763,8 +764,8 @@ def LLVMGetTargetMachineCPU(object T):
         `~.bytes`
     """
     _LLVMGetTargetMachineCPU__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ctargetmachine.LLVMGetTargetMachineCPU(
-        LLVMOpaqueTargetMachine.from_pyobj(T).get_element_ptr()))    # fully specified
-    return _LLVMGetTargetMachineCPU__retval
+        LLVMOpaqueTargetMachine.from_pyobj(T).get_element_ptr()))
+    return None if _LLVMGetTargetMachineCPU__retval._ptr == NULL else _LLVMGetTargetMachineCPU__retval
 
 
 @cython.embedsignature(True)
@@ -783,8 +784,8 @@ def LLVMGetTargetMachineFeatureString(object T):
         `~.bytes`
     """
     _LLVMGetTargetMachineFeatureString__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ctargetmachine.LLVMGetTargetMachineFeatureString(
-        LLVMOpaqueTargetMachine.from_pyobj(T).get_element_ptr()))    # fully specified
-    return _LLVMGetTargetMachineFeatureString__retval
+        LLVMOpaqueTargetMachine.from_pyobj(T).get_element_ptr()))
+    return None if _LLVMGetTargetMachineFeatureString__retval._ptr == NULL else _LLVMGetTargetMachineFeatureString__retval
 
 
 @cython.embedsignature(True)
@@ -798,8 +799,8 @@ def LLVMCreateTargetDataLayout(object T):
             (undocumented)
     """
     _LLVMCreateTargetDataLayout__retval = LLVMOpaqueTargetData.from_ptr(ctargetmachine.LLVMCreateTargetDataLayout(
-        LLVMOpaqueTargetMachine.from_pyobj(T).get_element_ptr()))    # fully specified
-    return _LLVMCreateTargetDataLayout__retval
+        LLVMOpaqueTargetMachine.from_pyobj(T).get_element_ptr()))
+    return None if _LLVMCreateTargetDataLayout__retval._ptr == NULL else _LLVMCreateTargetDataLayout__retval
 
 
 @cython.embedsignature(True)
@@ -816,7 +817,7 @@ def LLVMSetTargetMachineAsmVerbosity(object T, int VerboseAsm):
             (undocumented)
     """
     ctargetmachine.LLVMSetTargetMachineAsmVerbosity(
-        LLVMOpaqueTargetMachine.from_pyobj(T).get_element_ptr(),VerboseAsm)    # fully specified
+        LLVMOpaqueTargetMachine.from_pyobj(T).get_element_ptr(),VerboseAsm)
 
 
 @cython.embedsignature(True)
@@ -852,7 +853,7 @@ def LLVMTargetMachineEmitToFile(object T, object M, object Filename, object code
         LLVMOpaqueTargetMachine.from_pyobj(T).get_element_ptr(),
         LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(Filename)._ptr,codegen.value,
-        <char **>rocm.llvm._util.types.CStr.from_pyobj(ErrorMessage)._ptr)    # fully specified
+        <char **>rocm.llvm._util.types.CStr.from_pyobj(ErrorMessage)._ptr)
     return _LLVMTargetMachineEmitToFile__retval
 
 
@@ -887,7 +888,7 @@ def LLVMTargetMachineEmitToMemoryBuffer(object T, object M, object codegen, obje
         LLVMOpaqueTargetMachine.from_pyobj(T).get_element_ptr(),
         LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),codegen.value,
         <char **>rocm.llvm._util.types.CStr.from_pyobj(ErrorMessage)._ptr,
-        <ctargetmachine.LLVMMemoryBufferRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutMemBuf)._ptr)    # fully specified
+        <ctargetmachine.LLVMMemoryBufferRef*>rocm.llvm._util.types.Pointer.from_pyobj(OutMemBuf)._ptr)
     return _LLVMTargetMachineEmitToMemoryBuffer__retval
 
 
@@ -901,8 +902,8 @@ def LLVMGetDefaultTargetTriple():
     Returns:
         `~.bytes`
     """
-    _LLVMGetDefaultTargetTriple__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ctargetmachine.LLVMGetDefaultTargetTriple())    # fully specified
-    return _LLVMGetDefaultTargetTriple__retval
+    _LLVMGetDefaultTargetTriple__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ctargetmachine.LLVMGetDefaultTargetTriple())
+    return None if _LLVMGetDefaultTargetTriple__retval._ptr == NULL else _LLVMGetDefaultTargetTriple__retval
 
 
 @cython.embedsignature(True)
@@ -920,8 +921,8 @@ def LLVMNormalizeTargetTriple(object triple):
         `~.bytes`
     """
     _LLVMNormalizeTargetTriple__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ctargetmachine.LLVMNormalizeTargetTriple(
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(triple)._ptr))    # fully specified
-    return _LLVMNormalizeTargetTriple__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(triple)._ptr))
+    return None if _LLVMNormalizeTargetTriple__retval._ptr == NULL else _LLVMNormalizeTargetTriple__retval
 
 
 @cython.embedsignature(True)
@@ -934,8 +935,8 @@ def LLVMGetHostCPUName():
     Returns:
         `~.bytes`
     """
-    _LLVMGetHostCPUName__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ctargetmachine.LLVMGetHostCPUName())    # fully specified
-    return _LLVMGetHostCPUName__retval
+    _LLVMGetHostCPUName__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ctargetmachine.LLVMGetHostCPUName())
+    return None if _LLVMGetHostCPUName__retval._ptr == NULL else _LLVMGetHostCPUName__retval
 
 
 @cython.embedsignature(True)
@@ -948,8 +949,8 @@ def LLVMGetHostCPUFeatures():
     Returns:
         `~.bytes`
     """
-    _LLVMGetHostCPUFeatures__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ctargetmachine.LLVMGetHostCPUFeatures())    # fully specified
-    return _LLVMGetHostCPUFeatures__retval
+    _LLVMGetHostCPUFeatures__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>ctargetmachine.LLVMGetHostCPUFeatures())
+    return None if _LLVMGetHostCPUFeatures__retval._ptr == NULL else _LLVMGetHostCPUFeatures__retval
 
 
 @cython.embedsignature(True)
@@ -967,7 +968,7 @@ def LLVMAddAnalysisPasses(object T, object PM):
     """
     ctargetmachine.LLVMAddAnalysisPasses(
         LLVMOpaqueTargetMachine.from_pyobj(T).get_element_ptr(),
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 __all__ = [
     "LLVMOpaqueTargetMachine",

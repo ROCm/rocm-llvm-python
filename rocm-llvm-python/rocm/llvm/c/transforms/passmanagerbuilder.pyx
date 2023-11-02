@@ -203,8 +203,8 @@ def LLVMPassManagerBuilderCreate():
 
     See llvm`~.PassManagerBuilder`. */
     """
-    _LLVMPassManagerBuilderCreate__retval = LLVMOpaquePassManagerBuilder.from_ptr(cpassmanagerbuilder.LLVMPassManagerBuilderCreate())    # fully specified
-    return _LLVMPassManagerBuilderCreate__retval
+    _LLVMPassManagerBuilderCreate__retval = LLVMOpaquePassManagerBuilder.from_ptr(cpassmanagerbuilder.LLVMPassManagerBuilderCreate())
+    return None if _LLVMPassManagerBuilderCreate__retval._ptr == NULL else _LLVMPassManagerBuilderCreate__retval
 
 
 @cython.embedsignature(True)
@@ -216,7 +216,7 @@ def LLVMPassManagerBuilderDispose(object PMB):
             (undocumented)
     """
     cpassmanagerbuilder.LLVMPassManagerBuilderDispose(
-        LLVMOpaquePassManagerBuilder.from_pyobj(PMB).get_element_ptr())    # fully specified
+        LLVMOpaquePassManagerBuilder.from_pyobj(PMB).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -233,7 +233,7 @@ def LLVMPassManagerBuilderSetOptLevel(object PMB, unsigned int OptLevel):
             (undocumented)
     """
     cpassmanagerbuilder.LLVMPassManagerBuilderSetOptLevel(
-        LLVMOpaquePassManagerBuilder.from_pyobj(PMB).get_element_ptr(),OptLevel)    # fully specified
+        LLVMOpaquePassManagerBuilder.from_pyobj(PMB).get_element_ptr(),OptLevel)
 
 
 @cython.embedsignature(True)
@@ -250,7 +250,7 @@ def LLVMPassManagerBuilderSetSizeLevel(object PMB, unsigned int SizeLevel):
             (undocumented)
     """
     cpassmanagerbuilder.LLVMPassManagerBuilderSetSizeLevel(
-        LLVMOpaquePassManagerBuilder.from_pyobj(PMB).get_element_ptr(),SizeLevel)    # fully specified
+        LLVMOpaquePassManagerBuilder.from_pyobj(PMB).get_element_ptr(),SizeLevel)
 
 
 @cython.embedsignature(True)
@@ -267,7 +267,7 @@ def LLVMPassManagerBuilderSetDisableUnitAtATime(object PMB, int Value):
             (undocumented)
     """
     cpassmanagerbuilder.LLVMPassManagerBuilderSetDisableUnitAtATime(
-        LLVMOpaquePassManagerBuilder.from_pyobj(PMB).get_element_ptr(),Value)    # fully specified
+        LLVMOpaquePassManagerBuilder.from_pyobj(PMB).get_element_ptr(),Value)
 
 
 @cython.embedsignature(True)
@@ -284,7 +284,7 @@ def LLVMPassManagerBuilderSetDisableUnrollLoops(object PMB, int Value):
             (undocumented)
     """
     cpassmanagerbuilder.LLVMPassManagerBuilderSetDisableUnrollLoops(
-        LLVMOpaquePassManagerBuilder.from_pyobj(PMB).get_element_ptr(),Value)    # fully specified
+        LLVMOpaquePassManagerBuilder.from_pyobj(PMB).get_element_ptr(),Value)
 
 
 @cython.embedsignature(True)
@@ -301,7 +301,7 @@ def LLVMPassManagerBuilderSetDisableSimplifyLibCalls(object PMB, int Value):
             (undocumented)
     """
     cpassmanagerbuilder.LLVMPassManagerBuilderSetDisableSimplifyLibCalls(
-        LLVMOpaquePassManagerBuilder.from_pyobj(PMB).get_element_ptr(),Value)    # fully specified
+        LLVMOpaquePassManagerBuilder.from_pyobj(PMB).get_element_ptr(),Value)
 
 
 @cython.embedsignature(True)
@@ -318,7 +318,7 @@ def LLVMPassManagerBuilderUseInlinerWithThreshold(object PMB, unsigned int Thres
             (undocumented)
     """
     cpassmanagerbuilder.LLVMPassManagerBuilderUseInlinerWithThreshold(
-        LLVMOpaquePassManagerBuilder.from_pyobj(PMB).get_element_ptr(),Threshold)    # fully specified
+        LLVMOpaquePassManagerBuilder.from_pyobj(PMB).get_element_ptr(),Threshold)
 
 
 @cython.embedsignature(True)
@@ -336,7 +336,7 @@ def LLVMPassManagerBuilderPopulateFunctionPassManager(object PMB, object PM):
     """
     cpassmanagerbuilder.LLVMPassManagerBuilderPopulateFunctionPassManager(
         LLVMOpaquePassManagerBuilder.from_pyobj(PMB).get_element_ptr(),
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -354,7 +354,7 @@ def LLVMPassManagerBuilderPopulateModulePassManager(object PMB, object PM):
     """
     cpassmanagerbuilder.LLVMPassManagerBuilderPopulateModulePassManager(
         LLVMOpaquePassManagerBuilder.from_pyobj(PMB).get_element_ptr(),
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 __all__ = [
     "LLVMOpaquePassManagerBuilder",

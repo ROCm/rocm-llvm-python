@@ -601,8 +601,8 @@ def LLVMCreateBinary(object MemBuf, object Context, object ErrorMessage):
     _LLVMCreateBinary__retval = LLVMOpaqueBinary.from_ptr(cobject.LLVMCreateBinary(
         LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr(),
         LLVMOpaqueContext.from_pyobj(Context).get_element_ptr(),
-        <char **>rocm.llvm._util.types.CStr.from_pyobj(ErrorMessage)._ptr))    # fully specified
-    return _LLVMCreateBinary__retval
+        <char **>rocm.llvm._util.types.CStr.from_pyobj(ErrorMessage)._ptr))
+    return None if _LLVMCreateBinary__retval._ptr == NULL else _LLVMCreateBinary__retval
 
 
 @cython.embedsignature(True)
@@ -619,7 +619,7 @@ def LLVMDisposeBinary(object BR):
             (undocumented)
     """
     cobject.LLVMDisposeBinary(
-        LLVMOpaqueBinary.from_pyobj(BR).get_element_ptr())    # fully specified
+        LLVMOpaqueBinary.from_pyobj(BR).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -640,8 +640,8 @@ def LLVMBinaryCopyMemoryBuffer(object BR):
             (undocumented)
     """
     _LLVMBinaryCopyMemoryBuffer__retval = LLVMOpaqueMemoryBuffer.from_ptr(cobject.LLVMBinaryCopyMemoryBuffer(
-        LLVMOpaqueBinary.from_pyobj(BR).get_element_ptr()))    # fully specified
-    return _LLVMBinaryCopyMemoryBuffer__retval
+        LLVMOpaqueBinary.from_pyobj(BR).get_element_ptr()))
+    return None if _LLVMBinaryCopyMemoryBuffer__retval._ptr == NULL else _LLVMBinaryCopyMemoryBuffer__retval
 
 
 @cython.embedsignature(True)
@@ -661,7 +661,7 @@ def LLVMBinaryGetType(object BR):
         `~.LLVMBinaryType`
     """
     _LLVMBinaryGetType__retval = LLVMBinaryType(cobject.LLVMBinaryGetType(
-        LLVMOpaqueBinary.from_pyobj(BR).get_element_ptr()))    # fully specified
+        LLVMOpaqueBinary.from_pyobj(BR).get_element_ptr()))
     return _LLVMBinaryGetType__retval
 
 
@@ -685,8 +685,8 @@ def LLVMMachOUniversalBinaryCopyObjectForArch(object BR, object Arch, unsigned l
     _LLVMMachOUniversalBinaryCopyObjectForArch__retval = LLVMOpaqueBinary.from_ptr(cobject.LLVMMachOUniversalBinaryCopyObjectForArch(
         LLVMOpaqueBinary.from_pyobj(BR).get_element_ptr(),
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(Arch)._ptr,ArchLen,
-        <char **>rocm.llvm._util.types.CStr.from_pyobj(ErrorMessage)._ptr))    # fully specified
-    return _LLVMMachOUniversalBinaryCopyObjectForArch__retval
+        <char **>rocm.llvm._util.types.CStr.from_pyobj(ErrorMessage)._ptr))
+    return None if _LLVMMachOUniversalBinaryCopyObjectForArch__retval._ptr == NULL else _LLVMMachOUniversalBinaryCopyObjectForArch__retval
 
 
 @cython.embedsignature(True)
@@ -709,8 +709,8 @@ def LLVMObjectFileCopySectionIterator(object BR):
             (undocumented)
     """
     _LLVMObjectFileCopySectionIterator__retval = LLVMOpaqueSectionIterator.from_ptr(cobject.LLVMObjectFileCopySectionIterator(
-        LLVMOpaqueBinary.from_pyobj(BR).get_element_ptr()))    # fully specified
-    return _LLVMObjectFileCopySectionIterator__retval
+        LLVMOpaqueBinary.from_pyobj(BR).get_element_ptr()))
+    return None if _LLVMObjectFileCopySectionIterator__retval._ptr == NULL else _LLVMObjectFileCopySectionIterator__retval
 
 
 @cython.embedsignature(True)
@@ -734,7 +734,7 @@ def LLVMObjectFileIsSectionIteratorAtEnd(object BR, object SI):
     """
     cdef int _LLVMObjectFileIsSectionIteratorAtEnd__retval = cobject.LLVMObjectFileIsSectionIteratorAtEnd(
         LLVMOpaqueBinary.from_pyobj(BR).get_element_ptr(),
-        LLVMOpaqueSectionIterator.from_pyobj(SI).get_element_ptr())    # fully specified
+        LLVMOpaqueSectionIterator.from_pyobj(SI).get_element_ptr())
     return _LLVMObjectFileIsSectionIteratorAtEnd__retval
 
 
@@ -758,8 +758,8 @@ def LLVMObjectFileCopySymbolIterator(object BR):
             (undocumented)
     """
     _LLVMObjectFileCopySymbolIterator__retval = LLVMOpaqueSymbolIterator.from_ptr(cobject.LLVMObjectFileCopySymbolIterator(
-        LLVMOpaqueBinary.from_pyobj(BR).get_element_ptr()))    # fully specified
-    return _LLVMObjectFileCopySymbolIterator__retval
+        LLVMOpaqueBinary.from_pyobj(BR).get_element_ptr()))
+    return None if _LLVMObjectFileCopySymbolIterator__retval._ptr == NULL else _LLVMObjectFileCopySymbolIterator__retval
 
 
 @cython.embedsignature(True)
@@ -783,7 +783,7 @@ def LLVMObjectFileIsSymbolIteratorAtEnd(object BR, object SI):
     """
     cdef int _LLVMObjectFileIsSymbolIteratorAtEnd__retval = cobject.LLVMObjectFileIsSymbolIteratorAtEnd(
         LLVMOpaqueBinary.from_pyobj(BR).get_element_ptr(),
-        LLVMOpaqueSymbolIterator.from_pyobj(SI).get_element_ptr())    # fully specified
+        LLVMOpaqueSymbolIterator.from_pyobj(SI).get_element_ptr())
     return _LLVMObjectFileIsSymbolIteratorAtEnd__retval
 
 
@@ -796,7 +796,7 @@ def LLVMDisposeSectionIterator(object SI):
             (undocumented)
     """
     cobject.LLVMDisposeSectionIterator(
-        LLVMOpaqueSectionIterator.from_pyobj(SI).get_element_ptr())    # fully specified
+        LLVMOpaqueSectionIterator.from_pyobj(SI).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -808,7 +808,7 @@ def LLVMMoveToNextSection(object SI):
             (undocumented)
     """
     cobject.LLVMMoveToNextSection(
-        LLVMOpaqueSectionIterator.from_pyobj(SI).get_element_ptr())    # fully specified
+        LLVMOpaqueSectionIterator.from_pyobj(SI).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -824,7 +824,7 @@ def LLVMMoveToContainingSection(object Sect, object Sym):
     """
     cobject.LLVMMoveToContainingSection(
         LLVMOpaqueSectionIterator.from_pyobj(Sect).get_element_ptr(),
-        LLVMOpaqueSymbolIterator.from_pyobj(Sym).get_element_ptr())    # fully specified
+        LLVMOpaqueSymbolIterator.from_pyobj(Sym).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -836,7 +836,7 @@ def LLVMDisposeSymbolIterator(object SI):
             (undocumented)
     """
     cobject.LLVMDisposeSymbolIterator(
-        LLVMOpaqueSymbolIterator.from_pyobj(SI).get_element_ptr())    # fully specified
+        LLVMOpaqueSymbolIterator.from_pyobj(SI).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -848,7 +848,7 @@ def LLVMMoveToNextSymbol(object SI):
             (undocumented)
     """
     cobject.LLVMMoveToNextSymbol(
-        LLVMOpaqueSymbolIterator.from_pyobj(SI).get_element_ptr())    # fully specified
+        LLVMOpaqueSymbolIterator.from_pyobj(SI).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -863,8 +863,8 @@ def LLVMGetSectionName(object SI):
         `~.bytes`
     """
     _LLVMGetSectionName__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cobject.LLVMGetSectionName(
-        LLVMOpaqueSectionIterator.from_pyobj(SI).get_element_ptr()))    # fully specified
-    return _LLVMGetSectionName__retval
+        LLVMOpaqueSectionIterator.from_pyobj(SI).get_element_ptr()))
+    return None if _LLVMGetSectionName__retval._ptr == NULL else _LLVMGetSectionName__retval
 
 
 @cython.embedsignature(True)
@@ -879,7 +879,7 @@ def LLVMGetSectionSize(object SI):
         `~.int`
     """
     cdef unsigned long _LLVMGetSectionSize__retval = cobject.LLVMGetSectionSize(
-        LLVMOpaqueSectionIterator.from_pyobj(SI).get_element_ptr())    # fully specified
+        LLVMOpaqueSectionIterator.from_pyobj(SI).get_element_ptr())
     return _LLVMGetSectionSize__retval
 
 
@@ -895,8 +895,8 @@ def LLVMGetSectionContents(object SI):
         `~.bytes`
     """
     _LLVMGetSectionContents__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cobject.LLVMGetSectionContents(
-        LLVMOpaqueSectionIterator.from_pyobj(SI).get_element_ptr()))    # fully specified
-    return _LLVMGetSectionContents__retval
+        LLVMOpaqueSectionIterator.from_pyobj(SI).get_element_ptr()))
+    return None if _LLVMGetSectionContents__retval._ptr == NULL else _LLVMGetSectionContents__retval
 
 
 @cython.embedsignature(True)
@@ -911,7 +911,7 @@ def LLVMGetSectionAddress(object SI):
         `~.int`
     """
     cdef unsigned long _LLVMGetSectionAddress__retval = cobject.LLVMGetSectionAddress(
-        LLVMOpaqueSectionIterator.from_pyobj(SI).get_element_ptr())    # fully specified
+        LLVMOpaqueSectionIterator.from_pyobj(SI).get_element_ptr())
     return _LLVMGetSectionAddress__retval
 
 
@@ -931,7 +931,7 @@ def LLVMGetSectionContainsSymbol(object SI, object Sym):
     """
     cdef int _LLVMGetSectionContainsSymbol__retval = cobject.LLVMGetSectionContainsSymbol(
         LLVMOpaqueSectionIterator.from_pyobj(SI).get_element_ptr(),
-        LLVMOpaqueSymbolIterator.from_pyobj(Sym).get_element_ptr())    # fully specified
+        LLVMOpaqueSymbolIterator.from_pyobj(Sym).get_element_ptr())
     return _LLVMGetSectionContainsSymbol__retval
 
 
@@ -944,8 +944,8 @@ def LLVMGetRelocations(object Section):
             (undocumented)
     """
     _LLVMGetRelocations__retval = LLVMOpaqueRelocationIterator.from_ptr(cobject.LLVMGetRelocations(
-        LLVMOpaqueSectionIterator.from_pyobj(Section).get_element_ptr()))    # fully specified
-    return _LLVMGetRelocations__retval
+        LLVMOpaqueSectionIterator.from_pyobj(Section).get_element_ptr()))
+    return None if _LLVMGetRelocations__retval._ptr == NULL else _LLVMGetRelocations__retval
 
 
 @cython.embedsignature(True)
@@ -957,7 +957,7 @@ def LLVMDisposeRelocationIterator(object RI):
             (undocumented)
     """
     cobject.LLVMDisposeRelocationIterator(
-        LLVMOpaqueRelocationIterator.from_pyobj(RI).get_element_ptr())    # fully specified
+        LLVMOpaqueRelocationIterator.from_pyobj(RI).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -976,7 +976,7 @@ def LLVMIsRelocationIteratorAtEnd(object Section, object RI):
     """
     cdef int _LLVMIsRelocationIteratorAtEnd__retval = cobject.LLVMIsRelocationIteratorAtEnd(
         LLVMOpaqueSectionIterator.from_pyobj(Section).get_element_ptr(),
-        LLVMOpaqueRelocationIterator.from_pyobj(RI).get_element_ptr())    # fully specified
+        LLVMOpaqueRelocationIterator.from_pyobj(RI).get_element_ptr())
     return _LLVMIsRelocationIteratorAtEnd__retval
 
 
@@ -989,7 +989,7 @@ def LLVMMoveToNextRelocation(object RI):
             (undocumented)
     """
     cobject.LLVMMoveToNextRelocation(
-        LLVMOpaqueRelocationIterator.from_pyobj(RI).get_element_ptr())    # fully specified
+        LLVMOpaqueRelocationIterator.from_pyobj(RI).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -1004,8 +1004,8 @@ def LLVMGetSymbolName(object SI):
         `~.bytes`
     """
     _LLVMGetSymbolName__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cobject.LLVMGetSymbolName(
-        LLVMOpaqueSymbolIterator.from_pyobj(SI).get_element_ptr()))    # fully specified
-    return _LLVMGetSymbolName__retval
+        LLVMOpaqueSymbolIterator.from_pyobj(SI).get_element_ptr()))
+    return None if _LLVMGetSymbolName__retval._ptr == NULL else _LLVMGetSymbolName__retval
 
 
 @cython.embedsignature(True)
@@ -1020,7 +1020,7 @@ def LLVMGetSymbolAddress(object SI):
         `~.int`
     """
     cdef unsigned long _LLVMGetSymbolAddress__retval = cobject.LLVMGetSymbolAddress(
-        LLVMOpaqueSymbolIterator.from_pyobj(SI).get_element_ptr())    # fully specified
+        LLVMOpaqueSymbolIterator.from_pyobj(SI).get_element_ptr())
     return _LLVMGetSymbolAddress__retval
 
 
@@ -1036,7 +1036,7 @@ def LLVMGetSymbolSize(object SI):
         `~.int`
     """
     cdef unsigned long _LLVMGetSymbolSize__retval = cobject.LLVMGetSymbolSize(
-        LLVMOpaqueSymbolIterator.from_pyobj(SI).get_element_ptr())    # fully specified
+        LLVMOpaqueSymbolIterator.from_pyobj(SI).get_element_ptr())
     return _LLVMGetSymbolSize__retval
 
 
@@ -1052,7 +1052,7 @@ def LLVMGetRelocationOffset(object RI):
         `~.int`
     """
     cdef unsigned long _LLVMGetRelocationOffset__retval = cobject.LLVMGetRelocationOffset(
-        LLVMOpaqueRelocationIterator.from_pyobj(RI).get_element_ptr())    # fully specified
+        LLVMOpaqueRelocationIterator.from_pyobj(RI).get_element_ptr())
     return _LLVMGetRelocationOffset__retval
 
 
@@ -1065,8 +1065,8 @@ def LLVMGetRelocationSymbol(object RI):
             (undocumented)
     """
     _LLVMGetRelocationSymbol__retval = LLVMOpaqueSymbolIterator.from_ptr(cobject.LLVMGetRelocationSymbol(
-        LLVMOpaqueRelocationIterator.from_pyobj(RI).get_element_ptr()))    # fully specified
-    return _LLVMGetRelocationSymbol__retval
+        LLVMOpaqueRelocationIterator.from_pyobj(RI).get_element_ptr()))
+    return None if _LLVMGetRelocationSymbol__retval._ptr == NULL else _LLVMGetRelocationSymbol__retval
 
 
 @cython.embedsignature(True)
@@ -1081,7 +1081,7 @@ def LLVMGetRelocationType(object RI):
         `~.int`
     """
     cdef unsigned long _LLVMGetRelocationType__retval = cobject.LLVMGetRelocationType(
-        LLVMOpaqueRelocationIterator.from_pyobj(RI).get_element_ptr())    # fully specified
+        LLVMOpaqueRelocationIterator.from_pyobj(RI).get_element_ptr())
     return _LLVMGetRelocationType__retval
 
 
@@ -1097,8 +1097,8 @@ def LLVMGetRelocationTypeName(object RI):
         `~.bytes`
     """
     _LLVMGetRelocationTypeName__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cobject.LLVMGetRelocationTypeName(
-        LLVMOpaqueRelocationIterator.from_pyobj(RI).get_element_ptr()))    # fully specified
-    return _LLVMGetRelocationTypeName__retval
+        LLVMOpaqueRelocationIterator.from_pyobj(RI).get_element_ptr()))
+    return None if _LLVMGetRelocationTypeName__retval._ptr == NULL else _LLVMGetRelocationTypeName__retval
 
 
 @cython.embedsignature(True)
@@ -1113,8 +1113,8 @@ def LLVMGetRelocationValueString(object RI):
         `~.bytes`
     """
     _LLVMGetRelocationValueString__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cobject.LLVMGetRelocationValueString(
-        LLVMOpaqueRelocationIterator.from_pyobj(RI).get_element_ptr()))    # fully specified
-    return _LLVMGetRelocationValueString__retval
+        LLVMOpaqueRelocationIterator.from_pyobj(RI).get_element_ptr()))
+    return None if _LLVMGetRelocationValueString__retval._ptr == NULL else _LLVMGetRelocationValueString__retval
 
 
 cdef class LLVMOpaqueObjectFile(rocm.llvm._util.types.Pointer):
@@ -1267,8 +1267,8 @@ def LLVMCreateObjectFile(object MemBuf):
             (undocumented)
     """
     _LLVMCreateObjectFile__retval = LLVMOpaqueObjectFile.from_ptr(cobject.LLVMCreateObjectFile(
-        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr()))    # fully specified
-    return _LLVMCreateObjectFile__retval
+        LLVMOpaqueMemoryBuffer.from_pyobj(MemBuf).get_element_ptr()))
+    return None if _LLVMCreateObjectFile__retval._ptr == NULL else _LLVMCreateObjectFile__retval
 
 
 @cython.embedsignature(True)
@@ -1282,7 +1282,7 @@ def LLVMDisposeObjectFile(object ObjectFile):
             (undocumented)
     """
     cobject.LLVMDisposeObjectFile(
-        LLVMOpaqueObjectFile.from_pyobj(ObjectFile).get_element_ptr())    # fully specified
+        LLVMOpaqueObjectFile.from_pyobj(ObjectFile).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -1296,8 +1296,8 @@ def LLVMGetSections(object ObjectFile):
             (undocumented)
     """
     _LLVMGetSections__retval = LLVMOpaqueSectionIterator.from_ptr(cobject.LLVMGetSections(
-        LLVMOpaqueObjectFile.from_pyobj(ObjectFile).get_element_ptr()))    # fully specified
-    return _LLVMGetSections__retval
+        LLVMOpaqueObjectFile.from_pyobj(ObjectFile).get_element_ptr()))
+    return None if _LLVMGetSections__retval._ptr == NULL else _LLVMGetSections__retval
 
 
 @cython.embedsignature(True)
@@ -1318,7 +1318,7 @@ def LLVMIsSectionIteratorAtEnd(object ObjectFile, object SI):
     """
     cdef int _LLVMIsSectionIteratorAtEnd__retval = cobject.LLVMIsSectionIteratorAtEnd(
         LLVMOpaqueObjectFile.from_pyobj(ObjectFile).get_element_ptr(),
-        LLVMOpaqueSectionIterator.from_pyobj(SI).get_element_ptr())    # fully specified
+        LLVMOpaqueSectionIterator.from_pyobj(SI).get_element_ptr())
     return _LLVMIsSectionIteratorAtEnd__retval
 
 
@@ -1333,8 +1333,8 @@ def LLVMGetSymbols(object ObjectFile):
             (undocumented)
     """
     _LLVMGetSymbols__retval = LLVMOpaqueSymbolIterator.from_ptr(cobject.LLVMGetSymbols(
-        LLVMOpaqueObjectFile.from_pyobj(ObjectFile).get_element_ptr()))    # fully specified
-    return _LLVMGetSymbols__retval
+        LLVMOpaqueObjectFile.from_pyobj(ObjectFile).get_element_ptr()))
+    return None if _LLVMGetSymbols__retval._ptr == NULL else _LLVMGetSymbols__retval
 
 
 @cython.embedsignature(True)
@@ -1355,7 +1355,7 @@ def LLVMIsSymbolIteratorAtEnd(object ObjectFile, object SI):
     """
     cdef int _LLVMIsSymbolIteratorAtEnd__retval = cobject.LLVMIsSymbolIteratorAtEnd(
         LLVMOpaqueObjectFile.from_pyobj(ObjectFile).get_element_ptr(),
-        LLVMOpaqueSymbolIterator.from_pyobj(SI).get_element_ptr())    # fully specified
+        LLVMOpaqueSymbolIterator.from_pyobj(SI).get_element_ptr())
     return _LLVMIsSymbolIteratorAtEnd__retval
 
 __all__ = [

@@ -66,7 +66,7 @@ def LLVMAddLowerSwitchPass(object PM):
             (undocumented)
     """
     cutils.LLVMAddLowerSwitchPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -80,7 +80,7 @@ def LLVMAddPromoteMemoryToRegisterPass(object PM):
             (undocumented)
     """
     cutils.LLVMAddPromoteMemoryToRegisterPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -94,7 +94,7 @@ def LLVMAddAddDiscriminatorsPass(object PM):
             (undocumented)
     """
     cutils.LLVMAddAddDiscriminatorsPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 __all__ = [
     "LLVMAddLowerSwitchPass",

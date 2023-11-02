@@ -6242,7 +6242,7 @@ def LLVMOrcExecutionSessionSetErrorReporter(object ES, object ReportError, objec
     corc.LLVMOrcExecutionSessionSetErrorReporter(
         LLVMOrcOpaqueExecutionSession.from_pyobj(ES).get_element_ptr(),
         LLVMOrcErrorReporterFunction.from_pyobj(ReportError).get_element_ptr(),
-        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Ctx)._ptr)    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Ctx)._ptr)
 
 
 @cython.embedsignature(True)
@@ -6259,8 +6259,8 @@ def LLVMOrcExecutionSessionGetSymbolStringPool(object ES):
             (undocumented)
     """
     _LLVMOrcExecutionSessionGetSymbolStringPool__retval = LLVMOrcOpaqueSymbolStringPool.from_ptr(corc.LLVMOrcExecutionSessionGetSymbolStringPool(
-        LLVMOrcOpaqueExecutionSession.from_pyobj(ES).get_element_ptr()))    # fully specified
-    return _LLVMOrcExecutionSessionGetSymbolStringPool__retval
+        LLVMOrcOpaqueExecutionSession.from_pyobj(ES).get_element_ptr()))
+    return None if _LLVMOrcExecutionSessionGetSymbolStringPool__retval._ptr == NULL else _LLVMOrcExecutionSessionGetSymbolStringPool__retval
 
 
 @cython.embedsignature(True)
@@ -6281,7 +6281,7 @@ def LLVMOrcSymbolStringPoolClearDeadEntries(object SSP):
             (undocumented)
     """
     corc.LLVMOrcSymbolStringPoolClearDeadEntries(
-        LLVMOrcOpaqueSymbolStringPool.from_pyobj(SSP).get_element_ptr())    # fully specified
+        LLVMOrcOpaqueSymbolStringPool.from_pyobj(SSP).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -6308,8 +6308,8 @@ def LLVMOrcExecutionSessionIntern(object ES, object Name):
     """
     _LLVMOrcExecutionSessionIntern__retval = LLVMOrcOpaqueSymbolStringPoolEntry.from_ptr(corc.LLVMOrcExecutionSessionIntern(
         LLVMOrcOpaqueExecutionSession.from_pyobj(ES).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
-    return _LLVMOrcExecutionSessionIntern__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))
+    return None if _LLVMOrcExecutionSessionIntern__retval._ptr == NULL else _LLVMOrcExecutionSessionIntern__retval
 
 
 cdef class LLVMOrcExecutionSessionLookupHandleResultFunction(rocm.llvm._util.types.Pointer):
@@ -6489,7 +6489,7 @@ def LLVMOrcExecutionSessionLookup(object ES, object K, object SearchOrder, unsig
         LLVMOrcCJITDylibSearchOrderElement.from_pyobj(SearchOrder).get_element_ptr(),SearchOrderSize,
         LLVMOrcCLookupSetElement.from_pyobj(Symbols).get_element_ptr(),SymbolsSize,
         LLVMOrcExecutionSessionLookupHandleResultFunction.from_pyobj(HandleResult).get_element_ptr(),
-        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Ctx)._ptr)    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Ctx)._ptr)
 
 
 @cython.embedsignature(True)
@@ -6503,7 +6503,7 @@ def LLVMOrcRetainSymbolStringPoolEntry(object S):
             (undocumented)
     """
     corc.LLVMOrcRetainSymbolStringPoolEntry(
-        LLVMOrcOpaqueSymbolStringPoolEntry.from_pyobj(S).get_element_ptr())    # fully specified
+        LLVMOrcOpaqueSymbolStringPoolEntry.from_pyobj(S).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -6517,7 +6517,7 @@ def LLVMOrcReleaseSymbolStringPoolEntry(object S):
             (undocumented)
     """
     corc.LLVMOrcReleaseSymbolStringPoolEntry(
-        LLVMOrcOpaqueSymbolStringPoolEntry.from_pyobj(S).get_element_ptr())    # fully specified
+        LLVMOrcOpaqueSymbolStringPoolEntry.from_pyobj(S).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -6536,8 +6536,8 @@ def LLVMOrcSymbolStringPoolEntryStr(object S):
         `~.bytes`
     """
     _LLVMOrcSymbolStringPoolEntryStr__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>corc.LLVMOrcSymbolStringPoolEntryStr(
-        LLVMOrcOpaqueSymbolStringPoolEntry.from_pyobj(S).get_element_ptr()))    # fully specified
-    return _LLVMOrcSymbolStringPoolEntryStr__retval
+        LLVMOrcOpaqueSymbolStringPoolEntry.from_pyobj(S).get_element_ptr()))
+    return None if _LLVMOrcSymbolStringPoolEntryStr__retval._ptr == NULL else _LLVMOrcSymbolStringPoolEntryStr__retval
 
 
 @cython.embedsignature(True)
@@ -6551,7 +6551,7 @@ def LLVMOrcReleaseResourceTracker(object RT):
             (undocumented)
     """
     corc.LLVMOrcReleaseResourceTracker(
-        LLVMOrcOpaqueResourceTracker.from_pyobj(RT).get_element_ptr())    # fully specified
+        LLVMOrcOpaqueResourceTracker.from_pyobj(RT).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -6570,7 +6570,7 @@ def LLVMOrcResourceTrackerTransferTo(object SrcRT, object DstRT):
     """
     corc.LLVMOrcResourceTrackerTransferTo(
         LLVMOrcOpaqueResourceTracker.from_pyobj(SrcRT).get_element_ptr(),
-        LLVMOrcOpaqueResourceTracker.from_pyobj(DstRT).get_element_ptr())    # fully specified
+        LLVMOrcOpaqueResourceTracker.from_pyobj(DstRT).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -6585,8 +6585,8 @@ def LLVMOrcResourceTrackerRemove(object RT):
             (undocumented)
     """
     _LLVMOrcResourceTrackerRemove__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcResourceTrackerRemove(
-        LLVMOrcOpaqueResourceTracker.from_pyobj(RT).get_element_ptr()))    # fully specified
-    return _LLVMOrcResourceTrackerRemove__retval
+        LLVMOrcOpaqueResourceTracker.from_pyobj(RT).get_element_ptr()))
+    return None if _LLVMOrcResourceTrackerRemove__retval._ptr == NULL else _LLVMOrcResourceTrackerRemove__retval
 
 
 @cython.embedsignature(True)
@@ -6602,7 +6602,7 @@ def LLVMOrcDisposeDefinitionGenerator(object DG):
             (undocumented)
     """
     corc.LLVMOrcDisposeDefinitionGenerator(
-        LLVMOrcOpaqueDefinitionGenerator.from_pyobj(DG).get_element_ptr())    # fully specified
+        LLVMOrcOpaqueDefinitionGenerator.from_pyobj(DG).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -6616,7 +6616,7 @@ def LLVMOrcDisposeMaterializationUnit(object MU):
             (undocumented)
     """
     corc.LLVMOrcDisposeMaterializationUnit(
-        LLVMOrcOpaqueMaterializationUnit.from_pyobj(MU).get_element_ptr())    # fully specified
+        LLVMOrcOpaqueMaterializationUnit.from_pyobj(MU).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -6687,8 +6687,8 @@ def LLVMOrcCreateCustomMaterializationUnit(object Name, object Ctx, object Syms,
         LLVMOrcOpaqueSymbolStringPoolEntry.from_pyobj(InitSym).get_element_ptr(),
         LLVMOrcMaterializationUnitMaterializeFunction.from_pyobj(Materialize).get_element_ptr(),
         LLVMOrcMaterializationUnitDiscardFunction.from_pyobj(Discard).get_element_ptr(),
-        LLVMOrcMaterializationUnitDestroyFunction.from_pyobj(Destroy).get_element_ptr()))    # fully specified
-    return _LLVMOrcCreateCustomMaterializationUnit__retval
+        LLVMOrcMaterializationUnitDestroyFunction.from_pyobj(Destroy).get_element_ptr()))
+    return None if _LLVMOrcCreateCustomMaterializationUnit__retval._ptr == NULL else _LLVMOrcCreateCustomMaterializationUnit__retval
 
 
 @cython.embedsignature(True)
@@ -6723,8 +6723,8 @@ def LLVMOrcAbsoluteSymbols(object Syms, unsigned long NumPairs):
             (undocumented)
     """
     _LLVMOrcAbsoluteSymbols__retval = LLVMOrcOpaqueMaterializationUnit.from_ptr(corc.LLVMOrcAbsoluteSymbols(
-        LLVMOrcCSymbolMapPair.from_pyobj(Syms).get_element_ptr(),NumPairs))    # fully specified
-    return _LLVMOrcAbsoluteSymbols__retval
+        LLVMOrcCSymbolMapPair.from_pyobj(Syms).get_element_ptr(),NumPairs))
+    return None if _LLVMOrcAbsoluteSymbols__retval._ptr == NULL else _LLVMOrcAbsoluteSymbols__retval
 
 
 @cython.embedsignature(True)
@@ -6771,8 +6771,8 @@ def LLVMOrcLazyReexports(object LCTM, object ISM, object SourceRef, object Calla
         LLVMOrcOpaqueLazyCallThroughManager.from_pyobj(LCTM).get_element_ptr(),
         LLVMOrcOpaqueIndirectStubsManager.from_pyobj(ISM).get_element_ptr(),
         LLVMOrcOpaqueJITDylib.from_pyobj(SourceRef).get_element_ptr(),
-        LLVMOrcCSymbolAliasMapPair.from_pyobj(CallableAliases).get_element_ptr(),NumPairs))    # fully specified
-    return _LLVMOrcLazyReexports__retval
+        LLVMOrcCSymbolAliasMapPair.from_pyobj(CallableAliases).get_element_ptr(),NumPairs))
+    return None if _LLVMOrcLazyReexports__retval._ptr == NULL else _LLVMOrcLazyReexports__retval
 
 
 @cython.embedsignature(True)
@@ -6792,7 +6792,7 @@ def LLVMOrcDisposeMaterializationResponsibility(object MR):
             (undocumented)
     """
     corc.LLVMOrcDisposeMaterializationResponsibility(
-        LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR).get_element_ptr())    # fully specified
+        LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -6806,8 +6806,8 @@ def LLVMOrcMaterializationResponsibilityGetTargetDylib(object MR):
             (undocumented)
     """
     _LLVMOrcMaterializationResponsibilityGetTargetDylib__retval = LLVMOrcOpaqueJITDylib.from_ptr(corc.LLVMOrcMaterializationResponsibilityGetTargetDylib(
-        LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR).get_element_ptr()))    # fully specified
-    return _LLVMOrcMaterializationResponsibilityGetTargetDylib__retval
+        LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR).get_element_ptr()))
+    return None if _LLVMOrcMaterializationResponsibilityGetTargetDylib__retval._ptr == NULL else _LLVMOrcMaterializationResponsibilityGetTargetDylib__retval
 
 
 @cython.embedsignature(True)
@@ -6821,8 +6821,8 @@ def LLVMOrcMaterializationResponsibilityGetExecutionSession(object MR):
             (undocumented)
     """
     _LLVMOrcMaterializationResponsibilityGetExecutionSession__retval = LLVMOrcOpaqueExecutionSession.from_ptr(corc.LLVMOrcMaterializationResponsibilityGetExecutionSession(
-        LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR).get_element_ptr()))    # fully specified
-    return _LLVMOrcMaterializationResponsibilityGetExecutionSession__retval
+        LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR).get_element_ptr()))
+    return None if _LLVMOrcMaterializationResponsibilityGetExecutionSession__retval._ptr == NULL else _LLVMOrcMaterializationResponsibilityGetExecutionSession__retval
 
 
 @cython.embedsignature(True)
@@ -6847,8 +6847,8 @@ def LLVMOrcMaterializationResponsibilityGetSymbols(object MR, object NumPairs):
     """
     _LLVMOrcMaterializationResponsibilityGetSymbols__retval = LLVMOrcCSymbolFlagsMapPair.from_ptr(corc.LLVMOrcMaterializationResponsibilityGetSymbols(
         LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR).get_element_ptr(),
-        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NumPairs)._ptr))    # fully specified
-    return _LLVMOrcMaterializationResponsibilityGetSymbols__retval
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NumPairs)._ptr))
+    return None if _LLVMOrcMaterializationResponsibilityGetSymbols__retval._ptr == NULL else _LLVMOrcMaterializationResponsibilityGetSymbols__retval
 
 
 @cython.embedsignature(True)
@@ -6864,7 +6864,7 @@ def LLVMOrcDisposeCSymbolFlagsMap(object Pairs):
             (undocumented)
     """
     corc.LLVMOrcDisposeCSymbolFlagsMap(
-        LLVMOrcCSymbolFlagsMapPair.from_pyobj(Pairs).get_element_ptr())    # fully specified
+        LLVMOrcCSymbolFlagsMapPair.from_pyobj(Pairs).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -6883,8 +6883,8 @@ def LLVMOrcMaterializationResponsibilityGetInitializerSymbol(object MR):
             (undocumented)
     """
     _LLVMOrcMaterializationResponsibilityGetInitializerSymbol__retval = LLVMOrcOpaqueSymbolStringPoolEntry.from_ptr(corc.LLVMOrcMaterializationResponsibilityGetInitializerSymbol(
-        LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR).get_element_ptr()))    # fully specified
-    return _LLVMOrcMaterializationResponsibilityGetInitializerSymbol__retval
+        LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR).get_element_ptr()))
+    return None if _LLVMOrcMaterializationResponsibilityGetInitializerSymbol__retval._ptr == NULL else _LLVMOrcMaterializationResponsibilityGetInitializerSymbol__retval
 
 
 @cython.embedsignature(True)
@@ -6905,8 +6905,8 @@ def LLVMOrcMaterializationResponsibilityGetRequestedSymbols(object MR, object Nu
     """
     _LLVMOrcMaterializationResponsibilityGetRequestedSymbols__retval = rocm.llvm._util.types.Pointer.from_ptr(<void*>corc.LLVMOrcMaterializationResponsibilityGetRequestedSymbols(
         LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR).get_element_ptr(),
-        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NumSymbols)._ptr))    # fully specified
-    return _LLVMOrcMaterializationResponsibilityGetRequestedSymbols__retval
+        <unsigned long *>rocm.llvm._util.types.Pointer.from_pyobj(NumSymbols)._ptr))
+    return None if _LLVMOrcMaterializationResponsibilityGetRequestedSymbols__retval._ptr == NULL else _LLVMOrcMaterializationResponsibilityGetRequestedSymbols__retval
 
 
 @cython.embedsignature(True)
@@ -6922,7 +6922,7 @@ def LLVMOrcDisposeSymbols(object Symbols):
             (undocumented)
     """
     corc.LLVMOrcDisposeSymbols(
-        <corc.LLVMOrcSymbolStringPoolEntryRef*>rocm.llvm._util.types.Pointer.from_pyobj(Symbols)._ptr)    # fully specified
+        <corc.LLVMOrcSymbolStringPoolEntryRef*>rocm.llvm._util.types.Pointer.from_pyobj(Symbols)._ptr)
 
 
 @cython.embedsignature(True)
@@ -6956,8 +6956,8 @@ def LLVMOrcMaterializationResponsibilityNotifyResolved(object MR, object Symbols
     """
     _LLVMOrcMaterializationResponsibilityNotifyResolved__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcMaterializationResponsibilityNotifyResolved(
         LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR).get_element_ptr(),
-        LLVMOrcCSymbolMapPair.from_pyobj(Symbols).get_element_ptr(),NumPairs))    # fully specified
-    return _LLVMOrcMaterializationResponsibilityNotifyResolved__retval
+        LLVMOrcCSymbolMapPair.from_pyobj(Symbols).get_element_ptr(),NumPairs))
+    return None if _LLVMOrcMaterializationResponsibilityNotifyResolved__retval._ptr == NULL else _LLVMOrcMaterializationResponsibilityNotifyResolved__retval
 
 
 @cython.embedsignature(True)
@@ -6981,8 +6981,8 @@ def LLVMOrcMaterializationResponsibilityNotifyEmitted(object MR):
             (undocumented)
     """
     _LLVMOrcMaterializationResponsibilityNotifyEmitted__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcMaterializationResponsibilityNotifyEmitted(
-        LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR).get_element_ptr()))    # fully specified
-    return _LLVMOrcMaterializationResponsibilityNotifyEmitted__retval
+        LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR).get_element_ptr()))
+    return None if _LLVMOrcMaterializationResponsibilityNotifyEmitted__retval._ptr == NULL else _LLVMOrcMaterializationResponsibilityNotifyEmitted__retval
 
 
 @cython.embedsignature(True)
@@ -7013,8 +7013,8 @@ def LLVMOrcMaterializationResponsibilityDefineMaterializing(object MR, object Pa
     """
     _LLVMOrcMaterializationResponsibilityDefineMaterializing__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcMaterializationResponsibilityDefineMaterializing(
         LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR).get_element_ptr(),
-        LLVMOrcCSymbolFlagsMapPair.from_pyobj(Pairs).get_element_ptr(),NumPairs))    # fully specified
-    return _LLVMOrcMaterializationResponsibilityDefineMaterializing__retval
+        LLVMOrcCSymbolFlagsMapPair.from_pyobj(Pairs).get_element_ptr(),NumPairs))
+    return None if _LLVMOrcMaterializationResponsibilityDefineMaterializing__retval._ptr == NULL else _LLVMOrcMaterializationResponsibilityDefineMaterializing__retval
 
 
 @cython.embedsignature(True)
@@ -7032,7 +7032,7 @@ def LLVMOrcMaterializationResponsibilityFailMaterialization(object MR):
             (undocumented)
     """
     corc.LLVMOrcMaterializationResponsibilityFailMaterialization(
-        LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR).get_element_ptr())    # fully specified
+        LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -7054,8 +7054,8 @@ def LLVMOrcMaterializationResponsibilityReplace(object MR, object MU):
     """
     _LLVMOrcMaterializationResponsibilityReplace__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcMaterializationResponsibilityReplace(
         LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR).get_element_ptr(),
-        LLVMOrcOpaqueMaterializationUnit.from_pyobj(MU).get_element_ptr()))    # fully specified
-    return _LLVMOrcMaterializationResponsibilityReplace__retval
+        LLVMOrcOpaqueMaterializationUnit.from_pyobj(MU).get_element_ptr()))
+    return None if _LLVMOrcMaterializationResponsibilityReplace__retval._ptr == NULL else _LLVMOrcMaterializationResponsibilityReplace__retval
 
 
 @cython.embedsignature(True)
@@ -7085,8 +7085,8 @@ def LLVMOrcMaterializationResponsibilityDelegate(object MR, object Symbols, unsi
     _LLVMOrcMaterializationResponsibilityDelegate__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcMaterializationResponsibilityDelegate(
         LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR).get_element_ptr(),
         <corc.LLVMOrcSymbolStringPoolEntryRef*>rocm.llvm._util.types.Pointer.from_pyobj(Symbols)._ptr,NumSymbols,
-        <corc.LLVMOrcMaterializationResponsibilityRef*>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr))    # fully specified
-    return _LLVMOrcMaterializationResponsibilityDelegate__retval
+        <corc.LLVMOrcMaterializationResponsibilityRef*>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr))
+    return None if _LLVMOrcMaterializationResponsibilityDelegate__retval._ptr == NULL else _LLVMOrcMaterializationResponsibilityDelegate__retval
 
 
 @cython.embedsignature(True)
@@ -7126,7 +7126,7 @@ def LLVMOrcMaterializationResponsibilityAddDependencies(object MR, object Name, 
     corc.LLVMOrcMaterializationResponsibilityAddDependencies(
         LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR).get_element_ptr(),
         LLVMOrcOpaqueSymbolStringPoolEntry.from_pyobj(Name).get_element_ptr(),
-        LLVMOrcCDependenceMapPair.from_pyobj(Dependencies).get_element_ptr(),NumPairs)    # fully specified
+        LLVMOrcCDependenceMapPair.from_pyobj(Dependencies).get_element_ptr(),NumPairs)
 
 
 @cython.embedsignature(True)
@@ -7149,7 +7149,7 @@ def LLVMOrcMaterializationResponsibilityAddDependenciesForAll(object MR, object 
     """
     corc.LLVMOrcMaterializationResponsibilityAddDependenciesForAll(
         LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR).get_element_ptr(),
-        LLVMOrcCDependenceMapPair.from_pyobj(Dependencies).get_element_ptr(),NumPairs)    # fully specified
+        LLVMOrcCDependenceMapPair.from_pyobj(Dependencies).get_element_ptr(),NumPairs)
 
 
 @cython.embedsignature(True)
@@ -7173,8 +7173,8 @@ def LLVMOrcExecutionSessionCreateBareJITDylib(object ES, object Name):
     """
     _LLVMOrcExecutionSessionCreateBareJITDylib__retval = LLVMOrcOpaqueJITDylib.from_ptr(corc.LLVMOrcExecutionSessionCreateBareJITDylib(
         LLVMOrcOpaqueExecutionSession.from_pyobj(ES).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
-    return _LLVMOrcExecutionSessionCreateBareJITDylib__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))
+    return None if _LLVMOrcExecutionSessionCreateBareJITDylib__retval._ptr == NULL else _LLVMOrcExecutionSessionCreateBareJITDylib__retval
 
 
 @cython.embedsignature(True)
@@ -7205,8 +7205,8 @@ def LLVMOrcExecutionSessionCreateJITDylib(object ES, object Result, object Name)
     _LLVMOrcExecutionSessionCreateJITDylib__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcExecutionSessionCreateJITDylib(
         LLVMOrcOpaqueExecutionSession.from_pyobj(ES).get_element_ptr(),
         <corc.LLVMOrcJITDylibRef*>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr,
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
-    return _LLVMOrcExecutionSessionCreateJITDylib__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))
+    return None if _LLVMOrcExecutionSessionCreateJITDylib__retval._ptr == NULL else _LLVMOrcExecutionSessionCreateJITDylib__retval
 
 
 @cython.embedsignature(True)
@@ -7225,8 +7225,8 @@ def LLVMOrcExecutionSessionGetJITDylibByName(object ES, object Name):
     """
     _LLVMOrcExecutionSessionGetJITDylibByName__retval = LLVMOrcOpaqueJITDylib.from_ptr(corc.LLVMOrcExecutionSessionGetJITDylibByName(
         LLVMOrcOpaqueExecutionSession.from_pyobj(ES).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))    # fully specified
-    return _LLVMOrcExecutionSessionGetJITDylibByName__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Name)._ptr))
+    return None if _LLVMOrcExecutionSessionGetJITDylibByName__retval._ptr == NULL else _LLVMOrcExecutionSessionGetJITDylibByName__retval
 
 
 @cython.embedsignature(True)
@@ -7242,8 +7242,8 @@ def LLVMOrcJITDylibCreateResourceTracker(object JD):
             (undocumented)
     """
     _LLVMOrcJITDylibCreateResourceTracker__retval = LLVMOrcOpaqueResourceTracker.from_ptr(corc.LLVMOrcJITDylibCreateResourceTracker(
-        LLVMOrcOpaqueJITDylib.from_pyobj(JD).get_element_ptr()))    # fully specified
-    return _LLVMOrcJITDylibCreateResourceTracker__retval
+        LLVMOrcOpaqueJITDylib.from_pyobj(JD).get_element_ptr()))
+    return None if _LLVMOrcJITDylibCreateResourceTracker__retval._ptr == NULL else _LLVMOrcJITDylibCreateResourceTracker__retval
 
 
 @cython.embedsignature(True)
@@ -7259,8 +7259,8 @@ def LLVMOrcJITDylibGetDefaultResourceTracker(object JD):
             (undocumented)
     """
     _LLVMOrcJITDylibGetDefaultResourceTracker__retval = LLVMOrcOpaqueResourceTracker.from_ptr(corc.LLVMOrcJITDylibGetDefaultResourceTracker(
-        LLVMOrcOpaqueJITDylib.from_pyobj(JD).get_element_ptr()))    # fully specified
-    return _LLVMOrcJITDylibGetDefaultResourceTracker__retval
+        LLVMOrcOpaqueJITDylib.from_pyobj(JD).get_element_ptr()))
+    return None if _LLVMOrcJITDylibGetDefaultResourceTracker__retval._ptr == NULL else _LLVMOrcJITDylibGetDefaultResourceTracker__retval
 
 
 @cython.embedsignature(True)
@@ -7282,8 +7282,8 @@ def LLVMOrcJITDylibDefine(object JD, object MU):
     """
     _LLVMOrcJITDylibDefine__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcJITDylibDefine(
         LLVMOrcOpaqueJITDylib.from_pyobj(JD).get_element_ptr(),
-        LLVMOrcOpaqueMaterializationUnit.from_pyobj(MU).get_element_ptr()))    # fully specified
-    return _LLVMOrcJITDylibDefine__retval
+        LLVMOrcOpaqueMaterializationUnit.from_pyobj(MU).get_element_ptr()))
+    return None if _LLVMOrcJITDylibDefine__retval._ptr == NULL else _LLVMOrcJITDylibDefine__retval
 
 
 @cython.embedsignature(True)
@@ -7298,8 +7298,8 @@ def LLVMOrcJITDylibClear(object JD):
             (undocumented)
     """
     _LLVMOrcJITDylibClear__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcJITDylibClear(
-        LLVMOrcOpaqueJITDylib.from_pyobj(JD).get_element_ptr()))    # fully specified
-    return _LLVMOrcJITDylibClear__retval
+        LLVMOrcOpaqueJITDylib.from_pyobj(JD).get_element_ptr()))
+    return None if _LLVMOrcJITDylibClear__retval._ptr == NULL else _LLVMOrcJITDylibClear__retval
 
 
 @cython.embedsignature(True)
@@ -7320,7 +7320,7 @@ def LLVMOrcJITDylibAddGenerator(object JD, object DG):
     """
     corc.LLVMOrcJITDylibAddGenerator(
         LLVMOrcOpaqueJITDylib.from_pyobj(JD).get_element_ptr(),
-        LLVMOrcOpaqueDefinitionGenerator.from_pyobj(DG).get_element_ptr())    # fully specified
+        LLVMOrcOpaqueDefinitionGenerator.from_pyobj(DG).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -7352,8 +7352,8 @@ def LLVMOrcCreateCustomCAPIDefinitionGenerator(object F, object Ctx, object Disp
     _LLVMOrcCreateCustomCAPIDefinitionGenerator__retval = LLVMOrcOpaqueDefinitionGenerator.from_ptr(corc.LLVMOrcCreateCustomCAPIDefinitionGenerator(
         LLVMOrcCAPIDefinitionGeneratorTryToGenerateFunction.from_pyobj(F).get_element_ptr(),
         <void *>rocm.llvm._util.types.Pointer.from_pyobj(Ctx)._ptr,
-        LLVMOrcDisposeCAPIDefinitionGeneratorFunction.from_pyobj(Dispose).get_element_ptr()))    # fully specified
-    return _LLVMOrcCreateCustomCAPIDefinitionGenerator__retval
+        LLVMOrcDisposeCAPIDefinitionGeneratorFunction.from_pyobj(Dispose).get_element_ptr()))
+    return None if _LLVMOrcCreateCustomCAPIDefinitionGenerator__retval._ptr == NULL else _LLVMOrcCreateCustomCAPIDefinitionGenerator__retval
 
 
 @cython.embedsignature(True)
@@ -7372,7 +7372,7 @@ def LLVMOrcLookupStateContinueLookup(object S, object Err):
     """
     corc.LLVMOrcLookupStateContinueLookup(
         LLVMOrcOpaqueLookupState.from_pyobj(S).get_element_ptr(),
-        LLVMOpaqueError.from_pyobj(Err).get_element_ptr())    # fully specified
+        LLVMOpaqueError.from_pyobj(Err).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -7412,8 +7412,8 @@ def LLVMOrcCreateDynamicLibrarySearchGeneratorForProcess(object Result, char Glo
     _LLVMOrcCreateDynamicLibrarySearchGeneratorForProcess__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcCreateDynamicLibrarySearchGeneratorForProcess(
         <corc.LLVMOrcDefinitionGeneratorRef*>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr,GlobalPrefx,
         LLVMOrcSymbolPredicate.from_pyobj(Filter).get_element_ptr(),
-        <void *>rocm.llvm._util.types.Pointer.from_pyobj(FilterCtx)._ptr))    # fully specified
-    return _LLVMOrcCreateDynamicLibrarySearchGeneratorForProcess__retval
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(FilterCtx)._ptr))
+    return None if _LLVMOrcCreateDynamicLibrarySearchGeneratorForProcess__retval._ptr == NULL else _LLVMOrcCreateDynamicLibrarySearchGeneratorForProcess__retval
 
 
 @cython.embedsignature(True)
@@ -7459,8 +7459,8 @@ def LLVMOrcCreateDynamicLibrarySearchGeneratorForPath(object Result, object File
         <corc.LLVMOrcDefinitionGeneratorRef*>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr,
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(FileName)._ptr,GlobalPrefix,
         LLVMOrcSymbolPredicate.from_pyobj(Filter).get_element_ptr(),
-        <void *>rocm.llvm._util.types.Pointer.from_pyobj(FilterCtx)._ptr))    # fully specified
-    return _LLVMOrcCreateDynamicLibrarySearchGeneratorForPath__retval
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(FilterCtx)._ptr))
+    return None if _LLVMOrcCreateDynamicLibrarySearchGeneratorForPath__retval._ptr == NULL else _LLVMOrcCreateDynamicLibrarySearchGeneratorForPath__retval
 
 
 @cython.embedsignature(True)
@@ -7496,8 +7496,8 @@ def LLVMOrcCreateStaticLibrarySearchGeneratorForPath(object Result, object ObjLa
         <corc.LLVMOrcDefinitionGeneratorRef*>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr,
         LLVMOrcOpaqueObjectLayer.from_pyobj(ObjLayer).get_element_ptr(),
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(FileName)._ptr,
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(TargetTriple)._ptr))    # fully specified
-    return _LLVMOrcCreateStaticLibrarySearchGeneratorForPath__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(TargetTriple)._ptr))
+    return None if _LLVMOrcCreateStaticLibrarySearchGeneratorForPath__retval._ptr == NULL else _LLVMOrcCreateStaticLibrarySearchGeneratorForPath__retval
 
 
 @cython.embedsignature(True)
@@ -7511,8 +7511,8 @@ def LLVMOrcCreateNewThreadSafeContext():
     need to refer to it directly. Other references (e.g. from ThreadSafeModules)
     will keep the data alive as long as it is needed.
     """
-    _LLVMOrcCreateNewThreadSafeContext__retval = LLVMOrcOpaqueThreadSafeContext.from_ptr(corc.LLVMOrcCreateNewThreadSafeContext())    # fully specified
-    return _LLVMOrcCreateNewThreadSafeContext__retval
+    _LLVMOrcCreateNewThreadSafeContext__retval = LLVMOrcOpaqueThreadSafeContext.from_ptr(corc.LLVMOrcCreateNewThreadSafeContext())
+    return None if _LLVMOrcCreateNewThreadSafeContext__retval._ptr == NULL else _LLVMOrcCreateNewThreadSafeContext__retval
 
 
 @cython.embedsignature(True)
@@ -7526,8 +7526,8 @@ def LLVMOrcThreadSafeContextGetContext(object TSCtx):
             (undocumented)
     """
     _LLVMOrcThreadSafeContextGetContext__retval = LLVMOpaqueContext.from_ptr(corc.LLVMOrcThreadSafeContextGetContext(
-        LLVMOrcOpaqueThreadSafeContext.from_pyobj(TSCtx).get_element_ptr()))    # fully specified
-    return _LLVMOrcThreadSafeContextGetContext__retval
+        LLVMOrcOpaqueThreadSafeContext.from_pyobj(TSCtx).get_element_ptr()))
+    return None if _LLVMOrcThreadSafeContextGetContext__retval._ptr == NULL else _LLVMOrcThreadSafeContextGetContext__retval
 
 
 @cython.embedsignature(True)
@@ -7541,7 +7541,7 @@ def LLVMOrcDisposeThreadSafeContext(object TSCtx):
             (undocumented)
     """
     corc.LLVMOrcDisposeThreadSafeContext(
-        LLVMOrcOpaqueThreadSafeContext.from_pyobj(TSCtx).get_element_ptr())    # fully specified
+        LLVMOrcOpaqueThreadSafeContext.from_pyobj(TSCtx).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -7566,8 +7566,8 @@ def LLVMOrcCreateNewThreadSafeModule(object M, object TSCtx):
     """
     _LLVMOrcCreateNewThreadSafeModule__retval = LLVMOrcOpaqueThreadSafeModule.from_ptr(corc.LLVMOrcCreateNewThreadSafeModule(
         LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
-        LLVMOrcOpaqueThreadSafeContext.from_pyobj(TSCtx).get_element_ptr()))    # fully specified
-    return _LLVMOrcCreateNewThreadSafeModule__retval
+        LLVMOrcOpaqueThreadSafeContext.from_pyobj(TSCtx).get_element_ptr()))
+    return None if _LLVMOrcCreateNewThreadSafeModule__retval._ptr == NULL else _LLVMOrcCreateNewThreadSafeModule__retval
 
 
 @cython.embedsignature(True)
@@ -7583,7 +7583,7 @@ def LLVMOrcDisposeThreadSafeModule(object TSM):
             (undocumented)
     """
     corc.LLVMOrcDisposeThreadSafeModule(
-        LLVMOrcOpaqueThreadSafeModule.from_pyobj(TSM).get_element_ptr())    # fully specified
+        LLVMOrcOpaqueThreadSafeModule.from_pyobj(TSM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -7605,8 +7605,8 @@ def LLVMOrcThreadSafeModuleWithModuleDo(object TSM, object F, object Ctx):
     _LLVMOrcThreadSafeModuleWithModuleDo__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcThreadSafeModuleWithModuleDo(
         LLVMOrcOpaqueThreadSafeModule.from_pyobj(TSM).get_element_ptr(),
         LLVMOrcGenericIRModuleOperationFunction.from_pyobj(F).get_element_ptr(),
-        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Ctx)._ptr))    # fully specified
-    return _LLVMOrcThreadSafeModuleWithModuleDo__retval
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Ctx)._ptr))
+    return None if _LLVMOrcThreadSafeModuleWithModuleDo__retval._ptr == NULL else _LLVMOrcThreadSafeModuleWithModuleDo__retval
 
 
 @cython.embedsignature(True)
@@ -7625,8 +7625,8 @@ def LLVMOrcJITTargetMachineBuilderDetectHost(object Result):
             (undocumented)
     """
     _LLVMOrcJITTargetMachineBuilderDetectHost__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcJITTargetMachineBuilderDetectHost(
-        <corc.LLVMOrcJITTargetMachineBuilderRef*>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr))    # fully specified
-    return _LLVMOrcJITTargetMachineBuilderDetectHost__retval
+        <corc.LLVMOrcJITTargetMachineBuilderRef*>rocm.llvm._util.types.Pointer.from_pyobj(Result)._ptr))
+    return None if _LLVMOrcJITTargetMachineBuilderDetectHost__retval._ptr == NULL else _LLVMOrcJITTargetMachineBuilderDetectHost__retval
 
 
 @cython.embedsignature(True)
@@ -7646,8 +7646,8 @@ def LLVMOrcJITTargetMachineBuilderCreateFromTargetMachine(object TM):
             (undocumented)
     """
     _LLVMOrcJITTargetMachineBuilderCreateFromTargetMachine__retval = LLVMOrcOpaqueJITTargetMachineBuilder.from_ptr(corc.LLVMOrcJITTargetMachineBuilderCreateFromTargetMachine(
-        LLVMOpaqueTargetMachine.from_pyobj(TM).get_element_ptr()))    # fully specified
-    return _LLVMOrcJITTargetMachineBuilderCreateFromTargetMachine__retval
+        LLVMOpaqueTargetMachine.from_pyobj(TM).get_element_ptr()))
+    return None if _LLVMOrcJITTargetMachineBuilderCreateFromTargetMachine__retval._ptr == NULL else _LLVMOrcJITTargetMachineBuilderCreateFromTargetMachine__retval
 
 
 @cython.embedsignature(True)
@@ -7661,7 +7661,7 @@ def LLVMOrcDisposeJITTargetMachineBuilder(object JTMB):
             (undocumented)
     """
     corc.LLVMOrcDisposeJITTargetMachineBuilder(
-        LLVMOrcOpaqueJITTargetMachineBuilder.from_pyobj(JTMB).get_element_ptr())    # fully specified
+        LLVMOrcOpaqueJITTargetMachineBuilder.from_pyobj(JTMB).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -7681,8 +7681,8 @@ def LLVMOrcJITTargetMachineBuilderGetTargetTriple(object JTMB):
         `~.bytes`
     """
     _LLVMOrcJITTargetMachineBuilderGetTargetTriple__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>corc.LLVMOrcJITTargetMachineBuilderGetTargetTriple(
-        LLVMOrcOpaqueJITTargetMachineBuilder.from_pyobj(JTMB).get_element_ptr()))    # fully specified
-    return _LLVMOrcJITTargetMachineBuilderGetTargetTriple__retval
+        LLVMOrcOpaqueJITTargetMachineBuilder.from_pyobj(JTMB).get_element_ptr()))
+    return None if _LLVMOrcJITTargetMachineBuilderGetTargetTriple__retval._ptr == NULL else _LLVMOrcJITTargetMachineBuilderGetTargetTriple__retval
 
 
 @cython.embedsignature(True)
@@ -7701,7 +7701,7 @@ def LLVMOrcJITTargetMachineBuilderSetTargetTriple(object JTMB, object TargetTrip
     """
     corc.LLVMOrcJITTargetMachineBuilderSetTargetTriple(
         LLVMOrcOpaqueJITTargetMachineBuilder.from_pyobj(JTMB).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(TargetTriple)._ptr)    # fully specified
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(TargetTriple)._ptr)
 
 
 @cython.embedsignature(True)
@@ -7731,8 +7731,8 @@ def LLVMOrcObjectLayerAddObjectFile(object ObjLayer, object JD, object ObjBuffer
     _LLVMOrcObjectLayerAddObjectFile__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcObjectLayerAddObjectFile(
         LLVMOrcOpaqueObjectLayer.from_pyobj(ObjLayer).get_element_ptr(),
         LLVMOrcOpaqueJITDylib.from_pyobj(JD).get_element_ptr(),
-        LLVMOpaqueMemoryBuffer.from_pyobj(ObjBuffer).get_element_ptr()))    # fully specified
-    return _LLVMOrcObjectLayerAddObjectFile__retval
+        LLVMOpaqueMemoryBuffer.from_pyobj(ObjBuffer).get_element_ptr()))
+    return None if _LLVMOrcObjectLayerAddObjectFile__retval._ptr == NULL else _LLVMOrcObjectLayerAddObjectFile__retval
 
 
 @cython.embedsignature(True)
@@ -7762,8 +7762,8 @@ def LLVMOrcObjectLayerAddObjectFileWithRT(object ObjLayer, object RT, object Obj
     _LLVMOrcObjectLayerAddObjectFileWithRT__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcObjectLayerAddObjectFileWithRT(
         LLVMOrcOpaqueObjectLayer.from_pyobj(ObjLayer).get_element_ptr(),
         LLVMOrcOpaqueResourceTracker.from_pyobj(RT).get_element_ptr(),
-        LLVMOpaqueMemoryBuffer.from_pyobj(ObjBuffer).get_element_ptr()))    # fully specified
-    return _LLVMOrcObjectLayerAddObjectFileWithRT__retval
+        LLVMOpaqueMemoryBuffer.from_pyobj(ObjBuffer).get_element_ptr()))
+    return None if _LLVMOrcObjectLayerAddObjectFileWithRT__retval._ptr == NULL else _LLVMOrcObjectLayerAddObjectFileWithRT__retval
 
 
 @cython.embedsignature(True)
@@ -7788,7 +7788,7 @@ def LLVMOrcObjectLayerEmit(object ObjLayer, object R, object ObjBuffer):
     corc.LLVMOrcObjectLayerEmit(
         LLVMOrcOpaqueObjectLayer.from_pyobj(ObjLayer).get_element_ptr(),
         LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(R).get_element_ptr(),
-        LLVMOpaqueMemoryBuffer.from_pyobj(ObjBuffer).get_element_ptr())    # fully specified
+        LLVMOpaqueMemoryBuffer.from_pyobj(ObjBuffer).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -7802,7 +7802,7 @@ def LLVMOrcDisposeObjectLayer(object ObjLayer):
             (undocumented)
     """
     corc.LLVMOrcDisposeObjectLayer(
-        LLVMOrcOpaqueObjectLayer.from_pyobj(ObjLayer).get_element_ptr())    # fully specified
+        LLVMOrcOpaqueObjectLayer.from_pyobj(ObjLayer).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -7822,7 +7822,7 @@ def LLVMOrcIRTransformLayerEmit(object IRTransformLayer, object MR, object TSM):
     corc.LLVMOrcIRTransformLayerEmit(
         LLVMOrcOpaqueIRTransformLayer.from_pyobj(IRTransformLayer).get_element_ptr(),
         LLVMOrcOpaqueMaterializationResponsibility.from_pyobj(MR).get_element_ptr(),
-        LLVMOrcOpaqueThreadSafeModule.from_pyobj(TSM).get_element_ptr())    # fully specified
+        LLVMOrcOpaqueThreadSafeModule.from_pyobj(TSM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -7845,7 +7845,7 @@ def LLVMOrcIRTransformLayerSetTransform(object IRTransformLayer, object Transfor
     corc.LLVMOrcIRTransformLayerSetTransform(
         LLVMOrcOpaqueIRTransformLayer.from_pyobj(IRTransformLayer).get_element_ptr(),
         LLVMOrcIRTransformLayerTransformFunction.from_pyobj(TransformFunction).get_element_ptr(),
-        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Ctx)._ptr)    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Ctx)._ptr)
 
 
 @cython.embedsignature(True)
@@ -7867,7 +7867,7 @@ def LLVMOrcObjectTransformLayerSetTransform(object ObjTransformLayer, object Tra
     corc.LLVMOrcObjectTransformLayerSetTransform(
         LLVMOrcOpaqueObjectTransformLayer.from_pyobj(ObjTransformLayer).get_element_ptr(),
         LLVMOrcObjectTransformLayerTransformFunction.from_pyobj(TransformFunction).get_element_ptr(),
-        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Ctx)._ptr)    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(Ctx)._ptr)
 
 
 @cython.embedsignature(True)
@@ -7884,8 +7884,8 @@ def LLVMOrcCreateLocalIndirectStubsManager(object TargetTriple):
             (undocumented)
     """
     _LLVMOrcCreateLocalIndirectStubsManager__retval = LLVMOrcOpaqueIndirectStubsManager.from_ptr(corc.LLVMOrcCreateLocalIndirectStubsManager(
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(TargetTriple)._ptr))    # fully specified
-    return _LLVMOrcCreateLocalIndirectStubsManager__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(TargetTriple)._ptr))
+    return None if _LLVMOrcCreateLocalIndirectStubsManager__retval._ptr == NULL else _LLVMOrcCreateLocalIndirectStubsManager__retval
 
 
 @cython.embedsignature(True)
@@ -7899,7 +7899,7 @@ def LLVMOrcDisposeIndirectStubsManager(object ISM):
             (undocumented)
     """
     corc.LLVMOrcDisposeIndirectStubsManager(
-        LLVMOrcOpaqueIndirectStubsManager.from_pyobj(ISM).get_element_ptr())    # fully specified
+        LLVMOrcOpaqueIndirectStubsManager.from_pyobj(ISM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -7922,8 +7922,8 @@ def LLVMOrcCreateLocalLazyCallThroughManager(object TargetTriple, object ES, uns
     _LLVMOrcCreateLocalLazyCallThroughManager__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcCreateLocalLazyCallThroughManager(
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(TargetTriple)._ptr,
         LLVMOrcOpaqueExecutionSession.from_pyobj(ES).get_element_ptr(),ErrorHandlerAddr,
-        <corc.LLVMOrcLazyCallThroughManagerRef*>rocm.llvm._util.types.Pointer.from_pyobj(LCTM)._ptr))    # fully specified
-    return _LLVMOrcCreateLocalLazyCallThroughManager__retval
+        <corc.LLVMOrcLazyCallThroughManagerRef*>rocm.llvm._util.types.Pointer.from_pyobj(LCTM)._ptr))
+    return None if _LLVMOrcCreateLocalLazyCallThroughManager__retval._ptr == NULL else _LLVMOrcCreateLocalLazyCallThroughManager__retval
 
 
 @cython.embedsignature(True)
@@ -7937,7 +7937,7 @@ def LLVMOrcDisposeLazyCallThroughManager(object LCTM):
             (undocumented)
     """
     corc.LLVMOrcDisposeLazyCallThroughManager(
-        LLVMOrcOpaqueLazyCallThroughManager.from_pyobj(LCTM).get_element_ptr())    # fully specified
+        LLVMOrcOpaqueLazyCallThroughManager.from_pyobj(LCTM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -7966,8 +7966,8 @@ def LLVMOrcCreateDumpObjects(object DumpDir, object IdentifierOverride):
     """
     _LLVMOrcCreateDumpObjects__retval = LLVMOrcOpaqueDumpObjects.from_ptr(corc.LLVMOrcCreateDumpObjects(
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(DumpDir)._ptr,
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(IdentifierOverride)._ptr))    # fully specified
-    return _LLVMOrcCreateDumpObjects__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(IdentifierOverride)._ptr))
+    return None if _LLVMOrcCreateDumpObjects__retval._ptr == NULL else _LLVMOrcCreateDumpObjects__retval
 
 
 @cython.embedsignature(True)
@@ -7981,7 +7981,7 @@ def LLVMOrcDisposeDumpObjects(object DumpObjects):
             (undocumented)
     """
     corc.LLVMOrcDisposeDumpObjects(
-        LLVMOrcOpaqueDumpObjects.from_pyobj(DumpObjects).get_element_ptr())    # fully specified
+        LLVMOrcOpaqueDumpObjects.from_pyobj(DumpObjects).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -7999,8 +7999,8 @@ def LLVMOrcDumpObjects_CallOperator(object DumpObjects, object ObjBuffer):
     """
     _LLVMOrcDumpObjects_CallOperator__retval = LLVMOpaqueError.from_ptr(corc.LLVMOrcDumpObjects_CallOperator(
         LLVMOrcOpaqueDumpObjects.from_pyobj(DumpObjects).get_element_ptr(),
-        <corc.LLVMMemoryBufferRef*>rocm.llvm._util.types.Pointer.from_pyobj(ObjBuffer)._ptr))    # fully specified
-    return _LLVMOrcDumpObjects_CallOperator__retval
+        <corc.LLVMMemoryBufferRef*>rocm.llvm._util.types.Pointer.from_pyobj(ObjBuffer)._ptr))
+    return None if _LLVMOrcDumpObjects_CallOperator__retval._ptr == NULL else _LLVMOrcDumpObjects_CallOperator__retval
 
 __all__ = [
     "_LLVMJITSymbolGenericFlags__Base",

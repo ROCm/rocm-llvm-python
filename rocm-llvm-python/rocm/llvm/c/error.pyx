@@ -186,8 +186,8 @@ def LLVMGetErrorTypeId(object Err):
             (undocumented)
     """
     _LLVMGetErrorTypeId__retval = rocm.llvm._util.types.Pointer.from_ptr(<void*>cerror.LLVMGetErrorTypeId(
-        LLVMOpaqueError.from_pyobj(Err).get_element_ptr()))    # fully specified
-    return _LLVMGetErrorTypeId__retval
+        LLVMOpaqueError.from_pyobj(Err).get_element_ptr()))
+    return None if _LLVMGetErrorTypeId__retval._ptr == NULL else _LLVMGetErrorTypeId__retval
 
 
 @cython.embedsignature(True)
@@ -204,7 +204,7 @@ def LLVMConsumeError(object Err):
             (undocumented)
     """
     cerror.LLVMConsumeError(
-        LLVMOpaqueError.from_pyobj(Err).get_element_ptr())    # fully specified
+        LLVMOpaqueError.from_pyobj(Err).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -224,8 +224,8 @@ def LLVMGetErrorMessage(object Err):
         `~.bytes`
     """
     _LLVMGetErrorMessage__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cerror.LLVMGetErrorMessage(
-        LLVMOpaqueError.from_pyobj(Err).get_element_ptr()))    # fully specified
-    return _LLVMGetErrorMessage__retval
+        LLVMOpaqueError.from_pyobj(Err).get_element_ptr()))
+    return None if _LLVMGetErrorMessage__retval._ptr == NULL else _LLVMGetErrorMessage__retval
 
 
 @cython.embedsignature(True)
@@ -239,7 +239,7 @@ def LLVMDisposeErrorMessage(object ErrMsg):
             (undocumented)
     """
     cerror.LLVMDisposeErrorMessage(
-        <char *>rocm.llvm._util.types.CStr.from_pyobj(ErrMsg)._ptr)    # fully specified
+        <char *>rocm.llvm._util.types.CStr.from_pyobj(ErrMsg)._ptr)
 
 
 @cython.embedsignature(True)
@@ -248,8 +248,8 @@ def LLVMGetStringErrorTypeId():
 
     Returns the type id for llvm StringError.
     """
-    _LLVMGetStringErrorTypeId__retval = rocm.llvm._util.types.Pointer.from_ptr(<void*>cerror.LLVMGetStringErrorTypeId())    # fully specified
-    return _LLVMGetStringErrorTypeId__retval
+    _LLVMGetStringErrorTypeId__retval = rocm.llvm._util.types.Pointer.from_ptr(<void*>cerror.LLVMGetStringErrorTypeId())
+    return None if _LLVMGetStringErrorTypeId__retval._ptr == NULL else _LLVMGetStringErrorTypeId__retval
 
 
 @cython.embedsignature(True)
@@ -263,8 +263,8 @@ def LLVMCreateStringError(object ErrMsg):
             (undocumented)
     """
     _LLVMCreateStringError__retval = LLVMOpaqueError.from_ptr(cerror.LLVMCreateStringError(
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(ErrMsg)._ptr))    # fully specified
-    return _LLVMCreateStringError__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(ErrMsg)._ptr))
+    return None if _LLVMCreateStringError__retval._ptr == NULL else _LLVMCreateStringError__retval
 
 __all__ = [
     "LLVMOpaqueError",

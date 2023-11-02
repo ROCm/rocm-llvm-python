@@ -480,8 +480,8 @@ def LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager(object ES):
             (undocumented)
     """
     _LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager__retval = LLVMOrcOpaqueObjectLayer.from_ptr(corcee.LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager(
-        LLVMOrcOpaqueExecutionSession.from_pyobj(ES).get_element_ptr()))    # fully specified
-    return _LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager__retval
+        LLVMOrcOpaqueExecutionSession.from_pyobj(ES).get_element_ptr()))
+    return None if _LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager__retval._ptr == NULL else _LLVMOrcCreateRTDyldObjectLinkingLayerWithSectionMemoryManager__retval
 
 
 @cython.embedsignature(True)
@@ -544,8 +544,8 @@ def LLVMOrcCreateRTDyldObjectLinkingLayerWithMCJITMemoryManagerLikeCallbacks(obj
         LLVMMemoryManagerAllocateCodeSectionCallback.from_pyobj(AllocateCodeSection).get_element_ptr(),
         LLVMMemoryManagerAllocateDataSectionCallback.from_pyobj(AllocateDataSection).get_element_ptr(),
         LLVMMemoryManagerFinalizeMemoryCallback.from_pyobj(FinalizeMemory).get_element_ptr(),
-        LLVMMemoryManagerDestroyCallback.from_pyobj(Destroy).get_element_ptr()))    # fully specified
-    return _LLVMOrcCreateRTDyldObjectLinkingLayerWithMCJITMemoryManagerLikeCallbacks__retval
+        LLVMMemoryManagerDestroyCallback.from_pyobj(Destroy).get_element_ptr()))
+    return None if _LLVMOrcCreateRTDyldObjectLinkingLayerWithMCJITMemoryManagerLikeCallbacks__retval._ptr == NULL else _LLVMOrcCreateRTDyldObjectLinkingLayerWithMCJITMemoryManagerLikeCallbacks__retval
 
 
 @cython.embedsignature(True)
@@ -566,7 +566,7 @@ def LLVMOrcRTDyldObjectLinkingLayerRegisterJITEventListener(object RTDyldObjLink
     """
     corcee.LLVMOrcRTDyldObjectLinkingLayerRegisterJITEventListener(
         LLVMOrcOpaqueObjectLayer.from_pyobj(RTDyldObjLinkingLayer).get_element_ptr(),
-        LLVMOpaqueJITEventListener.from_pyobj(Listener).get_element_ptr())    # fully specified
+        LLVMOpaqueJITEventListener.from_pyobj(Listener).get_element_ptr())
 
 __all__ = [
     "LLVMMemoryManagerCreateContextCallback",

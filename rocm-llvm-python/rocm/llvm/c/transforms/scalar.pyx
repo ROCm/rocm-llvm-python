@@ -66,7 +66,7 @@ def LLVMAddAggressiveDCEPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddAggressiveDCEPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -80,7 +80,7 @@ def LLVMAddDCEPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddDCEPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -94,7 +94,7 @@ def LLVMAddBitTrackingDCEPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddBitTrackingDCEPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -108,7 +108,7 @@ def LLVMAddAlignmentFromAssumptionsPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddAlignmentFromAssumptionsPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -122,7 +122,7 @@ def LLVMAddCFGSimplificationPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddCFGSimplificationPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -136,7 +136,7 @@ def LLVMAddDeadStoreEliminationPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddDeadStoreEliminationPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -150,7 +150,7 @@ def LLVMAddScalarizerPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddScalarizerPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -164,7 +164,7 @@ def LLVMAddMergedLoadStoreMotionPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddMergedLoadStoreMotionPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -178,7 +178,7 @@ def LLVMAddGVNPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddGVNPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -192,7 +192,7 @@ def LLVMAddNewGVNPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddNewGVNPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -206,7 +206,7 @@ def LLVMAddIndVarSimplifyPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddIndVarSimplifyPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -220,7 +220,7 @@ def LLVMAddInstructionCombiningPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddInstructionCombiningPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -234,7 +234,7 @@ def LLVMAddInstructionSimplifyPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddInstructionSimplifyPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -248,7 +248,7 @@ def LLVMAddJumpThreadingPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddJumpThreadingPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -262,7 +262,7 @@ def LLVMAddLICMPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddLICMPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -276,7 +276,7 @@ def LLVMAddLoopDeletionPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddLoopDeletionPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -290,7 +290,7 @@ def LLVMAddLoopIdiomPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddLoopIdiomPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -304,7 +304,7 @@ def LLVMAddLoopRotatePass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddLoopRotatePass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -318,7 +318,7 @@ def LLVMAddLoopRerollPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddLoopRerollPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -332,7 +332,7 @@ def LLVMAddLoopUnrollPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddLoopUnrollPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -346,7 +346,7 @@ def LLVMAddLoopUnrollAndJamPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddLoopUnrollAndJamPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -360,7 +360,7 @@ def LLVMAddLowerAtomicPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddLowerAtomicPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -374,7 +374,7 @@ def LLVMAddMemCpyOptPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddMemCpyOptPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -388,7 +388,7 @@ def LLVMAddPartiallyInlineLibCallsPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddPartiallyInlineLibCallsPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -402,7 +402,7 @@ def LLVMAddReassociatePass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddReassociatePass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -416,7 +416,7 @@ def LLVMAddSCCPPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddSCCPPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -430,7 +430,7 @@ def LLVMAddScalarReplAggregatesPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddScalarReplAggregatesPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -444,7 +444,7 @@ def LLVMAddScalarReplAggregatesPassSSA(object PM):
             (undocumented)
     """
     cscalar.LLVMAddScalarReplAggregatesPassSSA(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -461,7 +461,7 @@ def LLVMAddScalarReplAggregatesPassWithThreshold(object PM, int Threshold):
             (undocumented)
     """
     cscalar.LLVMAddScalarReplAggregatesPassWithThreshold(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr(),Threshold)    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr(),Threshold)
 
 
 @cython.embedsignature(True)
@@ -475,7 +475,7 @@ def LLVMAddSimplifyLibCallsPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddSimplifyLibCallsPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -489,7 +489,7 @@ def LLVMAddTailCallEliminationPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddTailCallEliminationPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -503,7 +503,7 @@ def LLVMAddDemoteMemoryToRegisterPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddDemoteMemoryToRegisterPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -517,7 +517,7 @@ def LLVMAddVerifierPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddVerifierPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -531,7 +531,7 @@ def LLVMAddCorrelatedValuePropagationPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddCorrelatedValuePropagationPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -545,7 +545,7 @@ def LLVMAddEarlyCSEPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddEarlyCSEPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -559,7 +559,7 @@ def LLVMAddEarlyCSEMemSSAPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddEarlyCSEMemSSAPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -573,7 +573,7 @@ def LLVMAddLowerExpectIntrinsicPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddLowerExpectIntrinsicPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -587,7 +587,7 @@ def LLVMAddLowerConstantIntrinsicsPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddLowerConstantIntrinsicsPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -601,7 +601,7 @@ def LLVMAddTypeBasedAliasAnalysisPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddTypeBasedAliasAnalysisPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -615,7 +615,7 @@ def LLVMAddScopedNoAliasAAPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddScopedNoAliasAAPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -629,7 +629,7 @@ def LLVMAddBasicAliasAnalysisPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddBasicAliasAnalysisPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -643,7 +643,7 @@ def LLVMAddUnifyFunctionExitNodesPass(object PM):
             (undocumented)
     """
     cscalar.LLVMAddUnifyFunctionExitNodesPass(
-        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())    # fully specified
+        LLVMOpaquePassManager.from_pyobj(PM).get_element_ptr())
 
 __all__ = [
     "LLVMAddAggressiveDCEPass",

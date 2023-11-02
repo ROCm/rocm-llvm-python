@@ -75,7 +75,7 @@ def LLVMLoadLibraryPermanently(object Filename):
         `~.int`
     """
     cdef int _LLVMLoadLibraryPermanently__retval = csupport.LLVMLoadLibraryPermanently(
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Filename)._ptr)    # fully specified
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Filename)._ptr)
     return _LLVMLoadLibraryPermanently__retval
 
 
@@ -103,7 +103,7 @@ def LLVMParseCommandLineOptions(int argc, object argv, object Overview):
     """
     csupport.LLVMParseCommandLineOptions(argc,
         <const char *const *>rocm.llvm._util.types.CStr.from_pyobj(argv)._ptr,
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Overview)._ptr)    # fully specified
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Overview)._ptr)
 
 
 @cython.embedsignature(True)
@@ -122,8 +122,8 @@ def LLVMSearchForAddressOfSymbol(object symbolName):
             (undocumented)
     """
     _LLVMSearchForAddressOfSymbol__retval = rocm.llvm._util.types.Pointer.from_ptr(<void*>csupport.LLVMSearchForAddressOfSymbol(
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(symbolName)._ptr))    # fully specified
-    return _LLVMSearchForAddressOfSymbol__retval
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(symbolName)._ptr))
+    return None if _LLVMSearchForAddressOfSymbol__retval._ptr == NULL else _LLVMSearchForAddressOfSymbol__retval
 
 
 @cython.embedsignature(True)
@@ -146,7 +146,7 @@ def LLVMAddSymbol(object symbolName, object symbolValue):
     """
     csupport.LLVMAddSymbol(
         <const char *>rocm.llvm._util.types.CStr.from_pyobj(symbolName)._ptr,
-        <void *>rocm.llvm._util.types.Pointer.from_pyobj(symbolValue)._ptr)    # fully specified
+        <void *>rocm.llvm._util.types.Pointer.from_pyobj(symbolValue)._ptr)
 
 __all__ = [
     "LLVMLoadLibraryPermanently",

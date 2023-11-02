@@ -614,8 +614,8 @@ def llvm_blake3_version():
     Returns:
         `~.bytes`
     """
-    _llvm_blake3_version__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cblake3.llvm_blake3_version())    # fully specified
-    return _llvm_blake3_version__retval
+    _llvm_blake3_version__retval = rocm.llvm._util.types.CStr.from_ptr(<void*>cblake3.llvm_blake3_version())
+    return None if _llvm_blake3_version__retval._ptr == NULL else _llvm_blake3_version__retval
 
 
 @cython.embedsignature(True)
@@ -627,7 +627,7 @@ def llvm_blake3_hasher_init(object self):
             (undocumented)
     """
     cblake3.llvm_blake3_hasher_init(
-        llvm_blake3_hasher.from_pyobj(self).get_element_ptr())    # fully specified
+        llvm_blake3_hasher.from_pyobj(self).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -642,7 +642,7 @@ def llvm_blake3_hasher_init_keyed(object self, const unsigned char[32] key):
             (undocumented)
     """
     cblake3.llvm_blake3_hasher_init_keyed(
-        llvm_blake3_hasher.from_pyobj(self).get_element_ptr(),key)    # fully specified
+        llvm_blake3_hasher.from_pyobj(self).get_element_ptr(),key)
 
 
 @cython.embedsignature(True)
@@ -658,7 +658,7 @@ def llvm_blake3_hasher_init_derive_key(object self, object context):
     """
     cblake3.llvm_blake3_hasher_init_derive_key(
         llvm_blake3_hasher.from_pyobj(self).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(context)._ptr)    # fully specified
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(context)._ptr)
 
 
 @cython.embedsignature(True)
@@ -677,7 +677,7 @@ def llvm_blake3_hasher_init_derive_key_raw(object self, object context, unsigned
     """
     cblake3.llvm_blake3_hasher_init_derive_key_raw(
         llvm_blake3_hasher.from_pyobj(self).get_element_ptr(),
-        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(context)._ptr,context_len)    # fully specified
+        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(context)._ptr,context_len)
 
 
 @cython.embedsignature(True)
@@ -696,7 +696,7 @@ def llvm_blake3_hasher_update(object self, object input, unsigned long input_len
     """
     cblake3.llvm_blake3_hasher_update(
         llvm_blake3_hasher.from_pyobj(self).get_element_ptr(),
-        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(input)._ptr,input_len)    # fully specified
+        <const void *>rocm.llvm._util.types.Pointer.from_pyobj(input)._ptr,input_len)
 
 
 @cython.embedsignature(True)
@@ -715,7 +715,7 @@ def llvm_blake3_hasher_finalize(object self, object out, unsigned long out_len):
     """
     cblake3.llvm_blake3_hasher_finalize(
         llvm_blake3_hasher.from_pyobj(self).get_element_ptr(),
-        <unsigned char *>rocm.llvm._util.types.Pointer.from_pyobj(out)._ptr,out_len)    # fully specified
+        <unsigned char *>rocm.llvm._util.types.Pointer.from_pyobj(out)._ptr,out_len)
 
 
 @cython.embedsignature(True)
@@ -737,7 +737,7 @@ def llvm_blake3_hasher_finalize_seek(object self, unsigned long seek, object out
     """
     cblake3.llvm_blake3_hasher_finalize_seek(
         llvm_blake3_hasher.from_pyobj(self).get_element_ptr(),seek,
-        <unsigned char *>rocm.llvm._util.types.Pointer.from_pyobj(out)._ptr,out_len)    # fully specified
+        <unsigned char *>rocm.llvm._util.types.Pointer.from_pyobj(out)._ptr,out_len)
 
 
 @cython.embedsignature(True)
@@ -749,7 +749,7 @@ def llvm_blake3_hasher_reset(object self):
             (undocumented)
     """
     cblake3.llvm_blake3_hasher_reset(
-        llvm_blake3_hasher.from_pyobj(self).get_element_ptr())    # fully specified
+        llvm_blake3_hasher.from_pyobj(self).get_element_ptr())
 
 __all__ = [
     "llvm_blake3_chunk_state",

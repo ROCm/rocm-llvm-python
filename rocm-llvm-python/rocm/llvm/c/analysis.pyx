@@ -102,7 +102,7 @@ def LLVMVerifyModule(object M, object Action):
     OutMessage = rocm.llvm._util.types.CStr.from_ptr(NULL)
     cdef int _LLVMVerifyModule__retval = canalysis.LLVMVerifyModule(
         LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Action.value,
-        <char **>&OutMessage._ptr)    # fully specified
+        <char **>&OutMessage._ptr)
     return (_LLVMVerifyModule__retval,None if OutMessage._ptr == NULL else OutMessage)
 
 
@@ -123,7 +123,7 @@ def LLVMVerifyFunction(object Fn, object Action):
     if not isinstance(Action,_LLVMVerifierFailureAction__Base):
         raise TypeError("argument 'Action' must be of type '_LLVMVerifierFailureAction__Base'")
     cdef int _LLVMVerifyFunction__retval = canalysis.LLVMVerifyFunction(
-        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),Action.value)    # fully specified
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr(),Action.value)
     return _LLVMVerifyFunction__retval
 
 
@@ -136,7 +136,7 @@ def LLVMViewFunctionCFG(object Fn):
             (undocumented)
     """
     canalysis.LLVMViewFunctionCFG(
-        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr())    # fully specified
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr())
 
 
 @cython.embedsignature(True)
@@ -148,7 +148,7 @@ def LLVMViewFunctionCFGOnly(object Fn):
             (undocumented)
     """
     canalysis.LLVMViewFunctionCFGOnly(
-        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr())    # fully specified
+        LLVMOpaqueValue.from_pyobj(Fn).get_element_ptr())
 
 __all__ = [
     "_LLVMVerifierFailureAction__Base",

@@ -293,7 +293,7 @@ cdef class CStr(Pointer):
     cdef const char* get_element_ptr(self):
         return <const char*>self._ptr
 
-    cdef get_or_determine_len(self):
+    cdef Py_ssize_t get_or_determine_len(self):
         """Get/Determine the length of the C string.
 
         Returns 0 in case of `self._ptr` being 0.
@@ -422,7 +422,7 @@ cdef class CStr(Pointer):
     def __nonzero__(self):
         """Implements Python `str` like behavior.
         """
-        return self._ptr != NULL and self._shape[0] > 0
+        return self.get_or_determine_len() > 0
 
     def __repr__(self):
         return self.__str__()

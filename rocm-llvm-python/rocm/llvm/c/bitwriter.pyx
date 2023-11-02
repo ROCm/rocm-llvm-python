@@ -73,7 +73,7 @@ def LLVMWriteBitcodeToFile(object M, object Path):
     """
     cdef int _LLVMWriteBitcodeToFile__retval = cbitwriter.LLVMWriteBitcodeToFile(
         LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),
-        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Path)._ptr)    # fully specified
+        <const char *>rocm.llvm._util.types.CStr.from_pyobj(Path)._ptr)
     return _LLVMWriteBitcodeToFile__retval
 
 
@@ -100,7 +100,7 @@ def LLVMWriteBitcodeToFD(object M, int FD, int ShouldClose, int Unbuffered):
         `~.int`
     """
     cdef int _LLVMWriteBitcodeToFD__retval = cbitwriter.LLVMWriteBitcodeToFD(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),FD,ShouldClose,Unbuffered)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),FD,ShouldClose,Unbuffered)
     return _LLVMWriteBitcodeToFD__retval
 
 
@@ -122,7 +122,7 @@ def LLVMWriteBitcodeToFileHandle(object M, int Handle):
         `~.int`
     """
     cdef int _LLVMWriteBitcodeToFileHandle__retval = cbitwriter.LLVMWriteBitcodeToFileHandle(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Handle)    # fully specified
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr(),Handle)
     return _LLVMWriteBitcodeToFileHandle__retval
 
 
@@ -137,8 +137,8 @@ def LLVMWriteBitcodeToMemoryBuffer(object M):
             (undocumented)
     """
     _LLVMWriteBitcodeToMemoryBuffer__retval = LLVMOpaqueMemoryBuffer.from_ptr(cbitwriter.LLVMWriteBitcodeToMemoryBuffer(
-        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))    # fully specified
-    return _LLVMWriteBitcodeToMemoryBuffer__retval
+        LLVMOpaqueModule.from_pyobj(M).get_element_ptr()))
+    return None if _LLVMWriteBitcodeToMemoryBuffer__retval._ptr == NULL else _LLVMWriteBitcodeToMemoryBuffer__retval
 
 __all__ = [
     "LLVMWriteBitcodeToFile",
