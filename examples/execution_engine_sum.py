@@ -21,7 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Example showcasing LLVM IR builder and interpreter
+"""How to use LLVM IR builder and interpreter
 
 In this example, we implement the LLVM equivalent of
 
@@ -43,7 +43,7 @@ Acknowledgements:
     which was placed into the public domain (https://github.com/paulsmith/getting-started-llvm-c-api/blob/master/COPYING).
 """
 
-# [include
+# [literalinclude-begin]
 import sys
 import argparse
 
@@ -88,8 +88,6 @@ if error:
 
 # Interpret the code with arguments from CLI
 LLVMLinkInInterpreter()
-# LLVMInitializeNativeTarget() # TODO symbol undefined because of static inline in header
-# LLVMInitializeAllTargets()   # TODO symbol undefined because of static inline in header
 status, engine, error = LLVMCreateExecutionEngineForModule(mod)
 if status != 0:
     print("failed to create execution engine",file=sys.stderr)

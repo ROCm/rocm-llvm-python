@@ -21,28 +21,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""Example showcasing LLVM IR builder and interpreter
+"""How to parse LLVM bitcode files
 
-In this example, we implement the LLVM equivalent of
-
-```c
-int sum(int a, int b) {
-    return a + b
-}
-```
-
-by first constructing the LLVM IR tree in memory,
-and then executing the resulting LLVM IR function via the 
-LLVM Interpreter ("Execution Engine")
-We supply operands that the user of this script
-specifies via the command line.
-
-Acknowledgements:
-
-    This example is derived from https://github.com/paulsmith/getting-started-llvm-c-api/blob/master/sum.c ,
-    which was placed into the public domain (https://github.com/paulsmith/getting-started-llvm-c-api/blob/master/COPYING).
+This example shows how to open and parse a user-supplied
+bitcode file (via path). The example lists all function names and
+the number of functions in the file.
 """
 
+# [literalinclude-begin]
 import argparse
 import ctypes
 
