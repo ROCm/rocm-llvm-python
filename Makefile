@@ -6,18 +6,17 @@ SHELL=/usr/bin/bash
 
 ROCM_PATH ?= /opt/rocm
 
-C_HEADERS ?= $(shell find $(ROCM_PATH)/llvm/include/llvm-c/ -name "*.h")
 STATIC_LIBS ?= $(shell $(ROCM_PATH)/llvm/bin/llvm-config --libfiles) 
 
 LINKER = $(ROCM_PATH)/llvm/bin/clang++
 LDFLAGS = $(shell $(ROCM_PATH)/llvm/bin/llvm-config --cxxflags --ldflags --system-libs --libs core) 
 
-librocmllvm.so: $(STATIC_LIBS)
+Target.o: $(Target.cpp)
+	#$(LINKER) $(LDFLAGS) --preprocess Target.cpp -o Target.prec.cpp
+	$(LINKER) -c Target.cpp -o Target.o $(LDFLAGS)
+
+librocmllvm.so: Target.o $(STATIC_LIBS) 
 	$(LINKER) -shared -Wl,--whole-archive $^ -Wl,--no-whole-archive $(LDFLAGS) -o $@
 
-llvm-c.h: $(C_HEADERS)
-	printf "" > $@
-	for f in $(C_HEADERS); do echo "#include \"$$f\"" >> $@; done
-
 clean:
-	rm -f librocmllvm.so llvm-c.h
+	rm -f librocmllvm.so Target.o llvm-c.h
