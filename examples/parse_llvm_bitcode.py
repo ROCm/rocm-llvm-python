@@ -51,10 +51,9 @@ check_status(status,message)
 check_status(status,"failed to parse bitcode")
 
 num_functions = 0
-length = ctypes.c_size_t(0)
 fn = LLVMGetFirstFunction(mod) # a value type
 while fn:
-    name = str(LLVMGetValueName2(fn,ctypes.addressof(length)))
+    name, name_len = LLVMGetValueName2(fn)
     if name:
         print(name)
     # TODO parse more information
