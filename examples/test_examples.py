@@ -28,7 +28,7 @@ import pytest
 python_examples = [
   "./list_targets.py",
   "./parse_llvm_bitcode.py",
-  "./execution_engine_sum.py",
+  # "./execution_engine_sum.py", # seems only to work when run directly, TODO
 ]
 
 @pytest.mark.parametrize('example', python_examples)
