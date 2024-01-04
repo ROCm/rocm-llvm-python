@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # MIT License
 # 
-# Copyright (c) 2023 Advanced Micro Devices, Inc.
+# Copyright (c) 2023-2024 Advanced Micro Devices, Inc.
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -55,10 +55,14 @@ from rocm.llvm.c.analysis import *
 from rocm.llvm.c.bitwriter import *
 from rocm.llvm._util.types import Pointer
 
-parser = argparse.ArgumentParser(description="Computes `x + y` via the LLVM interpreter")
-parser.add_argument("x",type=int)
-parser.add_argument("y",type=int)
-args = parser.parse_args()
+if __name__ == "__test__":
+    x, y = 1, 2
+else:
+    parser = argparse.ArgumentParser(description="Computes `x + y` via the LLVM interpreter")
+    parser.add_argument("x",type=int)
+    parser.add_argument("y",type=int)
+    args = parser.parse_args()
+    x, y = args.x, args.y
 
 # Build the code
 builder = LLVMCreateBuilder()
@@ -98,8 +102,8 @@ if status != 0:
 
 sumfn = LLVMGetNamedFunction(mod, b"sum")
 parms = [
-    LLVMCreateGenericValueOfInt(LLVMInt32Type(), args.x, 0),
-    LLVMCreateGenericValueOfInt(LLVMInt32Type(), args.y, 0),
+    LLVMCreateGenericValueOfInt(LLVMInt32Type(), x, 0),
+    LLVMCreateGenericValueOfInt(LLVMInt32Type(), y, 0),
 ]
 res = LLVMRunFunction(engine, sumfn, 2, parms)
 print(f"{LLVMGenericValueToInt(res, 0)}")
@@ -111,6 +115,6 @@ if LLVMWriteBitcodeToFile(mod, b"sum.bc") != 0:
 # shutdown
 LLVMDisposeExecutionEngine(engine)
 # LLVMDisposeModule(mod) # TODO you can either call this or the above.
-                         # Otherwise you get a segfualt, investigate further.
+                         # Otherwise you get a segfault, investigate further.
 LLVMDisposeBuilder(builder)
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # MIT License
 # 
-# Copyright (c) 2023 Advanced Micro Devices, Inc.
+# Copyright (c) 2023-2024 Advanced Micro Devices, Inc.
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -35,19 +35,23 @@ import ctypes
 from rocm.llvm.c.core import *
 from rocm.llvm.c.bitreader import LLVMParseBitcode2
 
-parser = argparse.ArgumentParser(description="Counts number of functions found in the BC file and prints their name.")
-parser.add_argument("path",type=str)
-args = parser.parse_args()
+if __name__ == "__test__":
+    filepath = "/opt/rocm/amdgcn/bitcode/opencl.bc"
+else:
+    parser = argparse.ArgumentParser(description="Counts number of functions found in the BC file and prints their name.")
+    parser.add_argument("path",type=str)
+    args = parser.parse_args()
+    filepath = args.path.encode("utf-8")
 
 def check_status(status,message):
     if status != 0:
         print(f"{str(message)}",)
         LLVMDisposeMessage(message)
 
-(status, buffer, message) = LLVMCreateMemoryBufferWithContentsOfFile(args.path.encode("utf-8"))
+(status, buf, message) = LLVMCreateMemoryBufferWithContentsOfFile(filepath)
 check_status(status,message)
 
-(status, mod) = LLVMParseBitcode2(buffer)
+(status, mod) = LLVMParseBitcode2(buf)
 check_status(status,"failed to parse bitcode")
 
 num_functions = 0

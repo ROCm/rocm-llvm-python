@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # MIT License
 # 
-# Copyright (c) 2023 Advanced Micro Devices, Inc.
+# Copyright (c) 2023-2024 Advanced Micro Devices, Inc.
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -177,8 +177,9 @@ fi
 #   fi
 # fi
 # 
-# if [ ! -z ${RUN_TESTS+x} ]; then
-#   PYTHON -m pip install --force-reinstall rocm-llvm-python/dist/hip*whl
-# fi
+if [ ! -z ${RUN_TESTS+x} ]; then
+  PYTHON -m pip install --force-reinstall $(find . -path "*/dist/*${PYVER}*whl")
+  PYTHON -m pytest -v examples
+fi
 
 [ -z ${POST_CLEAN+x} ] || rm -rf _venv
