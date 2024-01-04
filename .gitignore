@@ -1,0 +1,14 @@
+*.c
+*.so
+__pycache__
+_venv
+_build
+rocm-llvm-python/build
+rocm-llvm-python/dist/
+rocm-llvm-python/rocm/llvm/_version.py
+rocm-llvm-python/*.egg-info/
+ci/
+docs/
+examples/
+build_pkgs.sh
+_render_update_version.py
