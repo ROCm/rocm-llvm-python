@@ -24,7 +24,8 @@ if [[ "${BASH_SOURCE[0]}" != "${0}" ]]; then
    echo "ERROR: script must not be sourced";
    return 1
 fi
-# set -e # failing subprograms make this script fail too
+
+set -e
 
 HELP_MSG="
 Usage: ./$(basename $0) [OPTIONS]
@@ -40,7 +41,7 @@ Options:
   --no-clean-docs        Do not generate docs from scratch, i.e. don't run sphinx with -E switch.
   --run-tests            Run the tests.
   --no-archive           Do not put previously created packages into the archive folder.
-  -j,--num-jobs          Number of build jobs to use (currently only applied for building docs). Defaults to 1.
+  -j,--num-jobs          Number of build jobs to use. Defaults to 1.
   --pre-clean            Remove the virtual Python environment subfolder '_venv' --- if it exists --- before all other tasks.
   --post-clean           Remove the virtual Python environment subfolder '_venv' --- if it exists --- after all other tasks.
   -n, --no-_venv          Do not create and use a virtual Python environment.
@@ -146,7 +147,10 @@ if [ -z ${NO_BUILD+x} ]; then
   fi
   PYTHON -m pip install -r ${PKG}/requirements.txt
   PYTHON _render_update_version.py
-  PYTHON -m build ${PKG} -n
+  #PYTHON -m build ${PKG} -n --wheel
+  cd ${PKG}
+  PYTHON setup.py build_ext -j ${NUM_JOBS} bdist_wheel
+  cd ..
 fi
 
 # if [ -z ${NO_DOCS+x} ]; then
