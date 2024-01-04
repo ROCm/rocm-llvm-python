@@ -122,21 +122,20 @@ declare -x ROCM_LLVM_PYTHON_LIBS=${ROCM_LLVM_PYTHON_LIBS:-*}
 [ -z ${PRE_CLEAN+x} ] || rm -rf _venv
 
 alias PYTHON="python3"
-PYTHON_PATH="python3"
+declare -x PYTHON="python3"
 if [ -z ${NO_ENV+x} ]; then
   [ ! -d "_venv" ] && python3 -m venv _venv
   alias PYTHON="$(pwd)/_venv/bin/python3"
-  PYTHON_PATH="$(pwd)/_venv/bin/python3"
+  declare -x PYTHON="$(pwd)/_venv/bin/python3"
 fi
 shopt -s expand_aliases
 
 PKG="rocm-llvm-python"
-if [ -z ${NO_BUILD_LIBROCMLLVM+x} ]; then
+if [ -z ${NO_BUILD+x} ]; then
+  if [ -z ${NO_BUILD_LIBROCMLLVM+x} ]; then
     make -C src clean librocmllvm.so
     mv src/librocmllvm.so ${PKG}/rocm/llvm
-fi
-
-if [ -z ${NO_BUILD+x} ]; then
+  fi
   # build rocm-llvm-python
   echo "building package ${PKG}"
   mkdir -p ${PKG}/dist/
@@ -179,6 +178,7 @@ fi
 # 
 if [ ! -z ${RUN_TESTS+x} ]; then
   PYTHON -m pip install --force-reinstall $(find . -path "*/dist/*${PYVER}*whl")
+  PYTHON -m pip install -r examples/requirements.txt
   PYTHON -m pytest -v examples
 fi
 
