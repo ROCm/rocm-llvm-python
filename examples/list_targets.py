@@ -27,6 +27,7 @@ This example shows how to list the installed targets
 and obtain information such as their description.
 """
 
+from rocm.llvm.c.core import *
 from rocm.llvm.c.target import *
 from rocm.llvm.c.targetmachine import *
 
@@ -34,12 +35,28 @@ print("List of installed targets:")
 LLVMInitializeAllTargetInfos() # all three inits are required
 LLVMInitializeAllTargets()
 LLVMInitializeAllTargetMCs()
-tgt = LLVMGetFirstTarget()
-while tgt:
-    print(f"- {str(LLVMGetTargetName(tgt))}")
-    tgt = LLVMGetNextTarget(tgt)
+target = LLVMGetFirstTarget()
+while target:
+    target_name = str(LLVMGetTargetName(target))
+    print(f"- name: {target_name}")
+    if target_name.startswith("x86"):
+        target_features = LLVMGetHostCPUFeatures()
+    else:
+        target_features = b"+xnack" 
+    machine = LLVMCreateTargetMachine(
+        target, LLVMGetDefaultTargetTriple(), b"generic", 
+        target_features,
+        LLVMCodeGenOptLevel.LLVMCodeGenLevelDefault, 
+        LLVMRelocMode.LLVMRelocDefault, 
+        LLVMCodeModel.LLVMCodeModelDefault
+    )
+    datalayout = LLVMCreateTargetDataLayout(machine)
+    datalayout_str = LLVMCopyStringRepOfTargetData(datalayout)
+    print(f"  data_layout: {datalayout_str}")
+    LLVMDisposeMessage(datalayout_str);
+    target = LLVMGetNextTarget(target)
 
 print("Getting target for 'amdgcn-amd-amdhsa':")
-(status,tgt,error) = LLVMGetTargetFromTriple(b"amdgcn-amd-amdhsa")
-if tgt:
-    print(f"- {LLVMGetTargetName(tgt)}")
+(status,target,error) = LLVMGetTargetFromTriple(b"amdgcn-amd-amdhsa")
+if target:
+    print(f"- {LLVMGetTargetName(target)}")
