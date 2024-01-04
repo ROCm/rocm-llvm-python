@@ -1,0 +1,6 @@
+*.c
+*.so
+__pycache__
+_venv
+_build
+rocm-llvm-python
