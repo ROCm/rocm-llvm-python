@@ -142,12 +142,12 @@ if [ -z ${NO_BUILD+x} ]; then
   mkdir -p ${PKG}/dist/
   mkdir -p ${PKG}/dist/archive
   if [ -z ${NO_ARCHIVE_OLD_PACKAGES+x} ]; then
-    mv ${PKG}/dist/*.whl ${PKG}/dist/archive/    2> /dev/null
-    mv ${PKG}/dist/*.tar.gz ${PKG}/dist/archive/ 2> /dev/null
+    mv ${PKG}/dist/*.whl ${PKG}/dist/archive/    2> /dev/null || true
+    mv ${PKG}/dist/*.tar.gz ${PKG}/dist/archive/ 2> /dev/null || true
   fi
   PYTHON -m pip install -r ${PKG}/requirements.txt
   PYTHON _render_update_version.py
-  #PYTHON -m build ${PKG} -n --wheel
+  #PYTHON -m build ${PKG} -n
   cd ${PKG}
   PYTHON setup.py build_ext -j ${NUM_JOBS} bdist_wheel
   cd ..
