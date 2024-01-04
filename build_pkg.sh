@@ -149,7 +149,8 @@ if [ -z ${NO_BUILD+x} ]; then
   PYTHON _render_update_version.py
   #PYTHON -m build ${PKG} -n
   cd ${PKG}
-  PYTHON setup.py build_ext -j ${NUM_JOBS} bdist_wheel
+  find . -name "*.cpython*.so" -delete
+  PYTHON setup.py clean --all build_ext -j ${NUM_JOBS} bdist_wheel
   cd ..
 fi
 
