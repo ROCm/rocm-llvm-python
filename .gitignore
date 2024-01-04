@@ -10,5 +10,5 @@ rocm-llvm-python/*.egg-info/
 ci/
 docs/
 examples/
-build_pkgs.sh
+build_pkg.sh
 _render_update_version.py
