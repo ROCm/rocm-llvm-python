@@ -69,7 +69,7 @@ pipeline {
         }
         stage('get-repo') {
             steps {
-                git branch: 'new_main', credentialsId: 'ROCM_LLVM_PYTHON_DEV', url: 'https://github.com/ROCmSoftwarePlatform/rocm-llvm-python'
+                git branch: 'main', credentialsId: 'ROCM_LLVM_PYTHON_DEV', url: 'https://github.com/ROCmSoftwarePlatform/rocm-llvm-python'
                 sh 'apt update && apt install -y git'
                 dir('.') {
                     withCredentials([
