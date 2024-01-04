@@ -131,8 +131,8 @@ shopt -s expand_aliases
 
 PKG="rocm-llvm-python"
 if [ -z ${NO_BUILD_LIBROCMLLVM+x} ]; then
-    make clean librocmllvm.so
-    mv librocmllvm.so ${PKG}/rocm/llvm
+    make -C src clean librocmllvm.so
+    mv src/librocmllvm.so ${PKG}/rocm/llvm
 fi
 
 if [ -z ${NO_BUILD+x} ]; then
