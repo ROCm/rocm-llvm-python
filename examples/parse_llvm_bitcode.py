@@ -36,7 +36,7 @@ from rocm.llvm.c.core import *
 from rocm.llvm.c.bitreader import LLVMParseBitcode2
 
 if __name__ == "__test__":
-    filepath = "/opt/rocm/amdgcn/bitcode/opencl.bc"
+    filepath = b"/opt/rocm/amdgcn/bitcode/opencl.bc"
 else:
     parser = argparse.ArgumentParser(description="Counts number of functions found in the BC file and prints their name.")
     parser.add_argument("path",type=str)
