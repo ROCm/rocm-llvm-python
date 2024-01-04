@@ -129,6 +129,7 @@ if [ -z ${NO_ENV+x} ]; then
   declare -x PYTHON="$(pwd)/_venv/bin/python3"
 fi
 shopt -s expand_aliases
+declare -x PYVER=$(PYTHON --version | grep -o "3\.[0-9]\+\." | tr -d '.')
 
 PKG="rocm-llvm-python"
 if [ -z ${NO_BUILD+x} ]; then
