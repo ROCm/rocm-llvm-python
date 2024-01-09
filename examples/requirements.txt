@@ -22,3 +22,6 @@
 
 # Python dependencies required for testing
 pytest
+
+# Advanced examples
+# hip-python
