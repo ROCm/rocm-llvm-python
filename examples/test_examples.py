@@ -26,8 +26,8 @@ import os
 import pytest
 
 python_examples = [
-  "./list_targets.py",
-  "./parse_llvm_bitcode.py",
+  "./0_Basic/list_targets.py",
+  "./0_Basic/parse_llvm_bitcode.py",
   # "./execution_engine_sum.py", # seems only to work when run directly, TODO
 ]
 
