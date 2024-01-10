@@ -21,23 +21,30 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-"""In this example, we link a device code file that contains
-a HIP C++ device kernel "__global__ void scale(float[],float)" that has an unresolved call
-to a function "__device__ void scale_op(float[],float)" in its body with a
-LLVM IR file that contains the definition of device function "scale_op".
+"""In this example, we link a device code snippet that contains
+a HIP C++ device kernel ``__global__ void scale(float[],float)`` that has an unresolved call
+to a function ``__device__ void scale_op(float[],float)`` in its body with a
+LLVM IR snippet that contains the definition of that device function ``scale_op``.
+(Note that we could have also used LLVM BC (bitcode) instead of human-readable LLVM IR.)
 
 To make this work, the HIP C++ snippet needs to be compiled with
-the ``-fgpu-rdc`` option and the compilation results needs to
-be added as `HIPRTC_JIT_INPUT_LLVM_BITCODE` type input to the link object.
+the ``-fgpu-rdc`` option and all compilation results need to
+be added as ``HIPRTC_JIT_INPUT_LLVM_BITCODE`` type input to the HIPRTC link object.
+
+Note that the LLVM IR in this example is target dependent.
+Therefore, this example can currently only be run with ``gfx90a`` (MI200 series).
+The example will quit with an error if other architectures are used.
 """
 
 __author__ = "Advanced Micro Devices, Inc. <hip-python.maintainer@amd.com>"
 
 # [literalinclude-begin]
 import array
-import copy
 import ctypes
 import math
+import sys
+
+import numpy as np
 
 from hip import hip, hiprtc
 
@@ -45,6 +52,7 @@ from rocm.llvm.c.core import *
 from rocm.llvm.c.bitreader import LLVMParseBitcode2
 from rocm.llvm.c.bitwriter import LLVMWriteBitcodeToMemoryBuffer
 from rocm.llvm.c.irreader import LLVMParseIRInContext
+
 
 def hip_check(call_result):
     err = call_result[0]
@@ -60,88 +68,92 @@ def hip_check(call_result):
         raise RuntimeError(str(err))
     return result
 
-def llvm_check(status,message):
+
+def llvm_check(status, message):
     if status != 0:
         msg_str = str(message)
         LLVMDisposeMessage(message)
         raise RuntimeError(f"{msg_str}")
 
-class LLVMIRProgram:
-    def __init__(self, name: str, source: bytes):
-        self.llvm_ir = source
-        self.name = name.encode("utf-8")
-        self.prog = None
-        self.bc_buf = None
-        self.llvm_bitcode = None
-        self.llvm_bitcode_size = None
 
-    def translate_to_llvm_bc(self):
+class LLLVMProgram:
+    def __init__(self, name: str, source: bytes):
+        self.name = name.encode("utf-8")
+        self.llvm_bc_or_ir = source
+        self.llvm_bc_or_ir_size = len(source)
+
+    def get_llvm_bc(self):
+        """Only use if ``self.llvm_bc_or_ir`` is IR.
+
+        Note:
+            Creates a copy of bc_buf via numpy in order to
+            dispose the buffer.
+        """
         ir_buf = LLVMCreateMemoryBufferWithMemoryRange(
-            self.llvm_ir,
-            len(self.llvm_ir),
+            self.llvm_bc_or_ir,
+            self.llvm_bc_or_ir_size,
             b"llvm-ir-buffer",
             0,
         )
         context = LLVMContextCreate()
         (status, mod, message) = LLVMParseIRInContext(context, ir_buf)
-        llvm_check(status,message)
-        self.bc_buf = LLVMWriteBitcodeToMemoryBuffer(mod)
-        self.llvm_bitcode = LLVMGetBufferStart(self.bc_buf).as_c_void_p() # store in ctypes form to be compatible with hip python datatypes
-        self.llvm_bitcode_size = LLVMGetBufferSize(self.bc_buf)
+        llvm_check(status, message)
+        bc_buf = LLVMWriteBitcodeToMemoryBuffer(mod)
+        llvm_bitcode = LLVMGetBufferStart(
+            bc_buf
+        ).as_c_void_p()  # store in ctypes form to be compatible with hip python datatypes
+        llvm_bitcode_size = LLVMGetBufferSize(bc_buf)
         LLVMDisposeModule(mod)
         LLVMContextDispose(context)
         # LLVMDisposeMemoryBuffer(ir_buf) # TODO LLVMParseIRInContext seems to consume the buffer, memory analysis needed
-
-    def get_llvm_ir(self):
-        return source
+        data_ptr = ctypes.cast(llvm_bitcode, ctypes.POINTER(ctypes.c_byte))
+        result = np.ctypeslib.as_array(data_ptr, shape=(llvm_bitcode_size,)).copy()
+        LLVMDisposeMemoryBuffer(bc_buf)
+        return result
 
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        if self.bc_buf != None:
-            LLVMDisposeMemoryBuffer(self.bc_buf)
+        pass
+
 
 class HipProgram:
-    def __init__(self, name: str, source: bytes):
+    def __init__(self, name: str, arch: str, source: bytes):
         self.hip_source = source
         self.name = name.encode("utf-8")
         self.prog = None
-        self.llvm_bitcode = None
-        self.llvm_bitcode_size = None
+        self.llvm_bc_or_ir = None
+        self.llvm_bc_or_ir_size = None
+        self._compile_to_llvm_bc(arch)
 
-    def _get_arch(self) -> bytes:
-        props = hip.hipDeviceProp_t()
-        hip_check(hip.hipGetDeviceProperties(props, 0))
-        return props.gcnArchName
-
-    def compile_to_llvm_bc(self):
+    def _compile_to_llvm_bc(self, arch: str):
         self.prog = hip_check(
             hiprtc.hiprtcCreateProgram(self.hip_source, self.name, 0, [], [])
         )
-        cflags = [b"--offload-arch=" + self._get_arch(), b"-fgpu-rdc"]
+        cflags = [b"--offload-arch=" + arch, b"-fgpu-rdc"]
         (err,) = hiprtc.hiprtcCompileProgram(self.prog, len(cflags), cflags)
         if err != hiprtc.hiprtcResult.HIPRTC_SUCCESS:
             log_size = hip_check(hiprtc.hiprtcGetProgramLogSize(self.prog))
             log = bytearray(log_size)
             hip_check(hiprtc.hiprtcGetProgramLog(self.prog, log))
             raise RuntimeError(log.decode())
-        self.llvm_bitcode_size = hip_check(hiprtc.hiprtcGetBitcodeSize(self.prog))
-        self.llvm_bitcode = bytearray(self.llvm_bitcode_size)
-        hip_check(hiprtc.hiprtcGetBitcode(self.prog, self.llvm_bitcode))
+        self.llvm_bc_or_ir_size = hip_check(hiprtc.hiprtcGetBitcodeSize(self.prog))
+        self.llvm_bc_or_ir = bytearray(self.llvm_bc_or_ir_size)
+        hip_check(hiprtc.hiprtcGetBitcode(self.prog, self.llvm_bc_or_ir))
 
     def get_llvm_ir(self):
         assert self.llvm_bitcode != None, "run 'compile_to_llvm_bc' first"
         buf = LLVMCreateMemoryBufferWithMemoryRange(
-            self.llvm_bitcode,
-            self.llvm_bitcode_size,
+            self.llvm_bc_or_ir,
+            self.llvm_bc_or_ir_size,
             b"llvm-ir-buffer",
             0,
         )
         (status, mod) = LLVMParseBitcode2(buf)
-        llvm_check(status,"failed to parse bitcode")
+        llvm_check(status, "failed to parse bitcode")
         ir = LLVMPrintModuleToString(mod)
-        result = copy.deepcopy(bytes(ir)) # copies into buffer
+        result = copy.deepcopy(bytes(ir))  # copies into buffer
         LLVMDisposeMessage(ir)
         LLVMDisposeModule(mod)
         LLVMDisposeMemoryBuffer(buf)
@@ -153,6 +165,7 @@ class HipProgram:
     def __exit__(self, exc_type, exc_value, traceback):
         if self.prog != None:
             hip_check(hiprtc.hiprtcDestroyProgram(self.prog.createRef()))
+
 
 class HiprtcLinker:
     def __init__(self):
@@ -166,15 +179,14 @@ class HiprtcLinker:
             hiprtc.hiprtcLinkAddData(
                 self.link_state,
                 hiprtc.hiprtcJITInputType.HIPRTC_JIT_INPUT_LLVM_BITCODE,
-                program.llvm_bitcode,
-                program.llvm_bitcode_size,
+                program.llvm_bc_or_ir,
+                program.llvm_bc_or_ir_size,
                 program.name,
-                0,  # size of the options
-                None,  # Array of options applied to this input
+                0,
+                None,
                 None,
             )
         )
-        # Array of option values cast to void*
 
     def complete(self):
         self.code, self.code_size = hip_check(
@@ -187,8 +199,11 @@ class HiprtcLinker:
     def __exit__(self, exc_type, exc_value, traceback):
         hip_check(hiprtc.hiprtcLinkDestroy(self.link_state))
 
+
 if __name__ == "__main__":
     import textwrap
+
+    USE_BC = False
 
     kernel_hip = textwrap.dedent(
         """\
@@ -211,8 +226,10 @@ if __name__ == "__main__":
         """
     ).encode("utf-8")
 
-    scale_op_llvm_ir = textwrap.dedent(
-        """\
+    # warning: below IR contains target dependent information
+    scale_op_llvm_ir = {
+        "gfx90a": textwrap.dedent(
+            """\
         ; ModuleID = 'llvm-ir-buffer'
         source_filename = "scale_op.hip"
         target datalayout = "e-p:64:64-p1:64:64-p2:32:32-p3:32:32-p4:64:64-p5:32:32-p6:32:32-i64:64-v16:16-v24:32-v32:32-v48:64-v96:128-v192:256-v256:256-v512:512-v1024:1024-v2048:2048-n32:64-S32-A5-G1-ni:7"
@@ -242,7 +259,8 @@ if __name__ == "__main__":
         !4 = !{!"omnipotent char", !5, i64 0}
         !5 = !{!"Simple C++ TBAA"}
         """
-    ).encode("utf-8")
+        ).encode("utf-8"),
+    }
 
     # scale_op_hip = textwrap.dedent(
     #     """\
@@ -252,45 +270,65 @@ if __name__ == "__main__":
     #     """
     # ).encode("utf-8")
 
+    props = hip.hipDeviceProp_t()
+    hip_check(hip.hipGetDeviceProperties(props, 0))
+    arch = props.gcnArchName
+    gpugen = arch.decode("utf-8").split(":")[0]
+    if gpugen not in scale_op_llvm_ir:
+        supported_gpugens = ", ".join([f"'{a}'" for a in scale_op_llvm_ir.keys()])
+        print(
+            f"ERROR: unsupported GPU architecture '{gpugen}' (supported: {supported_gpugens})"
+        )
+        sys.exit(1)
+
     with HiprtcLinker() as linker, HipProgram(
-            "kernel", kernel_hip) as kernel_prog, HipProgram(
-                #"scale_op", scale_op_hip) as scale_op_prog, LLVMIRProgram(
-                "print_val",print_val_hip) as print_val_prog, LLVMIRProgram(
-                    "scale_op", scale_op_llvm_ir) as scale_op_prog_llvm:
-        kernel_prog.compile_to_llvm_bc()
-        print_val_prog.compile_to_llvm_bc()
-        # scale_op_prog.compile_to_llvm_bc()
-        # print(scale_op_prog.get_llvm_ir().decode("utf-8"))
-        scale_op_prog_llvm.translate_to_llvm_bc()
+        "kernel", arch, kernel_hip
+    ) as kernel_prog, HipProgram(
+        "print_val",
+        arch,
+        print_val_hip,
+    ) as print_val_prog, LLLVMProgram(
+        "scale_op", scale_op_llvm_ir[gpugen]
+    ) as scale_op_prog:  # 1) recreate llvm ir sample: HipProgram("scale_op", arch, scale_op_hip) as scale_op_prog
         linker.add_program(kernel_prog)
         linker.add_program(print_val_prog)
-        linker.add_program(scale_op_prog_llvm)
+        if USE_BC:
+            bc_buf = scale_op_prog.get_llvm_bc()
+            scale_op_prog.llvm_bc_or_ir = bc_buf
+            scale_op_prog.llvm_bc_or_ir_size = len(bc_buf)
+        linker.add_program(scale_op_prog)
+        # print(scale_op_prog.get_llvm_ir().decode("utf-8")) # 1) recreate llvm ir sample
         linker.complete()
         module = hip_check(hip.hipModuleLoadData(linker.code))
         kernel = hip_check(hip.hipModuleGetFunction(module, b"scale"))
 
         f32, size = 4, 32
-        xh = array.array('f',[1.0]*size)
-        xd = hip_check(hip.hipMalloc(f32*size))
-        hip_check(hip.hipMemcpy(xd,xh,f32*size,hip.hipMemcpyKind.hipMemcpyHostToDevice))
+        assert size <= 1024
+        xh = array.array("f", [1.0] * size)
+        xd = hip_check(hip.hipMalloc(f32 * size))
+        hip_check(
+            hip.hipMemcpy(xd, xh, f32 * size, hip.hipMemcpyKind.hipMemcpyHostToDevice)
+        )
         hip_check(
             hip.hipModuleLaunchKernel(
                 kernel,
                 *(1, 1, 1),  # grid
-                *(32, 1, 1),  # block
+                *(size, 1, 1),  # block
                 sharedMemBytes=0,
                 stream=None,
                 kernelParams=None,
                 extra=(
                     xd,
                     ctypes.c_float(2.0),
-                )
+                ),
             )
         )
-        hip_check(hip.hipMemcpy(xh,xd,f32*size,hip.hipMemcpyKind.hipMemcpyHostToDevice))
+        hip_check(
+            hip.hipMemcpy(xh, xd, f32 * size, hip.hipMemcpyKind.hipMemcpyHostToDevice)
+        )
         hip_check(hip.hipFree(xd))
         hip_check(hip.hipModuleUnload(module))
-        
-        for i in range(0,size):
-            assert math.isclose(xh[i],2.0), f"failed at pos {i}"
+
+        for i in range(0, size):
+            assert math.isclose(xh[i], 2.0), f"failed at pos {i}"
         print("ok")
