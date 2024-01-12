@@ -143,7 +143,7 @@ class HipProgram:
         hip_check(hiprtc.hiprtcGetBitcode(self.prog, self.llvm_bc_or_ir))
 
     def get_llvm_ir(self):
-        assert self.llvm_bitcode != None, "run 'compile_to_llvm_bc' first"
+        assert self.llvm_bc_or_ir != None, "run 'compile_to_llvm_bc' first"
         buf = LLVMCreateMemoryBufferWithMemoryRange(
             self.llvm_bc_or_ir,
             self.llvm_bc_or_ir_size,
@@ -204,6 +204,7 @@ if __name__ == "__main__":
     import textwrap
 
     USE_BC = False
+    DUMP_LINKER_OBJECT = False
 
     kernel_hip = textwrap.dedent(
         """\
@@ -300,6 +301,11 @@ if __name__ == "__main__":
         # print(scale_op_prog.get_llvm_ir().decode("utf-8")) # 1) recreate llvm ir sample
         linker.complete()
         module = hip_check(hip.hipModuleLoadData(linker.code))
+        if DUMP_LINKER_OBJECT:
+            with open("linked.obj","wb") as outfile:
+                data_ptr = ctypes.cast(linker.code.as_c_void_p(), ctypes.POINTER(ctypes.c_byte))
+                result = np.ctypeslib.as_array(data_ptr, shape=(linker.code_size,))
+                outfile.write(result)
         kernel = hip_check(hip.hipModuleGetFunction(module, b"scale"))
 
         f32, size = 4, 32
