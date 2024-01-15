@@ -34,5 +34,10 @@ set -o xtrace
 source ~/miniconda3/etc/profile.d/conda.sh
 pyver=38
 conda activate py${pyver}
+if [ -z ${ROCM_VER+x} ]; then
+  echo "WARNING: environment variable 'ROCM_VER' not set. Optional tests deactivated."
+else
+  pip install -i https://test.pypi.org/simple/ hip-python~=${ROCM_VER} || true # try activate optional tests
+fi
 ./build_pkg.sh --pre-clean --post-clean --run-tests -j ${NUM_JOBS:-16}
 conda deactivate

@@ -25,13 +25,29 @@ import os
 
 import pytest
 
+try:
+    import rocm.llvm
+    import hip
+
+    have_matching_hip_python = hip.ROCM_VERSION == rocm.llvm.ROCM_VERSION
+except:
+    have_matching_hip_python = False
+
 python_examples = [
-  "./0_Basic/list_targets.py",
-  "./0_Basic/parse_llvm_bitcode.py",
-  # "./execution_engine_sum.py", # seems only to work when run directly, TODO
+    "0_Basic/list_targets.py",
+    "0_Basic/parse_llvm_bitcode.py",
+    # "./execution_engine_sum.py", # seems only to work when run directly, TODO
 ]
 
-@pytest.mark.parametrize('example', python_examples)
+if have_matching_hip_python:
+    python_examples += [
+        "1_Advanced/hiprtc_amd_comgr_get_jit_kernel_metadata.py",
+        "1_Advanced/hiprtc_hip_to_llvm_ir.py",
+        "1_Advanced/hiprtc_linking_with_llvm_ir.py",
+    ]
+
+
+@pytest.mark.parametrize("example", python_examples)
 def test_python_examples(example):
-    abspath = os.path.join(os.path.dirname(__file__),example)
-    runpy.run_path(abspath,run_name="__test__")
+    abspath = os.path.join(os.path.dirname(__file__), example)
+    runpy.run_path(abspath, run_name="__test__")
