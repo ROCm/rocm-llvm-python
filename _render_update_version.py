@@ -22,10 +22,10 @@ def git_current_branch():
 
 def replace_version_placeholders(file_content: str) -> str:
     return file_content.format(
-        ROCM_LLVM_PYTHON_VERSION_SHORT=git_branch_rev_count(git_current_branch()),
-        ROCM_LLVM_PYTHON_VERSION=git_branch_rev_count(git_current_branch()),
-        ROCM_LLVM_PYTHON_BRANCH=git_current_branch(),
-        ROCM_LLVM_PYTHON_REV=git_rev(),
+        VERSION_SHORT=git_branch_rev_count(git_current_branch()),
+        VERSION=git_branch_rev_count(git_current_branch()),
+        BRANCH=git_current_branch(),
+        REV=git_rev(),
     )
 
 # render read _version.py (requires git)
@@ -37,3 +37,4 @@ def render_version_py(parent_dir: str):
 
 if __name__ == "__main__":
     render_version_py(os.path.join("rocm-llvm-python","rocm","llvm"))
+    render_version_py(os.path.join("rocm-llvm-python","rocm","amd_comgr"))
