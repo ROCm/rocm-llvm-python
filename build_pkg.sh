@@ -181,6 +181,11 @@ fi
 if [ ! -z ${RUN_TESTS+x} ]; then
   PYTHON -m pip install --force-reinstall $(find . -path "*/dist/*${PYVER}*whl")
   PYTHON -m pip install -r examples/requirements.txt
+  if [ -z ${ROCM_VER+x} ]; then
+    echo "WARNING: environment variable 'ROCM_VER' not set. Optional tests deactivated."
+  else
+    pip install -i https://test.pypi.org/simple/ hip-python~=${ROCM_VER} || true # try activate optional tests
+  fi
   PYTHON -m pytest -v examples
 fi
 
