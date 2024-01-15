@@ -24,4 +24,5 @@
 pytest
 
 # Advanced examples
-# hip-python
+numpy
+# hip-python # ROCm version must match
