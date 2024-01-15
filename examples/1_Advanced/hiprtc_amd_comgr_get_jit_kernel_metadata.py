@@ -254,9 +254,6 @@ if __name__ == "__main__":
 
     kernel_hip = textwrap.dedent(
         """\
-        extern "C" __device__ void scale_device_fun(float arr[], float factor) {
-            arr[threadIdx.x] *= factor;
-        }
         extern "C" __global__ void scale(float arr[], float factor) {
             arr[threadIdx.x] *= factor;
         }
