@@ -26,12 +26,20 @@ import os
 import pytest
 
 try:
-    import rocm.llvm
     import hip
-
-    have_matching_hip_python = hip.ROCM_VERSION == rocm.llvm.ROCM_VERSION
 except:
     have_matching_hip_python = False
+else:
+    import rocm.llvm
+    from hip import hip as hiprt
+
+    have_matching_hip_python = hip.ROCM_VERSION == rocm.llvm.ROCM_VERSION
+
+    props = hiprt.hipDeviceProp_t()
+    hiprt.hipGetDeviceProperties(props, 0)
+    gpugen = props.gcnArchName.decode("utf-8").split(":")[0]
+    have_compatible_gpu_target = gpugen == "gfx90a"
+
 
 python_examples = [
     "0_Basic/list_targets.py",
@@ -43,8 +51,11 @@ if have_matching_hip_python:
     python_examples += [
         "1_Advanced/hiprtc_amd_comgr_get_jit_kernel_metadata.py",
         "1_Advanced/hiprtc_hip_to_llvm_ir.py",
-        "1_Advanced/hiprtc_linking_with_llvm_ir.py",
     ]
+    if have_compatible_gpu_target:
+        python_examples += [
+            "1_Advanced/hiprtc_linking_with_llvm_ir.py",
+        ]
 
 
 @pytest.mark.parametrize("example", python_examples)
