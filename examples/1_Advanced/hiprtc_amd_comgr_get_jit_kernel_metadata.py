@@ -71,125 +71,7 @@ import ctypes
 
 from hip import hip, hiprtc
 
-from rocm.amd_comgr.amd_comgr import *
-
-# AMD_COMGR definitions
-
-
-def comgr_check(
-    call_result,
-):  # TODO unify interface to always return tuple, insert AMD_COMGR_STATUS_SUCCESS at index 0 where no amd_comgr_status_s
-    if isinstance(call_result, tuple):
-        err = call_result[0]
-        result = call_result[1:]
-    else:
-        err = call_result
-        result = None
-    if result and len(result) == 1:
-        result = result[0]
-    if (
-        isinstance(err, amd_comgr_status_s)
-        and err != amd_comgr_status_s.AMD_COMGR_STATUS_SUCCESS
-    ):
-        raise RuntimeError(str(err))
-    return result
-
-
-def get_string(metadata):
-    """Gets a metadata string.
-
-    Note:
-        First determines length of string, then loads it into buffer.
-    """
-    str_len = ctypes.c_ulong(0)
-    comgr_check(
-        amd_comgr_get_metadata_string(metadata, ctypes.addressof(str_len), None)
-    )
-    str_buf = bytes(str_len.value - 1)  # -1 to substract 0
-    comgr_check(
-        amd_comgr_get_metadata_string(metadata, ctypes.addressof(str_len), str_buf)
-    )
-    return str_buf
-
-
-@ctypes.CFUNCTYPE(None, ctypes.c_ulong, ctypes.c_ulong, ctypes.c_void_p)
-def get_map_keys_cb(ckey, cvalue, userdata):
-    """Callback for extracting keys from a metadata map.
-
-    Intended to be used with amd_comgr_iterate_map_metadata(object metadata, object callback, object user_data)
-
-    Note:
-        The callback has the following signature:
-
-        ```cython
-        void (*callback) (amd_comgr_metadata_node_s key, amd_comgr_metadata_node_s value, void * userdata)
-        ```
-
-        where
-
-        ```cython
-        cdef struct amd_comgr_metadata_node_s:
-            unsigned long handle
-        ```
-
-        We can thus simplify the callback signature too
-
-        ```cython
-        void (*callback) (unsigned long key, unsigned long value, void * userdata)
-        ```
-    """
-    result_list = ctypes.cast(
-        ctypes.c_void_p(userdata), ctypes.POINTER(ctypes.py_object)
-    ).contents.value
-    key = amd_comgr_metadata_node_s(handle=ckey)
-    result_list.append(get_string(key))
-
-
-def get_map_keys(metadata):
-    keys = ctypes.py_object([])
-    comgr_check(
-        amd_comgr_iterate_map_metadata(
-            metadata,
-            ctypes.cast(get_map_keys_cb, ctypes.c_void_p),
-            ctypes.addressof(keys),
-        )
-    )
-    return keys.value
-
-
-def parse_metadata(metadata, level=0):
-    metadata_kind = comgr_check(amd_comgr_get_metadata_kind(metadata))
-    if metadata_kind == amd_comgr_metadata_kind_s.AMD_COMGR_METADATA_KIND_MAP:
-        result = {}
-        map_keys = get_map_keys(metadata)
-        for key in map_keys:
-            result[key.decode("utf-8")] = parse_metadata(
-                comgr_check(amd_comgr_metadata_lookup(metadata, key)), level + 1
-            )
-        return result
-    elif metadata_kind == amd_comgr_metadata_kind_s.AMD_COMGR_METADATA_KIND_LIST:
-        result = []
-        list_size = comgr_check(amd_comgr_get_metadata_list_size(metadata))
-        for i in range(0, list_size):
-            result.append(
-                parse_metadata(
-                    comgr_check(amd_comgr_index_list_metadata(metadata, i)), level + 1
-                )
-            )
-        return result
-    elif metadata_kind == amd_comgr_metadata_kind_s.AMD_COMGR_METADATA_KIND_STRING:
-        return get_string(metadata).decode("utf-8")
-
-
-def parse_data_metadata(data):
-    metadata = comgr_check(amd_comgr_get_data_metadata(data))
-    result = parse_metadata(metadata)
-    comgr_check(amd_comgr_destroy_metadata(metadata))
-    return result
-
-
-# HIPRTC definitions
-
+from rocm.amd_comgr import amd_comgr
 
 def hip_check(call_result):
     err = call_result[0]
@@ -232,13 +114,7 @@ class HipProgram:
 
     def parse_metadata(self):
         assert self.code != None
-        data = comgr_check(
-            amd_comgr_create_data(amd_comgr_data_kind_s.AMD_COMGR_DATA_KIND_EXECUTABLE)
-        )
-        comgr_check(amd_comgr_set_data(data, kernel_prog.code_size, kernel_prog.code))
-        result = parse_data_metadata(data)
-        comgr_check(amd_comgr_release_data(data))
-        return result
+        return amd_comgr.util.parse_code_metadata(self.code,self.code_size)
 
     def __enter__(self):
         return self
@@ -265,5 +141,4 @@ if __name__ == "__main__":
     arch = props.gcnArchName
     with HipProgram("kernel", arch, kernel_hip) as kernel_prog:
         pprint.pprint(kernel_prog.parse_metadata())
-        pass
     print("ok")
