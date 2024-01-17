@@ -197,8 +197,6 @@ def get_isa_names(decode: bool = True):
         `list`:
             List of ISA names, either as Python `str` (``decode=True``) or `bytes`.
     """
-    from rocm.llvm._util.types import CStr
-
     result = []
     for i in range(0, comgr_check(_comgr.amd_comgr_get_isa_count())):
         isa_name = comgr_check(_comgr.amd_comgr_get_isa_name(i))
