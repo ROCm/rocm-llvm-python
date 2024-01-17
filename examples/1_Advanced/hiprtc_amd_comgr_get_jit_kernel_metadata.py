@@ -26,11 +26,14 @@
 In this example, we compile a HIP C++ kernel just-in-time
 via HIPRTC and then use AMD COMGR functionality to
 parse the metadata that is embedded within the resulting
-code object.
+code object. Finally, we print out the properties that 
+AMD COMGR associates with the compilation target.
 
 Typical output of this example:
 
 ```
+Code object metadata:
+
 {'amdhsa.kernels': [{'.agpr_count': '0',
                      '.args': [{'.address_space': 'global',
                                 '.offset': '0',
@@ -57,6 +60,29 @@ Typical output of this example:
                      '.wavefront_size': '64'}],
  'amdhsa.target': 'amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack-',
  'amdhsa.version': ['1', '2']}
+
+Target properties:
+
+{'AddressableNumSGPRs': '102',
+ 'AddressableNumVGPRs': '256',
+ 'Architecture': 'amdgcn',
+ 'EUsPerCU': '4',
+ 'Environment': '',
+ 'Features': {'sramecc': 'any', 'xnack': 'any'},
+ 'LDSBankCount': '32',
+ 'LocalMemorySize': '65536',
+ 'MaxFlatWorkGroupSize': '1024',
+ 'MaxWavesPerCU': '40',
+ 'Name': 'amdgcn-amd-amdhsa--gfx90a',
+ 'OS': 'amdhsa',
+ 'Processor': 'gfx90a',
+ 'SGPRAllocGranule': '16',
+ 'TotalNumSGPRs': '800',
+ 'TotalNumVGPRs': '256',
+ 'TrapHandlerEnabled': '1',
+ 'VGPRAllocGranule': '4',
+ 'Vendor': 'amd',
+ 'Version': '1.0.0'}
 ```
  
 Note that some necessary includes such as "hip/hip_runtime.h" are
@@ -140,5 +166,9 @@ if __name__ == "__main__":
     hip_check(hip.hipGetDeviceProperties(props, 0))
     arch = props.gcnArchName
     with HipProgram("kernel", arch, kernel_hip) as kernel_prog:
+        print("\nCode object metadata:\n")
         pprint.pprint(kernel_prog.parse_metadata())
+    print("\nTarget properties:\n")
+    gpugen = arch.decode("utf-8").split(":")[0]
+    pprint.pprint(amd_comgr.ext.get_isa_metadata_all()[f"amdgcn-amd-amdhsa--{gpugen}"])
     print("ok")
