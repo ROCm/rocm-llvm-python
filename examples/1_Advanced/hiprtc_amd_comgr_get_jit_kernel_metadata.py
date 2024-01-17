@@ -114,7 +114,7 @@ class HipProgram:
 
     def parse_metadata(self):
         assert self.code != None
-        return amd_comgr.util.parse_code_metadata(self.code,self.code_size)
+        return amd_comgr.ext.parse_code_metadata(self.code,self.code_size)
 
     def __enter__(self):
         return self
