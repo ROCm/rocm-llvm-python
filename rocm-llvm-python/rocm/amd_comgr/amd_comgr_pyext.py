@@ -59,7 +59,8 @@ def metadata_string_get_bytes(metadata_str: _comgr.amd_comgr_metadata_node_s):
             metadata_str, ctypes.addressof(str_len), None
         )
     )
-    str_buf = bytes(str_len.value - 1)  # -1 to substract 0
+    str_len.value -= 1  # remove the 0x00 terminator
+    str_buf = bytes(str_len.value)
     comgr_check(
         _comgr.amd_comgr_get_metadata_string(
             metadata_str, ctypes.addressof(str_len), str_buf
@@ -120,7 +121,7 @@ def metadata_map_get_keys(metadata_map: _comgr.amd_comgr_metadata_node_s):
 
 
 def parse_metadata(metadata: _comgr.amd_comgr_metadata_node_s, level: int = 0):
-    """Parse arbirtrary metadata node and return a nest of `dict`, `list`, and `str`.
+    """Parse arbitrary metadata node and return a nest of `dict`, `list`, and `str`.
 
     Args:
         metadata_map (`~.amd_comgr_metadata_node_s`):
@@ -133,20 +134,21 @@ def parse_metadata(metadata: _comgr.amd_comgr_metadata_node_s, level: int = 0):
         result = {}
         map_keys = metadata_map_get_keys(metadata)
         for key in map_keys:
-            result[key.decode("utf-8")] = parse_metadata(
-                comgr_check(_comgr.amd_comgr_metadata_lookup(metadata, key)), level + 1
+            map_value: _comgr.amd_comgr_metadata_node_s = comgr_check(
+                _comgr.amd_comgr_metadata_lookup(metadata, key)
             )
+            result[key.decode("utf-8")] = parse_metadata(map_value, level + 1)
+            comgr_check(_comgr.amd_comgr_destroy_metadata(map_value))
         return result
     elif metadata_kind == _comgr.amd_comgr_metadata_kind_s.AMD_COMGR_METADATA_KIND_LIST:
         result = []
         list_size = comgr_check(_comgr.amd_comgr_get_metadata_list_size(metadata))
         for i in range(0, list_size):
-            result.append(
-                parse_metadata(
-                    comgr_check(_comgr.amd_comgr_index_list_metadata(metadata, i)),
-                    level + 1,
-                )
+            list_entry: _comgr.amd_comgr_metadata_node_s = comgr_check(
+                _comgr.amd_comgr_index_list_metadata(metadata, i)
             )
+            result.append(parse_metadata(list_entry, level + 1))
+            comgr_check(_comgr.amd_comgr_destroy_metadata(list_entry))
         return result
     elif (
         metadata_kind == _comgr.amd_comgr_metadata_kind_s.AMD_COMGR_METADATA_KIND_STRING
@@ -171,15 +173,63 @@ def parse_code_metadata(
         code:
             Code object that is accepted as input of `rocm.llvm._util.Pointer`, e.g.
             an implementor of the Python buffer protocol such as `bytes`.
-        code_size (int):
+        code_size (`int`):
             Length of the code.
-        kind:
+        kind (`~.amd_comgr_data_kind_s`, optional):
             Kind of the code object in terms of AMD COMGR kinds, e.g.
-            `amd_comgr_data_kind_s.AMD_COMGR_DATA_KIND_EXECUTABLE`,
+            `~.amd_comgr_data_kind_s.AMD_COMGR_DATA_KIND_EXECUTABLE`,
             which is the default.
     """
     data = comgr_check(_comgr.amd_comgr_create_data(kind))
     comgr_check(_comgr.amd_comgr_set_data(data, code_size, code))
     result = parse_data_metadata(data)
     comgr_check(_comgr.amd_comgr_release_data(data))
+    return result
+
+
+def get_isa_names(decode: bool = True):
+    """Return the ISA names supported by this version of COMGR as `list` of `str` / `bytes`.
+
+    Args:
+        decode (`bool`, optional):
+            If the names should be decoded to a Python `str`.
+    Returns:
+        `list`:
+            List of ISA names, either as Python `str` (``decode=True``) or `bytes`.
+    """
+    from rocm.llvm._util.types import CStr
+
+    result = []
+    for i in range(0, comgr_check(_comgr.amd_comgr_get_isa_count())):
+        isa_name = comgr_check(_comgr.amd_comgr_get_isa_name(i))
+        result.append(isa_name.decode("utf-8") if decode else isa_name.encode("utf-8"))
+    return result
+
+
+def get_isa_metadata(isa_name):
+    """Parse metadata for a specific ISA.
+
+    Args:
+        isa_name (`bytes` or `str`):
+            The ISA name
+    See:
+        get_isa_names
+    """
+    if isinstance(isa_name, bytes):
+        isa_name_bytes = isa_name
+    elif isinstance(isa_name, str):
+        isa_name_bytes = isa_name.encode("utf-8")
+    isa_metadata: _comgr.amd_comgr_metadata_node_s = comgr_check(
+        _comgr.amd_comgr_get_isa_metadata(isa_name_bytes)
+    )
+    result = parse_metadata(isa_metadata)
+    comgr_check(_comgr.amd_comgr_destroy_metadata(isa_metadata))
+    return result
+
+
+def get_isa_metadata_all():
+    """Return the metadata for all ISAs supported by this version of COMGR as `dict`."""
+    result = {}
+    for isa_name in get_isa_names(decode=True):
+        result[isa_name] = get_isa_metadata(isa_name)
     return result
