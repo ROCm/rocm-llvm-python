@@ -89,7 +89,7 @@ def _get_map_keys_cb(ckey, _, userdata):
             unsigned long handle
         ```
 
-        We can thus simplify the callback signature too
+        We can thus rephrase the callback signature as follows:
 
         ```cython
         void (*callback) (unsigned long key, unsigned long value, void * userdata)
@@ -167,7 +167,7 @@ def parse_data_metadata(data: _comgr.amd_comgr_data_s):
 def parse_code_metadata(
     code, code_size, kind=_comgr.amd_comgr_data_kind_s.AMD_COMGR_DATA_KIND_EXECUTABLE
 ):
-    """Parse a code object, e.g., one generated via HIPRTC.
+    """Parse metadata of a code object, e.g., one generated via HIPRTC.
 
     Args:
         code:
@@ -197,6 +197,8 @@ def get_isa_names(decode: bool = True):
         `list`:
             List of ISA names, either as Python `str` (``decode=True``) or `bytes`.
     """
+    from rocm.llvm._util.types import CStr
+
     result = []
     for i in range(0, comgr_check(_comgr.amd_comgr_get_isa_count())):
         isa_name = comgr_check(_comgr.amd_comgr_get_isa_name(i))
@@ -230,4 +232,173 @@ def get_isa_metadata_all():
     result = {}
     for isa_name in get_isa_names(decode=True):
         result[isa_name] = get_isa_metadata(isa_name)
+    return result
+
+
+class _Symbol:
+    """Represents a code object symbol.
+
+    Members result from `~.amd_comgr_symbol_get_info` supplied with the following ``attribute`` parameters:
+
+    `~.amd_comgr_symbol_info_s.AMD_COMGR_SYMBOL_INFO_NAME_LENGTH`:
+        The length of the symbol name in bytes. Does not include the NUL terminator. The type of this attribute is uint64_t.
+    `~.amd_comgr_symbol_info_s.AMD_COMGR_SYMBOL_INFO_NAME`:
+        The name of the symbol. The type of this attribute is character array with the length equal to the value of the AMD_COMGR_SYMBOL_INFO_NAME_LENGTH attribute plus 1 for a NUL terminator.
+    `~.amd_comgr_symbol_info_s.AMD_COMGR_SYMBOL_INFO_TYPE`:
+        The kind of the symbol. The type of this attribute is amd_comgr_symbol_type_t.
+    `~.amd_comgr_symbol_info_s.AMD_COMGR_SYMBOL_INFO_SIZE`:
+        Size of the variable. The value of this attribute is undefined if the symbol is not a variable. The type of this attribute is uint64_t.
+    `~.amd_comgr_symbol_info_s.AMD_COMGR_SYMBOL_INFO_IS_UNDEFINED`:
+        Indicates whether the symbol is undefined. The type of this attribute is bool.
+    `~.amd_comgr_symbol_info_s.AMD_COMGR_SYMBOL_INFO_VALUE`:
+        The value of the symbol. The type of this attribute is uint64_t.
+    `~.amd_comgr_symbol_info_s.AMD_COMGR_SYMBOL_INFO_LAST`:
+        Marker for last valid symbol info.
+
+    An object's member ``self.type`` can have the following values:
+
+    ``UNKNOWN``:
+        The symbol's type is unknown.
+    ``NOTYPE``:
+        The symbol's type is not specified.
+    ``OBJECT``:
+        The symbol is associated with a data object, such as a variable, an array, and so on.
+    ``FUNC``:
+        The symbol is associated with a function or other executable code.
+    ``SECTION``:
+        The symbol is associated with a section. Symbol table entries of this type exist primarily for relocation.
+    ``FILE``:
+        Conventionally, the symbol's name gives the name of the source file associated with the object file.
+    ``COMMON``:
+        The symbol labels an uninitialized common block.
+    ``AMDGPU_HSA_KERNEL``:
+        The symbol is associated with an AMDGPU Code Object V2 kernel function.
+    """
+
+    def __init__(self):
+        self.type: str = None
+        self.name: str = None
+        self.size: int = -1
+        self.is_undefined: bool = -1
+        self.value: int = -1
+
+
+@ctypes.CFUNCTYPE(None, ctypes.c_ulong, ctypes.c_void_p)
+def _iterate_symbols_cb(csymbol, userdata):
+    """Callback for iterating over a code object's symbols.
+
+    Intended to be used with `~.amd_comgr_iterate_symbols`.
+
+    Note:
+        The callback has the following signature:
+
+        ```cython
+        void (*callback) (amd_comgr_symbol_s symbol, void * userdata)
+        ```
+
+        where
+
+        ```cython
+        cdef struct amd_comgr_symbol_s:
+            unsigned long handle
+        ```
+
+        We can thus rephrase the callback signature as follows:
+
+        ```cython
+        void (*callback) (unsigned long key, void * userdata)
+        ```
+    """
+    result_dict = ctypes.cast(
+        ctypes.c_void_p(userdata), ctypes.POINTER(ctypes.py_object)
+    ).contents.value
+    result = _Symbol()
+    symbol = _comgr.amd_comgr_symbol_s(handle=csymbol)
+
+    # 1) type
+    symbol_type = _comgr.amd_comgr_symbol_type_s.ctypes_type()(0)
+    _comgr.amd_comgr_symbol_get_info(
+        symbol,
+        _comgr.amd_comgr_symbol_info_s.AMD_COMGR_SYMBOL_INFO_TYPE,
+        ctypes.addressof(symbol_type),
+    )
+    result.type = _comgr.amd_comgr_symbol_type_s(symbol_type.value).name.replace(
+        "AMD_COMGR_SYMBOL_TYPE_", ""
+    )
+    # 2) name
+    symbol_name_len = ctypes.c_uint64(0)
+    _comgr.amd_comgr_symbol_get_info(
+        symbol,
+        _comgr.amd_comgr_symbol_info_s.AMD_COMGR_SYMBOL_INFO_NAME_LENGTH,
+        ctypes.addressof(symbol_name_len),
+    )
+    symbol_name = bytes(symbol_name_len.value)
+    _comgr.amd_comgr_symbol_get_info(
+        symbol,
+        _comgr.amd_comgr_symbol_info_s.AMD_COMGR_SYMBOL_INFO_NAME,
+        symbol_name,
+    )
+    result.name = symbol_name.decode("utf-8")
+    #  3) size
+    if result.type == "OBJECT":
+        symbol_size = ctypes.c_uint64(0)
+        _comgr.amd_comgr_symbol_get_info(
+            symbol,
+            _comgr.amd_comgr_symbol_info_s.AMD_COMGR_SYMBOL_INFO_SIZE,
+            ctypes.addressof(symbol_size),
+        )
+        result.size = symbol_size.value
+    # 4) is_undefined
+    symbol_is_undefined = ctypes.c_bool(0)
+    _comgr.amd_comgr_symbol_get_info(
+        symbol,
+        _comgr.amd_comgr_symbol_info_s.AMD_COMGR_SYMBOL_INFO_IS_UNDEFINED,
+        ctypes.addressof(symbol_is_undefined),
+    )
+    result.is_undefined = symbol_is_undefined.value
+    # 5) value
+    symbol_value = ctypes.c_uint64(0)
+    _comgr.amd_comgr_symbol_get_info(
+        symbol,
+        _comgr.amd_comgr_symbol_info_s.AMD_COMGR_SYMBOL_INFO_SIZE,
+        ctypes.addressof(symbol_value),
+    )
+    result.value = symbol_value.value
+    # add to result list
+    result_dict[result.name] = result.__dict__
+
+
+def parse_data_symbols(data: _comgr.amd_comgr_data_s):
+    """Parse all symbols of a data object and return as `dict`."""
+    result = ctypes.py_object({})
+    comgr_check(
+        _comgr.amd_comgr_iterate_symbols(
+            data,
+            ctypes.cast(_iterate_symbols_cb, ctypes.c_void_p),
+            ctypes.addressof(result),
+        )
+    )
+    return result.value
+
+
+def parse_code_symbols(
+    code, code_size, kind=_comgr.amd_comgr_data_kind_s.AMD_COMGR_DATA_KIND_EXECUTABLE
+):
+    """Parse metadata of a code object, e.g., one generated via HIPRTC.
+
+    Args:
+        code:
+            Code object that is accepted as input of `rocm.llvm._util.Pointer`, e.g.
+            an implementor of the Python buffer protocol such as `bytes`.
+        code_size (`int`):
+            Length of the code.
+        kind (`~.amd_comgr_data_kind_s`, optional):
+            Kind of the code object in terms of AMD COMGR kinds, e.g.
+            `~.amd_comgr_data_kind_s.AMD_COMGR_DATA_KIND_EXECUTABLE`,
+            which is the default.
+    """
+    data = comgr_check(_comgr.amd_comgr_create_data(kind))
+    comgr_check(_comgr.amd_comgr_set_data(data, code_size, code))
+    result = parse_data_symbols(data)
+    comgr_check(_comgr.amd_comgr_release_data(data))
     return result
