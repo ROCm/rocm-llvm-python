@@ -384,7 +384,7 @@ def parse_data_symbols(data: _comgr.amd_comgr_data_s):
 def parse_code_symbols(
     code, code_size, kind=_comgr.amd_comgr_data_kind_s.AMD_COMGR_DATA_KIND_EXECUTABLE
 ):
-    """Parse metadata of a code object, e.g., one generated via HIPRTC.
+    """Parse all symbols of a code object, e.g., one generated via HIPRTC.
 
     Args:
         code:
