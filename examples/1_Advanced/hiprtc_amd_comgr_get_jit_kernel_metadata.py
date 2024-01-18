@@ -99,6 +99,7 @@ from hip import hip, hiprtc
 
 from rocm.amd_comgr import amd_comgr
 
+
 def hip_check(call_result):
     err = call_result[0]
     result = call_result[1:]
@@ -140,7 +141,11 @@ class HipProgram:
 
     def parse_metadata(self):
         assert self.code != None
-        return amd_comgr.ext.parse_code_metadata(self.code,self.code_size)
+        return amd_comgr.ext.parse_code_metadata(self.code, self.code_size)
+
+    # def parse_symbols(self):
+    #    assert self.code != None
+    #    return amd_comgr.ext.parse_code_symbols(self.code,self.code_size)
 
     def __enter__(self):
         return self
@@ -168,6 +173,8 @@ if __name__ == "__main__":
     with HipProgram("kernel", arch, kernel_hip) as kernel_prog:
         print("\nCode object metadata:\n")
         pprint.pprint(kernel_prog.parse_metadata())
+        # print("\nCode object symbols:\n")
+        # pprint.pprint(kernel_prog.parse_symbols())
     print("\nTarget properties:\n")
     gpugen = arch.decode("utf-8").split(":")[0]
     pprint.pprint(amd_comgr.ext.get_isa_metadata_all()[f"amdgcn-amd-amdhsa--{gpugen}"])
