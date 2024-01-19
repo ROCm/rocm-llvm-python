@@ -24,6 +24,25 @@ import ctypes
 
 import rocm.amd_comgr.amd_comgr as _comgr
 
+NUL = b"\x00"
+
+
+def to_bytes(obj):
+    if isinstance(obj, str):
+        return obj.encode("utf-8")
+    elif isinstance(obj, bytes):
+        return obj
+    else:
+        return bytes(obj)
+
+
+def to_cstr(obj):
+    """Make 0-char-terminated bytes object, a C string."""
+    result = to_bytes(obj)
+    if result[-1] != NUL:
+        return result + NUL
+    return result
+
 
 def comgr_check(
     call_result,
@@ -45,7 +64,7 @@ def comgr_check(
     return result
 
 
-def metadata_string_get_bytes(metadata_str: _comgr.amd_comgr_metadata_node_s):
+def metadata_string_get_bytes(metadata_string: _comgr.amd_comgr_metadata_node_s):
     """Get the text associated with a string metadata node as `bytes`.
 
     Args:
@@ -56,14 +75,14 @@ def metadata_string_get_bytes(metadata_str: _comgr.amd_comgr_metadata_node_s):
     str_len = ctypes.c_ulong(0)
     comgr_check(
         _comgr.amd_comgr_get_metadata_string(
-            metadata_str, ctypes.addressof(str_len), None
+            metadata_string, ctypes.addressof(str_len), None
         )
     )
     str_len.value -= 1  # remove the 0x00 terminator
     str_buf = bytes(str_len.value)
     comgr_check(
         _comgr.amd_comgr_get_metadata_string(
-            metadata_str, ctypes.addressof(str_len), str_buf
+            metadata_string, ctypes.addressof(str_len), str_buf
         )
     )
     return str_buf
@@ -89,7 +108,7 @@ def _get_map_keys_cb(ckey, _, userdata):
             unsigned long handle
         ```
 
-        We can thus rephrase the callback signature as follows:
+        We can thus simplify the callback signature too
 
         ```cython
         void (*callback) (unsigned long key, unsigned long value, void * userdata)
@@ -197,8 +216,6 @@ def get_isa_names(decode: bool = True):
         `list`:
             List of ISA names, either as Python `str` (``decode=True``) or `bytes`.
     """
-    from rocm.llvm._util.types import CStr
-
     result = []
     for i in range(0, comgr_check(_comgr.amd_comgr_get_isa_count())):
         isa_name = comgr_check(_comgr.amd_comgr_get_isa_name(i))
@@ -235,9 +252,8 @@ def get_isa_metadata_all():
     return result
 
 
-class _Symbol:
-    """Represents a code object symbol.
-
+class Symbol:
+    """
     Members result from `~.amd_comgr_symbol_get_info` supplied with the following ``attribute`` parameters:
 
     `~.amd_comgr_symbol_info_s.AMD_COMGR_SYMBOL_INFO_NAME_LENGTH`:
@@ -285,34 +301,34 @@ class _Symbol:
 
 @ctypes.CFUNCTYPE(None, ctypes.c_ulong, ctypes.c_void_p)
 def _iterate_symbols_cb(csymbol, userdata):
-    """Callback for iterating over a code object's symbols.
+    """Callback for extracting keys from a metadata map.
 
-    Intended to be used with `~.amd_comgr_iterate_symbols`.
+    Intended to be used with amd_comgr_iterate_map_metadata(object metadata, object callback, object user_data)
 
     Note:
         The callback has the following signature:
 
         ```cython
-        void (*callback) (amd_comgr_symbol_s symbol, void * userdata)
+        void (*callback) (amd_comgr_metadata_node_s key, amd_comgr_metadata_node_s value, void * userdata)
         ```
 
         where
 
         ```cython
-        cdef struct amd_comgr_symbol_s:
+        cdef struct amd_comgr_metadata_node_s:
             unsigned long handle
         ```
 
-        We can thus rephrase the callback signature as follows:
+        We can thus simplify the callback signature too
 
         ```cython
-        void (*callback) (unsigned long key, void * userdata)
+        void (*callback) (unsigned long key, unsigned long value, void * userdata)
         ```
     """
     result_dict = ctypes.cast(
         ctypes.c_void_p(userdata), ctypes.POINTER(ctypes.py_object)
     ).contents.value
-    result = _Symbol()
+    result = Symbol()
     symbol = _comgr.amd_comgr_symbol_s(handle=csymbol)
 
     # 1) type
@@ -384,7 +400,7 @@ def parse_data_symbols(data: _comgr.amd_comgr_data_s):
 def parse_code_symbols(
     code, code_size, kind=_comgr.amd_comgr_data_kind_s.AMD_COMGR_DATA_KIND_EXECUTABLE
 ):
-    """Parse all symbols of a code object, e.g., one generated via HIPRTC.
+    """Parse metadata of a code object, e.g., one generated via HIPRTC.
 
     Args:
         code:
@@ -402,3 +418,421 @@ def parse_code_symbols(
     result = parse_data_symbols(data)
     comgr_check(_comgr.amd_comgr_release_data(data))
     return result
+
+
+class Data:
+    @staticmethod
+    def kind_str_to_enum(kind_str: str):
+        """Prepends ``AMD_COMGR_DATA_KIND_`` to ``kind_str`` and looks up enum.
+
+        Note:
+            Also converts ``kind_str`` to upper case.
+
+        The following ``kind_str`` keys can be used (state: ROCm 6.0.0):
+
+        UNDEF:
+            No data is available.
+        SOURCE:
+            The data is a textual main source.
+        INCLUDE:
+            The data is a textual source that is included in the main source or other include source.
+        PRECOMPILED_HEADER:
+            The data is a precompiled-header source that is included in the main source or other include source.
+        DIAGNOSTIC:
+            The data is a diagnostic output.
+        LOG:
+            The data is a textual log output.
+        BC:
+            The data is compiler LLVM IR bit code for a specific isa.
+        RELOCATABLE:
+            The data is a relocatable machine code object for a specific isa.
+        EXECUTABLE:
+            The data is an executable machine code object for a specific isa. An executable is the kind of code object that can be loaded and executed.
+        BYTES:
+            The data is a block of bytes.
+        FATBIN:
+            The data is a fat binary (clang-offload-bundler output).
+        AR:
+            The data is an archive.
+        BC_BUNDLE:
+            The data is a bundled bitcode.
+        AR_BUNDLE:
+            The data is a bundled archive.
+        LAST:
+            Marker for last valid data kind.
+        """
+        return getattr(
+            _comgr.amd_comgr_data_kind_s, "AMD_COMGR_DATA_KIND_" + kind_str.upper()
+        )
+
+    def __new__(cls, *args, **kwargs):
+        instance = super().__new__(cls)
+        instance._data = None
+        instance._name = None
+        instance.kind_str: str = None
+        instance.source_bytes = None
+        return instance
+
+    def __init__(self, name: str, kind_str: str, source_buffer=None):
+        self._data = comgr_check(
+            _comgr.amd_comgr_create_data(Data.kind_str_to_enum(kind_str))
+        )
+        self.kind_str = kind_str
+        if source_buffer:
+            self._set_data_buffer(source_buffer)
+        self._set_data_name(name)
+
+    def _set_data_name(self, name):
+        self._name = to_bytes(name).decode("utf-8")
+        comgr_check(_comgr.amd_comgr_set_data_name(self.get(), to_cstr(self._name)))
+
+    def _set_data_buffer(self, data_buffer=None):
+        self.source_bytes = to_bytes(data_buffer)  # store to keep alive
+        comgr_check(
+            _comgr.amd_comgr_set_data(
+                self.get(), len(self.source_bytes), self.source_bytes
+            )
+        )
+
+    def get_data_name(self):
+        """Returns the data object's name as `str`."""
+        name_len = ctypes.c_ulong(0)
+        comgr_check(
+            _comgr.amd_comgr_get_data_name(self.get(), ctypes.addressof(name_len), None)
+        )
+        name_len.value -= 1  # strip NUL char
+        buf = bytes(name_len.value)
+        comgr_check(
+            _comgr.amd_comgr_get_data_name(self.get(), ctypes.addressof(name_len), buf)
+        )
+        return buf.decode("utf-8")
+
+    def get_data_bytes(self):
+        """Copies this data object's data into a newly created buffer.
+
+        Note:
+            This routine should only be used if this is a result data object,
+            e.g. obtained as result from an action. If this is a source data object,
+            you can also access ``self.source_bytes`` for a copy of
+            the original source data buffer.
+        """
+        data_len = ctypes.c_ulong(0)
+        comgr_check(
+            _comgr.amd_comgr_get_data(self.get(), ctypes.addressof(data_len), None)
+        )
+        buf = bytes(data_len.value)
+        comgr_check(
+            _comgr.amd_comgr_get_data(self.get(), ctypes.addressof(data_len), buf)
+        )
+        return buf
+
+    def __del__(self):
+        comgr_check(_comgr.amd_comgr_release_data(self.get()))
+
+    def get(self):
+        return self._data
+
+
+class DataSet:
+    def __init__(self):
+        self._data_set = comgr_check(_comgr.amd_comgr_create_data_set())
+        self.datas = []  # keep the objects alive
+
+    def add_data(self, data: Data):
+        self.datas.append(data)
+        comgr_check(_comgr.amd_comgr_data_set_add(self.get(), data.get()))
+
+    def count_data(self, kind_str: str):
+        comgr_check(
+            _comgr.amd_comgr_action_data_count(
+                self.get(), Data.kind_str_to_enum(kind_str)
+            )
+        )
+
+    def get_data(self, kind_str: str, index: int) -> Data:
+        data = Data.__new__()
+        data._data = comgr_check(
+            _comgr.amd_comgr_action_data_get_data(
+                self.get(), Data.kind_str_to_enum(kind_str), index
+            )
+        )
+        data.kind_str = kind_str
+        return data
+
+    def __del__(self):
+        self.datas.clear()
+        comgr_check(_comgr.amd_comgr_destroy_data_set(self.get()))
+
+    def get(self):
+        return self._data_set
+
+
+class Action:
+    @staticmethod
+    def action_kind_str_to_enum(action_kind_str: str):
+        """Prepends ``AMD_COMGR_LANGUAGE_`` to ``action_kind_str`` and looks up enum.
+
+        Note:
+            Also converts ``action_kind_str`` to upper case.
+
+        The following ``action_kind_str`` keys can be used (state: ROCm 6.0.0):
+
+        SOURCE_TO_PREPROCESSOR:
+            Preprocess each source data object in input in order. For each successful preprocessor invocation, add a source data object to result. Resolve any include source names using the names of include data objects in input. Resolve any include relative path names using the working directory path in info. Preprocess the source for the language in info.
+        ADD_PRECOMPILED_HEADERS:
+            Copy all existing data objects in input to output, then add the device-specific and language-specific precompiled headers required for compilation.
+        COMPILE_SOURCE_TO_BC:
+            Compile each source data object in input in order. For each successful compilation add a bc data object to result. Resolve any include source names using the names of include data objects in input. Resolve any include relative path names using the working directory path in info. Produce bc for isa name in info. Compile the source for the language in info.
+        ADD_DEVICE_LIBRARIES:
+            Copy all existing data objects in input to output, then add the device-specific and language-specific bitcode libraries required for compilation.
+        LINK_BC_TO_BC:
+            Link a collection of bitcodes, bundled bitcodes, and bundled bitcode archives in into a single composite (unbundled) bitcode . Any device library bc data object must be explicitly added to input if needed.
+        OPTIMIZE_BC_TO_BC:
+            Optimize each bc data object in input and create an optimized bc data object to result.
+        CODEGEN_BC_TO_RELOCATABLE:
+            Perform code generation for each bc data object in input in order. For each successful code generation add a relocatable data object to result.
+        CODEGEN_BC_TO_ASSEMBLY:
+            Perform code generation for each bc data object in input in order. For each successful code generation add an assembly source data object to result.
+        LINK_RELOCATABLE_TO_RELOCATABLE:
+            Link each relocatable data object in input together and add the linked relocatable data object to result. Any device library relocatable data object must be explicitly added to input if needed.
+        LINK_RELOCATABLE_TO_EXECUTABLE:
+            Link each relocatable data object in input together and add the linked executable data object to result. Any device library relocatable data object must be explicitly added to input if needed.
+        ASSEMBLE_SOURCE_TO_RELOCATABLE:
+            Assemble each source data object in input in order into machine code. For each successful assembly add a relocatable data object to result. Resolve any include source names using the names of include data objects in input. Resolve any include relative path names using the working directory path in info. Produce relocatable for isa name in info.
+        DISASSEMBLE_RELOCATABLE_TO_SOURCE:
+            Disassemble each relocatable data object in input in order. For each successful disassembly add a source data object to result.
+        DISASSEMBLE_EXECUTABLE_TO_SOURCE:
+            Disassemble each executable data object in input in order. For each successful disassembly add a source data object to result.
+        DISASSEMBLE_BYTES_TO_SOURCE:
+            Disassemble each bytes data object in input in order. For each successful disassembly add a source data object to result. Only simple assembly language commands are generate that corresponf to raw bytes are supported, not any directives that control the code object layout, or symbolic branch targets or names.
+        COMPILE_SOURCE_TO_FATBIN:
+            Compile each source data object in input in order. For each successful compilation add a fat binary to result. Resolve any include source names using the names of include data objects in input. Resolve any include relative path names using the working directory path in info. Produce fat binary for isa name in info. Compile the source for the language in info.
+        COMPILE_SOURCE_WITH_DEVICE_LIBS_TO_BC:
+            Compile each source data object in input in order. For each successful compilation add a bc data object to result. Resolve any include source names using the names of include data objects in input. Resolve any include relative path names using the working directory path in info. Produce bc for isa name in info. Compile the source for the language in info. Link against the device-specific and language-specific bitcode device libraries required for compilation.
+        LAST:
+            Marker for last valid action kind.
+        """
+        return getattr(
+            _comgr.amd_comgr_action_kind_s,
+            "AMD_COMGR_ACTION_" + action_kind_str.upper(),
+        )
+
+    @staticmethod
+    def lang_str_to_enum(lang_str: str):
+        """Prepends ``AMD_COMGR_LANGUAGE_`` to ``lang_str`` and looks up enum.
+
+        Note:
+            Also converts ``lang_str`` to upper case.
+
+        The following ``lang_str`` keys can be used (state: ROCm 6.0.0):
+
+        NONE:
+            No high level language.
+        OPENCL_1_2:
+            OpenCL 1.2.
+        OPENCL_2_0:
+            OpenCL 2.0.
+        HC:
+            AMD Hetrogeneous C++ (HC).
+        HIP:
+            HIP.
+        LAST:
+            Marker for last valid language.
+        """
+        return getattr(
+            _comgr.amd_comgr_language_s, "AMD_COMGR_LANGUAGE_" + lang_str.upper()
+        )
+
+    def __init__(
+        self,
+        action_kind_str: str,
+        isa_name=None,
+        lang_str=None,
+        options=None,
+        logging: bool = False,
+    ):
+        self._action_info = comgr_check(_comgr.amd_comgr_create_action_info())
+        self.result_data_set = DataSet()
+        self._action_kind = Action.action_kind_str_to_enum(action_kind_str)
+        if isa_name:
+            self.set_isa_name(isa_name)
+        if lang_str:
+            self.set_language(lang_str)
+        if options:
+            self.set_options(options)
+        self.set_logging(logging)
+
+    def set_isa_name(self, isa_name):
+        """Sets the action info object's isa_name.
+
+        Args:
+            isa_name (`str` or Python buffer such as `bytes`):
+                ISA name supported by this version of AMD COMGR, e.g.
+                ``amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack-``.
+                See `~.get_isa_names`, `~.get_isa_metadata_all` for more information.
+        Note:
+            Input will be null-terminated if it is not already.
+        """
+        comgr_check(
+            _comgr.amd_comgr_action_info_set_isa_name(
+                self._action_info,
+                to_cstr(isa_name),
+            )
+        )
+
+    def set_language(self, lang_str: str):
+        """Set the language of the input data, e.g. "HIP".
+
+        See:
+            `lang_str_to_enum`.
+        """
+        comgr_check(
+            _comgr.amd_comgr_action_info_set_language(
+                self.get(), Action.lang_str_to_enum(lang_str)
+            )
+        )
+
+    def set_options(self, options):
+        """Set options to supply to the action runner.
+
+        Args:
+            options (`str` or Python buffer such as `bytes`):
+                Options to supply to the action runner.
+        Note:
+            Input will be null-terminated if it is not already.
+        """
+        comgr_check(
+            _comgr.amd_comgr_action_info_set_options(
+                self.get(),
+                to_cstr(options),
+            )
+        )
+
+    def set_logging(self, logging: bool):
+        """Enable logging."""
+        comgr_check(_comgr.amd_comgr_action_info_set_logging(self.get(), logging))
+
+    def do_action(self, input_data_set: DataSet):
+        """Run the action for the given data_set."""
+        comgr_check(
+            _comgr.amd_comgr_do_action(
+                self._action_kind,
+                self.get(),
+                input_data_set.get(),
+                self.result_data_set.get(),
+            )
+        )
+
+    def get(self):
+        return self._action_info
+
+    def __del__(self):
+        comgr_check(_comgr.amd_comgr_destroy_action_info(self.get()))
+
+
+def compile_hip_to_bc(
+    source,  # bytes or str
+    isa_name,  # offload architecture
+    hip_version_tuple: tuple,  # integer triple like (6,0,32830) that indicates a HIP version, can be easily obtained when HIP Python is installed
+    extra_opts="",
+    default_opts="-fgpu-rdc -O3 -mcumode -std=c++14 -nogpuinc -Wno-gnu-line-marker -Wno-missing-prototypes",
+    logging: bool = False,
+    action_kind: str = "COMPILE_SOURCE_WITH_DEVICE_LIBS_TO_BC",
+):
+    """Compiles a HIP C++ source to LLVM BC.
+
+    Returns:
+        ``tuple``:
+            A ``bytes`` object tuple with the compilation result, a log (``None`` if disabled),
+            and diagnostics (``None`` if no errors have occured).
+
+    Args:
+        source (`str` or Python buffer such as `bytes`):
+            The input as bytes or str.
+        isa_name (`str` or Python buffer such as `bytes`):
+            ISA name supported by this version of AMD COMGR, e.g.
+            ``amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack-``.
+            See `~.get_isa_names`, `~.get_isa_metadata_all` for more information.
+        hip_version_tuple (`str` or Python buffer such as `bytes`):
+            Integer triple like ``(6,0,32830)`` that indicates a HIP version.
+        extra_opts (`str` or Python buffer such as `bytes`):
+            Extra options that are appended to the default options; see argument ``default_opts``.
+            You would typically supply additional options via this value but
+            can also use it overrule some or all of the options specified
+            in default_opts.
+        default_opts (`str` or Python buffer such as `bytes`):
+            Default options that are typically not changed.
+            Defaults to `-fgpu-rdc -O3 -mcumode -std=c++14 -nogpuinc -Wno-gnu-line-marker -Wno-missing-prototypes`
+        action_kind (`str`):
+            The compile action kind. Defaults to
+            ``"COMPILE_SOURCE_WITH_DEVICE_LIBS_TO_BC"``
+            Other supported option is ``"COMPILE_SOURCE_TO_BC"``.
+        logging (bool):
+            Enable logging. Defaults to ``False``.
+    Note:
+        String arguments are always encoded as `utf-8`.
+    Note:
+        Default option `-fgpu-rdc` keeps `__device__` functions in the bitcode file.
+    See:
+        `~.get_isa_names`, `~.get_isa_metadata_all`
+
+    Note:
+        This implementation is based on what AMD COMGR logs out when compiling HIP code to BC via HIPRTC.
+        An example log is shown below (env. vars.: ``AMD_COMGR_REDIRECT_LOGS="stderr"``, ``AMD_COMGR_EMIT_VERBOSE_LOGS=1``):
+
+        ```
+        ActionKind: AMD_COMGR_ACTION_COMPILE_SOURCE_WITH_DEVICE_LIBS_TO_BC
+        IsaName: amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack-
+        Options: "-O3" "-mcumode" "--hip-version=6.0.32830" "-DHIP_VERSION_MAJOR=6" "-DHIP_VERSION_MINOR=0" "-DHIP_VERSION_PATCH=32830" "-D__HIPCC_RTC__" "-include" "hiprtc_runtime.h" "-std=c++14" "-nogpuinc" "-Wno-gnu-line-marker" "-Wno-missing-prototypes" "--offload-arch=gfx90a:sramecc+:xnack-" "-fgpu-rdc"
+        Path:
+            Language: AMD_COMGR_LANGUAGE_HIP
+        Compilation Args: [...]
+        Driver Job Args: [...]
+            ReturnStatus: AMD_COMGR_STATUS_SUCCESS
+        ```
+    """
+    if action_kind not in (
+        "COMPILE_SOURCE_TO_BC",
+        "COMPILE_SOURCE_WITH_DEVICE_LIBS_TO_BC",
+    ):
+        raise ValueError(f"action kind '{str(action_kind)}' not supported")
+    data_set = DataSet()
+    data_set.add_data(Data("source.hip", "SOURCE", source))
+
+    # prepare options
+    # split expr like: amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack-
+    offload_arch = to_bytes(isa_name).decode("utf-8").split("--")[1]
+    # produce something like: --hip-version=6.0.32830" "-DHIP_VERSION_MAJOR=6" "-DHIP_VERSION_MINOR=0 -DHIP_VERSION_PATCH=32830"
+    hip_version = (
+        "--hip-version="
+        + ".".join(map(str, hip_version_tuple))
+        + f" -DHIP_VERSION_MAJOR={hip_version_tuple[0]} -DHIP_VERSION_MINOR={hip_version_tuple[0]} -DHIP_VERSION_PATCH={hip_version_tuple[0]}"
+    )
+    options: str = (
+        f" --offload-arch={offload_arch}"
+        + " "
+        + hip_version
+        + " "
+        + to_bytes(default_opts).decode("utf-8")
+        + " "
+        + to_bytes(extra_opts).decode("utf-8")
+    )
+    print(str(data_set.datas[0].get_data_bytes()))
+    action = Action(
+        action_kind_str=action_kind,
+        isa_name=isa_name,
+        lang_str="HIP",
+        logging=logging,
+        options=options,
+    )
+    action.do_action(data_set)
+    result = action.result_data_set.get_data("BC", 0).get_data_bytes()
+    if logging:
+        log = action.result_data_set.get_data("LOG", 0).get_data_bytes()
+    else:
+        log = None
+    if action.result_data_set.count_data("DIAGNOSTIC"):
+        diagnostic = action.result_data_set.get_data("LOG", 0).get_data_bytes()
+    else:
+        diagnostic = None
+    return (result, log, diagnostic)
