@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2023-2024 Advanced Micro Devices, Inc.
+# Copyright (c) 2024 Advanced Micro Devices, Inc.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,6 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+"""Higher level interfaces that simplify the use of AMD COMGR.
+
+Attributes:
+    HIPRTC_RUNTIME_HEADER (`str`):
+        The content of the ``hipRTC`` / ``hiprtc_runtime/h`` header file.
+        Take a look at https://github.com/ROCm/clr for more details on how this file is generated.
+        The ``HIP`` and ``clr`` branches for generating the file have been
+        selected according to ``rocm.amd_comgr.ROCM_VERSION``.
+"""
+
+import os
 import ctypes
 
 import rocm.amd_comgr.amd_comgr as _comgr
@@ -836,3 +847,5 @@ def compile_hip_to_bc(
     else:
         diagnostic = None
     return (result, log, diagnostic)
+
+HIPRTC_RUNTIME_HEADER = open(os.path.join(__file__,"hiprtc_runtime.h")).read()
