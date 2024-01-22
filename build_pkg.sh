@@ -145,6 +145,7 @@ if [ -z ${NO_BUILD+x} ]; then
     mv ${PKG}/dist/*.whl ${PKG}/dist/archive/    2> /dev/null || true
     mv ${PKG}/dist/*.tar.gz ${PKG}/dist/archive/ 2> /dev/null || true
   fi
+  PYTHON -m pip install --upgrade pip
   PYTHON -m pip install -r ${PKG}/requirements.txt
   PYTHON _render_update_version.py
   #PYTHON -m build ${PKG} -n
@@ -179,6 +180,7 @@ fi
 # fi
 # 
 if [ ! -z ${RUN_TESTS+x} ]; then
+  PYTHON -m pip install --upgrade pip
   PYTHON -m pip install --force-reinstall $(find . -path "*/dist/*${PYVER}*whl")
   PYTHON -m pip install -r examples/requirements.txt
   if [ -z ${ROCM_VER+x} ]; then
