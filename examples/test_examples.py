@@ -45,6 +45,7 @@ python_examples = [
     "0_Basic/list_targets.py",
     "0_Basic/parse_llvm_bitcode.py",
     # "./execution_engine_sum.py", # seems only to work when run directly, TODO
+    "1_Advanced/amd_comgr_hip_to_llvm_ir.py",
 ]
 
 if have_matching_hip_python:
