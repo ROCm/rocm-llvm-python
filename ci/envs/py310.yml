@@ -29,5 +29,3 @@ dependencies:
   - twine
   - git
   - make
-  - cmake
-  - cppheaderparser
