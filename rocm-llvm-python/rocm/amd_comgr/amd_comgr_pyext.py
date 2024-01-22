@@ -561,7 +561,7 @@ class DataSet:
         )
 
     def get_data(self, kind_str: str, index: int) -> Data:
-        data = Data.__new__()
+        data = Data.__new__(Data)
         data._data = comgr_check(
             _comgr.amd_comgr_action_data_get_data(
                 self.get(), Data.kind_str_to_enum(kind_str), index
@@ -828,7 +828,6 @@ def compile_hip_to_bc(
         + " "
         + to_bytes(extra_opts).decode("utf-8")
     )
-    print(str(data_set.datas[0].get_data_bytes()))
     action = Action(
         action_kind_str=action_kind,
         isa_name=isa_name,
@@ -848,4 +847,7 @@ def compile_hip_to_bc(
         diagnostic = None
     return (result, log, diagnostic)
 
-HIPRTC_RUNTIME_HEADER = open(os.path.join(__file__,"hiprtc_runtime.h")).read()
+
+HIPRTC_RUNTIME_HEADER = open(
+    os.path.join(os.path.dirname(__file__), "hiprtc_runtime.h")
+).read()
