@@ -24,7 +24,7 @@ name: py38
 channels:
   - conda-forge
 dependencies:
-  - python~=3.8
+  - python==3.8.17
   - virtualenv
   - twine
   - git

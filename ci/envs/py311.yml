@@ -24,7 +24,7 @@ name: py311
 channels:
   - conda-forge
 dependencies:
-  - python~=3.11
+  - python==3.11.4
   - virtualenv
   - twine
   - git
