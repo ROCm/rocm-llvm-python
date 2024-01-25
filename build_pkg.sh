@@ -181,7 +181,7 @@ fi
 # 
 if [ ! -z ${RUN_TESTS+x} ]; then
   PYTHON -m pip install --upgrade pip
-  PYTHON -m pip install --force-reinstall $(find . -path "*/dist/*${PYVER}*whl")
+  PYTHON -m pip install --force-reinstall $(find . -path "*/dist/rocm_llvm_python*${PYVER}*whl")
   PYTHON -m pip install -r examples/requirements.txt
   if [ -z ${ROCM_VER+x} ]; then
     echo "WARNING: environment variable 'ROCM_VER' not set. Optional tests deactivated."
