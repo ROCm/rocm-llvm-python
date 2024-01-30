@@ -97,7 +97,7 @@ class HipProgram:
         pass
 
 
-if __name__ == "__main__":
+if __name__ in ("__test__","__main__"):
     import textwrap
 
     kernel_hip = textwrap.dedent(

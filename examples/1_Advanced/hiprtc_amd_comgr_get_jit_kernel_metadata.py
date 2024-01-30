@@ -155,7 +155,7 @@ class HipProgram:
             hip_check(hiprtc.hiprtcDestroyProgram(self.prog.createRef()))
 
 
-if __name__ == "__main__":
+if __name__ in ("__test__","__main__"):
     import textwrap
     import pprint
 
