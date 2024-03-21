@@ -847,7 +847,5 @@ def compile_hip_to_bc(
         diagnostic = None
     return (result, log, diagnostic)
 
-
-HIPRTC_RUNTIME_HEADER = open(
-    os.path.join(os.path.dirname(__file__), "hiprtc_runtime.h")
-).read()
+with open(os.path.join(os.path.dirname(__file__), "hiprtc_runtime.h"), "r") as infile:
+    HIPRTC_RUNTIME_HEADER = infile.read()
