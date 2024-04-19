@@ -47,7 +47,7 @@ sudo apt install -y --no-install-recommends tzdata
 
 # install latest rocm installation tool
 sudo apt update
-sudo apt install wget
+sudo apt install -y wget
 wget -np -r -nH --cut-dirs=4 -A "amdgpu-install*deb" https://repo.radeon.com/amdgpu-install/latest/ubuntu/focal/
 sudo apt install -y --no-install-recommends ./amdgpu-install_*.deb
 rm ./amdgpu-install_*.deb
@@ -60,5 +60,6 @@ sudo apt update
  
 # install ROCm
 sudo amdgpu-install -y --usecase=rocm --rocmrelease=${ROCM_VER} --no-dkms
+sudo apt install -y rocm-llvm-dev${ROCM_VER} || true # required for ROCM_VER>=6.1.0
 
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/rocm/lib
