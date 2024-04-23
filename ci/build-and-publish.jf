@@ -30,7 +30,7 @@ pipeline {
         }
     }
     environment {
-        CONDA_DIR = '/opt/rocm'
+        CONDA_DIR = '/opt/conda'
     }
     parameters {
         editableChoice(
