@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 # MIT License
-# 
+#
 # Copyright (c) 2023-2024 Advanced Micro Devices, Inc.
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -57,9 +57,10 @@ ROCM_VER_SHORT=$(echo $ROCM_VER | sed "s,\([0-9]\+\.[0-9]\+\)\.0,\1,g")
 echo "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/rocm-keyring.gpg] https://repo.radeon.com/rocm/apt/${ROCM_VER_SHORT} focal main" | sudo tee /etc/apt/sources.list.d/rocm.list
 echo -e 'Package: *\nPin: release o=repo.radeon.com\nPin-Priority: 600' | sudo tee /etc/apt/preferences.d/rocm-pin-600
 sudo apt update
- 
+
 # install ROCm
 sudo amdgpu-install -y --usecase=rocm --rocmrelease=${ROCM_VER} --no-dkms
 sudo apt install -y rocm-llvm-dev${ROCM_VER} || true # required for ROCM_VER>=6.1.0
 
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/rocm/lib
+
