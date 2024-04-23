@@ -21,10 +21,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 git fetch origin
-git checkout origin/main -- ci
-git checkout origin/main -- build_pkg.sh
-git checkout origin/main -- _render_update_version.py
-git checkout origin/main -- docs
-git checkout origin/main -- examples
+CI_BRANCH=${CI_BRANCH:-origin/main}
+git checkout ${CI_BRANCH} -- ci
+git checkout ${CI_BRANCH} -- build_pkg.sh
+git checkout ${CI_BRANCH} -- _render_update_version.py
+git checkout ${CI_BRANCH} -- docs
+git checkout ${CI_BRANCH} -- examples
 # unstage
 git reset -q HEAD ci build_pkg.sh _render_update_version.py docs examples
