@@ -31,7 +31,7 @@ fi
 set -e
 set -o xtrace
 
-CONDA_DIR=${CONDA_DIR:~/miniconda3}
+CONDA_DIR=${CONDA_DIR:-~/miniconda3}
 source ${CONDA_DIR}/etc/profile.d/conda.sh
 for pyver in "38" "39" "310" "311";
 do
