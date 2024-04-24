@@ -66,6 +66,13 @@ pipeline {
         )
         editableChoice(
             choices: [
+                'main',
+            ],
+            description: 'The branch where the ci scripts, docs and other files imported by `init.sh` are located.',
+            name: 'CI_BRANCH'
+        )
+        editableChoice(
+            choices: [
                 "mirror.math.ucdavis.edu",
                 "archive.ubuntu.com",
             ],
