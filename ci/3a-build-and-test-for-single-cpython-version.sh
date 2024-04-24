@@ -37,4 +37,3 @@ pyver=38
 conda activate py${pyver}
 ./build_pkg.sh --pre-clean --post-clean --run-tests -j ${NUM_JOBS:-16}
 conda deactivate
-
