@@ -29,9 +29,13 @@ pipeline {
             args '--device=/dev/kfd --device=/dev/dri --group-add=video --ipc=host --cap-add=SYS_PTRACE --security-opt seccomp=unconfined'
         }
     }
+    environment {
+        CONDA_DIR = '/opt/conda'
+    }
     parameters {
         editableChoice(
             choices: [
+                '6.1.0',
                 '6.0.0',
                 '5.7.1',
                 '5.7.0',
@@ -60,6 +64,21 @@ pipeline {
             description: 'The branch name will be constructed as `${RELEASE_BRANCH_PREFIX}/rocm-rel-${ROCM_VER}`. `develop` is first to make it default.',
             name: 'RELEASE_BRANCH_PREFIX'
         )
+        editableChoice(
+            choices: [
+                'main',
+            ],
+            description: 'The branch where the ci scripts, docs and other files imported by `init.sh` are located.',
+            name: 'CI_BRANCH'
+        )
+        editableChoice(
+            choices: [
+                "mirror.math.ucdavis.edu",
+                "archive.ubuntu.com",
+            ],
+            description: 'Use a different Ubuntu mirror; see https://launchpad.net/ubuntu/+archivemirrors. First is default.',
+            name: 'UBUNTU_APT_MIRROR'
+        )
     }
     stages {
         stage('clean-ws') {
@@ -69,8 +88,11 @@ pipeline {
         }
         stage('get-repo') {
             steps {
+                sh '''#!/usr/bin/env bash
+                sed -i "s,archive.ubuntu.com,${UBUNTU_APT_MIRROR},g" /etc/apt/sources.list
+                apt-get update && apt-get -y install git sudo
+                '''
                 git branch: 'main', credentialsId: 'ROCM_LLVM_PYTHON_DEV', url: 'https://github.com/ROCmSoftwarePlatform/rocm-llvm-python'
-                sh 'apt update && apt install -y git'
                 dir('.') {
                     withCredentials([
                         usernamePassword(credentialsId: 'ROCM_LLVM_PYTHON_DEV', passwordVariable: 'GITHUB_TOKEN', usernameVariable: 'GITHUB_USER'),

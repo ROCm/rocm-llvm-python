@@ -39,27 +39,38 @@ else:
     hiprt.hipGetDeviceProperties(props, 0)
     gpugen = props.gcnArchName.decode("utf-8").split(":")[0]
     have_compatible_gpu_target = gpugen == "gfx90a"
+    hiprtc_cannot_produce_llvm_bitcode = rocm.llvm.ROCM_VERSION_TUPLE == (6,1,0)
 
-
-python_examples = [
-    "0_Basic/list_targets.py",
-    "0_Basic/parse_llvm_bitcode.py",
-    # "./execution_engine_sum.py", # seems only to work when run directly, TODO
-    "1_Advanced/amd_comgr_hip_to_llvm_ir.py",
-]
-
-if have_matching_hip_python:
-    python_examples += [
-        "1_Advanced/hiprtc_amd_comgr_get_jit_kernel_metadata.py",
-        "1_Advanced/hiprtc_hip_to_llvm_ir.py",
-    ]
-    if have_compatible_gpu_target:
-        python_examples += [
+@pytest.mark.parametrize(
+    "example",
+    [
+        "0_Basic/list_targets.py",
+        "0_Basic/parse_llvm_bitcode.py",
+        # "./execution_engine_sum.py", # seems only to work when run directly, TODO
+        "1_Advanced/amd_comgr_hip_to_llvm_ir.py",
+        pytest.param(
+            "1_Advanced/hiprtc_amd_comgr_get_jit_kernel_metadata.py",
+            marks=pytest.mark.skipif(
+                not have_matching_hip_python,
+                reason="requires that 'hip-python' is installed",
+            ),
+        ),
+        pytest.param(
+            "1_Advanced/hiprtc_hip_to_llvm_ir.py",
+            marks=pytest.mark.skipif(
+                not have_matching_hip_python,
+                reason="requires that 'hip-python' is installed",
+            ),
+        ),
+        pytest.param(
             "1_Advanced/hiprtc_linking_with_llvm_ir.py",
-        ]
-
-
-@pytest.mark.parametrize("example", python_examples)
+            marks=pytest.mark.skipif(
+                not ( have_matching_hip_python or have_compatible_gpu_target ) or hiprtc_cannot_produce_llvm_bitcode,
+                reason="requires that 'hip-python' is installed, compatible GPU target (==gfx90a) is present, and that HIPRTC can produce bitcode (ROCm != 6.1.0)",
+            ),
+        ),
+    ],
+)
 def test_python_examples(example):
     abspath = os.path.join(os.path.dirname(__file__), example)
     runpy.run_path(abspath, run_name="__test__")
