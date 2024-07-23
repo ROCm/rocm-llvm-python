@@ -29,6 +29,8 @@ try:
     import hip
 except:
     have_matching_hip_python = False
+    have_compatible_gpu_target = False
+    hiprtc_cannot_produce_llvm_bitcode = False
 else:
     import rocm.llvm
     from hip import hip as hiprt
