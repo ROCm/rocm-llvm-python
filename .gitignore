@@ -1,4 +1,5 @@
 *.c
+*.o
 *.so
 __pycache__
 _venv
