@@ -36,7 +36,7 @@ cp rocm-llvm-python/dist/*.whl _upload/
 cd _upload
 for f in *-linux_x86_64.whl;
 do
-   mv $f ${f/linux/manylinux_2_17}
+   mv $f ${f/linux/manylinux_2_31}
 done
 cd ..
 
