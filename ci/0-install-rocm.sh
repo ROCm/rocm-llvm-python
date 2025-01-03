@@ -21,21 +21,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# env var ROCM_VER - The ROCm version to consider.
+# env var ROCM_VERSION - The ROCm version to consider.
 
 if [[ "${BASH_SOURCE[0]}" != "${0}" ]]; then
    echo "ERROR: script must not be sourced";
    return
 fi
 
-set -e
-set -o xtrace
-
-echo ${ROCM_VER+x}
-if [ -z ${ROCM_VER+x} ]; then
-  echo "ERROR: environment variable 'ROCM_VER' not set."
-  exit 1
-fi
+set -xe
 
 # preinstall tzdata without install recommendations
 if [ ! -z ${SET_TIMEZONE+x} ]; then
@@ -47,20 +40,6 @@ sudo apt install -y --no-install-recommends tzdata
 
 # install latest rocm installation tool
 sudo apt update
-sudo apt install -y wget
-wget -np -r -nH --cut-dirs=4 -A "amdgpu-install*deb" https://repo.radeon.com/amdgpu-install/latest/ubuntu/focal/
-sudo apt install -y --no-install-recommends ./amdgpu-install_*.deb
-rm ./amdgpu-install_*.deb
 
-ROCM_VER_SHORT=$(echo $ROCM_VER | sed "s,\([0-9]\+\.[0-9]\+\)\.0,\1,g")
-
-echo "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/rocm-keyring.gpg] https://repo.radeon.com/rocm/apt/${ROCM_VER_SHORT} focal main" | sudo tee /etc/apt/sources.list.d/rocm.list
-echo -e 'Package: *\nPin: release o=repo.radeon.com\nPin-Priority: 600' | sudo tee /etc/apt/preferences.d/rocm-pin-600
-sudo apt update
-
-# install ROCm
-sudo amdgpu-install -y --usecase=rocm --rocmrelease=${ROCM_VER} --no-dkms
-sudo apt install -y rocm-llvm-dev${ROCM_VER} || true # required for ROCM_VER>=6.1.0
-
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/rocm/lib
-
+source ci/librocm.sh
+install_rocm_ubuntu
