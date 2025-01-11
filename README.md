@@ -13,7 +13,8 @@ This repository provides Cython and Python bindings to the (ROCm) LLVM and AMD C
     * See the git branches tagged with `release/rocm-rel-X.Y[.Z]`
   * Prebuilt packages are built only for particular ROCm versions. 
 
-> **NOTE**: You may find that packages for one ROCm&trade; release might be compatible with the ROCm&trade; HIP SDK of another release as the ROCm LLVM Python functions load HIP C functions in a lazy manner.
+> [!NOTE]
+> You may find that packages for one ROCm&trade; release might be compatible with the ROCm&trade; HIP SDK of another release as the ROCm LLVM Python functions load HIP C functions in a lazy manner.
 
 ### Build requirements
 
@@ -28,9 +29,11 @@ in the repository's subfolder `rocm-llvm-python`.
 > **NOTE**: The prebuilt packages might not be available on PyPI directly after a ROCm release as this project is not an official part of the ROCm HIP SDK yet and thus is not fully integrated into the global ROCm HIP SDK build process. Check the `simple` lists to see if your operating system and Python version is supported: [rocm-llvm-python](https://test.pypi.org/simple/rocm-llvm-python/), [rocm-llvm-python-as-cuda](https://test.pypi.org/simple/rocm-llvm-python-as-cuda/).
 -->
 
-> **NOTE**: Prebuilt packages for some ROCm releases are published to Test PyPI first. Check the `simple` lists to see if your operating system and Python version is supported: [rocm-llvm-python](https://test.pypi.org/simple/rocm-llvm-python/).
+> [!NOTE]
+> Prebuilt packages for some ROCm releases are published to Test PyPI first. Check the `simple` lists to see if your operating system and Python version is supported: [rocm-llvm-python](https://test.pypi.org/simple/rocm-llvm-python/).
 
-> **WARNING**: Currently, we have not uploaded any ROCm LLVM Python packages to PyPI yet. So far we have only uploaded packages to TestPyPI, mainly intended for internal testing purposes. If you find similar named packages on PyPI they may been provided by others, possibly with malicious intent.
+> [!CAUTION]
+> We have not uploaded any ROCm LLVM Python packages to PyPI. So far we have only uploaded packages to TestPyPI, mainly intended for internal testing purposes. If you find similar named packages on PyPI they may been provided by others, possibly with malicious intent.
 
 ### Via TestPyPI
 
@@ -65,7 +68,8 @@ python3 -m pip install <path/to/rocm_llvm_python>.whl
 
 ## Build From Source
 
-> **NOTE**: The `main` branch is used for tracking updates to the docs, examples and CI scripts. 
+> [!NOTE]
+> The `main` branch is used for tracking updates to the docs, examples and CI scripts. 
 > The source code can be found on the release branches `relaese/rocm-rel-X.Y[.Z]`.
 
 1. Install ROCM
@@ -84,7 +88,8 @@ python3 -m pip install <path/to/rocm_llvm_python>.whl
    ./build_pkg.sh --post-clean
    ```
 
-> **NOTE**: See the ROCm LLVM Python developer guide for more details:
+> [!NOTE]
+> See the ROCm LLVM Python developer guide for more details:
 > https://rocm.docs.amd.com/projects/rocm-llvm-python/en/latest/index.html
 
 ### Build Options
@@ -110,12 +115,14 @@ Options:
   -h, --help             Show this help message.
 ```
 
-> **NOTE**: See the ROCm LLVM Python developer guide for more details:
+> [!NOTE]
+> See the ROCm LLVM Python developer guide for more details:
 > https://rocm.docs.amd.com/projects/rocm-llvm-python/en/latest/index.html
 
 ## Documentation
 
-> **NOTE**: Documentation pages have not been published yet.
+> [!NOTE]
+> Documentation pages have not been published yet.
 
 For examples, guides and API reference, please take a
 look at the official ROCm LLVM Python documentation pages:
