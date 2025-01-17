@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2024 Advanced Micro Devices, Inc.
+# Copyright (c) 2024-2025 Advanced Micro Devices, Inc.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,8 @@ import os
 import ctypes
 
 import rocm.amd_comgr.amd_comgr as _comgr
+import rocm.llvm._util.types as _types
+from rocm.llvm import ROCM_VERSION_TUPLE
 
 NUL = b"\x00"
 
@@ -173,6 +175,7 @@ def parse_metadata(metadata: _comgr.amd_comgr_metadata_node_s, level: int = 0):
     elif metadata_kind == _comgr.amd_comgr_metadata_kind_s.AMD_COMGR_METADATA_KIND_LIST:
         result = []
         list_size = comgr_check(_comgr.amd_comgr_get_metadata_list_size(metadata))
+        assert isinstance(list_size, int)
         for i in range(0, list_size):
             list_entry: _comgr.amd_comgr_metadata_node_s = comgr_check(
                 _comgr.amd_comgr_index_list_metadata(metadata, i)
@@ -217,7 +220,7 @@ def parse_code_metadata(
     return result
 
 
-def get_isa_names(decode: bool = True):
+def get_isa_names(decode: bool = True) -> list:
     """Return the ISA names supported by this version of COMGR as `list` of `str` / `bytes`.
 
     Args:
@@ -228,13 +231,15 @@ def get_isa_names(decode: bool = True):
             List of ISA names, either as Python `str` (``decode=True``) or `bytes`.
     """
     result = []
-    for i in range(0, comgr_check(_comgr.amd_comgr_get_isa_count())):
-        isa_name = comgr_check(_comgr.amd_comgr_get_isa_name(i))
+    num_isas = comgr_check(_comgr.amd_comgr_get_isa_count())
+    assert isinstance(num_isas, int)
+    for i in range(0, num_isas):
+        isa_name = comgr_check(_comgr.amd_comgr_get_isa_name(i))  # type:
         result.append(isa_name.decode("utf-8") if decode else isa_name.encode("utf-8"))
     return result
 
 
-def get_isa_metadata(isa_name):
+def get_isa_metadata(isa_name):  # type: (str|bytes) -> ...
     """Parse metadata for a specific ISA.
 
     Args:
@@ -243,9 +248,10 @@ def get_isa_metadata(isa_name):
     See:
         get_isa_names
     """
+    assert isinstance(isa_name, (bytes, str))
     if isinstance(isa_name, bytes):
         isa_name_bytes = isa_name
-    elif isinstance(isa_name, str):
+    else:
         isa_name_bytes = isa_name.encode("utf-8")
     isa_metadata: _comgr.amd_comgr_metadata_node_s = comgr_check(
         _comgr.amd_comgr_get_isa_metadata(isa_name_bytes)
@@ -303,11 +309,11 @@ class Symbol:
     """
 
     def __init__(self):
-        self.type: str = None
-        self.name: str = None
-        self.size: int = -1
-        self.is_undefined: bool = -1
-        self.value: int = -1
+        self.type = None  # type: (str|None)
+        self.name = None  # type: (str|None)
+        self.size = -1  # type: (int)
+        self.is_undefined = -1  # type: (int|bool)
+        self.value = -1  # type: (int)
 
 
 @ctypes.CFUNCTYPE(None, ctypes.c_ulong, ctypes.c_void_p)
@@ -431,7 +437,16 @@ def parse_code_symbols(
     return result
 
 
-class Data:
+class _KeepAliveMixin:
+
+    def _keep_alive(self, object):
+        if not hasattr(self, "__references__"):
+            self.__references__ = set()
+        self.__references__.add(object)
+        return object
+
+
+class Data(_KeepAliveMixin):
     @staticmethod
     def kind_str_to_enum(kind_str: str):
         """Prepends ``AMD_COMGR_DATA_KIND_`` to ``kind_str`` and looks up enum.
@@ -480,7 +495,7 @@ class Data:
         instance = super().__new__(cls)
         instance._data = None
         instance._name = None
-        instance.kind_str: str = None
+        instance.kind_str = None
         instance.source_bytes = None
         return instance
 
@@ -495,7 +510,11 @@ class Data:
 
     def _set_data_name(self, name):
         self._name = to_bytes(name).decode("utf-8")
-        comgr_check(_comgr.amd_comgr_set_data_name(self.get(), to_cstr(self._name)))
+        comgr_check(
+            _comgr.amd_comgr_set_data_name(
+                self.get(), self._keep_alive(to_cstr(self._name))
+            )
+        )
 
     def _set_data_buffer(self, data_buffer=None):
         self.source_bytes = to_bytes(data_buffer)  # store to keep alive
@@ -505,7 +524,7 @@ class Data:
             )
         )
 
-    def get_data_name(self):
+    def get_data_name(self) -> str:
         """Returns the data object's name as `str`."""
         name_len = ctypes.c_ulong(0)
         comgr_check(
@@ -518,7 +537,7 @@ class Data:
         )
         return buf.decode("utf-8")
 
-    def get_data_bytes(self):
+    def get_data_bytes(self) -> bytes:
         """Copies this data object's data into a newly created buffer.
 
         Note:
@@ -578,7 +597,7 @@ class DataSet:
         return self._data_set
 
 
-class Action:
+class Action(_KeepAliveMixin):
     @staticmethod
     def action_kind_str_to_enum(action_kind_str: str):
         """Prepends ``AMD_COMGR_LANGUAGE_`` to ``action_kind_str`` and looks up enum.
@@ -687,7 +706,7 @@ class Action:
         comgr_check(
             _comgr.amd_comgr_action_info_set_isa_name(
                 self._action_info,
-                to_cstr(isa_name),
+                self._keep_alive(to_cstr(isa_name)),
             )
         )
 
@@ -703,21 +722,50 @@ class Action:
             )
         )
 
-    def set_options(self, options):
+    def set_options(
+        self, options  # type: (list|tuple)
+    ):
         """Set options to supply to the action runner.
 
         Args:
-            options (`str` or Python buffer such as `bytes`):
+            options (`list` or `tuple` of Python buffer such as `bytes`):
                 Options to supply to the action runner.
         Note:
             Input will be null-terminated if it is not already.
         """
+        # NOTE: Function `amd_comgr_action_info_set_option_list` wraps
+        #       std::string around C string options inputs, which
+        #       implies that a copy of each option input is created.
+        #       Therefore, the inputs don't need to be kept alive after
+        #       the function call.
         comgr_check(
-            _comgr.amd_comgr_action_info_set_options(
-                self.get(),
-                to_cstr(options),
+            _comgr.amd_comgr_action_info_set_option_list(
+                self.get(), [to_cstr(o) for o in options], len(options)
             )
         )
+
+    def get_num_options(self):
+
+        return comgr_check(
+            _comgr.amd_comgr_action_info_get_option_list_count(self.get())
+        )
+
+    def get_option(self, index: int) -> bytes:
+        # First determines length of string, then loads it into buffer.
+        str_len = ctypes.c_ulong(0)
+        comgr_check(
+            _comgr.amd_comgr_action_info_get_option_list_item(
+                self.get(), index, ctypes.addressof(str_len), None
+            )
+        )
+        str_len.value -= 1  # remove the 0x00 terminator
+        str_buf = bytes(str_len.value)
+        comgr_check(
+            _comgr.amd_comgr_action_info_get_option_list_item(
+                self.get(), index, ctypes.addressof(str_len), str_buf
+            )
+        )
+        return str_buf
 
     def set_logging(self, logging: bool):
         """Enable logging."""
@@ -742,14 +790,22 @@ class Action:
 
 
 def compile_hip_to_bc(
-    source,  # bytes or str
-    isa_name,  # offload architecture
-    hip_version_tuple: tuple,  # integer triple like (6,0,32830) that indicates a HIP version, can be easily obtained when HIP Python is installed
-    extra_opts="",
-    default_opts="-fgpu-rdc -O3 -mcumode -std=c++14 -nogpuinc -Wno-gnu-line-marker -Wno-missing-prototypes",
-    logging: bool = False,
-    action_kind: str = "COMPILE_SOURCE_WITH_DEVICE_LIBS_TO_BC",
-):
+    source,  # type: (bytes|str)
+    isa_name,  # type: (bytes|str)
+    hip_version_tuple,  # type: tuple[int,int,int]
+    extra_opts=[],  # type: list[str|bytes]
+    default_opts=[
+        "-fgpu-rdc",
+        "-O3",
+        "-mcumode",
+        "-std=c++14",
+        "-nogpuinc",
+        "-Wno-gnu-line-marker",
+        "-Wno-missing-prototypes",
+    ],  # type: list[str|bytes]
+    logging=False,  # type: bool
+    action_kind="COMPILE_SOURCE_WITH_DEVICE_LIBS_TO_BC",  # type: str
+):  # type: (...) -> tuple
     """Compiles a HIP C++ source to LLVM BC.
 
     Returns:
@@ -764,16 +820,16 @@ def compile_hip_to_bc(
             ISA name supported by this version of AMD COMGR, e.g.
             ``amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack-``.
             See `~.get_isa_names`, `~.get_isa_metadata_all` for more information.
-        hip_version_tuple (`str` or Python buffer such as `bytes`):
+        hip_version_tuple (`tuple[int]`):
             Integer triple like ``(6,0,32830)`` that indicates a HIP version.
-        extra_opts (`str` or Python buffer such as `bytes`):
+        extra_opts (`list` of `str` or Python buffer such as `bytes`):
             Extra options that are appended to the default options; see argument ``default_opts``.
             You would typically supply additional options via this value but
             can also use it overrule some or all of the options specified
-            in default_opts.
-        default_opts (`str` or Python buffer such as `bytes`):
+            in default_opts. Defaults to `[]`.
+        default_opts (`list` of `str` or Python buffer such as `bytes`):
             Default options that are typically not changed.
-            Defaults to `-fgpu-rdc -O3 -mcumode -std=c++14 -nogpuinc -Wno-gnu-line-marker -Wno-missing-prototypes`
+            Defaults to `["-fgpu-rdc", "-O3", "-mcumode", "-std=c++14", "-nogpuinc", "-Wno-gnu-line-marker", "-Wno-missing-prototypes"]`.
         action_kind (`str`):
             The compile action kind. Defaults to
             ``"COMPILE_SOURCE_WITH_DEVICE_LIBS_TO_BC"``
@@ -814,20 +870,19 @@ def compile_hip_to_bc(
     # split expr like: amdgcn-amd-amdhsa--gfx90a:sramecc+:xnack-
     offload_arch = to_bytes(isa_name).decode("utf-8").split("--")[1]
     # produce something like: --hip-version=6.0.32830" "-DHIP_VERSION_MAJOR=6" "-DHIP_VERSION_MINOR=0 -DHIP_VERSION_PATCH=32830"
-    hip_version = (
-        "--hip-version="
-        + ".".join(map(str, hip_version_tuple))
-        + f" -DHIP_VERSION_MAJOR={hip_version_tuple[0]} -DHIP_VERSION_MINOR={hip_version_tuple[0]} -DHIP_VERSION_PATCH={hip_version_tuple[0]}"
+
+    options = (
+        [
+            f"--offload-arch={offload_arch}",
+            f"--hip-version=" + ".".join(map(str, hip_version_tuple)),
+            f"-DHIP_VERSION_MAJOR={hip_version_tuple[0]}",
+            f"-DHIP_VERSION_MINOR={hip_version_tuple[1]}",
+            f"-DHIP_VERSION_PATCH={hip_version_tuple[2]}",
+        ]
+        + default_opts
+        + extra_opts
     )
-    options: str = (
-        f" --offload-arch={offload_arch}"
-        + " "
-        + hip_version
-        + " "
-        + to_bytes(default_opts).decode("utf-8")
-        + " "
-        + to_bytes(extra_opts).decode("utf-8")
-    )
+
     action = Action(
         action_kind_str=action_kind,
         isa_name=isa_name,
@@ -846,6 +901,7 @@ def compile_hip_to_bc(
     else:
         diagnostic = None
     return (result, log, diagnostic)
+
 
 with open(os.path.join(os.path.dirname(__file__), "hiprtc_runtime.h"), "r") as infile:
     HIPRTC_RUNTIME_HEADER = infile.read()
