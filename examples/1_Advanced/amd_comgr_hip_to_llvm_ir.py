@@ -26,7 +26,7 @@
 This time we use AMD COMGR infrastructure. This requires us to use the 
 `hiprtc_runtime.h` header file that HIPRTC is using internally.
 
-During the ROCm LLVM Python package preperation, we generate this header file
+During the ROCm LLVM Python package preparation process, we generate this header file
 and put it into the `rocm.amd_comgr.amd_comgr.ext.HIPRTC_RUNTIME_HEADER` 
 variable.
 """
@@ -69,7 +69,7 @@ class HipProgram:
             isa_name=f"amdgcn-amd-amdhsa--{arch}",
             hip_version_tuple=ROCM_VERSION_TUPLE,  # ! only same up to last entry
             logging=True,
-            extra_opts=" -D__HIPCC_RTC__ ",
+            extra_opts=["-D__HIPCC_RTC__"],
         )
         self.llvm_bc_or_ir_size = len(self.llvm_bc_or_ir)
 

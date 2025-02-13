@@ -41,7 +41,8 @@ else:
     hiprt.hipGetDeviceProperties(props, 0)
     gpugen = props.gcnArchName.decode("utf-8").split(":")[0]
     have_compatible_gpu_target = gpugen == "gfx90a"
-    hiprtc_cannot_produce_llvm_bitcode = rocm.llvm.ROCM_VERSION_TUPLE == (6,1,0)
+    hiprtc_cannot_produce_llvm_bitcode = rocm.llvm.ROCM_VERSION_TUPLE == (6, 1, 0)
+
 
 @pytest.mark.parametrize(
     "example",
@@ -52,10 +53,16 @@ else:
         "1_Advanced/amd_comgr_hip_to_llvm_ir.py",
         pytest.param(
             "1_Advanced/hiprtc_amd_comgr_get_jit_kernel_metadata.py",
-            marks=pytest.mark.skipif(
-                not have_matching_hip_python,
-                reason="requires that 'hip-python' is installed",
-            ),
+            marks=[
+                pytest.mark.skipif(
+                    not have_matching_hip_python,
+                    reason="requires that 'hip-python' is installed",
+                ),
+                pytest.mark.xfail(
+                    hip.ROCM_VERSION_TUPLE < (6, 3, 2),
+                    reason="'amd_comgr.ext.compile_hip_to_bc' 'extra_opts' argument type change must be backported",
+                ),
+            ],
         ),
         pytest.param(
             "1_Advanced/hiprtc_hip_to_llvm_ir.py",
@@ -67,7 +74,8 @@ else:
         pytest.param(
             "1_Advanced/hiprtc_linking_with_llvm_ir.py",
             marks=pytest.mark.skipif(
-                not ( have_matching_hip_python or have_compatible_gpu_target ) or hiprtc_cannot_produce_llvm_bitcode,
+                not (have_matching_hip_python or have_compatible_gpu_target)
+                or hiprtc_cannot_produce_llvm_bitcode,
                 reason="requires that 'hip-python' is installed, compatible GPU target (==gfx90a) is present, and that HIPRTC can produce bitcode (ROCm != 6.1.0)",
             ),
         ),
