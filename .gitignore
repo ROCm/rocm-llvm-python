@@ -8,8 +8,3 @@ rocm-llvm-python/build
 rocm-llvm-python/dist/
 rocm-llvm-python/rocm/llvm/_version.py
 rocm-llvm-python/*.egg-info/
-ci/
-docs/
-examples/
-build_pkg.sh
-_render_update_version.py
