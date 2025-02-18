@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2023-2024 Advanced Micro Devices, Inc.
+# Copyright (c) 2023-2025 Advanced Micro Devices, Inc.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -30,8 +30,8 @@ __author__ = "Advanced Micro Devices, Inc. <hip-python.maintainer@amd.com>"
 
 import os
 
-from setuptools import setup, Extension
 from Cython.Build import cythonize
+from setuptools import Extension, setup
 
 
 def parse_options():
@@ -86,9 +86,11 @@ def create_extension(name, sources, ROCM_LLVM_PYTHON_MODULES):
         sources=sources,
         include_dirs=ROCM_LLVM_INC,
         library_dirs=ROCM_LLVM_LIB,
-        libraries=[]
-        if ROCM_LLVM_PYTHON_RUNTIME_LINKING
-        else [mod.lib for mod in ROCM_LLVM_PYTHON_MODULES],
+        libraries=(
+            []
+            if ROCM_LLVM_PYTHON_RUNTIME_LINKING
+            else [mod.lib for mod in ROCM_LLVM_PYTHON_MODULES]
+        ),
         language="c",
         extra_compile_args=EXTRA_COMPILE_ARGS,
     )
@@ -107,8 +109,14 @@ class Module:
     @property
     def ext_modules(self):
         return self._helpers + [
-            (f"{self.pkg_name}.c{self.name}", [f"./{self.pkg_path}/c{self.name}.pyx"]),
-            (f"{self.pkg_name}.{self.name}", [f"./{self.pkg_path}/{self.name}.pyx"]),
+            (
+                f"{self.pkg_name}.c{self.name}",
+                [f"./{self.pkg_path}/c{self.name}.pyx"],
+            ),
+            (
+                f"{self.pkg_name}.{self.name}",
+                [f"./{self.pkg_path}/{self.name}.pyx"],
+            ),
         ]
 
 
