@@ -1,6 +1,6 @@
 <!-- MIT License
   -- 
-  -- Copyright (c) 2023-2024 Advanced Micro Devices, Inc.
+  -- Copyright (c) 2023-2025 Advanced Micro Devices, Inc.
   -- 
   -- Permission is hereby granted, free of charge, to any person obtaining a copy
   -- of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ https://rocm.docs.amd.com/projects/rocm-llvm-python/en/latest/index.html
 ```
 MIT License
 
-Copyright (c) 2023-2024 Advanced Micro Devices, Inc.
+Copyright (c) 2023-2025 Advanced Micro Devices, Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
