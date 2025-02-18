@@ -101,7 +101,7 @@ python3 -m pip install <path/to/rocm_llvm_python>.whl
    ```
 1. Finally run:
    ```bash
-   ./build_pkg.sh --post-clean
+   ./build.sh --post-clean
    ```
 
 > **NOTE**: See the ROCm LLVM Python developer guide for more details:
@@ -110,7 +110,7 @@ python3 -m pip install <path/to/rocm_llvm_python>.whl
 ### Build Options
 
 ```
-Usage: ./build_pkg.sh [OPTIONS]
+Usage: ./build.sh [OPTIONS]
 
 Options:
   --rocm-path            Path to a ROCm installation, defaults to variable 'ROCM_PATH' if set or '/opt/rocm'.
