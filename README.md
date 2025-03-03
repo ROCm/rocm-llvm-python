@@ -94,25 +94,16 @@ python3 -m pip install <path/to/rocm_llvm_python>.whl
 
 > [!NOTE]
 > The `main` branch is used for tracking updates to the docs, examples and CI scripts.
-> The source code can be found on the release branches `relaese/rocm-rel-X.Y[.Z]`.
+> The source code can be found on the release branches `release/rocm-rel-X.Y[.Z]`.
 
 1. Install ROCM
 1. Install `pip`, virtual environment and development headers for Python 3:
-
    ```bash
    # Ubuntu:
    sudo apt install python3-pip python3-venv python3-dev
    ```
-
 1. Check out the feature branch `release/rocm-rel-X.Y[.Z]` for your particular ROCm&trade; installation:
-1. Initialize the branch:
-
-   ```bash
-   ./init.sh
-   ```
-
 1. Finally run:
-
    ```bash
    ./build.sh --post-clean
    ```
