@@ -22,65 +22,57 @@
   -->
 # ROCm LLVM Python Source Repository
 
-This repository provides low-level Python and Cython Bindings for ROCm LLVM.
+This repository provides low-level Python and Cython Bindings for ROCm LLVM
+and ROCm AMD COMGR.
 
 ## Requirements
 
 * Currently, only Linux is supported (prebuilt packages and code).
-  * Prebuilt packages distributed via PyPI (or Test PyPI) are currently only provided for Linux systems.
+  * Prebuilt packages distributed via PyPI (or Test PyPI) are currently only
+    provided for Linux systems.
 * Requires that a compatible ROCm&trade; HIP SDK is installed on your system.
   * Source code is provided only for particular ROCm versions.
     * See the git branches tagged with `release/rocm-rel-X.Y[.Z]`
   * Prebuilt packages are built only for particular ROCm versions.
 
 > [!NOTE]
-> You may find that packages for one ROCm&trade; release might be compatible with the ROCm&trade; HIP SDK of another release as the ROCm LLVM Python functions load HIP C functions in a lazy manner.
-
-### Build requirements
-
-* All Python requirements are taking care of by installation scripts.
-If you decide not to use these scripts, take a look into the `requirements.txt` file
-in the top-level folder of the this repository and those
-in the repository's subfolder `rocm-llvm-python`.
+> You may find that packages for one ROCm&trade; release might be compatible
+> with the ROCm&trade; HIP SDK of another release as the ROCm LLVM Python
+> functions load HIP C functions in a lazy manner.
 
 ## Install Prebuilt Package(s)
 
-<!--
 > [!NOTE]
-> The prebuilt packages might not be available on PyPI directly after a ROCm release as this project is not an official part of the ROCm HIP SDK yet and thus is not fully integrated into the global ROCm HIP SDK build process. Check the `simple` lists to see if your operating system and Python version is supported: [rocm-llvm-python](https://test.pypi.org/simple/rocm-llvm-python/), [rocm-llvm-python-as-cuda](https://test.pypi.org/simple/rocm-llvm-python-as-cuda/).
--->
-
-> [!NOTE]
-> Prebuilt packages for some ROCm releases are published to Test PyPI first. Check the `simple` lists to see if your operating system and Python version is supported: [rocm-llvm-python](https://test.pypi.org/simple/rocm-llvm-python/).
+> Prebuilt packages for some ROCm releases are published to Test PyPI first.
+> Check the `simple` lists to see if your operating system and Python version
+> is supported: [rocm-llvm-python](https://test.pypi.org/simple/rocm-llvm-python/).
 
 ---
 
 > [!CAUTION]
-> Currently, we have not uploaded any ROCm LLVM Python packages to PyPI yet. So far we have only uploaded packages to TestPyPI, mainly intended for internal testing purposes. If you find similar named packages on PyPI they may been provided by others, possibly with malicious intent.
+> Currently, we have not uploaded any ROCm LLVM Python packages to PyPI yet.
+> So far we have only uploaded packages to TestPyPI, mainly intended for
+> internal testing purposes. If you find similar named packages on PyPI they
+> may been provided by others, possibly with malicious intent.
 
 ### Via TestPyPI
 
-First identify the first two or three digits of the version number of your ROCm&trade; installation.
-Then install the ROCm LLVM Python package(s) as follows:
+First identify the first two or three digits of the version number of your
+ROCm&trade; installation. Then install the ROCm LLVM Python package(s) as
+follows:
+
+<!-- markdownlint-disable MD013-->
 
 ```shell
 python3 -m pip install -i https://test.pypi.org/simple rocm-llvm-python~=$rocm_version
 ```
 
-<!--
--- #### Via TestPyPI
---
--- Packages can be installed via the TestPyPI index by prefixing the
--- the PIP install commands as follows:
---
--- ```shell
--- python3 -m pip install -i https://test.pypi.org/simple ...
--- ```
--->
+<!-- markdownlint-enable MD013-->
 
 ### Via Wheel in Local Filesystem
 
-If you have ROCm LLVM Python package wheels somewhere in your filesystem, you can also run:
+If you have ROCm LLVM Python package wheels somewhere in your filesystem, you can
+also run:
 
 ```shell
 python3 -m pip install <path/to/rocm_llvm_python>.whl
@@ -97,13 +89,17 @@ python3 -m pip install <path/to/rocm_llvm_python>.whl
 > The source code can be found on the release branches `release/rocm-rel-X.Y[.Z]`.
 
 1. Install ROCM
-1. Install `pip`, virtual environment and development headers for Python 3:
+2. Install `pip`, virtual environment and development headers for Python 3:
+
    ```bash
    # Ubuntu:
    sudo apt install python3-pip python3-venv python3-dev
    ```
-1. Check out the feature branch `release/rocm-rel-X.Y[.Z]` for your particular ROCm&trade; installation:
-1. Finally run:
+
+3. Check out the feature branch `release/rocm-rel-X.Y[.Z]` for your particular
+   ROCm&trade; installation:
+4. Finally run:
+
    ```bash
    ./build.sh --post-clean
    ```
@@ -113,6 +109,8 @@ python3 -m pip install <path/to/rocm_llvm_python>.whl
 > <https://rocm.docs.amd.com/projects/rocm-llvm-python/en/latest/index.html>
 
 ### Build Options
+
+<!-- markdownlint-disable MD013-->
 
 ```text
 Usage: ./build.sh [OPTIONS]
@@ -134,6 +132,8 @@ Options:
   -n, --no-venv          Do not create and use a virtual Python environment.
   -h, --help             Show this help message.
 ```
+
+<!-- markdownlint-enable MD013-->
 
 > [!NOTE]
 > See the ROCm LLVM Python developer guide for more details:
