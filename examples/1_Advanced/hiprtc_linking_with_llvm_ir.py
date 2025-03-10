@@ -188,10 +188,17 @@ class HiprtcLinker:
         self.code_size = None
 
     def add_program(self, program):
+        try:  # >= ROCm 6.4.0
+            input_type = hip.hipJitInputType.hipJitInputLLVMBitcode
+        except AttributeError:
+            input_type = (
+                hiprtc.hiprtcJITInputType.HIPRTC_JIT_INPUT_LLVM_BITCODE
+            )
+
         hip_check(
             hiprtc.hiprtcLinkAddData(
                 self.link_state,
-                hiprtc.hiprtcJITInputType.HIPRTC_JIT_INPUT_LLVM_BITCODE,
+                input_type,
                 program.llvm_bc_or_ir,
                 program.llvm_bc_or_ir_size,
                 program.name,
