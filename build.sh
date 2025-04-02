@@ -59,7 +59,7 @@ while [[ $# -gt 0 ]]; do
       POST_CLEAN=1
       shift
       ;;
-    -n|--no-_venv)
+    -n|--no-venv)
       NO_VENV=1
       shift
       ;;
@@ -123,7 +123,7 @@ declare -x ROCM_LLVM_PYTHON_LIBS=${ROCM_LLVM_PYTHON_LIBS:-*}
 
 alias PYTHON="python3"
 declare -x PYTHON="python3"
-if [ -z ${NO_ENV+x} ]; then
+if [ -z ${NO_VENV+x} ]; then
   [ ! -d "_venv" ] && python3 -m venv _venv
   alias PYTHON="$(pwd)/_venv/bin/python3"
   declare -x PYTHON="$(pwd)/_venv/bin/python3"
