@@ -28,8 +28,8 @@ and ROCm AMD COMGR.
 ## Requirements
 
 * Currently, only Linux is supported (prebuilt packages and code).
-  * Prebuilt packages distributed via PyPI (or Test PyPI) are currently only
-    provided for Linux systems.
+  * Prebuilt packages distributed via PyPI (or Test PyPI) are only provided for
+    Linux systems that agree with the `manylinux_2_17_x86_64` tag.
 * Requires that a compatible ROCm&trade; HIP SDK is installed on your system.
   * Source code is provided only for particular ROCm versions.
     * See the git branches tagged with `release/rocm-rel-X.Y[.Z]`
@@ -49,11 +49,16 @@ and ROCm AMD COMGR.
 
 ---
 
-> [!CAUTION]
-> Currently, we have not uploaded any ROCm LLVM Python packages to PyPI yet.
-> So far we have only uploaded packages to TestPyPI, mainly intended for
-> internal testing purposes. If you find similar named packages on PyPI they
-> may been provided by others, possibly with malicious intent.
+> [!WARNING]
+> Currently, we have not uploaded any ROCm LLVM Python to PyPI yet. So far
+> we have only uploaded packages to TestPyPI, mainly intended for internal
+> testing purposes. If you find similar named packages on PyPI they may been
+> provided by others, possibly with malicious intent.
+
+---
+
+> [!IMPORTANT]
+> Ensure that `pip` has at least version `24.0`, please upgrade it otherwise.
 
 ### Via TestPyPI
 
