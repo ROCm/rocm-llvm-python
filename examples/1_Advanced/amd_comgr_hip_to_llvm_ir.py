@@ -10,8 +10,8 @@
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -26,9 +26,9 @@
 This time we use AMD COMGR infrastructure. This requires us to use the
 `hiprtc_runtime.h` header file that HIPRTC is using internally.
 
-During the ROCm LLVM Python package preparation process, we generate this header file
-and put it into the `rocm.amd_comgr.amd_comgr.ext.HIPRTC_RUNTIME_HEADER`
-variable.
+During the ROCm LLVM Python package preparation process, we generate this
+header file and put it into the
+`rocm.amd_comgr.amd_comgr.ext.HIPRTC_RUNTIME_HEADER` variable.
 """
 
 __author__ = "Advanced Micro Devices, Inc. <hip-python.maintainer@amd.com>"
@@ -72,7 +72,7 @@ class HipProgram:
         ) = amd_comgr.ext.compile_hip_to_bc(
             source=self.hip_source,
             isa_name=f"amdgcn-amd-amdhsa--{arch}",
-            hip_version_tuple=ROCM_VERSION_TUPLE,  # ! only same up to last entry
+            hip_version_tuple=ROCM_VERSION_TUPLE,  # only same up to last entry
             logging=True,
             extra_opts=["-D__HIPCC_RTC__"],
         )
