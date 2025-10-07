@@ -38,7 +38,7 @@ Target.o: $(Target.cpp)
 	$(LINKER) -c Target.cpp -o Target.o $(LDFLAGS)
 
 librocmllvm.so: Target.o $(STATIC_LIBS)
-	$(LINKER) -shared -Wl,--whole-archive $^ -Wl,--no-whole-archive $(LDFLAGS) -o $@
+	$(LINKER) -shared -Wl,-Bsymbolic -Wl,--whole-archive $^ -Wl,--no-whole-archive $(LDFLAGS) -o $@
 
 clean:
 	rm -f librocmllvm.so Target.o llvm-c.h
