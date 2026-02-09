@@ -1,6 +1,6 @@
 <!-- MIT License
   --
-  -- Copyright (c) 2023-2025 Advanced Micro Devices, Inc.
+  -- Copyright (c) 2023-2026 Advanced Micro Devices, Inc.
   --
   -- Permission is hereby granted, free of charge, to any person obtaining a copy
   -- of this software and associated documentation files (the "Software"), to deal
@@ -20,10 +20,9 @@
   -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   -- SOFTWARE.
   -->
-# ROCm LLVM Python Source Repository
+# ROCm LLVM Python
 
-This repository provides low-level Python and Cython Bindings for ROCm LLVM
-and ROCm AMD COMGR.
+This repository provides low-level Python and Cython Bindings for ROCm LLVM.
 
 ## Requirements
 
@@ -32,90 +31,87 @@ and ROCm AMD COMGR.
     Linux systems that agree with the `manylinux_2_17_x86_64` tag.
 * Requires that a compatible ROCm&trade; HIP SDK is installed on your system.
   * Source code is provided only for particular ROCm versions.
-    * See the git branches tagged with `release/rocm-rel-X.Y[.Z]`
+    * See the `git` branches tagged with `release/rocm-rel-X.Y[.Z]`
   * Prebuilt packages are built only for particular ROCm versions.
 
 > [!NOTE]
-> You may find that packages for one ROCm&trade; release might be compatible
-> with the ROCm&trade; HIP SDK of another release as the ROCm LLVM Python
-> functions load HIP C functions in a lazy manner.
+> You may find that packages for one ROCm release are compatible with
+> the ROCm HIP SDK of other releases as the ROCm LLVM Python functions load
+> C functions in a lazy manner.
 
-## Install Prebuilt Package(s)
+### Build requirements
+
+* A Linux operating system
+* A C compiler
+* `bash`, `python3` + `venv`
+* The ROCm HIP SDK including the ROCm LLVM Compiler's C-API headers.
+* Python 3.8+.
+
+## Install Prebuilt Packages
 
 > [!NOTE]
 > Prebuilt packages for some ROCm releases are published to Test PyPI first.
 > Check the `simple` lists to see if your operating system and Python version
 > is supported: [rocm-llvm-python](https://test.pypi.org/simple/rocm-llvm-python/).
 
----
-
-> [!WARNING]
-> Currently, we have not uploaded any ROCm LLVM Python to PyPI yet. So far
-> we have only uploaded packages to TestPyPI, mainly intended for internal
-> testing purposes. If you find similar named packages on PyPI they may been
-> provided by others, possibly with malicious intent.
-
----
+***
 
 > [!IMPORTANT]
 > Ensure that `pip` has at least version `24.0`, please upgrade it otherwise.
 
+***
+
+> [!CAUTION]
+> We have only uploaded ROCm LLVM Python **dummy** packages to PyPI for
+> security reasons. Note that they do not distribute any ROCm LLVM Python
+> functionality. Please use the ones from Test PyPI for now.
+
 ### Via TestPyPI
 
-First identify the first two or three digits of the version number of your
-ROCm&trade; installation. Then install the ROCm LLVM Python package(s) as
-follows:
+First identify the first three digits of the version number of your
+ROCm&trade; installation. Then install the ROCm LLVM Python package(s) as follows:
 
-<!-- markdownlint-disable MD013-->
-
-```shell
-python3 -m pip install -i https://test.pypi.org/simple rocm-llvm-python~=$rocm_version
-```
-
-<!-- markdownlint-enable MD013-->
-
-### Via Wheel in Local Filesystem
-
-If you have ROCm LLVM Python package wheels somewhere in your filesystem, you can
-also run:
+<!-- markdownlint-disable  MD013 -->
 
 ```shell
-python3 -m pip install <path/to/rocm_llvm_python>.whl
+python3 -m pip install -i https://test.pypi.org/simple rocm-llvm-python~=$rocm_version.0
+# Example: python3 -m pip install -i https://test.pypi.org/simple rocm-llvm-python~=7.2.0.0
 ```
 
-> [!NOTE]
-> See the ROCm LLVM Python user guide for more details:
-> <https://rocm.docs.amd.com/projects/rocm-llvm-python/en/latest/index.html>
+<!-- markdownlint-enable  MD013 -->
 
-## Build From Source
+### Via Wheel File
 
-> [!NOTE]
-> The `main` branch is used for tracking updates to the docs, examples and CI scripts.
-> The source code can be found on the release branches `release/rocm-rel-X.Y[.Z]`.
+If you have a ROCm LLVM Python package wheel on your filesystem, you can run:
 
-1. Install ROCM
+```shell
+python3 -m pip install $path_to_rocm_llvm_python.whl
+```
+
+## Build from Source
+
+1. Install ROCM.
 2. Install `pip`, virtual environment and development headers for Python 3:
 
-   ```bash
+   ```shell
    # Ubuntu:
    sudo apt install python3-pip python3-venv python3-dev
    ```
 
-3. Check out the feature branch `release/rocm-rel-X.Y[.Z]` for your particular
-   ROCm&trade; installation:
+3. Select the feature branch `release/rocm-rel-X.Y[.Z]` for your particular
+   ROCm installation.
 4. Finally run:
 
-   ```bash
+   ```shell
    ./build.sh --post-clean
    ```
 
-> [!NOTE]
-> See the ROCm LLVM Python developer guide for more details:
-> <https://rocm.docs.amd.com/projects/rocm-llvm-python/en/latest/index.html>
+The build process will produce a Python binary wheel in the subdirectory
+`rocm-llvm-python/dist/`, which can be installed as discussed in the previous section.
 
 ### Build Options
 
-<!-- markdownlint-disable MD013-->
+<!-- markdownlint-disable  MD013 -->
 
 ```text
 Usage: ./build.sh [OPTIONS]
@@ -134,22 +130,34 @@ Options:
   -j,--num-jobs          Number of build jobs to use. Defaults to 1.
   --pre-clean            Remove the virtual Python environment subfolder '_venv' --- if it exists --- before all other tasks.
   --post-clean           Remove the virtual Python environment subfolder '_venv' --- if it exists --- after all other tasks.
-  -n, --no-venv          Do not create and use a virtual Python environment.
+  -n, --no-_venv          Do not create and use a virtual Python environment.
   -h, --help             Show this help message.
 ```
 
-<!-- markdownlint-enable MD013-->
+<!-- markdownlint-enable  MD013 -->
 
-> [!NOTE]
-> See the ROCm LLVM Python developer guide for more details:
-> <https://rocm.docs.amd.com/projects/rocm-llvm-python/en/latest/index.html>
+## LICENSE
 
-## Documentation
+```text
+MIT License
 
-> [!NOTE]
-> Documentation pages have not been published yet.
+Copyright (c) 2023-2026 Advanced Micro Devices, Inc.
 
-For examples, guides and API reference, please take a
-look at the official ROCm LLVM Python documentation pages:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-<https://rocm.docs.amd.com/projects/rocm-llvm-python/en/latest/index.html>
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
