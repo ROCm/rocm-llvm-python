@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2023-2025 Advanced Micro Devices, Inc.
+# Copyright (c) 2023-2026 Advanced Micro Devices, Inc.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -30,11 +30,10 @@ ROCM_PATH ?= /opt/rocm
 
 STATIC_LIBS ?= $(shell $(ROCM_PATH)/llvm/bin/llvm-config --libfiles)
 
-LINKER = $(ROCM_PATH)/llvm/bin/clang++
+LINKER ?= c++
 LDFLAGS = $(shell $(ROCM_PATH)/llvm/bin/llvm-config --cxxflags --ldflags --system-libs --libs core)
 
 Target.o: $(Target.cpp)
-	#$(LINKER) $(LDFLAGS) --preprocess Target.cpp -o Target.prec.cpp
 	$(LINKER) -c Target.cpp -o Target.o $(LDFLAGS)
 
 librocmllvm.so: Target.o $(STATIC_LIBS)
